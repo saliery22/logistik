@@ -2301,6 +2301,15 @@ mm = markerByUnit[idd];
        filtr_data.push(idd);
       }
       }
+      if (vibor=='v21'||vibor=='v22'||vibor=='v23'||vibor=='v24'||vibor=='v25'||vibor=='v26'||vibor=='v28'||vibor=='v29'){
+      if(nmm.indexOf('John')>=0 || nmm.indexOf('JD')>=0 || nmm.indexOf(' CL ')>=0|| nmm.indexOf('CASE')>=0 || nmm.indexOf(' NH ')>=0 ){
+      mm.setOpacity(1);
+      mm.setZIndexOffset(1000);
+      filtr=true; 
+      filtr_data.push(idd);
+      }
+      }
+	
       if(rux==1){mm.setOpacity(0);} 
       
 }
