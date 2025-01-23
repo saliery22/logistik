@@ -5879,9 +5879,11 @@ function control_avto(){
     let status1=0;
     let status2=0;
     let status3=0;
+    let name_buton='маршрут';
     for (let v = 1; v<logistik_data.length; v++){
       let m=logistik_data[v].split('|');
       if(m[1]==avto[j][0]){
+        name_buton=m[3];
         if(m[2]=='ремонт'){
           if(m[0]<d1)status0=2;
           if(m[0]<d0)status1=2;
@@ -5909,6 +5911,7 @@ function control_avto(){
         }
       }
     }
+   if (name_buton==undefined)name_buton='маршрут';
 let bb0 ="<button style = 'width: 100%;' >на ремонт</button>";
 if(now_date>d2)bb0 ="";
 let bb1 ="<button style = 'width: 100%;' >на ремонт</button>";
@@ -5917,10 +5920,10 @@ let bb2 ="<button style = 'width: 100%;' >на ремонт</button>";
 if(now_date>d0)bb2 ="";
 let bb3 ="<button style = 'width: 100%;' >на ремонт</button>";
 if(now_date>d_1)bb3 ="";
-if(status0==3){bb0 ="<button style = 'background: rgb(170, 248, 170);width: 100%;' >маршрут</button>";}
-if(status1==3){bb1 ="<button style = 'background: rgb(170, 248, 170);width: 100%;' >маршрут</button>";}
-if(status2==3){bb2 ="<button style = 'background: rgb(170, 248, 170);width: 100%;' >маршрут</button>";}
-if(status3==3){bb3 ="<button style = 'background: rgb(170, 248, 170);width: 100%;' >маршрут</button>";}
+if(status0==3){bb0 ="<button style = 'background: rgb(170, 248, 170);width: 100%;' >"+name_buton+"</button>";}
+if(status1==3){bb1 ="<button style = 'background: rgb(170, 248, 170);width: 100%;' >"+name_buton+"</button>";}
+if(status2==3){bb2 ="<button style = 'background: rgb(170, 248, 170);width: 100%;' >"+name_buton+"</button>";}
+if(status3==3){bb3 ="<button style = 'background: rgb(170, 248, 170);width: 100%;' >"+name_buton+"</button>";}
 if(status0==2){
   bb0 ="<button style = 'background: rgb(247, 161, 161);width: 100%;' >ремонт-зняти</button>";
   if(now_date>d2) bb0 ="<button style = 'background: rgb(247, 161, 161);width: 100%;' >ремонт</button>";
@@ -5972,7 +5975,7 @@ if(row.rowIndex>0 && evt.target.innerText =='ремонт-зняти'){
     });
 
 }
-if(row.rowIndex>0 && evt.target.innerText =='маршрут'){
+if(row.rowIndex>0 && evt.target.innerText !='ремонт-зняти'&& evt.target.innerText !='на ремонт'){
   $('#log_marh_tb').show();
   $('#log_cont').show();
   $('#marshrut_d').show();
