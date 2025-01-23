@@ -5981,10 +5981,9 @@ if(row.rowIndex>0 && evt.target.innerText =='маршрут'){
   let n=row.cells[0].innerText;
   $('#cont_unit').text(n);
   $('#cont_time').text(tb.rows[0].cells[evt.target.parentNode.cellIndex].innerText);
-
+  $('#marshrut_text').val('');
 
   for (let v = 1; v<logistik_data.length; v++){
-    $('#marshrut_text').val('');
     let m=logistik_data[v].split('|');
     if(m[1]==n && m[0]>=t && m[0]<t+86400000){
       if(m[2]=='ремонт')continue;
