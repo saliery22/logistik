@@ -6025,7 +6025,12 @@ if(row.rowIndex>0 && evt.target.innerText =='маршрут'){
   marshrut();  
 }
 
-let name = evt.target.parentNode.cells[0].innerText;
+let name = evt.target.parentNode;
+if(name.cells){
+  name = evt.target.parentNode.cells[0].innerText;
+}else{
+  name = evt.target.parentNode.parentNode.cells[0].innerText;
+}
 
      for (let i = 0; i<unitslist.length; i++){
       let nm=unitslist[i].getName();
