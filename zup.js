@@ -5879,7 +5879,10 @@ function control_avto(){
     let status1=0;
     let status2=0;
     let status3=0;
-    let name_buton='маршрут';
+    let name_buton0='маршрут';
+    let name_buton1='маршрут';
+    let name_buton2='маршрут';
+    let name_buton3='маршрут';
     for (let v = 1; v<logistik_data.length; v++){
       let m=logistik_data[v].split('|');
       if(m[1]==avto[j][0]){
@@ -5902,16 +5905,19 @@ function control_avto(){
               if(m[0]>=d0 && m[0]<d_1){status2=0;}
               if(m[0]>=d_1 && m[0]<d_2){status3=0;}
             }else{
-              if(m[0]>=d2 && m[0]<d1){status0=3;}
-              if(m[0]>=d1 && m[0]<d0){status1=3;}
-              if(m[0]>=d0 && m[0]<d_1){status2=3;}
-              if(m[0]>=d_1 && m[0]<d_2){status3=3;}
+              if(m[0]>=d2 && m[0]<d1){status0=3; name_buton0=m[3];}
+              if(m[0]>=d1 && m[0]<d0){status1=3; name_buton1=m[3];}
+              if(m[0]>=d0 && m[0]<d_1){status2=3; name_buton2=m[3];}
+              if(m[0]>=d_1 && m[0]<d_2){status3=3; name_buton3=m[3];}
             }
           }
         }
       }
     }
-   if (name_buton==undefined)name_buton='маршрут';
+   if (name_buton0==undefined)name_buton0='маршрут';
+   if (name_buton1==undefined)name_buton1='маршрут';
+   if (name_buton2==undefined)name_buton2='маршрут';
+   if (name_buton3==undefined)name_buton3='маршрут';
 let bb0 ="<button style = 'width: 100%;' >на ремонт</button>";
 if(now_date>d2)bb0 ="";
 let bb1 ="<button style = 'width: 100%;' >на ремонт</button>";
@@ -5920,10 +5926,10 @@ let bb2 ="<button style = 'width: 100%;' >на ремонт</button>";
 if(now_date>d0)bb2 ="";
 let bb3 ="<button style = 'width: 100%;' >на ремонт</button>";
 if(now_date>d_1)bb3 ="";
-if(status0==3){bb0 ="<button style = 'background: rgb(170, 248, 170);width: 100%;' >"+name_buton+"</button>";}
-if(status1==3){bb1 ="<button style = 'background: rgb(170, 248, 170);width: 100%;' >"+name_buton+"</button>";}
-if(status2==3){bb2 ="<button style = 'background: rgb(170, 248, 170);width: 100%;' >"+name_buton+"</button>";}
-if(status3==3){bb3 ="<button style = 'background: rgb(170, 248, 170);width: 100%;' >"+name_buton+"</button>";}
+if(status0==3){bb0 ="<button style = 'background: rgb(170, 248, 170);width: 100%;' >"+name_buton0+"</button>";}
+if(status1==3){bb1 ="<button style = 'background: rgb(170, 248, 170);width: 100%;' >"+name_buton1+"</button>";}
+if(status2==3){bb2 ="<button style = 'background: rgb(170, 248, 170);width: 100%;' >"+name_buton2+"</button>";}
+if(status3==3){bb3 ="<button style = 'background: rgb(170, 248, 170);width: 100%;' >"+name_buton3+"</button>";}
 if(status0==2){
   bb0 ="<button style = 'background: rgb(247, 161, 161);width: 100%;' >ремонт-зняти</button>";
   if(now_date>d2) bb0 ="<button style = 'background: rgb(247, 161, 161);width: 100%;' >ремонт</button>";
