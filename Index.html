@@ -50,6 +50,8 @@
 
 
 #log { float: left; width: 30%; border: 1px solid #c6c6c6; max-height:30px; overflow-y: auto; margin: 0px 0px 10px 0px;}
+#mars_table{max-height:60vh; overflow-y: auto;}
+#control_table{max-height:60vh; overflow-y: auto;}
 #marshrut { min-width: 100%; border: 1px solid #c6c6c6; margin: 10px 0px 10px 0px;}
 #zvittt{ border: 1px solid #c6c6c6; margin: 10px 0px 10px 0px;}
 #zvitttt{ border: 1px solid #c6c6c6; margin: 10px 0px 10px 0px;}
@@ -581,7 +583,7 @@ button, input, span, select,textarea {margin: 2px 2px 0px 0px;   font-family: "A
             <button id='adresy_add'>зберігти</button> 
         </div>
 
-        <div id="log_help">для створення маршруту ведіть назву міста, імя пасажира,пункт призначення або вкажіть місце на карті лівим кліком,маршрут можна редагувати додаючи чи віднісаючи точки за допомогою + -</div>
+      <div id="log_help">для створення маршруту ведіть назву міста, імя пасажира,пункт призначення або вкажіть місце на карті лівим кліком,маршрут можна редагувати додаючи чи віднісаючи точки за допомогою + -</div>
         <table id="log_marh_tb">
             <tr>
                 <td>0</td>
@@ -594,10 +596,14 @@ button, input, span, select,textarea {margin: 2px 2px 0px 0px;   font-family: "A
                 <td style = "min-width: 15px; cursor: pointer; background:rgb(170, 248, 170);">+</td>
             </tr>
         </table> 
-           <textarea id="marshrut_text"  rows="1" cols="100" placeholder="коментар до маршруту"></textarea>
+        <textarea id="marshrut_text"  rows="1" cols="100" placeholder="коментар до маршруту"></textarea>
       </div>
+        
         <span id="marshrut_d"></span>
-        <table id="log_unit_tb"class='table' style="width: 100%;"></table>
+        <div id="mars_table">
+            <table id="log_unit_tb"class='table'></table>
+        </div>
+        
         <div id='log_cont'>
             <div id="cont_unit_div" style="font-weight: 700; text-align:center">
                 <span id="cont_unit"></span>
@@ -613,7 +619,9 @@ button, input, span, select,textarea {margin: 2px 2px 0px 0px;   font-family: "A
             <input id="log_time_inp" type="date"/>
             для оновлення таблиці натисніть КОНТРОЛЬ МАРШРУТІВ
         </div>
-        <table id="log_control_tb"class='table' style="width: 100%;"></table>
+        <div id="control_table">
+        <table id="log_control_tb"class='table'></table>
+        </div>
      </div>
     <div id="monitoring">
         фільтр техніки(JD,Камаз,SCANIA)
