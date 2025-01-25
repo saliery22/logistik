@@ -5854,7 +5854,7 @@ $("#log_unit_tb").on("click", function (evt){
 if(evt.target.parentNode.cellIndex==5){
   let t=Date.now()+86400000;
   let n=row.cells[0].innerText;
-  let m=row.cells[1].innerText;
+  let m=','+avto[row.rowIndex-1][2]+','+avto[row.rowIndex-1][3];
   let coment = 'маршрут';
   if($('#marshrut_text').val())coment =$('#marshrut_text').val();
   let table=document.getElementById("log_marh_tb").rows[1];
@@ -5862,7 +5862,7 @@ if(evt.target.parentNode.cellIndex==5){
     let text = table.cells[i].children[0].children[0].textContent;
     if (text)  m+='//'+text;
   }
-  m+='//'+row.cells[1].innerText;
+  m+='//'+','+avto[row.rowIndex-1][2]+','+avto[row.rowIndex-1][3];
     write_jurnal(20233,'MR-avto.txt','||'+t+'|'+n+'|'+m+'|'+coment,function () { 
       msg("маршрут додано");
       evt.target.style.background = "rgb(170, 248, 170)";
@@ -5875,7 +5875,7 @@ if(evt.target.parentNode.cellIndex==5){
 if(evt.target.parentNode.cellIndex==3){
   let t=Date.now();
   let n=row.cells[0].innerText;
-  let m=row.cells[1].innerText;
+  let m=','+avto[row.rowIndex-1][2]+','+avto[row.rowIndex-1][3];
   let coment = 'маршрут';
   if($('#marshrut_text').val())coment =$('#marshrut_text').val();
   let table=document.getElementById("log_marh_tb").rows[1];
@@ -5883,7 +5883,7 @@ if(evt.target.parentNode.cellIndex==3){
     let text = table.cells[i].children[0].children[0].textContent;
     if (text)  m+='//'+text;
   }
-  m+='//'+row.cells[1].innerText;
+  m+='//'+','+avto[row.rowIndex-1][2]+','+avto[row.rowIndex-1][3];
     write_jurnal(20233,'MR-avto.txt','||'+t+'|'+n+'|'+m+'|'+coment,function () { 
       msg("маршрут додано");
       evt.target.style.background = "rgb(170, 248, 170)";
