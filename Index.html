@@ -32,6 +32,20 @@
 #logistika { width: 50%-6px; height:80vh; margin-left: 50%; overflow-y: auto; overflow-x: auto;border-left: 2px solid #b1b1b1;padding-left: 4px;}
 #monitoring { width: 35%-6px; height:80vh; margin-left: 65%; overflow-y: scroll; overflow-x: scroll;border-left: 2px solid #b1b1b1;padding-left: 4px;}
 
+.div-icon{
+    font-family: "Arial"; 
+    font-size: 12px;
+  padding: 4px;
+  border: 1px solid #666;
+  border-top-left-radius: 0px;
+  border-top-right-radius: 8px;
+  border-bottom-right-radius: 8px;
+  border-bottom-left-radius: 8px;
+  background:#fff;
+  white-space: nowrap;
+}
+
+
 
 #grafik { width: 100%; border: 1px solid #c6c6c6;}
 #chart1 { width: 100%; height:200px;}
@@ -277,8 +291,7 @@ button, input, span, select,textarea {margin: 2px 2px 0px 0px;   font-family: "A
 </div>
 <div>
     
-    
-    
+
     <button id='men5'style = "min-width: 70px;">Зупинки &#9940</button>
     <button id='fast_obr_poliv'style = "min-width: 70px;">Обробка полів &#128668</button> 
     <button id='men4'style = "min-width: 70px;">Звіти &#128204</button>
@@ -388,10 +401,9 @@ button, input, span, select,textarea {margin: 2px 2px 0px 0px;   font-family: "A
         <option value="z2">вїзд-виїзд-стоянка в геозоні</option>
         <option value="z3">звіт по мотогодинах в геозоні</option>
         <option value="z4">звіт по мотогодинах</option>
-      
+        <option value="z5">перевірка навігації</option>
         <option value="z6">робота по регіонах</option>
         <option value="z7">звіт маршрутів авто</option>
-       
         <option value="z9">звіт по журналу</option>
         <option value="z10">обробка полів</option>
         <option value="z11">зупинки в магазині</option>
@@ -443,7 +455,7 @@ button, input, span, select,textarea {margin: 2px 2px 0px 0px;   font-family: "A
     <div id="zz7" class='zvit'> 
         <div class='textforma'>
         <button id='marsh_bt'>маршрути авто</button>
-        <textarea id='unit_marsh'  rows="2" cols="80">ВМ0229АF,ВМ1280СТ,ВМ1640АТ,ВМ1641ВЕ,ВМ1953ВС,ВМ1988ВС,ВМ2559ВК,ВМ3454ЕЕ,ВМ4110АА,ВМ4466АО,ВМ4524АА,ВМ4632АА,ВМ5203ВВ,ВМ5326ВМ,ВМ5607Е,ВМ5629Е,ВМ5645Е,ВМ5647Е,ВМ5887E,ВМ7393ВВ,ВМ7912Е,ВМ7913Е,ВМ7914,ВМ7915Е,ВМ7916Е,ВМ7921Е,ВМ7922Е,ВМ7925Е,ВМ8607Е,ВМ8610ЕН,ВМ8684ЕН,ВМ8692ЕН,ВМ8693ЕН,ВМ9595А,ВМ9708ВЕ,ВМ9987С</textarea>
+        <textarea id='unit_marsh'  rows="2" cols="80"></textarea>
         </div>
     </div> 
     <div id="zz8" class='zvit'> 
@@ -570,8 +582,6 @@ button, input, span, select,textarea {margin: 2px 2px 0px 0px;   font-family: "A
             <br>
             впевнившись у правильних координатах та радіусі зони вкажіть імя зони і натисніть ЗБЕРІГТИ
             <br>
-            для відображення нових зон на мапі оновіть сторінку
-            <br>
             <br>
             <br>
             <input id='adresy_coord' type='text' placeholder='натисніть на мапу' value=""> координати
@@ -583,7 +593,7 @@ button, input, span, select,textarea {margin: 2px 2px 0px 0px;   font-family: "A
             <button id='adresy_add'>зберігти</button> 
         </div>
 
-      <div id="log_help">для створення маршруту ведіть назву міста, імя пасажира,пункт призначення або вкажіть місце на карті лівим кліком,маршрут можна редагувати додаючи чи віднісаючи точки за допомогою + -</div>
+        <div id="log_help">для створення маршруту ведіть назву міста, імя пасажира,пункт призначення або вкажіть місце на карті лівим кліком,маршрут можна редагувати додаючи чи віднісаючи точки за допомогою + -</div>
         <table id="log_marh_tb">
             <tr>
                 <td>0</td>
@@ -669,7 +679,7 @@ button, input, span, select,textarea {margin: 2px 2px 0px 0px;   font-family: "A
 
 
 <div id="log"></div>
-для плавного перемішення програвача використовуйте клавіші "A" "D"____________________техпідтримка_____0668196439 Пальгуй Сергій
+для плавного перемішення програвача використовуйте клавіші "A" "D"
 <!-- <button id='v21'>Диски</button> 
 <button id='v22'>Культиватори</button> 
 <button id='v23'>Боронування</button>
@@ -691,5 +701,3 @@ button, input, span, select,textarea {margin: 2px 2px 0px 0px;   font-family: "A
 
 </body>
 </html>
-
-
