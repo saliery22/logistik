@@ -811,11 +811,11 @@ basemaps.OSM.addTo(map);
      //   if (code) { msg(wialon.core.Errors.getErrorText(code)); return; } // exit if error code
      //   if (data) {let adr =data[0].split(', '); console.log(adr); console.log(adr[adr.length-1].replace(/[0-9]| km from |\.|\s/g, '')); }});
 
-       //wialon.util.Gis.searchByString('Глухів',0,1, function(code, data) {
+      // wialon.util.Gis.searchByString('Київ Чернігівська обл. Сумська обл.',0,1, function(code, data) {
        // if (code) { msg(wialon.core.Errors.getErrorText(code)); return; } // exit if error code
-       // if (data) { console.log(data[0]);
-       //   if (data[0]){map.setView([data[0].items[0].y, data[0].items[0].x], 13); }
-       // }});
+       // if (data) { console.log(data);
+          //if (data[0]){map.setView([data[0].items[0].y, data[0].items[0].x], 13); }
+        //}});
 
 
 if (!$('#marrr').is(':hidden')) {
@@ -4231,6 +4231,7 @@ async function marshrut_avto(){
     let start=0;
     let end=0;
     let html="";
+    let kkk=0;
     
     let adres='';
     let adres0='';
@@ -4242,6 +4243,7 @@ async function marshrut_avto(){
       end="";
       html="";
       adres0='';
+      kkk=0;
      let nametr = Global_DATA[i][0][1];
      let id = Global_DATA[i][0][0];
      let str =$('#unit_marsh').val().split(',');
@@ -4283,41 +4285,59 @@ async function marshrut_avto(){
         if(stoyanka>sttime){ 
             let y = parseFloat(Global_DATA[i][ii][0].split(',')[0]);
             let x = parseFloat(Global_DATA[i][ii][0].split(',')[1]);
+            adres='невідомо';
             for (let j = 0; j<stor.length; j++){
               if(wialon.util.Geometry.getDistance(y,x,stor[j][0],stor[j][1])<stor[j][2]){
                 adres=stor[j][3];
-                if(adres0!=adres){
+                if (adres0 != adres || adres=='невідомо') {
+                  kkk++;
+                  let mar = L.marker([y,x], {icon: L.divIcon({ className: 'div-icon',iconSize: "auto", html: "<center style = 'background:rgb(170, 248, 170);'>"+kkk+": "+adres+"</center>" }),draggable: true,opacity:0.9,zIndexOffset:1000}).addTo(map);
+                  zup_mark_data.push(mar);
                   html+="<span style = 'background:rgb(170, 248, 170);'> "+adres+"</span> -";
-                  adres0=adres;
+                  adres0 =adres;
                 }
+                adres0 =adres;
                 break;
               }
               if(j ==stor.length-1){
-                for (let jj = 0; jj<temp_stor.length; jj++){
-                  if(wialon.util.Geometry.getDistance(y,x,temp_stor[jj][0],temp_stor[jj][1])<temp_stor[jj][2]){
-                    adres=temp_stor[jj][3];
-                    if(adres0!=adres){
-                      html+=" "+adres+" -";
-                      adres0=adres;
-                    }
-                    break;
-                  }
-                  if(jj ==temp_stor.length-1){
-                    adres='НЕВІДОМО';
-                    wialon.util.Gis.getLocations([{lat: y, lon: x}], function(code, data) {
-                      if (code) { msg(wialon.core.Errors.getErrorText(code));adres='НЕВІДОМО'; return; } // exit if error code
-                      if (data) {let adr =data[0].split(', '); adres =adr[adr.length-1].replace(/[0-9]| km from |\.|\s/g, '');}});
-                    await sleep(500); 
-                    if(adres0!=adres){
-                      html+=" "+adres+" -";
-                      adres0=adres;
-                    }
-                    temp_stor.push([y, x,600,adres]);
-                    //L.marker([y,x]).addTo(map);
-                  }
-                }     
+                $.get('https://nominatim.openstreetmap.org/reverse?format=jsonv2&accept-language=UA&lat='+y+'&lon='+x+'', function(data){
+                  let type='невідомо';
+                   if (data.category =="shop")type="магазин"
+                   if (data.type =="hospital")type="лікарня"
+                   if (data.type =="pharmacy")type="аптека"
+                   if (data.type =="car_wash")type="автомийка"
+                   if (data.type =="kindergarten")type="садок"
+                   if (data.type =="supermarket")type="супермаркет"
+                   if (data.type =="parking")type="парковка"
+                   if (data.type =="hotel")type="готель"
+                   if (data.type =="fitness_centre")type="спортзал"
+                   if (data.type =="dentist")type="дантист"
+                   if (data.type =="university")type="університет"
+                   if (data.type =="unclassified")type="невідомо"
+                   if (data.type =="residential")type="жила зона"
+                   if (data.type =="apartments")type="жила зона"
+                   if (data.type =="primary")type="дорога"
+                   if (data.type =="secondary")type="дорога"
+                   if (data.type =="trunk")type="дорога"
+                   if (data.type =="post_office")type="пошта"
+        
+                   adres=type;
+                   if (adres0 != adres || adres=='невідомо') {
+                    kkk++;
+                    let mar = L.marker([y,x], {icon: L.divIcon({ className: 'div-icon',iconSize: "auto", html: '<center>'+kkk+': '+type+' - '+data.name+'</center>' }),draggable: true,opacity:0.9,zIndexOffset:1000}).addTo(map);
+                     zup_mark_data.push(mar);
+                   }
+                   adres0 =adres;
+                  });
+         
+                await sleep(1500); 
+                html+=" "+adres+" -";
+
               }
             }
+             
+              
+      
           }else{
             if(ii<31)continue;
             if(ii>Global_DATA[i].length-11)continue;
@@ -4373,41 +4393,64 @@ async function marshrut_avto(){
               //L.polyline([[y0, x0],[y1, x1]], {color: '#55ff33'}).addTo(map);
               //L.polyline([[y1, x1],[y2, x2]], {color: '#55ff33'}).addTo(map);
               
-              for (let j = 0; j<stor.length; j++){
-                if(wialon.util.Geometry.getDistance(y1,x1,stor[j][0],stor[j][1])<stor[j][2]){
-                  adres=stor[j][3];
-                  if(adres0!=adres){
-                    html+="<span style = 'background:rgb(170, 248, 170);'> "+adres+"</span> -";
-                    adres0=adres;
-                  }
-                  break;
+            
+
+              adres='невідомо';
+            for (let j = 0; j<stor.length; j++){
+              if(wialon.util.Geometry.getDistance(y1,x1,stor[j][0],stor[j][1])<stor[j][2]){
+                adres=stor[j][3];
+                if (adres0 != adres || adres=='невідомо') {
+                  kkk++;
+                  let mar = L.marker([y1,x1], {icon: L.divIcon({ className: 'div-icon',iconSize: "auto", html: "<center style = 'background:rgb(170, 248, 170);'>"+kkk+": "+adres+"</center>" }),draggable: true,opacity:0.9,zIndexOffset:1000}).addTo(map);
+                  zup_mark_data.push(mar);
+                  html+="<span style = 'background:rgb(170, 248, 170);'> "+adres+"</span> -";
+                  adres0 =adres;
                 }
-                if(j ==stor.length-1){
-                  for (let jj = 0; jj<temp_stor.length; jj++){
-                    if(wialon.util.Geometry.getDistance(y1,x1,temp_stor[jj][0],temp_stor[jj][1])<temp_stor[jj][2]){
-                      adres=temp_stor[jj][3];
-                      if(adres0!=adres){
-                        html+=" "+adres+" -";
-                        adres0=adres;
-                      }
-                      break;
-                    }
-                    if(jj ==temp_stor.length-1){
-                      adres='НЕВІДОМО';
-                      wialon.util.Gis.getLocations([{lat: y1, lon: x1}], function(code, data) {
-                        if (code) { msg(wialon.core.Errors.getErrorText(code));adres='НЕВІДОМО'; return; } // exit if error code
-                        if (data) {let adr =data[0].split(', '); adres =adr[adr.length-1].replace(/[0-9]| km from |\.|\s/g, '');}});
-                      await sleep(500); 
-                      if(adres0!=adres){
-                        html+=" "+adres+" -";
-                        adres0=adres;
-                      }
-                      temp_stor.push([y1, x1,600,adres]);
-                      //L.marker([y1,x1]).addTo(map);
-                    }
-                  }     
-                }
+                adres0 =adres;
+                break;
               }
+              if(j ==stor.length-1){
+                $.get('https://nominatim.openstreetmap.org/reverse?format=jsonv2&accept-language=UA&lat='+y1+'&lon='+x1+'', function(data){
+                  let type='невідомо';
+                   if (data.category =="shop")type="магазин"
+                   if (data.type =="hospital")type="лікарня"
+                   if (data.type =="pharmacy")type="аптека"
+                   if (data.type =="car_wash")type="автомийка"
+                   if (data.type =="kindergarten")type="садок"
+                   if (data.type =="supermarket")type="супермаркет"
+                   if (data.type =="parking")type="парковка"
+                   if (data.type =="hotel")type="готель"
+                   if (data.type =="fitness_centre")type="спортзал"
+                   if (data.type =="dentist")type="дантист"
+                   if (data.type =="university")type="університет"
+                   if (data.type =="unclassified")type="невідомо"
+                   if (data.type =="residential")type="жила зона"
+                   if (data.type =="apartments")type="жила зона"
+                   if (data.type =="primary")type="дорога"
+                   if (data.type =="secondary")type="дорога"
+                   if (data.type =="trunk")type="дорога"
+                   if (data.type =="post_office")type="пошта"
+        
+
+                   adres=type;
+                   if (adres0 != adres || adres=='невідомо') {
+                    kkk++;
+                    let mar = L.marker([y1,x1], {icon: L.divIcon({ className: 'div-icon',iconSize: "auto", html: '<center>'+kkk+': '+type+' - '+data.name+'</center>' }),draggable: true,opacity:0.9,zIndexOffset:1000}).addTo(map);
+                     zup_mark_data.push(mar);
+                   }
+                   adres0 =adres;
+                  });
+         
+                await sleep(1500); 
+                html+=" "+adres+" -";
+
+              }
+            }
+               
+              
+                      
+               
+            
             }
           }
           stoyanka=0;
@@ -4418,41 +4461,67 @@ async function marshrut_avto(){
         if(stoyanka>sttime){ 
           let y = parseFloat(Global_DATA[i][ii][0].split(',')[0]);
           let x = parseFloat(Global_DATA[i][ii][0].split(',')[1]);
-          for (let j = 0; j<stor.length; j++){
-            if(wialon.util.Geometry.getDistance(y,x,stor[j][0],stor[j][1])<stor[j][2]){
-              adres=stor[j][3];
-              if(adres0!=adres){
-                html+="<span style = 'background:rgb(170, 248, 170);'> "+adres+"</span> -";
-                adres0=adres;
+
+
+
+
+ 
+          adres='невідомо';
+            for (let j = 0; j<stor.length; j++){
+              if(wialon.util.Geometry.getDistance(y,x,stor[j][0],stor[j][1])<stor[j][2]){
+                adres=stor[j][3];
+                if (adres0 != adres || adres=='невідомо') {
+                  kkk++;
+                  let mar = L.marker([y,x], {icon: L.divIcon({ className: 'div-icon',iconSize: "auto", html: "<center style = 'background:rgb(170, 248, 170);'>"+kkk+": "+adres+"</center>" }),draggable: true,opacity:0.9,zIndexOffset:1000}).addTo(map);
+                  zup_mark_data.push(mar);
+                  html+="<span style = 'background:rgb(170, 248, 170);'> "+adres+"</span> -";
+                  adres0 =adres;
+                }
+                adres0 =adres;
+                break;
               }
-              break;
+              if(j ==stor.length-1){
+                $.get('https://nominatim.openstreetmap.org/reverse?format=jsonv2&accept-language=UA&lat='+y+'&lon='+x+'', function(data){
+                  let type='невідомо';
+                   if (data.category =="shop")type="магазин"
+                   if (data.type =="hospital")type="лікарня"
+                   if (data.type =="pharmacy")type="аптека"
+                   if (data.type =="car_wash")type="автомийка"
+                   if (data.type =="kindergarten")type="садок"
+                   if (data.type =="supermarket")type="супермаркет"
+                   if (data.type =="parking")type="парковка"
+                   if (data.type =="hotel")type="готель"
+                   if (data.type =="fitness_centre")type="спортзал"
+                   if (data.type =="dentist")type="дантист"
+                   if (data.type =="university")type="університет"
+                   if (data.type =="unclassified")type="невідомо"
+                   if (data.type =="residential")type="жила зона"
+                   if (data.type =="apartments")type="жила зона"
+                   if (data.type =="primary")type="дорога"
+                   if (data.type =="secondary")type="дорога"
+                   if (data.type =="trunk")type="дорога"
+                   if (data.type =="post_office")type="пошта"
+        
+
+                   adres=type;
+                   if (adres0 != adres || adres=='невідомо') {
+                    kkk++;
+                    let mar = L.marker([y,x], {icon: L.divIcon({ className: 'div-icon',iconSize: "auto", html: '<center>'+kkk+': '+type+' - '+data.name+'</center>' }),draggable: true,opacity:0.9,zIndexOffset:1000}).addTo(map);
+                     zup_mark_data.push(mar);
+                   }
+                   adres0 =adres;
+                  });
+         
+                await sleep(1500); 
+                html+=" "+adres+" -";
+
+              }
             }
-            if(j ==stor.length-1){
-              for (let jj = 0; jj<temp_stor.length; jj++){
-                if(wialon.util.Geometry.getDistance(y,x,temp_stor[jj][0],temp_stor[jj][1])<temp_stor[jj][2]){
-                  adres=temp_stor[jj][3];
-                  if(adres0!=adres){
-                    html+=" "+adres+" -";
-                    adres0=adres;
-                  }
-                  break;
-                }
-                if(jj ==temp_stor.length-1){
-                  adres='НЕВІДОМО';
-                  wialon.util.Gis.getLocations([{lat: y, lon: x}], function(code, data) {
-                    if (code) { msg(wialon.core.Errors.getErrorText(code));adres='НЕВІДОМО'; return; } // exit if error code
-                    if (data) {let adr =data[0].split(', '); adres =adr[adr.length-1].replace(/[0-9]| km from |\.|\s/g, '');}});
-                  await sleep(500); 
-                  if(adres0!=adres){
-                    html+=" "+adres+" -";
-                    adres0=adres;
-                  }
-                  temp_stor.push([y, x,600,adres]);
-                  //L.marker([y,x]).addTo(map);
-                }
-              }     
-            }
-          }
+             
+             
+                  
+            
+         
         }
 
        }
