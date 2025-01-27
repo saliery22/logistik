@@ -394,6 +394,11 @@ if (Date.parse($('#fromtime1').val())/1000 > unit.getPosition().t){rest_units.pu
   
 $(".livesearch").chosen({search_contains : true});
  $('#lis0').on('change', function(evt, params) {
+
+if ($("#grupi_avto").val()=="v000") {
+  chuse(0,"v000");
+}
+
    onUnitSelected();
   });
 
@@ -2335,6 +2340,14 @@ mm = markerByUnit[idd];
         }
         }
 
+        if (vibor=='v000'){
+          if(nmm.indexOf( $("#lis0 option:selected").text())>=0){
+           mm.setOpacity(1);
+           mm.setZIndexOffset(1000);
+           filtr=true; 
+           filtr_data.push(idd);
+          }
+          }
 
       if(rux==1){mm.setOpacity(0);} 
       
