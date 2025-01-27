@@ -1,4 +1,5 @@
 
+
 // global variables
 var map, marker,unitslist = [],allunits = [],rest_units = [],marshruts = [],zup = [], unitMarkers = [], markerByUnit = {},tile_layer, layers = {},marshrutMarkers = [],unitsID = {},Vibranaya_zona;
 var areUnitsLoaded = false;
@@ -158,6 +159,7 @@ let geozones = [];
 let geozonesgrup = [];
 let IDzonacord=[];
 let lgeozoneee;
+let activ_zone=0;
 let marshrut_leyer_0;
 function initUIData() {
   var session = wialon.core.Session.getInstance();
@@ -301,15 +303,40 @@ function initUIData() {
 
       load_jurnal(20233,'zony.txt',function (data) { 
         let log_zone=[];
-        for(let i = 1; i<data.length; i++){
+        let log_zone_del=[];
+        dataLoop: for(let i = data.length-1; i>0; i--){
           let m=data[i].split('|');
           let y = parseFloat(m[0].split(',')[0]);
           let x = parseFloat(m[0].split(',')[1]);
           let r = parseFloat(m[1]);
-          let poly = L.circle([y,x], {stroke: false, fillColor: '#0000FF', fillOpacity: 0.2,radius: r}).bindTooltip(""+m[2]+"",{permanent: true, opacity:0.7, direction: 'top'});
-          log_zone.push(poly);
-          stor.push([y,x,r,m[2]]);
-          adresa.push(m[2]);
+          let s =m[3];
+          if (m[3]=='false') {
+            log_zone_del.push(m[0]+''+m[1]);
+          }else{
+            for(let ii = 0; ii<log_zone_del.length; ii++){
+              if (log_zone_del[ii]==m[0]+''+m[1]){continue dataLoop;}
+            }
+
+              let poly = L.circle([y,x], {stroke: false, fillColor: '#0000FF', fillOpacity: 0.2,radius: r}).bindTooltip(""+m[2]+"",{permanent: true, opacity:0.7, direction: 'top'});
+              poly.on('click', function(e) {
+                $('#adresy_name').val(e.target._tooltip._content);
+                $('#adresy_coord').val(e.target._latlng.lat+','+e.target._latlng.lng);
+                $('#adresy_radius').val(e.target.options.radius);
+                activ_zone=e.target;
+                clearGEO();
+                let y = parseFloat(e.target._latlng.lat);
+                let x = parseFloat(e.target._latlng.lng);
+                let rr = parseFloat(e.target.options.radius);
+                let cr = L.circle([y,x], {stroke: true,radius: rr, color: 'blue'}).addTo(map);
+                   geo_layer.push(cr);
+            
+                });
+              log_zone.push(poly);
+              stor.push([y,x,r,m[2]]);
+              adresa.push(m[2]);
+           
+          }
+          
           }
           lgeozoneee = L.layerGroup(log_zone);
           layerControl.addOverlay(lgeozoneee, "Логістика");
@@ -851,7 +878,14 @@ if (!$('#marrr').is(':hidden')) {
     } 
     
     
- 
+    if($('#adresy').is(':visible') ) { 
+      let y = e.latlng.lat.toFixed(4);
+      let x = e.latlng.lng.toFixed(4);
+      $('#adresy_coord').val(y+','+x);
+      let r =$('#adresy_radius').val();
+       let l = L.circle([y,x], { stroke: true, fillColor: '#f03', fillOpacity: 0.2,radius: r}).addTo(map);
+       zup_mark_data.push(l);
+      }
   });
   
 
@@ -859,18 +893,10 @@ if (!$('#marrr').is(':hidden')) {
  map.on('click', function(e) { 
  if($('#zz1').is(':visible') || $('#zz2').is(':visible') || $('#zz3').is(':visible')) { RemainsFuel(e); }
  if($('#log_marh_tb').is(':visible') ) { add_point(e); }
- if($('#adresy').is(':visible') ) { 
-  let y = e.latlng.lat.toFixed(4);
-  let x = e.latlng.lng.toFixed(4);
-  $('#adresy_coord').val(y+','+x);
-  let r =$('#adresy_radius').val();
-   let l = L.circle([y,x], { stroke: true, fillColor: '#f03', fillOpacity: 0.2,radius: r}).addTo(map);
-   zup_mark_data.push(l);
-  }
+
  });
 
 }
-
 
 //let ps = prompt('');
 //if(ps==55555){
@@ -5271,27 +5297,58 @@ $("#log_b3").on("click", function (){
   $('#log_help').hide();
   $('#adresy').show();
   $('#marshrut_text').hide();
-
+  clearGEO();
+  activ_zone==0;
 
 });
 $("#adresy_add").on("click", function (){
   let n=$('#adresy_name').val();
   let c =$('#adresy_coord').val();
   let r =$('#adresy_radius').val();
-  if(n && c && r){
-  write_jurnal(20233,'zony.txt','||'+c+'|'+r+'|'+n,function () { 
+  let s ='true';
+  if(n && c && r && s){
+  write_jurnal(20233,'zony.txt','||'+c+'|'+r+'|'+n+'|'+s,function () { 
     audio.play();
 
     let y = parseFloat(c.split(',')[0]);
     let x = parseFloat(c.split(',')[1]);
     let rr = parseFloat(r);
     let poly = L.circle([y,x], {stroke: false, fillColor: '#0000FF', fillOpacity: 0.2,radius: rr}).bindTooltip(""+n+"",{permanent: true, opacity:0.7, direction: 'top'});
+    poly.on('click', function(e) {
+      $('#adresy_name').val(e.target._tooltip._content);
+      $('#adresy_coord').val(e.target._latlng.lat+','+e.target._latlng.lng);
+      $('#adresy_radius').val(e.target.options.radius);
 
+      clearGEO();
+      let y = parseFloat(e.target._latlng.lat);
+      let x = parseFloat(e.target._latlng.lng);
+      let rr = parseFloat(e.target.options.radius);
+      let cr = L.circle([y,x], {stroke: true,radius: rr, color: 'blue'}).addTo(map);
+         geo_layer.push(cr);
+  
+      });
 
 
     lgeozoneee.addLayer(poly);
   });
 }
+});
+$("#adresy_remove").on("click", function (){
+  let n=$('#adresy_name').val();
+  let c =$('#adresy_coord').val();
+  let r =$('#adresy_radius').val();
+  let s ='false';
+ 
+  if(n && c && r && s && activ_zone!=0){
+    write_jurnal(20233,'zony.txt','||'+c+'|'+r+'|'+n+'|'+s,function () { 
+      audio.play();
+      lgeozoneee.removeLayer(activ_zone);
+      activ_zone=0;
+      clearGEO();
+    });
+  }
+ 
+ 
 });
 
 
