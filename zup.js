@@ -1,5 +1,6 @@
 
 
+
 // global variables
 var map, marker,unitslist = [],allunits = [],rest_units = [],marshruts = [],zup = [], unitMarkers = [], markerByUnit = {},tile_layer, layers = {},marshrutMarkers = [],unitsID = {},Vibranaya_zona;
 var areUnitsLoaded = false;
@@ -891,13 +892,14 @@ if (!$('#marrr').is(':hidden')) {
        let l = L.circle([y,x], { stroke: true, fillColor: '#f03', fillOpacity: 0.2,radius: r}).addTo(map);
        zup_mark_data.push(l);
       }
+      if($('#log_marh_tb').is(':visible') ) { add_point(e); }
   });
   
 
 
  map.on('click', function(e) { 
  if($('#zz1').is(':visible') || $('#zz2').is(':visible') || $('#zz3').is(':visible')) { RemainsFuel(e); }
- if($('#log_marh_tb').is(':visible') ) { add_point(e); }
+ 
 
  });
 
@@ -3620,7 +3622,7 @@ function RemainsFuel(e){
 function clearGarbage(garbage){
   for(var i=0; i < garbage.length; i++){
     map.removeLayer(garbage[i]);
-     if(i == garbage.length-1){garbage.length=0;}
+     if(i == garbage.length-1){garbage=[];}
     }
 }
 
@@ -5406,7 +5408,7 @@ function marshrut(){
   marshrut_probeg=0;
   marshrut_vremya=0;
   clearGarbage(marshrut_garbage);
-  update_rout(0,0,0);
+  update_rout();
 }
 
 
@@ -5439,8 +5441,14 @@ if(evt.target.innerText=='+'){
           document.getElementById("log_marh_tb").rows[0].insertCell(ind+1);
         document.getElementById("log_marh_tb").rows[0].insertCell(ind+2);
         document.getElementById("log_marh_tb").rows[0].insertCell(ind+3);
+        document.getElementById("log_marh_tb").rows[2].insertCell(ind+1);
+        document.getElementById("log_marh_tb").rows[2].insertCell(ind+2);
+        document.getElementById("log_marh_tb").rows[2].insertCell(ind+3);
+        document.getElementById("log_marh_tb").rows[3].insertCell(ind+1);
+        document.getElementById("log_marh_tb").rows[3].insertCell(ind+2);
+        document.getElementById("log_marh_tb").rows[3].insertCell(ind+3);
 
-  
+        marshrut();
 }
 if(evt.target.innerText=='-'){
   if (row.cells.length>3) {
@@ -5450,13 +5458,22 @@ if(evt.target.innerText=='-'){
     document.getElementById("log_marh_tb").rows[0].deleteCell(ind-1);
     document.getElementById("log_marh_tb").rows[0].deleteCell(ind-1);
     document.getElementById("log_marh_tb").rows[0].deleteCell(ind-1);
-    document.getElementById("log_marh_tb").rows[0].cells[0].innerText=0;
+    document.getElementById("log_marh_tb").rows[2].deleteCell(ind-1);
+    document.getElementById("log_marh_tb").rows[2].deleteCell(ind-1);
+    document.getElementById("log_marh_tb").rows[2].deleteCell(ind-1);
+    document.getElementById("log_marh_tb").rows[3].deleteCell(ind-1);
+    document.getElementById("log_marh_tb").rows[3].deleteCell(ind-1);
+    document.getElementById("log_marh_tb").rows[3].deleteCell(ind-1);
+    
    
-    marshrut();
+    
   }else{
     row.cells[ind-1].children[0].children[0].textContent="";
+    document.getElementById("log_marh_tb").rows[0].cells[0].textContent="1";
+    document.getElementById("log_marh_tb").rows[2].cells[0].textContent="";
+    document.getElementById("log_marh_tb").rows[3].cells[0].textContent="";
   }
-
+  marshrut();
 }
 
     //row.style.backgroundColor = 'transparent';
@@ -5505,6 +5522,7 @@ function autocomplete(inp, arr) {
               if(document.getElementById("myInput"+id+"")){
               document.getElementById("myInput"+id+"").focus();
               }else{
+                
                 let row = document.getElementById("log_marh_tb").rows[1];
                 let ind = row.cells.length-1;
                 var td = row.insertCell(ind+1);
@@ -5529,7 +5547,18 @@ function autocomplete(inp, arr) {
         document.getElementById("log_marh_tb").rows[0].insertCell(ind+1);
         document.getElementById("log_marh_tb").rows[0].insertCell(ind+2);
         document.getElementById("log_marh_tb").rows[0].insertCell(ind+3);
+        document.getElementById("log_marh_tb").rows[2].insertCell(ind+1);
+        document.getElementById("log_marh_tb").rows[2].insertCell(ind+2);
+        document.getElementById("log_marh_tb").rows[2].insertCell(ind+3);
+        document.getElementById("log_marh_tb").rows[3].insertCell(ind+1);
+        document.getElementById("log_marh_tb").rows[3].insertCell(ind+2);
+        document.getElementById("log_marh_tb").rows[3].insertCell(ind+3);
+       
+       
               }
+              document.getElementById("log_marh_tb").rows[0].cells[id-2].textContent ='';
+              document.getElementById("log_marh_tb").rows[2].cells[id-2].textContent ='';
+              document.getElementById("log_marh_tb").rows[3].cells[id-2].textContent ='';
               marshrut();
           });
           a.appendChild(b);
@@ -5588,9 +5617,18 @@ function autocomplete(inp, arr) {
     document.getElementById("log_marh_tb").rows[0].insertCell(ind+1);
     document.getElementById("log_marh_tb").rows[0].insertCell(ind+2);
     document.getElementById("log_marh_tb").rows[0].insertCell(ind+3);
+    document.getElementById("log_marh_tb").rows[2].insertCell(ind+1);
+    document.getElementById("log_marh_tb").rows[2].insertCell(ind+2);
+    document.getElementById("log_marh_tb").rows[2].insertCell(ind+3);
+    document.getElementById("log_marh_tb").rows[3].insertCell(ind+1);
+    document.getElementById("log_marh_tb").rows[3].insertCell(ind+2);
+    document.getElementById("log_marh_tb").rows[3].insertCell(ind+3);
+
           }
-          marshrut();}
-       
+          marshrut();
+          closeAllLists(e.target);
+        }
+          
               
       }
   });
@@ -5635,12 +5673,20 @@ autocomplete(document.getElementById("myInput-1"), adresa);
 //=============Dodavannya tocok karat====================================================
 function add_point(e){
 let table=document.getElementById("log_marh_tb");
+let row2= table.rows[2];
+let row3= table.rows[3];
 let roww = table.rows[1];
 let y=(e.latlng.lat).toFixed(3);
 let x=(e.latlng.lng).toFixed(3);
 for (var i = 0; i < roww.cells.length; i+=3) {
   if (roww.cells[i].children[0].children[0].textContent) continue;
-  roww.cells[i].children[0].children[0].textContent=','+y+','+x;
+  roww.cells[i].children[0].children[0].textContent='нова точка';
+  
+  row3.cells[i].textContent=400;
+  row3.cells[i].setAttribute('contenteditable', 'true');
+
+  row2.cells[i].textContent=y+','+x;
+  row2.cells[i].style = ' display: none; overflow: hidden;';
   marshrut();
   return;
 }
@@ -5655,7 +5701,7 @@ var el2 = document.createElement('div');
     el2.setAttribute('id', 'myInput'+ind+'');
     el2.setAttribute('type', 'text');
     el2.setAttribute('contenteditable', 'true');
-    el2.textContent = ','+y+','+x;
+    el2.textContent = 'нова точка';
     autocomplete(el2, adresa);
     el.appendChild(el2);
     td.appendChild(el);
@@ -5669,84 +5715,267 @@ var el2 = document.createElement('div');
         document.getElementById("log_marh_tb").rows[0].insertCell(ind+1);
         document.getElementById("log_marh_tb").rows[0].insertCell(ind+2);
         document.getElementById("log_marh_tb").rows[0].insertCell(ind+3);
+        document.getElementById("log_marh_tb").rows[2].insertCell(ind+1);
+        document.getElementById("log_marh_tb").rows[2].insertCell(ind+2);
+        document.getElementById("log_marh_tb").rows[2].insertCell(ind+3);
+        document.getElementById("log_marh_tb").rows[3].insertCell(ind+1);
+        document.getElementById("log_marh_tb").rows[3].insertCell(ind+2);
+        document.getElementById("log_marh_tb").rows[3].insertCell(ind+3);
+        
+        row3.cells[ind+1].textContent=400;
+        row3.cells[ind+1].setAttribute('contenteditable', 'true');
+        row2.cells[ind+1].textContent=y+','+x;
+        row2.cells[ind+1].style = ' display: none; overflow: hidden;';
         marshrut();
 
 }
 //=============Rozrahunok marshrutu====================================================
-let frrr=0;
-function update_rout(i,y,x){
+
+
+async function update_rout(){
+  clearGarbage(marshrut_garbage);
   let table=document.getElementById("log_marh_tb");
   let row = table.rows[1];
-  if(i>row.cells.length-1 && marshrut_point.length>1){
-    if($('#log_unit_tb').is(':hidden')==false)  vibir_avto();
-    return;
-  }      
-  let ay=y;
-  let ax=x;
-  let by=0;
-  let bx=0;
-  for(let ii=i;ii<row.cells.length;ii+=3){
-    let text = row.cells[ii].children[0].children[0].textContent;
-    if(text){
-      if(text[0]==','){
-       if(ay==0){
-        ay=parseFloat(text.split(',')[1]);
-        ax=parseFloat(text.split(',')[2]);
-        frrr=600;
-      }else{
-        by=parseFloat(text.split(',')[1]);
-        bx=parseFloat(text.split(',')[2]);
-        routing (ay,ax,by,bx,600,ii+3,update_rout);
-        return;
+  let row0 = table.rows[0];
+  let row2 = table.rows[2];
+  let row3 = table.rows[3];
+  let kkkk=0;
+ // if(i>row.cells.length-1 && marshrut_point.length>1){
+//    if($('#log_unit_tb').is(':hidden')==false)  vibir_avto();
+ //   return;
+ // }      
+
+  for(let ii=0;ii<row.cells.length;ii+=3){
+      let text = row.cells[ii].children[0].children[0].textContent;
+      if (row3.cells[ii].textContent=='----'){
+        for (let j = 0; j<stor.length; j++){
+          if(stor[j][3].indexOf(text)>=0){
+            let name = stor[j][3];
+          row0.cells[ii].textContent=kkkk;
+          let y = parseFloat(stor[j][0]);
+          let x = parseFloat(stor[j][1]);
+          let r = parseInt(stor[j][2]);
+          row3.cells[ii].textContent='----';
+          let mar = L.circle([y,x], { stroke: false, fillColor: 'red', fillOpacity: 0.3,  radius: r}).bindTooltip(""+kkkk+"",{permanent: true, opacity:0.7, direction: 'top'}).bindPopup("<center><br>"+name +"<br><button  class='point_delet_buton' id='kkkk"+kkkk+" '>видалити</button></center>").addTo(map);
+          marshrut_garbage.push(mar);
+     
+
+        }
       }
-      }else{
+
+      continue;
+      }
+      if(text){
+        if(row2.cells[ii].textContent !=""){
+          kkkk++;
+          row0.cells[ii].textContent=kkkk;
+          let y = parseFloat(row2.cells[ii].textContent.split(',')[0]);
+          let x = parseFloat(row2.cells[ii].textContent.split(',')[1]);
+          let r = parseInt(row3.cells[ii].textContent);  
+
+          let mar = L.circle([y,x], { stroke: false, fillColor: 'red', fillOpacity: 0.3, radius: r}).bindTooltip(""+kkkk+"",{permanent: true, opacity:0.7, direction: 'top'}).bindPopup("<center><br>"+text +"<br><button  class='point_delet_buton' id='kkkk"+kkkk+"'>видалити</button></center>").addTo(map);
+          marshrut_garbage.push(mar);
+      
+
+          mar.on('mousedown', (e) => {
+            let y = parseFloat(mar._latlng.lat)-parseFloat(e.latlng.lat);
+            let x = parseFloat(mar._latlng.lng)-parseFloat(e.latlng.lng);
+              map.dragging.disable()
+              map.on('mousemove',  function (e) { 
+                let yy = y+parseFloat(e.latlng.lat);
+                let xx = x+parseFloat(e.latlng.lng);
+                mar.setLatLng([yy,xx]);
+              })
+            
+          })
+          mar.on('mouseup', () => {
+            let y = parseFloat(mar._latlng.lat);
+            let x = parseFloat(mar._latlng.lng);
+            let id = parseInt(mar._tooltip._content);
+            document.getElementById("log_marh_tb").rows[2].cells[(id-1)*3].textContent=y+','+x;
+              map.dragging.enable();
+              map.removeEventListener('mousemove');
+             
+          })
+        continue;
+        }
         for (let j = 0; j<stor.length; j++){
           if(text==stor[j][3]){
-            if(ay==0){
-              ay=stor[j][0];
-              ax=stor[j][1];
-              frrr= stor[j][2];
-              update_rout(ii+3,ay,ax);
-              return;
-            }else{
-              by=stor[j][0];
-              bx=stor[j][1];
-              routing (ay,ax,by,bx,stor[j][2],ii+3,update_rout);
-              return;
-            }
+            kkkk++;
+            row0.cells[ii].textContent=kkkk;
+            let y = parseFloat(stor[j][0]);
+            let x = parseFloat(stor[j][1]);
+            let r = parseInt(stor[j][2]);
+            if(row3.cells[ii].textContent)r=row3.cells[ii].textContent;
+            row2.cells[ii].textContent=y+','+x;
+            row2.cells[ii].style = ' display: none; overflow: hidden;';
+            row3.cells[ii].textContent=r;
+            row3.cells[ii].setAttribute('contenteditable', 'true');
+            let mar = L.circle([y,x], { stroke: false, fillColor: 'red', fillOpacity: 0.3,  radius: r}).bindTooltip(""+kkkk+"",{permanent: true, opacity:0.7, direction: 'top'}).bindPopup("<center><br>"+text +"<br><button  class='point_delet_buton' id='kkkk"+kkkk+" '>видалити</button></center>").addTo(map);
+            marshrut_garbage.push(mar);
+       
+            mar.on('mousedown', (e) => {
+              let y = parseFloat(mar._latlng.lat)-parseFloat(e.latlng.lat);
+              let x = parseFloat(mar._latlng.lng)-parseFloat(e.latlng.lng);
+                map.dragging.disable()
+                map.on('mousemove',  function (e) { 
+                  let yy = y+parseFloat(e.latlng.lat);
+                  let xx = x+parseFloat(e.latlng.lng);
+                  mar.setLatLng([yy,xx]);
+                })
+              
+            })
+            mar.on('mouseup', () => {
+              let y = parseFloat(mar._latlng.lat);
+              let x = parseFloat(mar._latlng.lng);
+              let id = parseInt(mar._tooltip._content);
+              document.getElementById("log_marh_tb").rows[2].cells[(id-1)*3].textContent=y+','+x;
+                map.dragging.enable();
+                map.removeEventListener('mousemove');
+            })
+
             break;
           }
           if(j ==stor.length-1){
-            wialon.util.Gis.searchByString(text,0,1, function(code, data) {
-              if (code) { msg(wialon.core.Errors.getErrorText(code)); return; } // exit if error code
-              if (data) {
-                if (data[0]){
-                  if(ay==0){
-                    ay=data[0].items[0].y;
-                    ax=data[0].items[0].x;
-                    frrr= 3000;
-                    update_rout(ii+3,ay,ax);
-                    return;
-                  }else{
-                    by=data[0].items[0].y;
-                    bx=data[0].items[0].x;
-                    routing (ay,ax,by,bx,3000,ii+3,update_rout);
-                    return;
-                  }
-                 }
-                 update_rout(ii+3,-1,-1);
-              }});
-              return;
+            if(text=='нова точка'){
+              kkkk++;
+              row0.cells[ii].textContent=kkkk;
+              let y = parseFloat(row2.cells[ii].textContent.split(',')[0]);
+              let x = parseFloat(row2.cells[ii].textContent.split(',')[1]);
+              let r = parseInt(row3.cells[ii].textContent);
+              //let mar = L.marker([y,x], {icon: L.divIcon({ className: 'div-icon',iconSize: "auto", html: ''+kkkk+'' }),draggable: true,opacity:0.9,zIndexOffset:1000}).addTo(map);
+              let mar = L.circle([y,x], { stroke: false, fillColor: 'red', fillOpacity: 0.3, radius: r}).bindTooltip(""+kkkk+"",{permanent: true, opacity:0.7, direction: 'top'}).bindPopup("<center><br>"+text +"<br><button  class='point_delet_buton' id='kkkk"+kkkk+" '>видалити</button></center>").addTo(map);
+              marshrut_garbage.push(mar);
+         
+              mar.on('mousedown', (e) => {
+                let y = parseFloat(mar._latlng.lat)-parseFloat(e.latlng.lat);
+                let x = parseFloat(mar._latlng.lng)-parseFloat(e.latlng.lng);
+                  map.dragging.disable()
+                  map.on('mousemove',  function (e) { 
+                    let yy = y+parseFloat(e.latlng.lat);
+                    let xx = x+parseFloat(e.latlng.lng);
+                    mar.setLatLng([yy,xx]);
+                  })
+                
+              })
+              mar.on('mouseup', () => {
+                let y = parseFloat(mar._latlng.lat);
+                let x = parseFloat(mar._latlng.lng);
+                let id = parseInt(mar._tooltip._content);
+                document.getElementById("log_marh_tb").rows[2].cells[(id-1)*3].textContent=y+','+x;
+                  map.dragging.enable();
+                  map.removeEventListener('mousemove');
+              })
+        
+        
+            }else{
+              let multi=0;
+              kkkk++;
+              for (let j = 0; j<stor.length; j++){
+                  if(stor[j][3].indexOf(text)>=0){
+                    let name = stor[j][3];
+                  multi++;
+                  row0.cells[ii].textContent=kkkk;
+                  let y = parseFloat(stor[j][0]);
+                  let x = parseFloat(stor[j][1]);
+                  let r = parseInt(stor[j][2]);
+                  row3.cells[ii].textContent='----';
+                  let mar = L.circle([y,x], { stroke: false, fillColor: 'red', fillOpacity: 0.3,  radius: r}).bindTooltip(""+kkkk+"",{permanent: true, opacity:0.7, direction: 'top'}).bindPopup("<center><br>"+name +"<br><button  class='point_delet_buton' id='kkkk"+kkkk+" '>видалити</button></center>").addTo(map);
+                  marshrut_garbage.push(mar);
+             
+
+                }
+              }
+
+
+
+              if (multi>0)continue;
+
+              wialon.util.Gis.searchByString(text+' Чернігівська Сумська',0,1, function(code, data) {
+                if (code) { msg(wialon.core.Errors.getErrorText(code)); return; } // exit if error code
+                if (data) {
+                  if (data[0]){
+                    row0.cells[ii].textContent=kkkk;
+                    let y=data[0].items[0].y;
+                    let x=data[0].items[0].x;
+                    let r = 5000;
+                    if(row3.cells[ii].textContent)r=row3.cells[ii].textContent;
+                    if (y) {
+                      row2.cells[ii].textContent=y+','+x;
+                      row2.cells[ii].style = ' display: none; overflow: hidden;';
+                      row3.cells[ii].textContent=r;
+                      row3.cells[ii].setAttribute('contenteditable', 'true');
+                      let mar = L.circle([y,x], { stroke: false, fillColor: 'red', fillOpacity: 0.3,  radius: r}).bindTooltip(""+kkkk+"",{permanent: true, opacity:0.7, direction: 'top'}).bindPopup("<center><br>"+text +"<br><button  class='point_delet_buton' id='kkkk"+kkkk+" '>видалити</button></center>").addTo(map);
+                      marshrut_garbage.push(mar);
+                 
+                      mar.on('mousedown', (e) => {
+                        let y = parseFloat(mar._latlng.lat)-parseFloat(e.latlng.lat);
+                        let x = parseFloat(mar._latlng.lng)-parseFloat(e.latlng.lng);
+                          map.dragging.disable()
+                          map.on('mousemove',  function (e) { 
+                            let yy = y+parseFloat(e.latlng.lat);
+                            let xx = x+parseFloat(e.latlng.lng);
+                            mar.setLatLng([yy,xx]);
+                          })
+                        
+                      })
+                      mar.on('mouseup', () => {
+                        let y = parseFloat(mar._latlng.lat);
+                        let x = parseFloat(mar._latlng.lng);
+                        let id = parseInt(mar._tooltip._content);
+                        document.getElementById("log_marh_tb").rows[2].cells[(id-1)*3].textContent=y+','+x;
+                          map.dragging.enable();
+                          map.removeEventListener('mousemove');
+                      })
+                    }
+                   }
+                  
+                }});
+                await sleep(500); 
+              
+            }
 
           }
         }
-
-      } 
-    }else{update_rout(ii+3,-1,-1);}
+      }
     
   }
 
 }
+$("div").on("click", '.point_delet_buton', function () {
+  let tb = document.getElementById("log_marh_tb");
+  let ind = parseInt(this.id.match(/\d+/));
+  for (let j = 0; j<tb.rows[0].cells.length; j+=3){
+  if (tb.rows[0].cells[j].textContent==ind) {
+    ind=j+2;
+    break;
+  }
+  }
+  if (tb.rows[0].cells.length>3) {
+    tb.rows[1].deleteCell(ind);
+    tb.rows[1].deleteCell(ind-1);
+    tb.rows[1].deleteCell(ind-2);
+    tb.rows[0].deleteCell(ind);
+    tb.rows[0].deleteCell(ind-1);
+    tb.rows[0].deleteCell(ind-2);
+    tb.rows[2].deleteCell(ind);
+    tb.rows[2].deleteCell(ind-1);
+    tb.rows[2].deleteCell(ind-2);
+    tb.rows[3].deleteCell(ind);
+    tb.rows[3].deleteCell(ind-1);
+    tb.rows[3].deleteCell(ind-2);
+    
+   
+   
+  }else{
+    tb.rows[1].cells[0].children[0].children[0].textContent="";
+    tb.rows[0].cells[0].textContent="1";
+    tb.rows[2].cells[0].textContent="";
+    tb.rows[3].cells[0].textContent="";
+  }
+  marshrut();
+});
+
 
 
 function routing (ay,ax,by,bx,r,i,calbek){
