@@ -26,11 +26,17 @@ var isUIActive = true;
 
 var tzoffset = (new Date()).getTimezoneOffset() * 60000; //offset in milliseconds
 
-var from111 = new Date().toJSON().slice(0,11) + '05:00';
+var from111 = new Date().toJSON().slice(0,11) + '00:00';
 var from222 = (new Date(Date.now() - tzoffset)).toISOString().slice(0, -8);
 
 
+$('#vchora').click(function() { 
+   from111 = (new Date(Date.now() - tzoffset-86400000)).toISOString().slice(0, -13)+ '00:00';
+   from222 = (new Date(Date.now() - tzoffset-86400000)).toISOString().slice(0, -13)+ '23:59';
+   $('#fromtime1').val(from111);
+   $('#fromtime2').val(from222);
 
+});
 
 
 $('#fromtime1').val(from111);
