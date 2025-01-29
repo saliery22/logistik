@@ -44,7 +44,34 @@
   background:#fff;
   white-space: nowrap;
 }
-
+.leaflet-tooltip-red {
+    position: absolute;
+    padding: 4px;
+    background-color: rgba(228, 12, 12, 0.8);
+    border: 0px solid #000;
+    color: #000;
+    white-space: nowrap;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    pointer-events: none;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+}
+.leaflet-tooltip-green {
+    position: absolute;
+    padding: 4px;
+    background-color: rgba(70, 247, 0, 0.8);
+    border: 0px solid #000;
+    color: #000;
+    white-space: nowrap;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    pointer-events: none;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+}
 
 
 #grafik { width: 100%; border: 1px solid #c6c6c6;}
@@ -66,6 +93,7 @@
 #log { float: left; width: 30%; border: 1px solid #c6c6c6; max-height:30px; overflow-y: auto; margin: 0px 0px 10px 0px;}
 #mars_table{max-height:60vh; overflow-y: auto;}
 #control_table{max-height:60vh; overflow-y: auto;}
+#mars_table_div{max-width:99%; overflow-x: auto;white-space: nowrap;}
 #marshrut { min-width: 100%; border: 1px solid #c6c6c6; margin: 10px 0px 10px 0px;}
 #zvittt{ border: 1px solid #c6c6c6; margin: 10px 0px 10px 0px;}
 #zvitttt{ border: 1px solid #c6c6c6; margin: 10px 0px 10px 0px;}
@@ -572,10 +600,10 @@ button, input, span, select,textarea {margin: 2px 2px 0px 0px;   font-family: "A
     
     <div id="logistika">
       <div id="log_marh">
-        <button id='log_b1'style = "min-width: 30%;">створити маршрут</button> 
-        <button id='log_b2'style = "min-width: 30%;">контроль маршрутів</button> 
-
-        <button id='log_b3'style = "min-width: 30%;">адреси</button> 
+        <button id='log_b1'style = "min-width: 23%;">створити маршрут</button> 
+        <button id='log_b2'style = "min-width: 23%;">контроль маршрутів</button> 
+        <button id='log_b3'style = "min-width: 23%;">адреси</button> 
+        <button id='log_b4'style = "min-width: 23%;">маршрутизатор</button> 
         <div id="adresy">
             для створення нової зони оберіть радіус та <b>подвійно натисніть</b> праву кнопку на мапі де створити зону відповідного радіусу
             <br>
@@ -611,6 +639,7 @@ button, input, span, select,textarea {margin: 2px 2px 0px 0px;   font-family: "A
             для оновлення маршрута натисніть + або -
           
         </div>
+        <div id="mars_table_div">
         <table id="log_marh_tb">
             <tr>
                 <td>1</td>
@@ -619,8 +648,8 @@ button, input, span, select,textarea {margin: 2px 2px 0px 0px;   font-family: "A
             </tr>
             <tr>
                 <td style = " border: 1px solid black; "><div class="autocomplete"  ><div class ="inp" id="myInput-1" type="text"   contenteditable="true" ></div></div></td>
-                <td style = "min-width: 15px; cursor: pointer;border: 1px solid black; background:rgb(247, 161, 161);">-</td>
-                <td style = "min-width: 15px; cursor: pointer; background:rgb(170, 248, 170);">+</td>
+                <td style = "font-size:14px;min-width: 15px; cursor: pointer;border: 1px solid black; background:rgb(247, 161, 161);">-</td>
+                <td style = "font-size:14px;min-width: 15px; cursor: pointer; background:rgb(170, 248, 170);">+</td>
             </tr>
             <tr>
                 <td></td>
@@ -629,10 +658,16 @@ button, input, span, select,textarea {margin: 2px 2px 0px 0px;   font-family: "A
             </tr>
             <tr>
                 <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td><input type='checkbox' checked></td>
                 <td></td>
                 <td></td>
             </tr>
         </table> 
+    </div>
         <textarea id="marshrut_text"  rows="1" cols="100" placeholder="коментар до маршруту"></textarea>
       </div>
         
