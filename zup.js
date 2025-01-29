@@ -350,11 +350,9 @@ function initUIData() {
     });
 
 
-         marshrut_leyer_0 = L.layerGroup();
-          layerControl.addOverlay(marshrut_leyer_0, "маршрути завира");
 
 
-          update_logistik_data(vsi_marshruty);
+   
 
 
 
@@ -810,7 +808,8 @@ function initMap() {
   // create a map in the "map" div, set the view to a given place and zoom
   map = L.map('map', {
     // disable zooming, because we will use double-click to set up marker
-    doubleClickZoom: false
+    doubleClickZoom: false,
+    animate: false
   }).setView([51.62995, 33.64288], 9);
   
  //L.tileLayer('http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}',{ subdomains:['mt0','mt1','mt2','mt3']}).addTo(map);
@@ -5319,6 +5318,7 @@ $("#log_b3").on("click", function (){
   $('#adresy').show();
   $('#marshrut_text').hide();
   clearGEO();
+  clearGarbage(marshrut_garbage);
   activ_zone==0;
 
 });
@@ -5387,7 +5387,6 @@ $("#log_b1").on("click", function (){
   $('#adresy').hide();
   $('#log_help').show();
   $('#marshrut_text').show();
-
   update_logistik_data(vibir_avto);
 });
 $("#log_b2").on("click", function (){
@@ -5405,7 +5404,7 @@ $("#log_b2").on("click", function (){
   $('#marshrut_text').hide();
   update_logistik_data(control_avto);
   marshrut_leyer_0.clearLayers();
-  vsi_marshruty();
+  clearGarbage(marshrut_garbage);
 });
 
 function marshrut(){
@@ -5424,6 +5423,16 @@ $("#log_marh_tb").on("click", function (evt){
   let row = evt.target.parentNode;
   let ind = evt.target.cellIndex;
   //row.rowIndex
+
+  if(row.rowIndex==0){
+    if(evt.target.innerText !='' && marshrut_point.length>0){
+      let id = parseFloat(evt.target.innerText)-1; 
+      let y =marshrut_point[id][2];
+      let x =marshrut_point[id][3];
+      if(y!=0)map.setView([y,x+0.1],12,{animate: false});
+    }
+    return;
+  }
 if(evt.target.innerText=='+'){
   
   var td = row.insertCell(ind+1);
@@ -5445,14 +5454,19 @@ if(evt.target.innerText=='+'){
           td.innerText=" + "
           td.style = 'font-size:14px; min-width: 15px; background: rgb(170, 248, 170);cursor:pointer';
           document.getElementById("log_marh_tb").rows[0].insertCell(ind+1);
-        document.getElementById("log_marh_tb").rows[0].insertCell(ind+2);
-        document.getElementById("log_marh_tb").rows[0].insertCell(ind+3);
-        document.getElementById("log_marh_tb").rows[2].insertCell(ind+1);
-        document.getElementById("log_marh_tb").rows[2].insertCell(ind+2);
-        document.getElementById("log_marh_tb").rows[2].insertCell(ind+3);
-        document.getElementById("log_marh_tb").rows[3].insertCell(ind+1);
-        document.getElementById("log_marh_tb").rows[3].insertCell(ind+2);
-        document.getElementById("log_marh_tb").rows[3].insertCell(ind+3);
+          document.getElementById("log_marh_tb").rows[0].cells[ind+1].style = 'cursor:pointer';
+          document.getElementById("log_marh_tb").rows[0].insertCell(ind+2);
+          document.getElementById("log_marh_tb").rows[0].insertCell(ind+3);
+          document.getElementById("log_marh_tb").rows[2].insertCell(ind+1);
+          document.getElementById("log_marh_tb").rows[2].insertCell(ind+2);
+          document.getElementById("log_marh_tb").rows[2].insertCell(ind+3);
+          document.getElementById("log_marh_tb").rows[3].insertCell(ind+1);
+          document.getElementById("log_marh_tb").rows[3].insertCell(ind+2);
+          document.getElementById("log_marh_tb").rows[3].insertCell(ind+3);
+          document.getElementById("log_marh_tb").rows[4].insertCell(ind+1);
+          document.getElementById("log_marh_tb").rows[4].cells[ind+1].innerHTML = "<input type='checkbox' checked>";
+          document.getElementById("log_marh_tb").rows[4].insertCell(ind+2);
+          document.getElementById("log_marh_tb").rows[4].insertCell(ind+3);
 
         marshrut();
 }
@@ -5470,6 +5484,9 @@ if(evt.target.innerText=='-'){
     document.getElementById("log_marh_tb").rows[3].deleteCell(ind-1);
     document.getElementById("log_marh_tb").rows[3].deleteCell(ind-1);
     document.getElementById("log_marh_tb").rows[3].deleteCell(ind-1);
+    document.getElementById("log_marh_tb").rows[4].deleteCell(ind-1);
+    document.getElementById("log_marh_tb").rows[4].deleteCell(ind-1);
+    document.getElementById("log_marh_tb").rows[4].deleteCell(ind-1);
     
    
     
@@ -5550,15 +5567,20 @@ function autocomplete(inp, arr) {
                     td = row.insertCell(ind+3);
                     td.innerText=" + "
                     td.style = 'font-size:14px; min-width: 15px; background: rgb(170, 248, 170);cursor:pointer';
-        document.getElementById("log_marh_tb").rows[0].insertCell(ind+1);
-        document.getElementById("log_marh_tb").rows[0].insertCell(ind+2);
-        document.getElementById("log_marh_tb").rows[0].insertCell(ind+3);
-        document.getElementById("log_marh_tb").rows[2].insertCell(ind+1);
-        document.getElementById("log_marh_tb").rows[2].insertCell(ind+2);
-        document.getElementById("log_marh_tb").rows[2].insertCell(ind+3);
-        document.getElementById("log_marh_tb").rows[3].insertCell(ind+1);
-        document.getElementById("log_marh_tb").rows[3].insertCell(ind+2);
-        document.getElementById("log_marh_tb").rows[3].insertCell(ind+3);
+                    document.getElementById("log_marh_tb").rows[0].insertCell(ind+1);
+                document.getElementById("log_marh_tb").rows[0].cells[ind+1].style = 'cursor:pointer';
+                document.getElementById("log_marh_tb").rows[0].insertCell(ind+2);
+                document.getElementById("log_marh_tb").rows[0].insertCell(ind+3);
+                document.getElementById("log_marh_tb").rows[2].insertCell(ind+1);
+                document.getElementById("log_marh_tb").rows[2].insertCell(ind+2);
+                document.getElementById("log_marh_tb").rows[2].insertCell(ind+3);
+                document.getElementById("log_marh_tb").rows[3].insertCell(ind+1);
+                document.getElementById("log_marh_tb").rows[3].insertCell(ind+2);
+                document.getElementById("log_marh_tb").rows[3].insertCell(ind+3);
+                document.getElementById("log_marh_tb").rows[4].insertCell(ind+1);
+                document.getElementById("log_marh_tb").rows[4].cells[ind+1].innerHTML = "<input type='checkbox' checked>";
+                document.getElementById("log_marh_tb").rows[4].insertCell(ind+2);
+                document.getElementById("log_marh_tb").rows[4].insertCell(ind+3);
        
        
               }
@@ -5620,19 +5642,24 @@ function autocomplete(inp, arr) {
                 td = row.insertCell(ind+3);
                 td.innerText=" + "
                 td.style = 'font-size:14px; min-width: 15px; background: rgb(170, 248, 170);cursor:pointer';
-    document.getElementById("log_marh_tb").rows[0].insertCell(ind+1);
-    document.getElementById("log_marh_tb").rows[0].insertCell(ind+2);
-    document.getElementById("log_marh_tb").rows[0].insertCell(ind+3);
-    document.getElementById("log_marh_tb").rows[2].insertCell(ind+1);
-    document.getElementById("log_marh_tb").rows[2].insertCell(ind+2);
-    document.getElementById("log_marh_tb").rows[2].insertCell(ind+3);
-    document.getElementById("log_marh_tb").rows[3].insertCell(ind+1);
-    document.getElementById("log_marh_tb").rows[3].insertCell(ind+2);
-    document.getElementById("log_marh_tb").rows[3].insertCell(ind+3);
+                document.getElementById("log_marh_tb").rows[0].insertCell(ind+1);
+                document.getElementById("log_marh_tb").rows[0].cells[ind+1].style = 'cursor:pointer';
+                document.getElementById("log_marh_tb").rows[0].insertCell(ind+2);
+                document.getElementById("log_marh_tb").rows[0].insertCell(ind+3);
+                document.getElementById("log_marh_tb").rows[2].insertCell(ind+1);
+                document.getElementById("log_marh_tb").rows[2].insertCell(ind+2);
+                document.getElementById("log_marh_tb").rows[2].insertCell(ind+3);
+                document.getElementById("log_marh_tb").rows[3].insertCell(ind+1);
+                document.getElementById("log_marh_tb").rows[3].insertCell(ind+2);
+                document.getElementById("log_marh_tb").rows[3].insertCell(ind+3);
+                document.getElementById("log_marh_tb").rows[4].insertCell(ind+1);
+                document.getElementById("log_marh_tb").rows[4].cells[ind+1].innerHTML = "<input type='checkbox' checked>";
+                document.getElementById("log_marh_tb").rows[4].insertCell(ind+2);
+                document.getElementById("log_marh_tb").rows[4].insertCell(ind+3);
 
           }
           marshrut();
-          closeAllLists(e.target);
+          closeAllLists();
         }
           
               
@@ -5718,15 +5745,20 @@ var el2 = document.createElement('div');
     td = row.insertCell(ind+3);
     td.innerText=" + "
     td.style = 'font-size:14px; min-width: 15px; background: rgb(170, 248, 170);cursor:pointer';
-        document.getElementById("log_marh_tb").rows[0].insertCell(ind+1);
-        document.getElementById("log_marh_tb").rows[0].insertCell(ind+2);
-        document.getElementById("log_marh_tb").rows[0].insertCell(ind+3);
-        document.getElementById("log_marh_tb").rows[2].insertCell(ind+1);
-        document.getElementById("log_marh_tb").rows[2].insertCell(ind+2);
-        document.getElementById("log_marh_tb").rows[2].insertCell(ind+3);
-        document.getElementById("log_marh_tb").rows[3].insertCell(ind+1);
-        document.getElementById("log_marh_tb").rows[3].insertCell(ind+2);
-        document.getElementById("log_marh_tb").rows[3].insertCell(ind+3);
+    document.getElementById("log_marh_tb").rows[0].insertCell(ind+1);
+    document.getElementById("log_marh_tb").rows[0].cells[ind+1].style = 'cursor:pointer';
+    document.getElementById("log_marh_tb").rows[0].insertCell(ind+2);
+    document.getElementById("log_marh_tb").rows[0].insertCell(ind+3);
+    document.getElementById("log_marh_tb").rows[2].insertCell(ind+1);
+    document.getElementById("log_marh_tb").rows[2].insertCell(ind+2);
+    document.getElementById("log_marh_tb").rows[2].insertCell(ind+3);
+    document.getElementById("log_marh_tb").rows[3].insertCell(ind+1);
+    document.getElementById("log_marh_tb").rows[3].insertCell(ind+2);
+    document.getElementById("log_marh_tb").rows[3].insertCell(ind+3);
+    document.getElementById("log_marh_tb").rows[4].insertCell(ind+1);
+    document.getElementById("log_marh_tb").rows[4].cells[ind+1].innerHTML = "<input type='checkbox' checked>";
+    document.getElementById("log_marh_tb").rows[4].insertCell(ind+2);
+    document.getElementById("log_marh_tb").rows[4].insertCell(ind+3);
         
         row3.cells[ind+1].textContent=400;
         row3.cells[ind+1].setAttribute('contenteditable', 'true');
@@ -5740,20 +5772,20 @@ var el2 = document.createElement('div');
 
 async function update_rout(){
   clearGarbage(marshrut_garbage);
+  marshrut_point=[];
   let table=document.getElementById("log_marh_tb");
   let row = table.rows[1];
   let row0 = table.rows[0];
   let row2 = table.rows[2];
   let row3 = table.rows[3];
+  let row4 = table.rows[4];
   let kkkk=0;
- // if(i>row.cells.length-1 && marshrut_point.length>1){
-//    if($('#log_unit_tb').is(':hidden')==false)  vibir_avto();
- //   return;
- // }      
+     
 
   for(let ii=0;ii<row.cells.length;ii+=3){
       let text = row.cells[ii].children[0].children[0].textContent;
       if (row3.cells[ii].textContent=='----'){
+        kkkk++;
         for (let j = 0; j<stor.length; j++){
           if(stor[j][3].indexOf(text)>=0){
             let name = stor[j][3];
@@ -5761,14 +5793,17 @@ async function update_rout(){
           let y = parseFloat(stor[j][0]);
           let x = parseFloat(stor[j][1]);
           let r = parseInt(stor[j][2]);
+          let color = 'rgb(170, 248, 170)';
+          let cl = 'leaflet-tooltip-green';
+          let checked_ = row4.cells[ii].getElementsByTagName('input')[0].checked;
+          if (checked_ == false) {color= 'rgb(247, 161, 161)';cl ='leaflet-tooltip-red'}else{row0.cells[ii].style = 'background: rgb(247, 161, 161);';}
+          row0.cells[ii].style = 'background: '+color+';';
           row3.cells[ii].textContent='----';
-          let mar = L.circle([y,x], { stroke: false, fillColor: 'red', fillOpacity: 0.3,  radius: r}).bindTooltip(""+kkkk+"",{permanent: true, opacity:0.7, direction: 'top'}).bindPopup("<center><br>"+name +"<br><button  class='point_delet_buton' id='kkkk"+kkkk+" '>видалити</button></center>").addTo(map);
+          let mar = L.circle([y,x], { stroke: true,weight: 1, fillOpacity: 0.5, radius: r}).bindTooltip(""+kkkk+"",{className: cl, permanent: true, opacity:0.7, direction: 'top'}).bindPopup("<center><br>"+name +"<br><input class='point_checkbox' id='chek"+kkkk+"'type='checkbox' checked><br><button  class='point_delet_buton' id='btn"+kkkk+"'>видалити</button></center>").addTo(map);
           marshrut_garbage.push(mar);
-     
-
         }
       }
-
+      marshrut_point.push([kkkk,text,0,0,'----','true']);
       continue;
       }
       if(text){
@@ -5778,10 +5813,14 @@ async function update_rout(){
           let y = parseFloat(row2.cells[ii].textContent.split(',')[0]);
           let x = parseFloat(row2.cells[ii].textContent.split(',')[1]);
           let r = parseInt(row3.cells[ii].textContent);  
-
-          let mar = L.circle([y,x], { stroke: false, fillColor: 'red', fillOpacity: 0.3, radius: r}).bindTooltip(""+kkkk+"",{permanent: true, opacity:0.7, direction: 'top'}).bindPopup("<center><br>"+text +"<br><button  class='point_delet_buton' id='kkkk"+kkkk+"'>видалити</button></center>").addTo(map);
+          let color = 'rgb(170, 248, 170)';
+          let cl = 'leaflet-tooltip-green';
+          let checked_ = row4.cells[ii].getElementsByTagName('input')[0].checked;
+          if (checked_ == false) {color= 'rgb(247, 161, 161)';cl ='leaflet-tooltip-red'}else{row0.cells[ii].style = 'background: rgb(247, 161, 161);';}
+          row0.cells[ii].style = 'background: '+color+';';
+          let mar = L.circle([y,x], { stroke: true,weight: 1,  fillOpacity: 0.5, radius: r}).bindTooltip(""+kkkk+"",{className: cl, permanent: true, opacity:0.7, direction: 'top'}).bindPopup("<center><br>"+text +"<br><input class='point_checkbox' id='chek"+kkkk+"'type='checkbox' checked><br><button  class='point_delet_buton' id='btn"+kkkk+"'>видалити</button></center>").addTo(map);
           marshrut_garbage.push(mar);
-      
+          marshrut_point.push([kkkk,text,y,x,r,checked_]);
 
           mar.on('mousedown', (e) => {
             let y = parseFloat(mar._latlng.lat)-parseFloat(e.latlng.lat);
@@ -5812,14 +5851,20 @@ async function update_rout(){
             let y = parseFloat(stor[j][0]);
             let x = parseFloat(stor[j][1]);
             let r = parseInt(stor[j][2]);
+             let color = 'rgb(170, 248, 170)';
+             let cl = 'leaflet-tooltip-green';
+             let checked_ = row4.cells[ii].getElementsByTagName('input')[0].checked;
+             if (checked_ == false) {color= 'rgb(247, 161, 161)';cl ='leaflet-tooltip-red'}else{row0.cells[ii].style = 'background: rgb(247, 161, 161);';}
+             row0.cells[ii].style = 'background: '+color+';';
             if(row3.cells[ii].textContent)r=row3.cells[ii].textContent;
             row2.cells[ii].textContent=y+','+x;
             row2.cells[ii].style = ' display: none; overflow: hidden;';
             row3.cells[ii].textContent=r;
             row3.cells[ii].setAttribute('contenteditable', 'true');
-            let mar = L.circle([y,x], { stroke: false, fillColor: 'red', fillOpacity: 0.3,  radius: r}).bindTooltip(""+kkkk+"",{permanent: true, opacity:0.7, direction: 'top'}).bindPopup("<center><br>"+text +"<br><button  class='point_delet_buton' id='kkkk"+kkkk+" '>видалити</button></center>").addTo(map);
+            let mar = L.circle([y,x], { stroke: true,weight: 1, fillOpacity: 0.5, radius: r}).bindTooltip(""+kkkk+"",{className: cl, permanent: true, opacity:0.7, direction: 'top'}).bindPopup("<center><br>"+text +"<br><input class='point_checkbox' id='chek"+kkkk+"'type='checkbox' checked><br><button  class='point_delet_buton' id='btn"+kkkk+"'>видалити</button></center>").addTo(map);
             marshrut_garbage.push(mar);
-       
+            marshrut_point.push([kkkk,text,y,x,r,checked_]);
+
             mar.on('mousedown', (e) => {
               let y = parseFloat(mar._latlng.lat)-parseFloat(e.latlng.lat);
               let x = parseFloat(mar._latlng.lng)-parseFloat(e.latlng.lng);
@@ -5838,6 +5883,7 @@ async function update_rout(){
               document.getElementById("log_marh_tb").rows[2].cells[(id-1)*3].textContent=y+','+x;
                 map.dragging.enable();
                 map.removeEventListener('mousemove');
+              
             })
 
             break;
@@ -5849,10 +5895,16 @@ async function update_rout(){
               let y = parseFloat(row2.cells[ii].textContent.split(',')[0]);
               let x = parseFloat(row2.cells[ii].textContent.split(',')[1]);
               let r = parseInt(row3.cells[ii].textContent);
+               let color = 'rgb(170, 248, 170)';
+               let cl = 'leaflet-tooltip-green';
+               let checked_ = row4.cells[ii].getElementsByTagName('input')[0].checked;
+               if (checked_ == false) {color= 'rgb(247, 161, 161)';cl ='leaflet-tooltip-red'}else{row0.cells[ii].style = 'background: rgb(247, 161, 161);';}
+               row0.cells[ii].style = 'background: '+color+';';
               //let mar = L.marker([y,x], {icon: L.divIcon({ className: 'div-icon',iconSize: "auto", html: ''+kkkk+'' }),draggable: true,opacity:0.9,zIndexOffset:1000}).addTo(map);
-              let mar = L.circle([y,x], { stroke: false, fillColor: 'red', fillOpacity: 0.3, radius: r}).bindTooltip(""+kkkk+"",{permanent: true, opacity:0.7, direction: 'top'}).bindPopup("<center><br>"+text +"<br><button  class='point_delet_buton' id='kkkk"+kkkk+" '>видалити</button></center>").addTo(map);
+              let mar = L.circle([y,x], { stroke: true,weight: 1, fillOpacity: 0.5, radius: r}).bindTooltip(""+kkkk+"",{className: cl, permanent: true, opacity:0.7, direction: 'top'}).bindPopup("<center><br>"+text +"<br><input class='point_checkbox' id='chek"+kkkk+"'type='checkbox' checked><br><button  class='point_delet_buton' id='btn"+kkkk+"'>видалити</button></center>").addTo(map);
               marshrut_garbage.push(mar);
-         
+              marshrut_point.push([kkkk,text,y,x,r,checked_]);
+
               mar.on('mousedown', (e) => {
                 let y = parseFloat(mar._latlng.lat)-parseFloat(e.latlng.lat);
                 let x = parseFloat(mar._latlng.lng)-parseFloat(e.latlng.lng);
@@ -5871,6 +5923,7 @@ async function update_rout(){
                 document.getElementById("log_marh_tb").rows[2].cells[(id-1)*3].textContent=y+','+x;
                   map.dragging.enable();
                   map.removeEventListener('mousemove');
+                
               })
         
         
@@ -5885,17 +5938,25 @@ async function update_rout(){
                   let y = parseFloat(stor[j][0]);
                   let x = parseFloat(stor[j][1]);
                   let r = parseInt(stor[j][2]);
+                   let color = 'rgb(170, 248, 170)';
+                   let cl = 'leaflet-tooltip-green';
+                   let checked_ = row4.cells[ii].getElementsByTagName('input')[0].checked;
+                   if (checked_ == false) {color= 'rgb(247, 161, 161)';cl ='leaflet-tooltip-red'}else{row0.cells[ii].style = 'background: rgb(247, 161, 161);';}
+                   row0.cells[ii].style = 'background: '+color+';';
                   row3.cells[ii].textContent='----';
-                  let mar = L.circle([y,x], { stroke: false, fillColor: 'red', fillOpacity: 0.3,  radius: r}).bindTooltip(""+kkkk+"",{permanent: true, opacity:0.7, direction: 'top'}).bindPopup("<center><br>"+name +"<br><button  class='point_delet_buton' id='kkkk"+kkkk+" '>видалити</button></center>").addTo(map);
+                  let mar = L.circle([y,x], { stroke: true,weight: 1, fillOpacity: 0.5, radius: r}).bindTooltip(""+kkkk+"",{className: cl, permanent: true, opacity:0.7, direction: 'top'}).bindPopup("<center><br>"+name +"<br><input class='point_checkbox' id='chek"+kkkk+"'type='checkbox' checked><br><button  class='point_delet_buton' id='btn"+kkkk+"'>видалити</button></center>").addTo(map);
                   marshrut_garbage.push(mar);
-             
+                  
 
                 }
               }
 
 
 
-              if (multi>0)continue;
+              if (multi>0){
+                marshrut_point.push([kkkk,text,0,0,'----','true']);
+                continue;
+              }
 
               wialon.util.Gis.searchByString(text+' Чернігівська Сумська',0,1, function(code, data) {
                 if (code) { msg(wialon.core.Errors.getErrorText(code)); return; } // exit if error code
@@ -5905,15 +5966,21 @@ async function update_rout(){
                     let y=data[0].items[0].y;
                     let x=data[0].items[0].x;
                     let r = 5000;
+                    let color = 'rgb(170, 248, 170)';
+                    let cl = 'leaflet-tooltip-green';
+                    let checked_ = row4.cells[ii].getElementsByTagName('input')[0].checked;
+                    if (checked_ == false) {color= 'rgb(247, 161, 161)';cl ='leaflet-tooltip-red'}else{row0.cells[ii].style = 'background: rgb(247, 161, 161);';}
+                    row0.cells[ii].style = 'background: '+color+';';
                     if(row3.cells[ii].textContent)r=row3.cells[ii].textContent;
                     if (y) {
                       row2.cells[ii].textContent=y+','+x;
                       row2.cells[ii].style = ' display: none; overflow: hidden;';
                       row3.cells[ii].textContent=r;
                       row3.cells[ii].setAttribute('contenteditable', 'true');
-                      let mar = L.circle([y,x], { stroke: false, fillColor: 'red', fillOpacity: 0.3,  radius: r}).bindTooltip(""+kkkk+"",{permanent: true, opacity:0.7, direction: 'top'}).bindPopup("<center><br>"+text +"<br><button  class='point_delet_buton' id='kkkk"+kkkk+" '>видалити</button></center>").addTo(map);
+                      let mar = L.circle([y,x], { stroke: true,weight: 1, fillOpacity: 0.5, radius: r}).bindTooltip(""+kkkk+"",{className: cl, permanent: true, opacity:0.7, direction: 'top'}).bindPopup("<center><br>"+text +"<br><input class='point_checkbox' id='chek"+kkkk+"'type='checkbox' checked><br><button  class='point_delet_buton' id='btn"+kkkk+"'>видалити</button></center>").addTo(map);
                       marshrut_garbage.push(mar);
-                 
+                      marshrut_point.push([kkkk,text,y,x,r,checked_]);
+
                       mar.on('mousedown', (e) => {
                         let y = parseFloat(mar._latlng.lat)-parseFloat(e.latlng.lat);
                         let x = parseFloat(mar._latlng.lng)-parseFloat(e.latlng.lng);
@@ -5932,6 +5999,8 @@ async function update_rout(){
                         document.getElementById("log_marh_tb").rows[2].cells[(id-1)*3].textContent=y+','+x;
                           map.dragging.enable();
                           map.removeEventListener('mousemove');
+                          
+                   
                       })
                     }
                    }
@@ -5946,7 +6015,7 @@ async function update_rout(){
       }
     
   }
-
+  vibir_avto();
 }
 $("div").on("click", '.point_delet_buton', function () {
   let tb = document.getElementById("log_marh_tb");
@@ -5970,6 +6039,9 @@ $("div").on("click", '.point_delet_buton', function () {
     tb.rows[3].deleteCell(ind);
     tb.rows[3].deleteCell(ind-1);
     tb.rows[3].deleteCell(ind-2);
+    tb.rows[4].deleteCell(ind);
+    tb.rows[4].deleteCell(ind-1);
+    tb.rows[4].deleteCell(ind-2);
     
    
    
@@ -5981,7 +6053,19 @@ $("div").on("click", '.point_delet_buton', function () {
   }
   marshrut();
 });
-
+$("div").on("click", '.point_checkbox', function () {
+  let tb = document.getElementById("log_marh_tb");
+  let ind = parseInt(this.id.match(/\d+/));
+  for (let j = 0; j<tb.rows[0].cells.length; j+=3){
+    if (tb.rows[0].cells[j].textContent==ind) {
+      ind=j;
+      break;
+    }
+  }
+  let checked_ = tb.rows[4].cells[ind].getElementsByTagName('input')[0];
+ if(this.checked){checked_.checked=true;}else{checked_.checked=false;}
+ marshrut();
+});
 
 
 function routing (ay,ax,by,bx,r,i,calbek){
@@ -6073,7 +6157,7 @@ function update_logistik_data(calbek){
 
 let probeg_nedelya=true;
 function vibir_avto(){
-  if (marshrut_point.length<2)return;
+  if (marshrut_point.length==0)return;
   let d = (marshrut_probeg/1000).toFixed(1);
   let t = (marshrut_vremya/60).toFixed();
   var d1 = new Date();
@@ -6111,6 +6195,8 @@ function vibir_avto(){
     let status0=0;
     let status1=0;
     let status2=0;
+    let name_buton1='маршрут';
+    let name_buton2='маршрут';
     spisok+=avto[j][0]+',';
     for (let v = 1; v<logistik_data.length; v++){
       let m=logistik_data[v].split('|');
@@ -6132,30 +6218,40 @@ function vibir_avto(){
               if(m[0]>=d2 && m[0]<d3){status2=0;}
             }else{
               //if(m[0]>=d0 && m[0]<d1){status0=3;}
-              if(m[0]>=d1 && m[0]<d2){status1=3;}
-              if(m[0]>=d2 && m[0]<d3){status2=3;}
+              if(m[0]>=d1 && m[0]<d2){status1=3;name_buton1=m[6];}
+              if(m[0]>=d2 && m[0]<d3){status2=3;name_buton2=m[6];}
             }
           }
         }
       }
     }
+  if (name_buton1==undefined)name_buton1='маршрут';
+   if (name_buton2==undefined)name_buton2='маршрут';
 //let bb0 ="";
 let bb1 ="<button style = 'width: 100%;'>додати</button>";
 let bb2 ="<button style = 'width: 100%;'>додати</button>";
 //if(status0==3){bb0 ="<button style = 'background: rgb(170, 248, 170);width: 100%;' >маршрут</button>";}
-if(status1==3){bb1 ="<button style = 'background: rgb(170, 248, 170);width: 100%;' >маршрут</button>";}
-if(status2==3){bb2 ="<button style = 'background: rgb(170, 248, 170);width: 100%;' >маршрут</button>";}
+if(status1==3){bb1 ="<button style = 'background: rgb(170, 248, 170);width: 100%;' >"+name_buton1+"</button>";}
+if(status2==3){bb2 ="<button style = 'background: rgb(170, 248, 170);width: 100%;' >"+name_buton2+"</button>";}
 //if(status0==2){bb0 ="<button style = 'background: rgb(247, 161, 161);width: 100%;' >ремонт</button>";}
 if(status1==2){bb1 ="<button style = 'background: rgb(247, 161, 161);width: 100%;' >ремонт</button>";}
 if(status2==2){bb2 ="<button style = 'background: rgb(247, 161, 161);width: 100%;' >ремонт</button>";}
 
     $('#log_unit_tb').append("<tr><td>"+avto[j][0]+"</td><td>"+avto[j][1]+"</td><td>----</td><td>"+bb1+"</td><td>----</td><td>"+bb2+" </td><td>----</td></tr>");
-    let mark = unit_position(avto[j][0]);
+    let last_position = unit_position(avto[j][0]);
     let id =unitsID[avto[j][0]];
-    point_to_point_rote(marshrut_point[0][0],marshrut_point[0][1],avto[j][2],avto[j][3],j,6);
-    if (mark) point_to_point(marshrut_point[0][0],marshrut_point[0][1],mark.y,mark.x,j,4);
+    //point_to_point_rote(marshrut_point[0][0],marshrut_point[0][1],avto[j][2],avto[j][3],j,6);
+    if (marshrut_point[0][4]!='----'){
+      if (last_position) point_to_point(marshrut_point[0][2],marshrut_point[0][3],last_position.y,last_position.x,j,4);
+      point_to_point(marshrut_point[0][2],marshrut_point[0][3],avto[j][2],avto[j][3],j,6);
+    }
+    
     
   }
+  
+  sort_table(document.getElementById("log_unit_tb"),4);
+  sort_table(document.getElementById("log_unit_tb"),6);
+
 if (probeg_nedelya) {
   spisok =spisok.slice(0, -1);
   SendDataReportInCallback(nedelya/1000,d2/1000,spisok,zvit4,[],0,svod);
@@ -6180,7 +6276,18 @@ function svod(data){
   }
  
 }  
-
+function sort_table(table,colum){
+let data=[];
+  for (let i = 1; i<table.rows.length; i++){
+    let a=parseFloat(table.rows[i].cells[colum].innerText)
+ data.push([i,a]);
+  }
+  data.sort(function (a, b) { return a[1] - b[1]; });
+  for (let i = 0; i<5; i++){
+    table.rows[data[i][0]].cells[colum].style = 'background: rgb(170, 248, 170);';
+    table.rows[data[i][0]].cells[0].style = 'background: rgb(170, 248, 170);';
+  }
+}
 
 function unit_position(n){
   for(let i = 0; i<unitslist.length; i++){
@@ -6228,19 +6335,27 @@ $("#log_unit_tb").on("click", function (evt){
 if(evt.target.parentNode.cellIndex==5){
   let t=Date.now()+86400000;
   let n=row.cells[0].innerText;
-  let m=','+avto[row.rowIndex-1][2]+','+avto[row.rowIndex-1][3];
+  let point=avto[row.rowIndex-1][2]+','+avto[row.rowIndex-1][3];
+  let text='СТОЯНКА';
+  let radius ='200';
+  let chek='true';
   let coment = 'маршрут';
   if($('#marshrut_text').val())coment =$('#marshrut_text').val();
-  let table=document.getElementById("log_marh_tb").rows[1];
-  for(let i=0;i<table.cells.length;i+=3){
-    let text = table.cells[i].children[0].children[0].textContent;
-    if (text)  m+='//'+text;
+  for(let i=0;i<marshrut_point.length;i++){
+    text+='//'+marshrut_point[i][1];
+    point+='//'+marshrut_point[i][2]+','+marshrut_point[i][3];
+    chek+='//'+marshrut_point[i][5];
+    radius+='//'+marshrut_point[i][4];
   }
-  m+='//'+','+avto[row.rowIndex-1][2]+','+avto[row.rowIndex-1][3];
-    write_jurnal(20233,'MR-avto.txt','||'+t+'|'+n+'|'+m+'|'+coment,function () { 
+   point+='//'+avto[row.rowIndex-1][2]+','+avto[row.rowIndex-1][3];
+   text+='//СТОЯНКА';
+   chek+='//true';
+   radius+='//200';
+    write_jurnal(20233,'MR-avto.txt','||'+t+'|'+n+'|'+text+'|'+point+'|'+radius+'|'+chek+'|'+coment,function () { 
       msg("маршрут додано");
       evt.target.style.background = "rgb(170, 248, 170)";
-      evt.target.innerHTML = 'маршрут'
+      evt.target.innerHTML = coment;
+      audio.play();
       update_logistik_data(control_avto);
       return;
     });
@@ -6249,22 +6364,31 @@ if(evt.target.parentNode.cellIndex==5){
 if(evt.target.parentNode.cellIndex==3){
   let t=Date.now();
   let n=row.cells[0].innerText;
-  let m=','+avto[row.rowIndex-1][2]+','+avto[row.rowIndex-1][3];
+  let point=avto[row.rowIndex-1][2]+','+avto[row.rowIndex-1][3];
+  let text='СТОЯНКА';
+  let radius ='200';
+  let chek='true';
   let coment = 'маршрут';
   if($('#marshrut_text').val())coment =$('#marshrut_text').val();
-  let table=document.getElementById("log_marh_tb").rows[1];
-  for(let i=0;i<table.cells.length;i+=3){
-    let text = table.cells[i].children[0].children[0].textContent;
-    if (text)  m+='//'+text;
+  for(let i=0;i<marshrut_point.length;i++){
+    text+='//'+marshrut_point[i][1];
+    point+='//'+marshrut_point[i][2]+','+marshrut_point[i][3];
+    chek+='//'+marshrut_point[i][5];
+    radius+='//'+marshrut_point[i][4];
   }
-  m+='//'+','+avto[row.rowIndex-1][2]+','+avto[row.rowIndex-1][3];
-    write_jurnal(20233,'MR-avto.txt','||'+t+'|'+n+'|'+m+'|'+coment,function () { 
+   point+='//'+avto[row.rowIndex-1][2]+','+avto[row.rowIndex-1][3];
+   text+='//СТОЯНКА';
+   chek+='//true';
+   radius+='//200';
+    write_jurnal(20233,'MR-avto.txt','||'+t+'|'+n+'|'+text+'|'+point+'|'+radius+'|'+chek+'|'+coment,function () { 
       msg("маршрут додано");
+      audio.play();
       evt.target.style.background = "rgb(170, 248, 170)";
-      evt.target.innerHTML = 'маршрут'
+      evt.target.innerHTML = coment;
       update_logistik_data(control_avto);
       return;
     });
+   
 
 }
 
@@ -6345,10 +6469,10 @@ function control_avto(){
               if(m[0]>=d0 && m[0]<d_1){status2=0;}
               if(m[0]>=d_1 && m[0]<d_2){status3=0;}
             }else{
-              if(m[0]>=d2 && m[0]<d1){status0=3; name_buton0=m[3];}
-              if(m[0]>=d1 && m[0]<d0){status1=3; name_buton1=m[3];}
-              if(m[0]>=d0 && m[0]<d_1){status2=3; name_buton2=m[3];}
-              if(m[0]>=d_1 && m[0]<d_2){status3=3; name_buton3=m[3];}
+              if(m[0]>=d2 && m[0]<d1){status0=3; name_buton0=m[6];}
+              if(m[0]>=d1 && m[0]<d0){status1=3; name_buton1=m[6];}
+              if(m[0]>=d0 && m[0]<d_1){status2=3; name_buton2=m[6];}
+              if(m[0]>=d_1 && m[0]<d_2){status3=3; name_buton3=m[6];}
             }
           }
         }
@@ -6434,16 +6558,22 @@ if(row.rowIndex>0 && evt.target.innerText !='ремонт-зняти' &&  evt.ta
 
   for (let v = 1; v<logistik_data.length; v++){
     let m=logistik_data[v].split('|');
+    console.log(m);
     if(m[1]==n && m[0]>=t && m[0]<t+86400000){
       if(m[2]=='ремонт')continue;
       if(m[2]=='готовий')continue;
-     $('#marshrut_text').val(m[3]);
-   let dat =m[2].split('//');
+     $('#marshrut_text').val(m[6]);
+   let text =m[2].split('//');
+   let point =m[3].split('//');
+   let radius =m[4].split('//');
+   let chek =m[5].split('//');
+   let kkkk=0;
    $('#log_marh_tb').empty();
-   $('#log_marh_tb').append("<tr></tr><tr></tr>")
+   $('#log_marh_tb').append("<tr></tr><tr></tr><tr></tr><tr></tr><tr></tr>")
+   let tb=document.getElementById("log_marh_tb");
    let row = document.getElementById("log_marh_tb").rows[1];
-          for (let i = 0; i<dat.length; i++){
-   
+          for (let i = 0; i<text.length; i++){
+            kkkk++;
             let ind = row.cells.length-1;
             var td = row.insertCell(ind+1);
                 td.style.border = '1px solid black';
@@ -6454,7 +6584,7 @@ if(row.rowIndex>0 && evt.target.innerText !='ремонт-зняти' &&  evt.ta
                 el2.setAttribute('id', 'myInput'+ind+'');
                 el2.setAttribute('type', 'text');
                 el2.setAttribute('contenteditable', 'true');
-                el2.textContent = dat[i];
+                el2.textContent = text[i];
                 autocomplete(el2, adresa);
                 el.appendChild(el2);
                 td.appendChild(el);
@@ -6464,9 +6594,33 @@ if(row.rowIndex>0 && evt.target.innerText !='ремонт-зняти' &&  evt.ta
                 td = row.insertCell(ind+3);
                 td.innerText=" + "
                 td.style = 'font-size:14px; min-width: 15px; background: rgb(170, 248, 170);cursor:pointer';
-                    document.getElementById("log_marh_tb").rows[0].insertCell(ind+1);
-                    document.getElementById("log_marh_tb").rows[0].insertCell(ind+2);
-                    document.getElementById("log_marh_tb").rows[0].insertCell(ind+3);  
+                tb.rows[0].insertCell(ind+1);
+                tb.rows[0].insertCell(ind+2);
+                tb.rows[0].insertCell(ind+3);
+                tb.rows[2].insertCell(ind+1);
+                tb.rows[2].insertCell(ind+2);
+                tb.rows[2].insertCell(ind+3); 
+                tb.rows[3].insertCell(ind+1);
+                tb.rows[3].insertCell(ind+2);
+                tb.rows[3].insertCell(ind+3);  
+                tb.rows[4].insertCell(ind+1);
+                tb.rows[4].insertCell(ind+2);
+                tb.rows[4].insertCell(ind+3);
+
+
+                    tb.rows[0].cells[ind+1].textContent=kkkk;
+                    tb.rows[0].cells[ind+1].style='cursor:pointer';
+                    tb.rows[3].cells[ind+1].textContent=radius[i];
+                    tb.rows[3].cells[ind+1].setAttribute('contenteditable', 'true');
+                    tb.rows[2].cells[ind+1].textContent=point[i];
+                    tb.rows[2].cells[ind+1].style = ' display: none; overflow: hidden;';
+                    if (chek[i]=='true') {
+                      tb.rows[4].cells[ind+1].innerHTML = "<input type='checkbox' checked>";
+                    }else{
+                      tb.rows[4].cells[ind+1].innerHTML = "<input type='checkbox'>";
+                    }
+             
+
                        
           }
     }
@@ -6502,21 +6656,23 @@ if(name.cells){
 $("#cont_b1").on("click", function (){
   let t=Date.parse($('#cont_time').text());
   let n=$('#cont_unit').text();
+  let point='';
+  let text='';
+  let chek='true';
+  let radius ='';
   let coment = 'маршрут';
   if($('#marshrut_text').val())coment =$('#marshrut_text').val();
-  let mm='';
-  let table=document.getElementById("log_marh_tb").rows[1];
-  for(let i=0;i<table.cells.length;i+=3){
-    let text = table.cells[i].children[0].children[0].textContent;
-    if (mm=='') {
-      if (text)  mm+=text;
-    }else{
-      if (text)  mm+='//'+text;
-    }
-    
+  for(let i=0;i<marshrut_point.length;i++){
+   if(text==''){text=marshrut_point[i][1];}else{text+='//'+marshrut_point[i][1];}
+   if(point==''){point=marshrut_point[i][2]+','+marshrut_point[i][3];}else{point+='//'+marshrut_point[i][2]+','+marshrut_point[i][3];}
+   if(chek==''){chek=marshrut_point[i][5];}else{chek+='//'+marshrut_point[i][5];}
+   if(radius==''){radius=marshrut_point[i][4];}else{radius+='//'+marshrut_point[i][4];}
   }
-    write_jurnal(20233,'MR-avto.txt','||'+t+'|'+n+'|'+mm+'|'+coment,function () { 
-      msg("маршрут додано");
+
+
+    write_jurnal(20233,'MR-avto.txt','||'+t+'|'+n+'|'+text+'|'+point+'|'+radius+'|'+chek+'|'+coment,function () { 
+      msg("маршрут змінено");
+      audio.play();
       update_logistik_data(control_avto);
       return;
     });
@@ -6528,7 +6684,8 @@ $("#cont_b2").on("click", function (){
   let n=$('#cont_unit').text();
   let mm='видалено';
     write_jurnal(20233,'MR-avto.txt','||'+t+'|'+n+'|'+mm,function () { 
-      msg("маршрут додано");
+      msg("маршрут видалено");
+      audio.play();
       update_logistik_data(control_avto);
       return;
     });
@@ -6551,29 +6708,7 @@ $("#cont_b3").on("click", function (){
 });
 
 function logistik_zvit(data){
-let v_marsh=0;
 var probeg=0;
-
-for(let v=0;v<marshrut_data.length;v++){
-  dataLoop:for(let j=5;j<marshrut_data[v].length;j+=5){
-    let y = marshrut_data[v][j-5][0];
-    let x = marshrut_data[v][j-5][1];
-    let yy = marshrut_data[v][j][0];
-    let xx = marshrut_data[v][j][1];
-    let dis = wialon.util.Geometry.getDistance(y, x, yy, xx);
-    for(let i=1;i<data[0].length;i++){
-      if(!data[0][i][0])continue;
-      let yyy = parseFloat(data[0][i][0].split(',')[0]);
-      let xxx = parseFloat(data[0][i][0].split(',')[1]);
-      if (wialon.util.Geometry.getDistance(yy, xx, yyy, xxx)<500) {
-        v_marsh+=dis;
-        //L.polyline([[y,x],[yy,xx]], {color: 'blue',weight:5,opacity:1}).addTo(map);
-        continue dataLoop;
-      }
-    }
-  } 
- }
-
 for(let i=2;i<data[0].length;i++){
     if(!data[0][i][0])continue;
     if(!data[0][i-1][0])continue;
@@ -6588,7 +6723,7 @@ for(let i=2;i<data[0].length;i++){
 
   }
  
-  $('#marshrut_d').text("пробіг маршрут - "+(marshrut_probeg/1000).toFixed()+" км  _________   пробіг по маршруту - "+(v_marsh/1000).toFixed()+" км   _________  загальний пробіг - "+(probeg/1000).toFixed()+"км");
+  $('#marshrut_d').text("загальний пробіг - "+(probeg/1000).toFixed()+"км");
 
 }
 
