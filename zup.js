@@ -35,6 +35,7 @@ $('#vchora').click(function() {
    from222 = (new Date(Date.now() - tzoffset-86400000)).toISOString().slice(0, -13)+ '23:59';
    $('#fromtime1').val(from111);
    $('#fromtime2').val(from222);
+   from111=0;
 
 });
 
