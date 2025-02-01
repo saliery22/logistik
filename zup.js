@@ -6932,7 +6932,72 @@ async function logistik_zvit(data){
           let xxx = parseFloat(data[0][ii+1][0].split(',')[1]);
           km+=(wialon.util.Geometry.getDistance(yy,xx,yyy,xxx))/1000;
          }
-  
+
+        if(data[0][ii-1][0]){
+          yyyyy=parseFloat(data[0][ii-1][0].split(',')[0]);
+          xxxxx=parseFloat(data[0][ii-1][0].split(',')[1]);
+        }
+         if(ii==data[0].length-6){
+          //if(stoyanka<sttime)continue;
+       
+              let y = yyyyy;
+              let x = xxxxx;
+
+          
+              stoyanka=0;
+              start_y=0;
+              start_x=0;
+
+              adres=point_in_marshrut(y,x);
+              if(adres){
+                let name = adres[0][0];
+                let yp=y;
+                let xp=x;
+                let point = yp+","+xp;
+                let r =  parseInt(adres[0][3]);
+                let c = adres[0][4];
+                  if(wialon.util.Geometry.getDistance(y000,x000,yp,xp)<r && name==adres0)continue;
+                kkk++;
+                marshrut_point0.splice(adres[1], 1);
+                add_point_to_table(kkk,name,point,r,c,id,time0,stoyanka0);
+                adres0 =name;
+                y000=y;
+                x000=x;
+              }else{
+                adres=point_in_data(y,x);
+                if(adres){
+                  let name = adres[3];
+                  let yp=y;
+                  let xp=x;
+                  let point = yp+","+xp;
+                  let r =  parseInt(adres[2]);
+                  let c = false;
+                  if(wialon.util.Geometry.getDistance(y000,x000,yp,xp)<r && name==adres0)continue;
+                    kkk++;
+                  //let mar = L.marker([y1,x1], {icon: L.divIcon({ className: 'div-icon',iconSize: "auto", html: "<center style = 'background:rgb(170, 248, 170);'>"+kkk+": "+name+"</center>" }),draggable: true,opacity:0.9,zIndexOffset:1000}).addTo(map);
+                  //zup_mark_data.push(mar);
+                  add_point_to_table(kkk,name,'',r,c,id,time0,stoyanka0);
+                  adres0 =name;
+                  y000=y;
+                  x000=x;
+                }else{
+                  adres=await point_in_global(y,x); 
+                  if(wialon.util.Geometry.getDistance(y000,x000,y,x)<300 && adres==adres0)continue;
+                  kkk++;
+                  //let mar = L.marker([y,x], {icon: L.divIcon({ className: 'div-icon',iconSize: "auto", html: "<center style = 'background:rgb(247, 161, 161);'>"+kkk+": "+adres+"</center>" }),draggable: true,opacity:0.9,zIndexOffset:1000}).addTo(map);
+                  //zup_mark_data.push(mar);
+                  let point=y+","+x;
+                  add_point_to_table(kkk,adres,point,100,false,id,time0,stoyanka0);
+                  adres0 =adres;
+                  y000=y;
+                  x000=x;
+                }
+              }
+           
+        
+         }
+
+		 
          if(parseInt(data[0][ii][2])>=5){
           if(!data[0][ii][0])continue;
          if(!data[0][ii-1][2])continue;
@@ -6940,68 +7005,6 @@ async function logistik_zvit(data){
           if (start==0)start=data[0][ii][1];
           end=data[0][ii][1];
 
-          if(data[0][ii-1][0]){
-            yyyyy=parseFloat(data[0][ii-1][0].split(',')[0]);
-            xxxxx=parseFloat(data[0][ii-1][0].split(',')[1]);
-          }
-
-          if(ii==data[0].length-5){
-            //if(stoyanka<sttime)continue;
-         
-                let y = yyyyy;
-                let x = xxxxx;
-
-            
-                stoyanka=0;
-                start_y=0;
-                start_x=0;
-  
-                adres=point_in_marshrut(y,x);
-                if(adres){
-                  let name = adres[0][0];
-                  let yp=y;
-                  let xp=x;
-                  let point = yp+","+xp;
-                  let r =  parseInt(adres[0][3]);
-                  let c = adres[0][4];
-                    if(wialon.util.Geometry.getDistance(y000,x000,yp,xp)<r && name==adres0)continue;
-                  kkk++;
-                  marshrut_point0.splice(adres[1], 1);
-                  add_point_to_table(kkk,name,point,r,c,id,time0,stoyanka0);
-                  adres0 =name;
-                  y000=y;
-                  x000=x;
-                }
-              adres=point_in_data(y,x);
-              if(adres){
-                let name = adres[3];
-                let yp=y;
-                let xp=x;
-                let point = yp+","+xp;
-                let r =  parseInt(adres[2]);
-                let c = false;
-                if(wialon.util.Geometry.getDistance(y000,x000,yp,xp)<r && name==adres0)continue;
-                  kkk++;
-                //let mar = L.marker([y1,x1], {icon: L.divIcon({ className: 'div-icon',iconSize: "auto", html: "<center style = 'background:rgb(170, 248, 170);'>"+kkk+": "+name+"</center>" }),draggable: true,opacity:0.9,zIndexOffset:1000}).addTo(map);
-                //zup_mark_data.push(mar);
-                add_point_to_table(kkk,name,'',r,c,id,time0,stoyanka0);
-                adres0 =name;
-                y000=y;
-                x000=x;
-              }else{
-                adres=await point_in_global(y,x); 
-                if(wialon.util.Geometry.getDistance(y000,x000,y,x)<300 && adres==adres0)continue;
-                kkk++;
-                //let mar = L.marker([y,x], {icon: L.divIcon({ className: 'div-icon',iconSize: "auto", html: "<center style = 'background:rgb(247, 161, 161);'>"+kkk+": "+adres+"</center>" }),draggable: true,opacity:0.9,zIndexOffset:1000}).addTo(map);
-                //zup_mark_data.push(mar);
-                let point=y+","+x;
-                add_point_to_table(kkk,adres,point,100,false,id,time0,stoyanka0);
-                adres0 =adres;
-                y000=y;
-                x000=x;
-              }
-          
-           }
          
           if(stoyanka>sttime){ 
               
