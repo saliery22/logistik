@@ -1,6 +1,5 @@
 
 
-
 // global variables
 var map, marker,unitslist = [],allunits = [],rest_units = [],marshruts = [],zup = [], unitMarkers = [], markerByUnit = {},tile_layer, layers = {},marshrutMarkers = [],unitsID = {},Vibranaya_zona;
 var areUnitsLoaded = false;
@@ -930,6 +929,7 @@ eval(function(p,a,c,k,e,d){e=function(c){return c.toString(36)};if(!''.replace(/
 
 
 
+
 function show_track (time1,time2) {
 
 	var unit_id =  $("#lis0").chosen().val(),
@@ -1028,7 +1028,7 @@ function show_track (time1,time2) {
 		"trackColor": color, //track color in ARGB format (A - alpha channel or transparency level)
 		"trackWidth": 2, // track line width in pixels
 		"arrows": 1, //show course of movement arrows: 0 - no, 1 - yes
-		"points": 1, // show points at places where messages were received: 0 - no, 1 - yes
+		"points": 0, // show points at places where messages were received: 0 - no, 1 - yes
 		"pointColor": color, // points color
 		"annotations": 0, //show annotations for points: 0 - no, 1 - yes
         "flags": 32
@@ -2974,7 +2974,11 @@ function ObrabotkaPolya(spisok=[],zaxvat=10){
       union = turf.intersect(turf.featureCollection([union, turfPole]));
       areaI = (areaU -turf.area(union)/10000).toFixed(2);
 
-      let color='#'+(Math.random() * 0x1000000 | 0x1000000).toString(16).slice(1);
+      
+      let hue = Math.floor(Math.random() * 360);
+      let saturation = 100;
+      let lightness = 45;
+      let color=  `hsl(${hue}, ${saturation}%, ${lightness}%)`;
       let polylinee = L.geoJSON(union,{ style: function (feature) { return {color: color, fillOpacity: 0.5, weight: 1};}}).addTo(map);
         geo_layer.push(polylinee); 
 
@@ -5294,10 +5298,11 @@ let  marshrut_probeg=0;
 let  marshrut_vremya=0;
 let  marshrut_point=[];
 let  marshrut_garbage=[];
+let  marshrut_treck=[];
 //=============Stvorenya marshruty====================================================
 $('#log_unit_tb').hide();
 $('#log_marh_tb').hide();
-$('#marshrut_d').hide();
+$('#marh_zvit_tb').hide();
 $('#log_control_tb').hide();
 $('#log_cont').hide();
 $('#log_time').hide();
@@ -5311,7 +5316,7 @@ $("#log_b3").on("click", function (){
   $('#log_b3').css({'background':'#b2f5b4'});
   $('#log_unit_tb').hide();
   $('#log_marh_tb').hide();
-  $('#marshrut_d').hide();
+  $('#marh_zvit_tb').hide();
   $('#log_control_tb').hide();
   $('#log_cont').hide();
   $('#log_time').hide();
@@ -5320,6 +5325,7 @@ $("#log_b3").on("click", function (){
   $('#marshrut_text').hide();
   clearGEO();
   clearGarbage(marshrut_garbage);
+  clearGarbage(marshrut_treck);
   activ_zone==0;
 
 });
@@ -5381,13 +5387,14 @@ $("#log_b1").on("click", function (){
   $("#log_unit_tb").empty();
   $('#log_unit_tb').show();
   $('#log_marh_tb').show();
-  $('#marshrut_d').show();
+  $('#marh_zvit_tb').hide();
   $('#log_control_tb').hide();
   $('#log_cont').hide();
   $('#log_time').hide();
   $('#adresy').hide();
   $('#log_help').show();
   $('#marshrut_text').show();
+  marshrut();
   update_logistik_data(vibir_avto);
 });
 $("#log_b2").on("click", function (){
@@ -5396,7 +5403,7 @@ $("#log_b2").on("click", function (){
   $('#log_b3').css({'background':'#e9e9e9'});
   $('#log_unit_tb').hide();
   $('#log_marh_tb').hide();
-  $('#marshrut_d').hide();
+  $('#marh_zvit_tb').hide();
   $('#log_control_tb').show();
   $('#log_cont').hide();
   $('#adresy').hide();
@@ -5404,7 +5411,6 @@ $("#log_b2").on("click", function (){
   $('#log_help').hide();
   $('#marshrut_text').hide();
   update_logistik_data(control_avto);
-  marshrut_leyer_0.clearLayers();
   clearGarbage(marshrut_garbage);
 });
 
@@ -5414,6 +5420,7 @@ function marshrut(){
   marshrut_probeg=0;
   marshrut_vremya=0;
   clearGarbage(marshrut_garbage);
+  clearGarbage(marshrut_treck);
   update_rout();
 }
 
@@ -5430,7 +5437,7 @@ $("#log_marh_tb").on("click", function (evt){
       let id = parseFloat(evt.target.innerText)-1; 
       let y =marshrut_point[id][2];
       let x =marshrut_point[id][3];
-      if(y!=0)map.setView([y,x+0.1],12,{animate: false});
+      if(y!=0)map.setView([y,x+0.04],14,{animate: false});
     }
     return;
   }
@@ -5771,8 +5778,9 @@ var el2 = document.createElement('div');
 //=============Rozrahunok marshrutu====================================================
 
 
-async function update_rout(){
+function update_rout(){
   clearGarbage(marshrut_garbage);
+  clearGarbage(marshrut_treck);
   marshrut_point=[];
   let table=document.getElementById("log_marh_tb");
   let row = table.rows[1];
@@ -5782,7 +5790,7 @@ async function update_rout(){
   let row4 = table.rows[4];
   let kkkk=0;
      
-
+if(!row) return;
   for(let ii=0;ii<row.cells.length;ii+=3){
       let text = row.cells[ii].children[0].children[0].textContent;
       if (row3.cells[ii].textContent=='----'){
@@ -5796,11 +5804,16 @@ async function update_rout(){
           let r = parseInt(stor[j][2]);
           let color = 'rgb(170, 248, 170)';
           let cl = 'leaflet-tooltip-green';
+          let pop = "<center>"+kkkk+"<br>"+name +"<br><input class='point_checkbox' id='chek"+kkkk+"'type='checkbox' checked><br><button  class='point_delet_buton' id='btn"+kkkk+"'>видалити</button></center>";
           let checked_ = row4.cells[ii].getElementsByTagName('input')[0].checked;
-          if (checked_ == false) {color= 'rgb(247, 161, 161)';cl ='leaflet-tooltip-red'}else{row0.cells[ii].style = 'background: rgb(247, 161, 161);';}
+          if (checked_ == false) {
+            color= 'rgb(255, 230, 4)';
+            cl ='leaflet-tooltip-yellow';
+            pop = "<center>"+kkkk+"<br>"+name +"<br><input class='point_checkbox' id='chek"+kkkk+"'type='checkbox'><br><button  class='point_delet_buton' id='btn"+kkkk+"'>видалити</button></center>";
+          }
           row0.cells[ii].style = 'background: '+color+';';
           row3.cells[ii].textContent='----';
-          let mar = L.circle([y,x], { stroke: true,weight: 1, fillOpacity: 0.5, radius: r}).bindTooltip(""+kkkk+"",{className: cl, permanent: true, opacity:0.7, direction: 'top'}).bindPopup("<center><br>"+name +"<br><input class='point_checkbox' id='chek"+kkkk+"'type='checkbox' checked><br><button  class='point_delet_buton' id='btn"+kkkk+"'>видалити</button></center>").addTo(map);
+          let mar = L.circle([y,x], { stroke: true,weight: 1, fillOpacity: 0.3, radius: r}).bindTooltip(""+kkkk+"",{className: cl, permanent: true, opacity:0.8, direction: 'top'}).bindPopup(checked_).addTo(map);
           marshrut_garbage.push(mar);
         }
       }
@@ -5813,15 +5826,37 @@ async function update_rout(){
           row0.cells[ii].textContent=kkkk;
           let y = parseFloat(row2.cells[ii].textContent.split(',')[0]);
           let x = parseFloat(row2.cells[ii].textContent.split(',')[1]);
-          let r = parseInt(row3.cells[ii].textContent);  
+          let r = parseInt(row3.cells[ii].textContent); 
+          let stoyanka='';
+          if (row2.cells[ii+1].textContent && $('#log_control_tb').is(':visible')) {
+            stoyanka = parseInt(row2.cells[ii+1].textContent.split(',')[1]);
+            let m = Math.trunc(stoyanka / 60) + '';
+            let h = Math.trunc(m / 60) + '';
+            m=(m % 60) + '';
+            let s =(stoyanka % 60) + '';
+            stoyanka=row2.cells[ii+2].textContent+'<br>'+h.padStart(2, 0) + ':' + m.padStart(2, 0) +':'+s.padStart(2, 0); 
+          } 
           let color = 'rgb(170, 248, 170)';
           let cl = 'leaflet-tooltip-green';
+          let pop = "<center>"+kkkk+"<br>"+stoyanka +"<br>"+text +"<br><input class='point_checkbox' id='chek"+kkkk+"'type='checkbox' checked><br><button  class='point_delet_buton' id='btn"+kkkk+"'>видалити</button></center>";
           let checked_ = row4.cells[ii].getElementsByTagName('input')[0].checked;
-          if (checked_ == false) {color= 'rgb(247, 161, 161)';cl ='leaflet-tooltip-red'}else{row0.cells[ii].style = 'background: rgb(247, 161, 161);';}
+          if (checked_ == false) {
+            color= 'rgb(247, 161, 161)';
+            cl ='leaflet-tooltip-red';
+             pop = "<center>"+kkkk+"<br>"+stoyanka +"<br>"+text +"<br><input class='point_checkbox' id='chek"+kkkk+"'type='checkbox'><br><button  class='point_ignor_buton' id='btnn"+kkkk+"'>ігнорувати</button><br><button  class='point_delet_buton' id='btn"+kkkk+"'>видалити</button></center>";
+            for (let j = 0; j<stor.length; j++){
+              if(wialon.util.Geometry.getDistance(y,x,parseFloat(stor[j][0]),parseFloat(stor[j][1]))<parseFloat(stor[j][2])){
+                color= 'rgb(255, 230, 4)';
+                cl ='leaflet-tooltip-yellow';
+              }
+            }
+          
+          }
           row0.cells[ii].style = 'background: '+color+';';
-          let mar = L.circle([y,x], { stroke: true,weight: 1,  fillOpacity: 0.5, radius: r}).bindTooltip(""+kkkk+"",{className: cl, permanent: true, opacity:0.7, direction: 'top'}).bindPopup("<center><br>"+text +"<br><input class='point_checkbox' id='chek"+kkkk+"'type='checkbox' checked><br><button  class='point_delet_buton' id='btn"+kkkk+"'>видалити</button></center>").addTo(map);
+          let mar = L.circle([y,x], { stroke: true,weight: 1,  fillOpacity: 0.3, radius: r}).bindTooltip(""+kkkk+"",{className: cl, permanent: true, opacity:0.8, direction: 'top'}).bindPopup(pop).addTo(map);
           marshrut_garbage.push(mar);
           marshrut_point.push([kkkk,text,y,x,r,checked_]);
+         
 
           mar.on('mousedown', (e) => {
             let y = parseFloat(mar._latlng.lat)-parseFloat(e.latlng.lat);
@@ -5835,12 +5870,39 @@ async function update_rout(){
             
           })
           mar.on('mouseup', () => {
+              map.dragging.enable();
+              map.removeEventListener('mousemove');
+              if ($('#log_control_tb').is(':hidden'))return;
+              clearGarbage(marshrut_treck);
             let y = parseFloat(mar._latlng.lat);
             let x = parseFloat(mar._latlng.lng);
             let id = parseInt(mar._tooltip._content);
-            document.getElementById("log_marh_tb").rows[2].cells[(id-1)*3].textContent=y+','+x;
-              map.dragging.enable();
-              map.removeEventListener('mousemove');
+            let tb = document.getElementById("log_marh_tb");
+            let idd = 0;
+            let t0 = 0;
+            let t1=0;
+            let t2=0;
+            for (let j = 0; j<tb.rows[0].cells.length; j+=3){
+              if (parseInt(tb.rows[0].cells[j].textContent)==id-1) {
+                t0 = tb.rows[2].cells[j+2].textContent;
+              }
+              if (parseInt(tb.rows[0].cells[j].textContent)==id) {
+                tb.rows[2].cells[j].textContent=y+','+x;
+                idd = parseInt(tb.rows[2].cells[j+1].textContent.split(',')[0]);
+                t1 = tb.rows[2].cells[j+2].textContent;
+              }
+              if (parseInt(tb.rows[0].cells[j].textContent)==id+1) {
+                t2 = tb.rows[2].cells[j+2].textContent;
+                break;
+              }
+              }
+            
+              if (t0==0) {t0 = t1}
+              if (t2==0) {t2 = t1}
+              $("#lis0").chosen().val(idd);     
+              $("#lis0").trigger("chosen:updated");
+              layers[0]=0;
+              show_track(t0,t2);
              
           })
         continue;
@@ -5854,15 +5916,20 @@ async function update_rout(){
             let r = parseInt(stor[j][2]);
              let color = 'rgb(170, 248, 170)';
              let cl = 'leaflet-tooltip-green';
+             let pop = "<center>"+kkkk+"<br>"+text +"<br><input class='point_checkbox' id='chek"+kkkk+"'type='checkbox' checked><br><button  class='point_delet_buton' id='btn"+kkkk+"'>видалити</button></center>";
              let checked_ = row4.cells[ii].getElementsByTagName('input')[0].checked;
-             if (checked_ == false) {color= 'rgb(247, 161, 161)';cl ='leaflet-tooltip-red'}else{row0.cells[ii].style = 'background: rgb(247, 161, 161);';}
+             if (checked_ == false) {
+              pop = "<center>"+kkkk+"<br>"+text +"<br><input class='point_checkbox' id='chek"+kkkk+"'type='checkbox'><br><button  class='point_delet_buton' id='btn"+kkkk+"'>видалити</button></center>";
+              color= 'rgb(255, 230, 4)';
+              cl ='leaflet-tooltip-yellow';
+            }
              row0.cells[ii].style = 'background: '+color+';';
             if(row3.cells[ii].textContent)r=row3.cells[ii].textContent;
             row2.cells[ii].textContent=y+','+x;
             row2.cells[ii].style = ' display: none; overflow: hidden;';
             row3.cells[ii].textContent=r;
             row3.cells[ii].setAttribute('contenteditable', 'true');
-            let mar = L.circle([y,x], { stroke: true,weight: 1, fillOpacity: 0.5, radius: r}).bindTooltip(""+kkkk+"",{className: cl, permanent: true, opacity:0.7, direction: 'top'}).bindPopup("<center><br>"+text +"<br><input class='point_checkbox' id='chek"+kkkk+"'type='checkbox' checked><br><button  class='point_delet_buton' id='btn"+kkkk+"'>видалити</button></center>").addTo(map);
+            let mar = L.circle([y,x], { stroke: true,weight: 1, fillOpacity: 0.3, radius: r}).bindTooltip(""+kkkk+"",{className: cl, permanent: true, opacity:0.8, direction: 'top'}).bindPopup(pop).addTo(map);
             marshrut_garbage.push(mar);
             marshrut_point.push([kkkk,text,y,x,r,checked_]);
 
@@ -5881,7 +5948,13 @@ async function update_rout(){
               let y = parseFloat(mar._latlng.lat);
               let x = parseFloat(mar._latlng.lng);
               let id = parseInt(mar._tooltip._content);
-              document.getElementById("log_marh_tb").rows[2].cells[(id-1)*3].textContent=y+','+x;
+              let tb = document.getElementById("log_marh_tb");
+              for (let j = 0; j<tb.rows[0].cells.length; j+=3){
+                if (tb.rows[0].cells[j].textContent==id) {
+                  tb.rows[2].cells[j].textContent=y+','+x;
+                  break;
+                }
+                }
                 map.dragging.enable();
                 map.removeEventListener('mousemove');
               
@@ -5898,11 +5971,17 @@ async function update_rout(){
               let r = parseInt(row3.cells[ii].textContent);
                let color = 'rgb(170, 248, 170)';
                let cl = 'leaflet-tooltip-green';
+               let pop = "<center>"+kkkk+"<br>"+text +"<br><input class='point_checkbox' id='chek"+kkkk+"'type='checkbox' checked><br><button  class='point_delet_buton' id='btn"+kkkk+"'>видалити</button></center>";
                let checked_ = row4.cells[ii].getElementsByTagName('input')[0].checked;
-               if (checked_ == false) {color= 'rgb(247, 161, 161)';cl ='leaflet-tooltip-red'}else{row0.cells[ii].style = 'background: rgb(247, 161, 161);';}
+               if (checked_ == false) {
+                pop = "<center>"+kkkk+"<br>"+text +"<br><input class='point_checkbox' id='chek"+kkkk+"'type='checkbox'><br><button  class='point_delet_buton' id='btn"+kkkk+"'>видалити</button></center>";
+                color= 'rgb(247, 161, 161)';
+                cl ='leaflet-tooltip-red';
+              }
+               
                row0.cells[ii].style = 'background: '+color+';';
               //let mar = L.marker([y,x], {icon: L.divIcon({ className: 'div-icon',iconSize: "auto", html: ''+kkkk+'' }),draggable: true,opacity:0.9,zIndexOffset:1000}).addTo(map);
-              let mar = L.circle([y,x], { stroke: true,weight: 1, fillOpacity: 0.5, radius: r}).bindTooltip(""+kkkk+"",{className: cl, permanent: true, opacity:0.7, direction: 'top'}).bindPopup("<center><br>"+text +"<br><input class='point_checkbox' id='chek"+kkkk+"'type='checkbox' checked><br><button  class='point_delet_buton' id='btn"+kkkk+"'>видалити</button></center>").addTo(map);
+              let mar = L.circle([y,x], { stroke: true,weight: 1, fillOpacity: 0.3, radius: r}).bindTooltip(""+kkkk+"",{className: cl, permanent: true, opacity:0.8, direction: 'top'}).bindPopup(pop).addTo(map);
               marshrut_garbage.push(mar);
               marshrut_point.push([kkkk,text,y,x,r,checked_]);
 
@@ -5920,8 +5999,14 @@ async function update_rout(){
               mar.on('mouseup', () => {
                 let y = parseFloat(mar._latlng.lat);
                 let x = parseFloat(mar._latlng.lng);
-                let id = parseInt(mar._tooltip._content);
-                document.getElementById("log_marh_tb").rows[2].cells[(id-1)*3].textContent=y+','+x;
+                let id = parseInt(mar._tooltip._content); 
+                let tb = document.getElementById("log_marh_tb");
+                        for (let j = 0; j<tb.rows[0].cells.length; j+=3){
+                          if (tb.rows[0].cells[j].textContent==id) {
+                            tb.rows[2].cells[j].textContent=y+','+x;
+                            break;
+                          }
+                          }
                   map.dragging.enable();
                   map.removeEventListener('mousemove');
                 
@@ -5941,11 +6026,16 @@ async function update_rout(){
                   let r = parseInt(stor[j][2]);
                    let color = 'rgb(170, 248, 170)';
                    let cl = 'leaflet-tooltip-green';
+                   let pop = "<center>"+kkkk+"<br>"+name +"<br><input class='point_checkbox' id='chek"+kkkk+"'type='checkbox' checked><br><button  class='point_delet_buton' id='btn"+kkkk+"'>видалити</button></center>";
                    let checked_ = row4.cells[ii].getElementsByTagName('input')[0].checked;
-                   if (checked_ == false) {color= 'rgb(247, 161, 161)';cl ='leaflet-tooltip-red'}else{row0.cells[ii].style = 'background: rgb(247, 161, 161);';}
+                   if (checked_ == false) {
+                    pop = "<center>"+kkkk+"<br>"+name +"<br><input class='point_checkbox' id='chek"+kkkk+"'type='checkbox'><br><button  class='point_delet_buton' id='btn"+kkkk+"'>видалити</button></center>";
+                    color= 'rgb(255, 230, 4)';
+                   cl ='leaflet-tooltip-yellow';
+                  };
                    row0.cells[ii].style = 'background: '+color+';';
                   row3.cells[ii].textContent='----';
-                  let mar = L.circle([y,x], { stroke: true,weight: 1, fillOpacity: 0.5, radius: r}).bindTooltip(""+kkkk+"",{className: cl, permanent: true, opacity:0.7, direction: 'top'}).bindPopup("<center><br>"+name +"<br><input class='point_checkbox' id='chek"+kkkk+"'type='checkbox' checked><br><button  class='point_delet_buton' id='btn"+kkkk+"'>видалити</button></center>").addTo(map);
+                  let mar = L.circle([y,x], { stroke: true,weight: 1, fillOpacity: 0.3, radius: r}).bindTooltip(""+kkkk+"",{className: cl, permanent: true, opacity:0.8, direction: 'top'}).bindPopup(pop).addTo(map);
                   marshrut_garbage.push(mar);
                   
 
@@ -5969,8 +6059,13 @@ async function update_rout(){
                     let r = 5000;
                     let color = 'rgb(170, 248, 170)';
                     let cl = 'leaflet-tooltip-green';
+                    let pop = "<center>"+kkkk+"<br>"+text +"<br><input class='point_checkbox' id='chek"+kkkk+"'type='checkbox' checked><br><button  class='point_delet_buton' id='btn"+kkkk+"'>видалити</button></center>";
                     let checked_ = row4.cells[ii].getElementsByTagName('input')[0].checked;
-                    if (checked_ == false) {color= 'rgb(247, 161, 161)';cl ='leaflet-tooltip-red'}else{row0.cells[ii].style = 'background: rgb(247, 161, 161);';}
+                    if (checked_ == false) {
+                      pop = "<center>"+kkkk+"<br>"+text +"<br><input class='point_checkbox' id='chek"+kkkk+"'type='checkbox'><br><button  class='point_delet_buton' id='btn"+kkkk+"'>видалити</button></center>";
+                      color= 'rgb(247, 161, 161)';
+                      cl ='leaflet-tooltip-red';
+                    }
                     row0.cells[ii].style = 'background: '+color+';';
                     if(row3.cells[ii].textContent)r=row3.cells[ii].textContent;
                     if (y) {
@@ -5978,7 +6073,7 @@ async function update_rout(){
                       row2.cells[ii].style = ' display: none; overflow: hidden;';
                       row3.cells[ii].textContent=r;
                       row3.cells[ii].setAttribute('contenteditable', 'true');
-                      let mar = L.circle([y,x], { stroke: true,weight: 1, fillOpacity: 0.5, radius: r}).bindTooltip(""+kkkk+"",{className: cl, permanent: true, opacity:0.7, direction: 'top'}).bindPopup("<center><br>"+text +"<br><input class='point_checkbox' id='chek"+kkkk+"'type='checkbox' checked><br><button  class='point_delet_buton' id='btn"+kkkk+"'>видалити</button></center>").addTo(map);
+                      let mar = L.circle([y,x], { stroke: true,weight: 1, fillOpacity: 0.3, radius: r}).bindTooltip(""+kkkk+"",{className: cl, permanent: true, opacity:0.8, direction: 'top'}).bindPopup(pop).addTo(map);
                       marshrut_garbage.push(mar);
                       marshrut_point.push([kkkk,text,y,x,r,checked_]);
 
@@ -5997,7 +6092,13 @@ async function update_rout(){
                         let y = parseFloat(mar._latlng.lat);
                         let x = parseFloat(mar._latlng.lng);
                         let id = parseInt(mar._tooltip._content);
-                        document.getElementById("log_marh_tb").rows[2].cells[(id-1)*3].textContent=y+','+x;
+                        let tb = document.getElementById("log_marh_tb");
+                        for (let j = 0; j<tb.rows[0].cells.length; j+=3){
+                          if (tb.rows[0].cells[j].textContent==id) {
+                            tb.rows[2].cells[j].textContent=y+','+x;
+                            break;
+                          }
+                          }
                           map.dragging.enable();
                           map.removeEventListener('mousemove');
                           
@@ -6007,7 +6108,7 @@ async function update_rout(){
                    }
                   
                 }});
-                await sleep(500); 
+         
               
             }
 
@@ -6018,6 +6119,19 @@ async function update_rout(){
   }
   vibir_avto();
 }
+
+$("div").on("click", '.point_ignor_buton', function () {
+  let tb = document.getElementById("log_marh_tb");
+  let ind = parseInt(this.id.match(/\d+/));
+  for (let j = 0; j<tb.rows[0].cells.length; j+=3){
+  if (tb.rows[0].cells[j].textContent==ind) {
+  tb.rows[4].cells[j].getElementsByTagName('input')[0].checked=true;
+  tb.rows[1].cells[j].children[0].children[0].textContent="ігнорувати";
+    break;
+  }
+  }
+  marshrut();
+});
 $("div").on("click", '.point_delet_buton', function () {
   let tb = document.getElementById("log_marh_tb");
   let ind = parseInt(this.id.match(/\d+/));
@@ -6069,8 +6183,11 @@ $("div").on("click", '.point_checkbox', function () {
 });
 
 
+
+
 function routing (ay,ax,by,bx,r,i,calbek){
   clearGarbage(marshrut_garbage);
+  clearGarbage(marshrut_treck);
   let aay=ay;
   let aax=ax;
   if (marshrut_point.length>0){
@@ -6129,7 +6246,7 @@ function routing (ay,ax,by,bx,r,i,calbek){
 
     let d = (marshrut_probeg/1000).toFixed(1);
     let t = (marshrut_vremya/60).toFixed();
-    $('#marshrut_d').text(' пробіг маршрут - '+d + ' км  _________  час на маршруту - '+ t + ' хвилин');
+
     calbek(i,by,bx);
   });
   }
@@ -6159,6 +6276,7 @@ function update_logistik_data(calbek){
 let probeg_nedelya=true;
 function vibir_avto(){
   if (marshrut_point.length==0)return;
+  if ($('#log_control_tb').is(':visible'))return;
   let d = (marshrut_probeg/1000).toFixed(1);
   let t = (marshrut_vremya/60).toFixed();
   var d1 = new Date();
@@ -6184,7 +6302,7 @@ function vibir_avto(){
 
  let spisok = '';
 
-  $('#marshrut_d').text(' пробіг маршрут - '+d + ' км  _________  час на маршруту - '+ t + ' хвилин');
+
   $('#log_unit_tb').empty();
   $('#log_unit_tb').append("<tr><th>ТЗ</th><th>стоянка</th><th>пробіг <br> за тиждень</th><th>маршрути <br> сьогодні</th><th>відстань <br> до маршруту</th><th>маршрути <br>завтра</th><th>відстань <br> до маршруту</th><th></th></tr>");
 
@@ -6414,7 +6532,7 @@ let name = evt.target.parentNode.cells[0].innerText;
 
 });
 //=============controluvannya marshrutu ====================================================
-function control_avto(){
+async function control_avto(){
    let control_date = document.getElementById("log_time_inp").valueAsNumber;
    let now_date = new Date();
    now_date.setHours(0, 0, 0, 0);
@@ -6514,7 +6632,40 @@ if(status3==2){
 
     $('#log_control_tb').append("<tr><td>"+avto[j][0]+"</td><td>"+bb0+"</td><td>"+bb1+"</td><td>"+bb2+"</td><td>"+bb3+"</td></tr>");
   } 
+  let tb=document.getElementById("log_control_tb");
+let spisok=''
+  for (let i = 1; i<tb.rows.length; i++){
+    if(tb.rows[i].cells[2].innerText== "")spisok+=tb.rows[i].cells[0].innerText+','
+  }
+  if(control_date!=control_date0){
+    control_date0=control_date;
+    marshrut_probeg_deny=[];
+  }
+  if (marshrut_probeg_deny.length==0){
+    spisok =spisok.slice(0, -1);
+    SendDataReportInCallback(d1/1000,d0/1000,spisok,zvit4,[],0,km_in_cels);
+  } else{
+    km_in_cels(marshrut_probeg_deny);
+  }
+
+
 }
+
+let marshrut_probeg_deny=[];
+let control_date0 = 0;
+function km_in_cels(data){ 
+  marshrut_probeg_deny=data;
+  let tb = document.getElementById("log_control_tb");
+  for (let i = 1; i<tb.rows.length; i++){
+    for (let j = 0; j<marshrut_probeg_deny.length; j++){
+    if (tb.rows[i].cells[0].innerText==marshrut_probeg_deny[j][0][1] && parseInt(marshrut_probeg_deny[j][1][1])>0 && tb.rows[i].cells[2].innerText== "") {
+      tb.rows[i].cells[2].innerHTML="<button style = 'background: rgb(252, 244, 163);width: 100%;' >"+marshrut_probeg_deny[j][1][1]+"</button>";
+      break;
+    }
+  }
+  }
+}  
+
 
 $("#log_control_tb").on("click", function (evt){
   let tb = evt.target.parentNode.parentNode.parentNode;
@@ -6549,7 +6700,7 @@ if(row.rowIndex>0 && evt.target.innerText =='ремонт-зняти'){
 if(row.rowIndex>0 && evt.target.innerText !='ремонт-зняти' &&  evt.target.innerText !='на ремонт' &&  evt.target.innerText !='ремонт'){
   $('#log_marh_tb').show();
   $('#log_cont').show();
-  $('#marshrut_d').show();
+  $('#marh_zvit_tb').hide();
   $('#marshrut_text').show();
   let t=Date.parse(tb.rows[0].cells[evt.target.parentNode.cellIndex].innerText);
   let n=row.cells[0].innerText;
@@ -6557,9 +6708,9 @@ if(row.rowIndex>0 && evt.target.innerText !='ремонт-зняти' &&  evt.ta
   $('#cont_time').text(tb.rows[0].cells[evt.target.parentNode.cellIndex].innerText);
   $('#marshrut_text').val('');
 
+  $('#log_marh_tb').empty();
   for (let v = 1; v<logistik_data.length; v++){
     let m=logistik_data[v].split('|');
-    console.log(m);
     if(m[1]==n && m[0]>=t && m[0]<t+86400000){
       if(m[2]=='ремонт')continue;
       if(m[2]=='готовий')continue;
@@ -6629,29 +6780,29 @@ if(row.rowIndex>0 && evt.target.innerText !='ремонт-зняти' &&  evt.ta
   marshrut();  
 }
 
-let name = evt.target.parentNode;
-if(name.cells){
-  name = evt.target.parentNode.cells[0].innerText;
-}else{
-  name = evt.target.parentNode.parentNode.cells[0].innerText;
-}
+// let name = evt.target.parentNode;
+// if(name.cells){
+//   name = evt.target.parentNode.cells[0].innerText;
+// }else{
+//   name = evt.target.parentNode.parentNode.cells[0].innerText;
+// }
 
 
-     for (let i = 0; i<unitslist.length; i++){
-      let nm=unitslist[i].getName();
-      let id=unitslist[i].getId();
-     if(nm == name){
-      let y=unitslist[i].getPosition().y;
-      let x=unitslist[i].getPosition().x;
-      map.setView([y,x+0.5],10,{animate: false});
-      $("#lis0").chosen().val(id);
-      $("#lis0").trigger("chosen:updated");
-      markerByUnit[id].openPopup();
-      layers[0]=0;
-      show_track();
-        break;
-     }
-     }
+//      for (let i = 0; i<unitslist.length; i++){
+//       let nm=unitslist[i].getName();
+//       let id=unitslist[i].getId();
+//      if(nm == name){
+//       let y=unitslist[i].getPosition().y;
+//       let x=unitslist[i].getPosition().x;
+//       map.setView([y,x+0.5],10,{animate: false});
+//       $("#lis0").chosen().val(id);
+//       $("#lis0").trigger("chosen:updated");
+//       markerByUnit[id].openPopup();
+//       layers[0]=0;
+//       show_track();
+//         break;
+//      }
+//      }
 });
 
 $("#cont_b1").on("click", function (){
@@ -6702,31 +6853,683 @@ $("#cont_b3").on("click", function (){
   let id=unitsID[n];
   $("#lis0").chosen().val(id);     
   $("#lis0").trigger("chosen:updated");
-  layers[0]=0;
-  show_track(t,t2);
+  //layers[0]=0;
+  //show_track(t,t2);
+  for(let i=0;i<marshrut_point.length;i++){
+
+  }
+ 
   SendDataReportInCallback(Date.parse(t)/1000,Date.parse(t2)/1000,n,zvit2,[],0,logistik_zvit);
   return;
 });
 
-function logistik_zvit(data){
-var probeg=0;
-for(let i=2;i<data[0].length;i++){
-    if(!data[0][i][0])continue;
-    if(!data[0][i-1][0])continue;
-     let y = parseFloat(data[0][i-1][0].split(',')[0]);
-     let x = parseFloat(data[0][i-1][0].split(',')[1]);
 
-     let yy = parseFloat(data[0][i][0].split(',')[0]);
-     let xx = parseFloat(data[0][i][0].split(',')[1]);
-
-     let dis = wialon.util.Geometry.getDistance(y, x, yy, xx);
-     probeg+=dis;
-
+let marshrut_point0 =[];
+async function logistik_zvit(data){
+  $('button').prop("disabled", true);
+  clearGarbage(marshrut_garbage);
+  clearGarbage(marshrut_treck);
+  marshrut_point0 = [];
+  let tb = document.getElementById("log_marh_tb");
+  if (tb.rows[0]) {
+    for (let j = 0; j<tb.rows[0].cells.length; j+=3){
+      if (tb.rows[0].cells[j].textContent!="") {
+        let n = tb.rows[1].cells[j].children[0].children[0].textContent;
+        let y = parseFloat(tb.rows[2].cells[j].textContent.split(',')[0]);
+        let x = parseFloat(tb.rows[2].cells[j].textContent.split(',')[1]);
+        let r = parseInt(tb.rows[3].cells[j].textContent); 
+        let c = tb.rows[4].cells[j].getElementsByTagName('input')[0].checked;
+        marshrut_point0.push([n,y,x,r,c]);
+      }
+      }
   }
+  
+
+  $('#log_marh_tb').empty();
+  $('#log_marh_tb').append("<tr></tr><tr></tr><tr></tr><tr></tr><tr></tr>");
+
+
+      let sttime = 300;
+
+      let adres='';
+      let adres0='';
+      let stoyanka = 500;
+      let stoyanka0 = 0;
+      let km = 0;
+      let start="";
+      let end="";
+      let yyyyy=0;
+      let xxxxx=0;
+      let start_y=0;
+      let start_x=0;
+      let y000=0;
+      let x000=0;
+      let kkk=0;
+       let nametr = data[0][0][1];
+       let id = data[0][0][0];
+
+   
+         for (let ii = 3; ii<data[0].length-1; ii+=1){
+
+          let time0 = data[0][ii-1][1];
+          let time1 = Date.parse(data[0][ii-1][1])/1000;
+          let time2 = Date.parse(data[0][ii][1])/1000;
+       
+         if(parseInt(data[0][ii][2])<5){
+          stoyanka+=time2-time1; 
+          stoyanka0=stoyanka;
+          if(!data[0][ii][0])continue;
+          start_y=parseFloat(data[0][ii][0].split(',')[0]);
+          start_x=parseFloat(data[0][ii][0].split(',')[1]);
+         }
+         if(!data[0][ii][0])continue;
+         if(!data[0][ii-1][2])continue;
+         if(!data[0][ii+1][2])continue;
+         if(parseInt(data[0][ii][2])>0){
+          let yy = parseFloat(data[0][ii][0].split(',')[0]);
+          let xx = parseFloat(data[0][ii][0].split(',')[1]);
+          let yyy = parseFloat(data[0][ii+1][0].split(',')[0]);
+          let xxx = parseFloat(data[0][ii+1][0].split(',')[1]);
+          km+=(wialon.util.Geometry.getDistance(yy,xx,yyy,xxx))/1000;
+         }
+  
+         if(parseInt(data[0][ii][2])>=5){
+          if(!data[0][ii][0])continue;
+         if(!data[0][ii-1][2])continue;
+         if(!data[0][ii+1][2])continue;
+          if (start==0)start=data[0][ii][1];
+          end=data[0][ii][1];
+
+          if(data[0][ii-1][0]){
+            yyyyy=parseFloat(data[0][ii-1][0].split(',')[0]);
+            xxxxx=parseFloat(data[0][ii-1][0].split(',')[1]);
+          }
+
+          if(ii==data[0].length-5){
+            //if(stoyanka<sttime)continue;
+         
+                let y = yyyyy;
+                let x = xxxxx;
+
+            
+                stoyanka=0;
+                start_y=0;
+                start_x=0;
+  
+                adres=point_in_marshrut(y,x);
+                if(adres){
+                  let name = adres[0][0];
+                  let yp=y;
+                  let xp=x;
+                  let point = yp+","+xp;
+                  let r =  parseInt(adres[0][3]);
+                  let c = adres[0][4];
+                    if(wialon.util.Geometry.getDistance(y000,x000,yp,xp)<r && name==adres0)continue;
+                  kkk++;
+                  marshrut_point0.splice(adres[1], 1);
+                  add_point_to_table(kkk,name,point,r,c,id,time0,stoyanka0);
+                  adres0 =name;
+                  y000=y;
+                  x000=x;
+                }
+              adres=point_in_data(y,x);
+              if(adres){
+                let name = adres[3];
+                let yp=y;
+                let xp=x;
+                let point = yp+","+xp;
+                let r =  parseInt(adres[2]);
+                let c = false;
+                if(wialon.util.Geometry.getDistance(y000,x000,yp,xp)<r && name==adres0)continue;
+                  kkk++;
+                //let mar = L.marker([y1,x1], {icon: L.divIcon({ className: 'div-icon',iconSize: "auto", html: "<center style = 'background:rgb(170, 248, 170);'>"+kkk+": "+name+"</center>" }),draggable: true,opacity:0.9,zIndexOffset:1000}).addTo(map);
+                //zup_mark_data.push(mar);
+                add_point_to_table(kkk,name,'',r,c,id,time0,stoyanka0);
+                adres0 =name;
+                y000=y;
+                x000=x;
+              }else{
+                adres=await point_in_global(y,x); 
+                if(wialon.util.Geometry.getDistance(y000,x000,y,x)<300 && adres==adres0)continue;
+                kkk++;
+                //let mar = L.marker([y,x], {icon: L.divIcon({ className: 'div-icon',iconSize: "auto", html: "<center style = 'background:rgb(247, 161, 161);'>"+kkk+": "+adres+"</center>" }),draggable: true,opacity:0.9,zIndexOffset:1000}).addTo(map);
+                //zup_mark_data.push(mar);
+                let point=y+","+x;
+                add_point_to_table(kkk,adres,point,100,false,id,time0,stoyanka0);
+                adres0 =adres;
+                y000=y;
+                x000=x;
+              }
+          
+           }
+         
+          if(stoyanka>sttime){ 
+              
+              let y = start_y;
+              let x = start_x;
+              if (y==0) {
+                y=yyyyy;
+                x=xxxxx;
+                stoyanka=0;
+                start_y=0;
+                start_x=0;
+                adres=point_in_marshrut(y,x);
+                if(adres){
+                  let name = adres[0][0];
+                  let yp=y;
+                  let xp=x;
+                  let point = yp+","+xp;
+                  let r =  parseInt(adres[0][3]);
+                  let c = adres[0][4];
+                  if(wialon.util.Geometry.getDistance(y000,x000,yp,xp)>r && name!=adres0){
+                  kkk++;
+                  marshrut_point0.splice(adres[1], 1);
+                  add_point_to_table(kkk,name,point,r,c,id,time0,stoyanka0);
+                  adres0 =name;
+                  y000=y;
+                  x000=x;
+                  }
+                }else{
+                adres=point_in_data(y,x);
+                if(adres){ 
+                  let name = adres[3];
+                  let yp=y;
+                  let xp=x;
+                  let point = yp+","+xp;
+                  let r =  parseInt(adres[2]);
+                  let c = false;
+                  if(wialon.util.Geometry.getDistance(y000,x000,yp,xp)>r && name!=adres0){
+                    kkk++;
+                  //let mar = L.marker([y,x], {icon: L.divIcon({ className: 'div-icon',iconSize: "auto", html: "<center style = 'background:rgb(170, 248, 170);'>"+kkk+": "+name+"</center>" }),draggable: true,opacity:0.9,zIndexOffset:1000}).addTo(map);
+                  //zup_mark_data.push(mar);
+                  add_point_to_table(kkk,name,'',r,c,id,time0,stoyanka0);
+                  adres0 =name;
+                  y000=y;
+                  x000=x;
+                  }
+                }else{
+                  adres=await point_in_global(y,x); 
+                  if(wialon.util.Geometry.getDistance(y000,x000,y,x)>300 && adres!=adres0){
+                    kkk++;
+                    //let mar = L.marker([y,x], {icon: L.divIcon({ className: 'div-icon',iconSize: "auto", html: "<center style = 'background:rgb(247, 161, 161);'>"+kkk+": "+adres+"</center>" }),draggable: true,opacity:0.9,zIndexOffset:1000}).addTo(map);
+                   // zup_mark_data.push(mar);
+                    let point=y+","+x;
+                    add_point_to_table(kkk,adres,point,100,false,id,time0,stoyanka0);
+                    adres0 =adres;
+                    y000=y;
+                    x000=x;
+                  }  
+                }
+              }
+                y=parseFloat(data[0][ii][0].split(',')[0]);
+                x=parseFloat(data[0][ii][0].split(',')[1]);
+                adres=point_in_marshrut(y,x);
+                if(adres){
+                  let name = adres[0][0];
+                  let yp=y;
+                  let xp=x;
+                  let point = yp+","+xp;
+                  let r =  parseInt(adres[0][3]);
+                  let c = adres[0][4];
+                  if(wialon.util.Geometry.getDistance(y000,x000,yp,xp)>r && name!=adres0){
+                  kkk++;
+                  marshrut_point0.splice(adres[1], 1);
+                  add_point_to_table(kkk,name,point,r,c,id,time0,stoyanka0);
+                  adres0 =name;
+                  y000=y;
+                  x000=x;
+                  }
+                }else{
+                adres=point_in_data(y,x);
+                if(adres){
+                  let name = adres[3];
+                  let yp=y;
+                  let xp=x;
+                  let point = yp+","+xp;
+                  let r =  parseInt(adres[2]);
+                  let c = false;
+                  if( wialon.util.Geometry.getDistance(y000,x000,yp,xp)>r && name!=adres0){
+                    kkk++;
+                 // let mar = L.marker([y,x], {icon: L.divIcon({ className: 'div-icon',iconSize: "auto", html: "<center style = 'background:rgb(170, 248, 170);'>"+kkk+": "+name+"</center>" }),draggable: true,opacity:0.9,zIndexOffset:1000}).addTo(map);
+                  //zup_mark_data.push(mar);
+                  add_point_to_table(kkk,name,'',r,c,id,time0,stoyanka0);
+                  adres0 =name;
+                  y000=y;
+                  x000=x;
+                  }
+                }else{
+                  adres=await point_in_global(y,x); 
+                  if(wialon.util.Geometry.getDistance(y000,x000,y,x)>300 && adres!=adres0){
+                    kkk++;
+                    //let mar = L.marker([y,x], {icon: L.divIcon({ className: 'div-icon',iconSize: "auto", html: "<center style = 'background:rgb(247, 161, 161);'>"+kkk+": "+adres+"</center>" }),draggable: true,opacity:0.9,zIndexOffset:1000}).addTo(map);
+                    //zup_mark_data.push(mar);
+                    let point=y+","+x;
+                    add_point_to_table(kkk,adres,point,100,false,id,time0,stoyanka0);
+                    adres0 =adres;
+                    y000=y;
+                    x000=x;
+                  }  
+                }
+              }
+              } else {
+  
+              stoyanka=0;
+              start_y=0;
+              start_x=0;
+
+              adres=point_in_marshrut(y,x);
+              if(adres){
+                let name = adres[0][0];
+                let yp=y;
+                let xp=x;
+                let point = yp+","+xp;
+                let r =  parseInt(adres[0][3]);
+                let c = adres[0][4];
+                  if(wialon.util.Geometry.getDistance(y000,x000,yp,xp)<r && name==adres0)continue;
+                kkk++;
+                marshrut_point0.splice(adres[1], 1);
+                add_point_to_table(kkk,name,point,r,c,id,time0,stoyanka0);
+                adres0 =name;
+                y000=y;
+                x000=x;
+              }else{
+                adres=point_in_data(y,x);
+                if(adres){
+                  let name = adres[3];
+                    let yp=y;
+                    let xp=x;
+                    let point = yp+","+xp;
+                    let r =  parseInt(adres[2]);
+                    let c = false;
+                    if(wialon.util.Geometry.getDistance(y000,x000,yp,xp)<r && name==adres0)continue;
+                      kkk++;
+                    //let mar = L.marker([y,x], {icon: L.divIcon({ className: 'div-icon',iconSize: "auto", html: "<center style = 'background:rgb(170, 248, 170);'>"+kkk+": "+name+"</center>" }),draggable: true,opacity:0.9,zIndexOffset:1000}).addTo(map);
+                    //zup_mark_data.push(mar);
+                    add_point_to_table(kkk,name,'',r,c,id,time0,stoyanka0);
+                   
+                    adres0 =name;
+                    y000=y;
+                    x000=x;
+                }else{
+                  adres=await point_in_global(y,x); 
+                  if(wialon.util.Geometry.getDistance(y000,x000,y,x)<300 && adres==adres0)continue;
+                  kkk++;
+                  //let mar = L.marker([y,x], {icon: L.divIcon({ className: 'div-icon',iconSize: "auto", html: "<center style = 'background:rgb(247, 161, 161);'>"+kkk+": "+adres+"</center>" }),draggable: true,opacity:0.9,zIndexOffset:1000}).addTo(map);
+                  //zup_mark_data.push(mar);
+                  let point=y+","+x;
+                  add_point_to_table(kkk,adres,point,100,false,id,time0,stoyanka0);
+                  adres0 =adres;
+                  y000=y;
+                  x000=x;
+                }
+              }
+            }
+        
+            }else{
+              if(ii<31)continue;
+              if(ii>data[0].length-11)continue;
+              if(stoyanka==0)continue;
+
+              let y0 = 0;
+              let x0 = 0;
+              let y1 = start_y;
+              let x1 = start_x;
+              if(y1==0)y=yyyyy;
+              if(x1==0)x=xxxxx;
+              let y2 = 0;
+              let x2 = 0;
+             
+              stoyanka=0;
+              start_y=0;
+              start_x=0;
+             
+                  let b0=100;
+                  let b1=50;
+              outer:for (let v = 1; v<1000; v++){
+               
+                if(data[0].length-1<ii+v)break;
+                if(!data[0][ii+v][0])continue;
+                if(parseInt(data[0][ii+v][2])<=5)continue;
+                let yt = parseFloat(data[0][ii+v][0].split(',')[0]);
+                let xt = parseFloat(data[0][ii+v][0].split(',')[1]);
+                if(wialon.util.Geometry.getDistance(yt,xt,y1,x1)>30){
+                  for (let vv = 1; vv<1000; vv++){
+                    if(ii-vv<5)break outer;
+                    if(!data[0][ii-vv][0])continue;
+                    if(parseInt(data[0][ii-vv][2])<=5)continue;
+                    let ytt = parseFloat(data[0][ii-vv][0].split(',')[0]);
+                    let xtt = parseFloat(data[0][ii-vv][0].split(',')[1]);       
+                    if(wialon.util.Geometry.getDistance(ytt,xtt,y1,x1)>30){
+                     
+                      let p0 = turf.point([xt, yt]);
+                      let p1 = turf.point([x1, y1]);
+                      let p2 = turf.point([xtt, ytt]);
+                      x0=xt;
+                      y0=yt;
+                      x2=xtt;
+                      y2=ytt;
+                      //L.polyline([[y0, x0],[y1, x1]], {color: 'blue'}).addTo(map);
+                      //L.polyline([[y1, x1],[y2, x2]], {color: 'red'}).addTo(map);
+                       b0 = turf.bearing(p1, p0);
+                       b1 = turf.bearing(p1, p2);
+                       break outer;
+                    }
+                  }
+                }
+              }
+
+              if(Math.abs(b0-b1)<30 || Math.abs(b0-b1)>330){ 
+                //L.polyline([[y0, x0],[y1, x1]], {color: '#55ff33'}).addTo(map);
+                //L.polyline([[y1, x1],[y2, x2]], {color: '#55ff33'}).addTo(map);
+
+                adres=point_in_marshrut(y1,x1);
+                if(adres){
+                  let name = adres[0][0];
+                  let yp=y1;
+                  let xp=x1;
+                  let point = yp+","+xp;
+                  let r =  parseInt(adres[0][3]);
+                  let c = adres[0][4];
+                  if(wialon.util.Geometry.getDistance(y000,x000,yp,xp)<r && name==adres0)continue;
+                kkk++;
+                marshrut_point0.splice(adres[1], 1);
+                add_point_to_table(kkk,name,point,r,c,id,time0,stoyanka0);
+                adres0 =name;
+                y000=y1;
+                x000=x1;
+                }
+                adres=point_in_data(y1,x1);
+                if(adres){
+                  let name = adres[3];
+                  let yp=y1;
+                  let xp=x1;
+                  let point = yp+","+xp;
+                  let r =  parseInt(adres[2]);
+                  let c = false;
+                  if(wialon.util.Geometry.getDistance(y000,x000,yp,xp)<r && name==adres0)continue;
+                    kkk++;
+                  //let mar = L.marker([y1,x1], {icon: L.divIcon({ className: 'div-icon',iconSize: "auto", html: "<center style = 'background:rgb(170, 248, 170);'>"+kkk+": "+name+"</center>" }),draggable: true,opacity:0.9,zIndexOffset:1000}).addTo(map);
+                 // zup_mark_data.push(mar);
+                  add_point_to_table(kkk,name,'',r,c,id,time0,stoyanka0);
+                  adres0 =name;
+                  y000=y1;
+                  x000=x1;
+                }else{
+                  adres=await point_in_global(y1,x1); 
+                  if(wialon.util.Geometry.getDistance(y000,x000,y1,x1)<300 && adres==adres0)continue;
+                  kkk++;
+                  //let mar = L.marker([y1,x1], {icon: L.divIcon({ className: 'div-icon',iconSize: "auto", html: "<center style = 'background:rgb(247, 161, 161);'>"+kkk+": "+adres+"</center>" }),draggable: true,opacity:0.9,zIndexOffset:1000}).addTo(map);
+                 // zup_mark_data.push(mar);
+                  let point=y1+","+x1;
+                  add_point_to_table(kkk,adres,point,100,false,id,time0,stoyanka0);
+                  adres0 =adres;
+                  y000=y1;
+                  x000=x1;
+                }
+             
+              }
+              
+            }
+            stoyanka=0;
+            start_y=0;
+            start_x=0;
+            adres='';
+         }
+     
+
+       }
+     marshrut();
+     
+
+     let c1=-1;
+     let c2=-1;
+     let from=0;
+     let to=0;
+     let probeg=0;
+     let probeg1=0;
+     let probeg2=0;
+     let probeg3=0;
+     let p1=0;
+     let p2=0;
+     let stops = 0;
+     let mar_text ='';
+     for (let j = 0; j<tb.rows[0].cells.length; j+=3){
+      if(tb.rows[0].cells[j].textContent=='')continue;
+      mar_text+=' - '+tb.rows[1].cells[j].children[0].children[0].textContent;
+      if(c1==-1){
+         c1=j;
+         from =  Date.parse(tb.rows[2].cells[c1+2].textContent);
+         continue;
+      }else{
+        c2=j;
+        to = Date.parse(tb.rows[2].cells[c2+2].textContent);
+        if (tb.rows[4].cells[c1].getElementsByTagName('input')[0].checked==false  || tb.rows[4].cells[c2].getElementsByTagName('input')[0].checked==false) {
+     
+          for(let i=2;i<data[0].length;i++){
+            if(!data[0][i][0])continue;
+            if(!data[0][i-1][0])continue;
+            let d1=Date.parse(data[0][i][1]);
+            if(d1<from || d1>to)continue;
+             let y = parseFloat(data[0][i-1][0].split(',')[0]);
+             let x = parseFloat(data[0][i-1][0].split(',')[1]);
+             let yy = parseFloat(data[0][i][0].split(',')[0]);
+             let xx = parseFloat(data[0][i][0].split(',')[1]);
+             let dis = wialon.util.Geometry.getDistance(y, x, yy, xx);
+             probeg+=dis;
+             probeg3+=dis;
+             marshrut_data.push([y,x],[yy,xx]);
+          }
+          let l = L.polyline([marshrut_data], {color: 'rgb(228, 12, 12)',weight:4,opacity:1}).addTo(map);
+          marshrut_treck.push(l);
+          marshrut_data=[];
+
+          
+          if (tb.rows[4].cells[c1].getElementsByTagName('input')[0].checked==true) {p1=tb.rows[2].cells[c1].textContent;}else{stops+=parseInt(tb.rows[2].cells[c1+1].textContent.split(',')[1]);}
+          if (tb.rows[4].cells[c2].getElementsByTagName('input')[0].checked==true) {
+            p2=tb.rows[2].cells[c2].textContent;
+            if(p1==0)p1=tb.rows[2].cells[c1].textContent;
+            probeg2 += await point_to_point_rote_marshrut(p1,p2);
+          }
+
+        } else {
+          for(let i=2;i<data[0].length;i++){
+            if(!data[0][i][0])continue;
+            if(!data[0][i-1][0])continue;
+            let d1=Date.parse(data[0][i][1]);
+            if(d1<from || d1>to)continue;
+             let y = parseFloat(data[0][i-1][0].split(',')[0]);
+             let x = parseFloat(data[0][i-1][0].split(',')[1]);
+             let yy = parseFloat(data[0][i][0].split(',')[0]);
+             let xx = parseFloat(data[0][i][0].split(',')[1]);
+             let dis = wialon.util.Geometry.getDistance(y, x, yy, xx);
+             probeg+=dis;
+             probeg1+=dis;
+             marshrut_data.push([y,x],[yy,xx]);
+          }
+          let l = L.polyline([marshrut_data], {color: 'rgb(70, 247, 0)',weight:2,opacity:1}).addTo(map);
+          l.bringToBack();
+          marshrut_treck.push(l);
+          marshrut_data=[];
+        }
+        c1=c2;
+        from =  to;
+      }
+
+
+     }
+    
+
+
+     let m = Math.trunc(stops / 60) + '';
+     let h = Math.trunc(m / 60) + '';
+     m=(m % 60) + '';
+     let s =(stops % 60) + '';
+
+     let d0 = (probeg/1000).toFixed();
+     let d1 = ((probeg1/1000)+probeg2).toFixed();
+     let d2 = d0-d1;
+   
+     $('#marh_zvit_tb').empty();
+     $('#marh_zvit_tb').show();
+     $('#marh_zvit_tb').append("<thead><td>дата</td><td>ТЗ</td><td>пробіг</td><td>розрахунок</td><td>відхилення</td><td>зупинки</td><td>назва</td><td>маршрут</td></thead>");
+     $('#marh_zvit_tb').append("<tr><td>"+$('#cont_time').text()+"</td><td>"+$('#cont_unit').text()+"</td><td>"+d0+"</td><td>"+d1+"</td><td>"+d2+"</td><td>"+h.padStart(2, 0) + ':' + m.padStart(2, 0) +':'+s.padStart(2, 0)+"</td><td>"+ $('#marshrut_text').val()+"</td><td>"+mar_text+"</td></tr>");
  
-  $('#marshrut_d').text("загальний пробіг - "+(probeg/1000).toFixed()+"км");
+
+  let cpdata= $('#cont_time').text() + '\t' +$('#cont_unit').text() + '\t' +d0 + ' \t' + d1 + '\t' + d2 + '\t' + h.padStart(2, 0) + ':' + m.padStart(2, 0) +':'+s.padStart(2, 0) +'\t' + $('#marshrut_text').val() + '\t' + mar_text +'\n';
+  navigator.clipboard.writeText(cpdata);
+
+  $('button').prop("disabled", false);
+  $('#log').empty();
+  msg('Завантажено');
+}
+function point_in_marshrut(y,x) {
+  for (let j = 0; j<marshrut_point0.length; j++){
+   
+    if (marshrut_point0[j][3]=="----") {
+      for (let jj = 0; jj<stor.length; jj++){
+        if(stor[jj][3].indexOf(marshrut_point0[j][0])>=0){
+          let name = stor[jj][3];
+        let yy = parseFloat(stor[jj][0]);
+        let xx = parseFloat(stor[jj][1]);
+        let r = parseInt(stor[jj][2]);
+        if(wialon.util.Geometry.getDistance(y,x,yy,xx)<=r){
+          let point = [name,yy,xx,r,true];
+          return point;
+        }
+      }
+    }
+    }else{
+      if(wialon.util.Geometry.getDistance(y,x,marshrut_point0[j][1],marshrut_point0[j][2])<=marshrut_point0[j][3]){
+    let rt =  [marshrut_point0[j],j];
+        return rt;
+      }
+    }
+   
+  }
+  return null;
+ }
+function point_in_data(y,x) {
+  for (let j = 0; j<stor.length; j++){
+    if(wialon.util.Geometry.getDistance(y,x,stor[j][0],stor[j][1])<stor[j][2]){
+      return stor[j];
+    }
+  }
+  return null;
+ }
+
+ async function point_in_global(y,x) {
+   let type='невідомо';
+     // $.get('https://nominatim.openstreetmap.org/reverse?format=jsonv2&accept-language=UA&lat='+y+'&lon='+x+'', function(data){
+     //    if (data.category =="shop")type="магазин"
+     //    if (data.type =="hospital")type="лікарня"
+     //    if (data.type =="pharmacy")type="аптека"
+     //    if (data.type =="car_wash")type="автомийка"
+     //    if (data.type =="kindergarten")type="садок"
+     //    if (data.type =="supermarket")type="супермаркет"
+     //    if (data.type =="parking")type="парковка"
+     //    if (data.type =="hotel")type="готель"
+     //    if (data.type =="fitness_centre")type="спортзал"
+     //    if (data.type =="dentist")type="дантист"
+     //    if (data.type =="university")type="університет"
+     //    if (data.type =="unclassified")type="невідомо"
+     //    if (data.type =="residential")type="жила зона"
+     //    if (data.type =="apartments")type="жила зона"
+     //    if (data.type =="primary")type="дорога"
+     //    if (data.type =="secondary")type="дорога"
+     //    if (data.type =="trunk")type="дорога"
+     //    if (data.type =="post_office")type="пошта"
+     //   });
+     //   await sleep(1500); 
+        return new Promise(function(resolve, reject) { resolve(type); });
+ }
+ async function point_to_point_rote_marshrut(p1,p2){
+
+     let ax =parseFloat(p1.split(',')[0]);
+     let ay =parseFloat(p1.split(',')[1]);
+     let bx =parseFloat(p2.split(',')[0]);
+     let by =parseFloat(p2.split(',')[1]);
+     let d=0;
+     let t=0;
+        wialon.util.Gis.getRoute(ax,ay,bx,by,0, function(error, data) {
+          if (error) { // error was happened
+            msg(wialon.core.Errors.getErrorText(error));
+            return;
+          }
+          if (data.status=="OK"){
+             d= (data.distance.value/1000).toFixed(1);
+             t= (data.duration.value/60).toFixed();
+            let line=[];
+            for (v = 0; v < data.points.length; v+=3) {
+            line.push ([data.points[v].lat,data.points[v].lon]);
+            } 
+            let l = L.polyline([line], {color: 'rgb(255, 230, 4)',weight:2,opacity:1}).addTo(map);
+            marshrut_treck.push(l);
+          }
+        });
+        await sleep(1500); 
+        return new Promise(function(resolve, reject) { resolve(parseFloat(d)); });
+    
 
 }
+ function add_point_to_table(id,text,point,radius,chek,unit_id,time,sto){
+  let tb=document.getElementById("log_marh_tb");
+  let row = tb.rows[1];
+           let ind = row.cells.length-1;
+           var td = row.insertCell(ind+1);
+               td.style.border = '1px solid black';
+           var el = document.createElement('div');
+               el.setAttribute('class', 'autocomplete');
+           var el2 = document.createElement('div');
+               el2.setAttribute('class', 'inp');
+               el2.setAttribute('id', 'myInput'+ind+'');
+               el2.setAttribute('type', 'text');
+               el2.setAttribute('contenteditable', 'true');
+               el2.textContent = text;
+               autocomplete(el2, adresa);
+               el.appendChild(el2);
+               td.appendChild(el);
+               td = row.insertCell(ind+2);
+               td.innerText=" - "
+               td.style = 'font-size:14px; min-width: 15px; background: rgb(247, 161, 161); cursor:pointer; border: 1px solid black;';
+               td = row.insertCell(ind+3);
+               td.innerText=" + "
+               td.style = 'font-size:14px; min-width: 15px; background: rgb(170, 248, 170);cursor:pointer';
+               tb.rows[0].insertCell(ind+1);
+               tb.rows[0].insertCell(ind+2);
+               tb.rows[0].insertCell(ind+3);
+               tb.rows[2].insertCell(ind+1);
+               tb.rows[2].insertCell(ind+2);
+               tb.rows[2].insertCell(ind+3); 
+               tb.rows[3].insertCell(ind+1);
+               tb.rows[3].insertCell(ind+2);
+               tb.rows[3].insertCell(ind+3);  
+               tb.rows[4].insertCell(ind+1);
+               tb.rows[4].insertCell(ind+2);
+               tb.rows[4].insertCell(ind+3);
+
+
+                   tb.rows[0].cells[ind+1].textContent=id;
+                   tb.rows[0].cells[ind+1].style='cursor:pointer';
+                   tb.rows[3].cells[ind+1].textContent=radius;
+                   tb.rows[3].cells[ind+1].setAttribute('contenteditable', 'true');
+                   tb.rows[2].cells[ind+1].textContent=point;
+                   tb.rows[2].cells[ind+1].style = ' display: none; overflow: hidden;';
+                   tb.rows[2].cells[ind+2].textContent=unit_id+','+sto;
+                   tb.rows[2].cells[ind+2].style = ' display: none; overflow: hidden;';
+                   tb.rows[2].cells[ind+3].textContent=time;
+                   tb.rows[2].cells[ind+3].style = ' display: none; overflow: hidden;';
+                   //console.log(text);
+                   //console.log(chek);
+                   if (chek== true  || chek== 'true') {
+                     tb.rows[4].cells[ind+1].innerHTML = "<input type='checkbox' checked>";
+                   }else{
+                     tb.rows[4].cells[ind+1].innerHTML = "<input type='checkbox'>";
+                   }
+            
+
+                      
+         
+ }
 
 
 function vsi_marshruty(){
