@@ -47,7 +47,7 @@
 .leaflet-tooltip-red {
     position: absolute;
     padding: 4px;
-    background-color: rgba(228, 12, 12, 0.8);
+    background-color: rgba(228, 12, 12, 0.9);
     border: 0px solid #000;
     color: #000;
     white-space: nowrap;
@@ -61,7 +61,7 @@
 .leaflet-tooltip-green {
     position: absolute;
     padding: 4px;
-    background-color: rgba(70, 247, 0, 0.8);
+    background-color: rgba(70, 247, 0, 0.9);
     border: 0px solid #000;
     color: #000;
     white-space: nowrap;
@@ -72,6 +72,21 @@
     pointer-events: none;
     box-shadow: 0 1px 3px rgba(0,0,0,0.4);
 }
+.leaflet-tooltip-yellow {
+    position: absolute;
+    padding: 4px;
+    background-color: rgba(255, 230, 4, 0.9);
+    border: 0px solid #000;
+    color: #000;
+    white-space: nowrap;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    pointer-events: none;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+}
+
 
 
 #grafik { width: 100%; border: 1px solid #c6c6c6;}
@@ -94,6 +109,7 @@
 #mars_table{max-height:60vh; overflow-y: auto;}
 #control_table{max-height:60vh; overflow-y: auto;}
 #mars_table_div{max-width:99%; overflow-x: auto;white-space: nowrap;}
+#mars_zvit_table_div{max-width:99%; overflow-x: auto;white-space: nowrap;}
 #marshrut { min-width: 100%; border: 1px solid #c6c6c6; margin: 10px 0px 10px 0px;}
 #zvittt{ border: 1px solid #c6c6c6; margin: 10px 0px 10px 0px;}
 #zvitttt{ border: 1px solid #c6c6c6; margin: 10px 0px 10px 0px;}
@@ -600,10 +616,10 @@ button, input, span, select,textarea {margin: 2px 2px 0px 0px;   font-family: "A
     
     <div id="logistika">
       <div id="log_marh">
-        <button id='log_b1'style = "min-width: 23%;">створити маршрут</button> 
-        <button id='log_b2'style = "min-width: 23%;">контроль маршрутів</button> 
-        <button id='log_b3'style = "min-width: 23%;">адреси</button> 
-        <button id='log_b4'style = "min-width: 23%;">маршрутизатор</button> 
+        <button id='log_b1'style = "min-width: 32%;">створити маршрут</button> 
+        <button id='log_b2'style = "min-width: 32%;">контроль маршрутів</button> 
+        <button id='log_b3'style = "min-width: 32%;">адреси</button> 
+   
         <div id="adresy">
             для створення нової зони оберіть радіус та <b>подвійно натисніть</b> праву кнопку на мапі де створити зону відповідного радіусу
             <br>
@@ -671,12 +687,14 @@ button, input, span, select,textarea {margin: 2px 2px 0px 0px;   font-family: "A
         <textarea id="marshrut_text"  rows="1" cols="100" placeholder="коментар до маршруту"></textarea>
       </div>
         
-        <span id="marshrut_d"></span>
+
         <div id="mars_table">
             <table id="log_unit_tb"class='table'></table>
         </div>
         
         <div id='log_cont'>
+            <div id="mars_zvit_table_div"><table id="marh_zvit_tb"  class='table'> </table></div>
+            
             <div id="cont_unit_div" style="font-weight: 700; text-align:center">
                 <span id="cont_unit"></span>
                 <span id="cont_time"></span>
