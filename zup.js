@@ -7242,38 +7242,37 @@ async function logistik_zvit(data){
                 adres0 =name;
                 y000=y1;
                 x000=x1;
-                }
-                adres=point_in_data(y1,x1);
-                if(adres){
-                  let name = adres[3];
-                  let yp=y1;
-                  let xp=x1;
-                  let point = yp+","+xp;
-                  let r =  parseInt(adres[2]);
-                  let c = false;
-                  if(wialon.util.Geometry.getDistance(y000,x000,yp,xp)<r && name==adres0)continue;
-                    kkk++;
-                  //let mar = L.marker([y1,x1], {icon: L.divIcon({ className: 'div-icon',iconSize: "auto", html: "<center style = 'background:rgb(170, 248, 170);'>"+kkk+": "+name+"</center>" }),draggable: true,opacity:0.9,zIndexOffset:1000}).addTo(map);
-                 // zup_mark_data.push(mar);
-                  add_point_to_table(kkk,name,point,r,c,id,time0,stoyanka0);
-                  adres0 =name;
-                  y000=y1;
-                  x000=x1;
                 }else{
-                  adres=await point_in_global(y1,x1); 
-                  if(wialon.util.Geometry.getDistance(y000,x000,y1,x1)<300 && adres==adres0)continue;
-                  kkk++;
-                  //let mar = L.marker([y1,x1], {icon: L.divIcon({ className: 'div-icon',iconSize: "auto", html: "<center style = 'background:rgb(247, 161, 161);'>"+kkk+": "+adres+"</center>" }),draggable: true,opacity:0.9,zIndexOffset:1000}).addTo(map);
-                 // zup_mark_data.push(mar);
-                  let point=y1+","+x1;
-                  add_point_to_table(kkk,adres,point,100,false,id,time0,stoyanka0);
-                  adres0 =adres;
-                  y000=y1;
-                  x000=x1;
+                  adres=point_in_data(y1,x1);
+                  if(adres){
+                    let name = adres[3];
+                    let yp=y1;
+                    let xp=x1;
+                    let point = yp+","+xp;
+                    let r =  parseInt(adres[2]);
+                    let c = false;
+                    if(wialon.util.Geometry.getDistance(y000,x000,yp,xp)<r && name==adres0)continue;
+                      kkk++;
+                    //let mar = L.marker([y1,x1], {icon: L.divIcon({ className: 'div-icon',iconSize: "auto", html: "<center style = 'background:rgb(170, 248, 170);'>"+kkk+": "+name+"</center>" }),draggable: true,opacity:0.9,zIndexOffset:1000}).addTo(map);
+                   // zup_mark_data.push(mar);
+                    add_point_to_table(kkk,name,point,r,c,id,time0,stoyanka0);
+                    adres0 =name;
+                    y000=y1;
+                    x000=x1;
+                  }else{
+                    adres=await point_in_global(y1,x1); 
+                    if(wialon.util.Geometry.getDistance(y000,x000,y1,x1)<300 && adres==adres0)continue;
+                    kkk++;
+                    //let mar = L.marker([y1,x1], {icon: L.divIcon({ className: 'div-icon',iconSize: "auto", html: "<center style = 'background:rgb(247, 161, 161);'>"+kkk+": "+adres+"</center>" }),draggable: true,opacity:0.9,zIndexOffset:1000}).addTo(map);
+                   // zup_mark_data.push(mar);
+                    let point=y1+","+x1;
+                    add_point_to_table(kkk,adres,point,100,false,id,time0,stoyanka0);
+                    adres0 =adres;
+                    y000=y1;
+                    x000=x1;
+                  }
                 }
-             
-              }
-              
+              }             
             }
             stoyanka=0;
             start_y=0;
@@ -7324,7 +7323,7 @@ async function logistik_zvit(data){
              probeg3+=dis;
              marshrut_data.push([y,x],[yy,xx]);
           }
-          let l = L.polyline([marshrut_data], {color: 'rgb(228, 12, 12)',weight:4,opacity:1}).addTo(map);
+          let l = L.polyline([marshrut_data], {color: 'rgb(228, 12, 12)',weight:2,opacity:1}).addTo(map);
           marshrut_treck.push(l);
           marshrut_data=[];
 
@@ -7351,7 +7350,7 @@ async function logistik_zvit(data){
              probeg1+=dis;
              marshrut_data.push([y,x],[yy,xx]);
           }
-          let l = L.polyline([marshrut_data], {color: 'rgb(70, 247, 0)',weight:2,opacity:1}).addTo(map);
+          let l = L.polyline([marshrut_data], {color: 'rgb(70, 247, 0)',weight:4,opacity:1}).addTo(map);
           l.bringToBack();
           marshrut_treck.push(l);
           marshrut_data=[];
