@@ -5906,6 +5906,8 @@ if(!row) return;
               $("#lis0").trigger("chosen:updated");
               layers[0]=0;
               show_track(t0,t2);
+		  slider.value=(Date.parse(t1)-Date.parse($('#fromtime1').val()))/(Date.parse($('#fromtime2').val())-Date.parse($('#fromtime1').val()))*2000;
+              position(Date.parse(t1));
              
           })
         continue;
