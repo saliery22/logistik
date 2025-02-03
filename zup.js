@@ -4136,25 +4136,31 @@ for(let i = 0; i<geozonesgrup.length; i++){
     let litry0=0;
     let litry1=0;
     let litry_start=0;
+    let p1=0;
+    let p2=0;
  
     
     for (let ii = 0; ii<Global_DATA[i].length-1; ii++){
       if(!Global_DATA[i][ii][3])continue;
       if(!Global_DATA[i][ii+1][3])continue;
-      if(!Global_DATA[i][ii][4])continue;
-      if(!Global_DATA[i][ii+1][4])continue;
       if(!Global_DATA[i][ii][2])continue;
       if(!Global_DATA[i][ii+1][2])continue;
-      if(Global_DATA[i][ii][3][0]==0){
-        let rashod=(Global_DATA[i][ii][2]-Global_DATA[i][ii+1][2])/((Global_DATA[i][ii+1][4]-Global_DATA[i][ii][4])/3600000);
-        if(rashod<40 && rashod>-25 && litry==0){
+      if(!Global_DATA[i][ii][4])continue;
+      if(!Global_DATA[i][ii+1][4])continue;
+      if(Global_DATA[i][ii][3][0]==0 || Global_DATA[i][ii+1][3][0]==0){
+        if(Global_DATA[i][ii][2] !='-----')p1=Global_DATA[i][ii][2];
+        if(Global_DATA[i][ii+1][2] !='-----')p2=Global_DATA[i][ii+1][2];
+
+ 
+        let rashod=(p1-p2)/((Global_DATA[i][ii+1][4]-Global_DATA[i][ii][4])/3600000);
+        if(rashod<100 && rashod>-25 && litry==0){
           zup1+=(Global_DATA[i][ii+1][4]-Global_DATA[i][ii][4])/1000; 
-          if(litry0==0)litry0=Global_DATA[i][ii][2];
+          if(litry0==0)litry0=p1;
         }
-        if(rashod>100){
+        if(rashod>150){
           if(zup1>=t_pod){
-            if(litry_start==0)litry_start=Global_DATA[i][ii][2];
-            litry=litry_start-Global_DATA[i][ii+1][2];
+            if(litry_start==0)litry_start=p1;
+            litry=litry_start-p2;
             if(start==0)start=Global_DATA[i][ii][1];
             finish=Global_DATA[i][ii+1][1];
             if(interval0==0)interval0=Global_DATA[i][ii][4];
@@ -4166,10 +4172,10 @@ for(let i = 0; i<geozonesgrup.length; i++){
             zup2=0;
           }
         }
-        if(rashod<40 && rashod>-25 && litry>0){
+        if(rashod<100 && rashod>-25 && litry>0){
           zup2+=(Global_DATA[i][ii+1][4]-Global_DATA[i][ii][4])/1000; 
           if(zup2>=t_pod){
-            litry1=litry0-Global_DATA[i][ii][2];
+            litry1=litry0-p1;
             if(litry>min_sliv/2 && litry1>min_sliv){
               zliv_data.push([id,Global_DATA[i][ii][0].split(',')[0],Global_DATA[i][ii][0].split(',')[1],nametr,start,finish,litry.toFixed(1),(interval1-interval0)/1000]);
               zup1=0;
