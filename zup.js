@@ -1,5 +1,4 @@
 
-
 // global variables
 var map, marker,unitslist = [],allunits = [],rest_units = [],marshruts = [],zup = [], unitMarkers = [], markerByUnit = {},tile_layer, layers = {},marshrutMarkers = [],unitsID = {},Vibranaya_zona;
 var areUnitsLoaded = false;
@@ -4121,6 +4120,7 @@ for(let i = 0; i<geozonesgrup.length; i++){
 
   let min_sliv=$('#min_sliv').val();
   let t_pod=40;
+  let zliv_data=[];
 
   for(let i = 0; i<Global_DATA.length; i++){
     let nametr = Global_DATA[i][0][1];
@@ -4171,7 +4171,7 @@ for(let i = 0; i<geozonesgrup.length; i++){
           if(zup2>=t_pod){
             litry1=litry0-Global_DATA[i][ii][2];
             if(litry>min_sliv/2 && litry1>min_sliv){
-              $("#unit_table").append("<tr class='sliv_trak' id='"+id+"," + parseFloat(Global_DATA[i][ii][0].split(',')[0])+","+parseFloat(Global_DATA[i][ii][0].split(',')[1])+ "'><td align='left'>"+nametr+"</td><td>"+start+"</td><td>"+finish+"</td><td>"+litry.toFixed(1)+"л </td><td>"+(interval1-interval0)/1000+" сек </td></tr>");
+              zliv_data.push([id,Global_DATA[i][ii][0].split(',')[0],Global_DATA[i][ii][0].split(',')[1],nametr,start,finish,litry.toFixed(1),(interval1-interval0)/1000]);
               zup1=0;
               zup2=0;
               litry=0;
@@ -4223,17 +4223,37 @@ for(let i = 0; i<geozonesgrup.length; i++){
 
     }
   }
+  
+  zliv_data = zliv_data.sort((a, b) => new Date(a[4]) - new Date(b[4]));
+  for (let i = 0; i<zliv_data.length; i++){
+    let col = 'pink';
+    for (let ii = 0; ii<sliv_history.length; ii++){
+      if(sliv_history[ii]==zliv_data[i][3]+zliv_data[i][4])col='';
+      }
+    $("#unit_table").append("<tr style = 'background:"+col+";' class='sliv_trak' id='"+zliv_data[i][0]+"," + zliv_data[i][1]+","+zliv_data[i][2]+ "'><td align='left'>"+zliv_data[i][3]+"</td><td>"+zliv_data[i][4]+"</td><td>"+zliv_data[i][5]+"</td><td>"+zliv_data[i][6]+"л </td><td>"+zliv_data[i][7]+" сек </td></tr>");
+  }
+  
  }
 
 
 
-   
+
+
+ let sliv_history=[];
+let svdata22 = JSON.parse(localStorage.getItem('arhivsliv'));
+if(svdata22)sliv_history=svdata22;
+
    function track_Sliv(evt){
-    [...document.querySelectorAll("#unit_table tr")].forEach(e => e.style.backgroundColor = '');
-    this.style.backgroundColor = 'pink';
+    [...document.querySelectorAll("#unit_table tr")].forEach(e => e.style.border= '1px solid rgb(0, 0, 0)');
+    this.style.border = '2px solid rgb(78, 78, 78)';
+    this.style.backgroundColor = '';
     let row = evt.target.parentNode; // get row with data by target parentNode
     let data=row.cells[1].textContent;
     let data2=row.cells[2].textContent;
+
+    sliv_history.push(row.cells[0].textContent+row.cells[1].textContent);
+    if(sliv_history.length>1000){sliv_history.shift();}
+    localStorage.setItem('arhivsliv', JSON.stringify(sliv_history)); 
     slider.value=(Date.parse(data)-Date.parse($('#fromtime1').val()))/(Date.parse($('#fromtime2').val())-Date.parse($('#fromtime1').val()))*2000;
      position(Date.parse(data));
      $("#lis0").chosen().val(this.id.split(',')[0]);
@@ -4281,7 +4301,6 @@ async function marshrut_avto(){
     let start=0;
     let end=0;
     let html="";
-    let kkk=0;
     
     let adres='';
     let adres0='';
@@ -4293,7 +4312,6 @@ async function marshrut_avto(){
       end="";
       html="";
       adres0='';
-      kkk=0;
      let nametr = Global_DATA[i][0][1];
      let id = Global_DATA[i][0][0];
      let str =$('#unit_marsh').val().split(',');
@@ -4310,7 +4328,7 @@ async function marshrut_avto(){
       
        for (let ii = 1; ii<Global_DATA[i].length-1; ii+=1){
    
-       if(parseInt(Global_DATA[i][ii][3])<4){ 
+       if(parseInt(Global_DATA[i][ii][3])<5){ 
         if((Global_DATA[i][ii][4]-Global_DATA[i][ii-1][4])/1000)stoyanka+=(Global_DATA[i][ii][4]-Global_DATA[i][ii-1][4])/1000; 
        }
        if(!Global_DATA[i][ii][0])continue;
@@ -4324,7 +4342,52 @@ async function marshrut_avto(){
         km+=(wialon.util.Geometry.getDistance(yy,xx,yyy,xxx))/1000;
        }
 
-       if(parseInt(Global_DATA[i][ii][3])>=4){
+       if(ii==Global_DATA[i].length-2){
+        if(stoyanka>sttime){ 
+          let y = parseFloat(Global_DATA[i][ii-1][0].split(',')[0]);
+          let x = parseFloat(Global_DATA[i][ii-1][0].split(',')[1]);
+          if(!x) x = parseFloat(Global_DATA[i][ii][0].split(',')[0]);
+          if(!y) y = parseFloat(Global_DATA[i][ii][0].split(',')[1]);
+          for (let j = 0; j<stor.length; j++){
+            if(wialon.util.Geometry.getDistance(y,x,stor[j][0],stor[j][1])<stor[j][2]){
+              adres=stor[j][3];
+              if(adres0!=adres){
+                html+="<span style = 'background:rgb(170, 248, 170);'> "+adres+"</span> -";
+                adres0=adres;
+              }
+              break;
+            }
+            if(j ==stor.length-1){
+              for (let jj = 0; jj<temp_stor.length; jj++){
+                if(wialon.util.Geometry.getDistance(y,x,temp_stor[jj][0],temp_stor[jj][1])<temp_stor[jj][2]){
+                  adres=temp_stor[jj][3];
+                  if(adres0!=adres){
+                    html+=" "+adres+" -";
+                    adres0=adres;
+                  }
+                  break;
+                }
+                if(jj ==temp_stor.length-1){
+                  adres='НЕВІДОМО';
+                  wialon.util.Gis.getLocations([{lat: y, lon: x}], function(code, data) {
+                    if (code) { msg(wialon.core.Errors.getErrorText(code));adres='НЕВІДОМО'; return; } // exit if error code
+                    if (data) {let adr =data[0].split(', '); adres =adr[adr.length-1].replace(/[0-9]| km from |\.|\s/g, '');}});
+                  await sleep(500); 
+                  if(adres0!=adres){
+                    html+=" "+adres+" -";
+                    adres0=adres;
+                  }
+                  temp_stor.push([y, x,600,adres]);
+                  //L.marker([y,x]).addTo(map);
+                }
+              }     
+            }
+          }
+        }
+
+       }
+
+       if(parseInt(Global_DATA[i][ii][3])>=5){
         if(!Global_DATA[i][ii][0])continue;
         if(!Global_DATA[i][ii-1][0])continue;
         if(!Global_DATA[i][ii+1][0])continue;
@@ -4333,61 +4396,45 @@ async function marshrut_avto(){
        
        
         if(stoyanka>sttime){ 
-            let y = parseFloat(Global_DATA[i][ii][0].split(',')[0]);
-            let x = parseFloat(Global_DATA[i][ii][0].split(',')[1]);
-            adres='невідомо';
+            let y = parseFloat(Global_DATA[i][ii-1][0].split(',')[0]);
+            let x = parseFloat(Global_DATA[i][ii-1][0].split(',')[1]);
+            if(!x) x = parseFloat(Global_DATA[i][ii][0].split(',')[0]);
+            if(!y) y = parseFloat(Global_DATA[i][ii][0].split(',')[1]);
             for (let j = 0; j<stor.length; j++){
               if(wialon.util.Geometry.getDistance(y,x,stor[j][0],stor[j][1])<stor[j][2]){
                 adres=stor[j][3];
-                if (adres0 != adres || adres=='невідомо') {
-                  kkk++;
-                  let mar = L.marker([y,x], {icon: L.divIcon({ className: 'div-icon',iconSize: "auto", html: "<center style = 'background:rgb(170, 248, 170);'>"+kkk+": "+adres+"</center>" }),draggable: true,opacity:0.9,zIndexOffset:1000}).addTo(map);
-                  zup_mark_data.push(mar);
+                if(adres0!=adres){
                   html+="<span style = 'background:rgb(170, 248, 170);'> "+adres+"</span> -";
-                  adres0 =adres;
+                  adres0=adres;
                 }
-                adres0 =adres;
                 break;
               }
               if(j ==stor.length-1){
-                $.get('https://nominatim.openstreetmap.org/reverse?format=jsonv2&accept-language=UA&lat='+y+'&lon='+x+'', function(data){
-                  let type='невідомо';
-                   if (data.category =="shop")type="магазин"
-                   if (data.type =="hospital")type="лікарня"
-                   if (data.type =="pharmacy")type="аптека"
-                   if (data.type =="car_wash")type="автомийка"
-                   if (data.type =="kindergarten")type="садок"
-                   if (data.type =="supermarket")type="супермаркет"
-                   if (data.type =="parking")type="парковка"
-                   if (data.type =="hotel")type="готель"
-                   if (data.type =="fitness_centre")type="спортзал"
-                   if (data.type =="dentist")type="дантист"
-                   if (data.type =="university")type="університет"
-                   if (data.type =="unclassified")type="невідомо"
-                   if (data.type =="residential")type="жила зона"
-                   if (data.type =="apartments")type="жила зона"
-                   if (data.type =="primary")type="дорога"
-                   if (data.type =="secondary")type="дорога"
-                   if (data.type =="trunk")type="дорога"
-                   if (data.type =="post_office")type="пошта"
-        
-                   adres=type;
-                   if (adres0 != adres || adres=='невідомо') {
-                    kkk++;
-                    let mar = L.marker([y,x], {icon: L.divIcon({ className: 'div-icon',iconSize: "auto", html: '<center>'+kkk+': '+type+' - '+data.name+'</center>' }),draggable: true,opacity:0.9,zIndexOffset:1000}).addTo(map);
-                     zup_mark_data.push(mar);
-                   }
-                   adres0 =adres;
-                  });
-         
-                await sleep(1500); 
-                html+=" "+adres+" -";
-
+                for (let jj = 0; jj<temp_stor.length; jj++){
+                  if(wialon.util.Geometry.getDistance(y,x,temp_stor[jj][0],temp_stor[jj][1])<temp_stor[jj][2]){
+                    adres=temp_stor[jj][3];
+                    if(adres0!=adres){
+                      html+=" "+adres+" -";
+                      adres0=adres;
+                    }
+                    break;
+                  }
+                  if(jj ==temp_stor.length-1){
+                    adres='НЕВІДОМО';
+                    wialon.util.Gis.getLocations([{lat: y, lon: x}], function(code, data) {
+                      if (code) { msg(wialon.core.Errors.getErrorText(code));adres='НЕВІДОМО'; return; } // exit if error code
+                      if (data) {let adr =data[0].split(', '); adres =adr[adr.length-1].replace(/[0-9]| km from |\.|\s/g, '');}});
+                    await sleep(500); 
+                    if(adres0!=adres){
+                      html+=" "+adres+" -";
+                      adres0=adres;
+                    }
+                    temp_stor.push([y, x,600,adres]);
+                    //L.marker([y,x]).addTo(map);
+                  }
+                }     
               }
             }
-             
-              
-      
           }else{
             if(ii<31)continue;
             if(ii>Global_DATA[i].length-11)continue;
@@ -4395,46 +4442,48 @@ async function marshrut_avto(){
         
             let y0 = 0;
             let x0 = 0;
-            let y1 = parseFloat(Global_DATA[i][ii][0].split(',')[0]);
-            let x1 = parseFloat(Global_DATA[i][ii][0].split(',')[1]);
+            let y1 = parseFloat(Global_DATA[i][ii-1][0].split(',')[0]);
+            let x1 = parseFloat(Global_DATA[i][ii-1][0].split(',')[1]);
+            if(!x1) x1 = parseFloat(Global_DATA[i][ii][0].split(',')[0]);
+            if(!y1) y1 = parseFloat(Global_DATA[i][ii][0].split(',')[1]);
             let y2 = 0;
             let x2 = 0;
             
         
                 let b0=100;
                 let b1=50;
-            outer:for (let v = 5; v<1000; v+=5){
-             
-              if(Global_DATA[i].length-1<ii+v)break;
-              if(!Global_DATA[i][ii+v][0])continue;
-              if(parseInt(Global_DATA[i][ii+v][3])<=4)continue;
-              let yt = parseFloat(Global_DATA[i][ii+v][0].split(',')[0]);
-              let xt = parseFloat(Global_DATA[i][ii+v][0].split(',')[1]);
-              if(wialon.util.Geometry.getDistance(yt,xt,y1,x1)>30){
-                for (let vv = 5; vv<1000; vv++){
-                  if(ii-vv<5)break outer;
-                  if(!Global_DATA[i][ii-vv][0])continue;
-                  if(parseInt(Global_DATA[i][ii-vv][3])<=4)continue;
-                  let ytt = parseFloat(Global_DATA[i][ii-vv][0].split(',')[0]);
-                  let xtt = parseFloat(Global_DATA[i][ii-vv][0].split(',')[1]);       
-                  if(wialon.util.Geometry.getDistance(ytt,xtt,y1,x1)>30){
-                   
-                    let p0 = turf.point([xt, yt]);
-                    let p1 = turf.point([x1, y1]);
-                    let p2 = turf.point([xtt, ytt]);
-                    x0=xt;
-                    y0=yt;
-                    x2=xtt;
-                    y2=ytt;
-                    //L.polyline([[y0, x0],[y1, x1]], {color: '#55ff33'}).addTo(map);
-                    //L.polyline([[y1, x1],[y2, x2]], {color: '#55ff33'}).addTo(map);
-                     b0 = turf.bearing(p1, p0);
-                     b1 = turf.bearing(p1, p2);
-                     break outer;
+                outer:for (let v = 1; v<1000; v++){
+               
+                  if(Global_DATA[i].length-1<ii+v)break;
+                  if(!Global_DATA[i][ii+v][0])continue;
+                  if(parseInt(Global_DATA[i][ii+v][3])<=5)continue;
+                  let yt = parseFloat(Global_DATA[i][ii+v][0].split(',')[0]);
+                  let xt = parseFloat(Global_DATA[i][ii+v][0].split(',')[1]);
+                  if(wialon.util.Geometry.getDistance(yt,xt,y1,x1)>30){
+                    for (let vv = 1; vv<1000; vv++){
+                      if(ii-vv<5)break outer;
+                      if(!Global_DATA[i][ii-vv][0])continue;
+                      if(parseInt(Global_DATA[i][ii-vv][3])<=5)continue;
+                      let ytt = parseFloat(Global_DATA[i][ii-vv][0].split(',')[0]);
+                      let xtt = parseFloat(Global_DATA[i][ii-vv][0].split(',')[1]);    
+                      if(wialon.util.Geometry.getDistance(ytt,xtt,y1,x1)>30){
+                       
+                        let p0 = turf.point([xt, yt]);
+                        let p1 = turf.point([x1, y1]);
+                        let p2 = turf.point([xtt, ytt]);
+                        x0=xt;
+                        y0=yt;
+                        x2=xtt;
+                        y2=ytt;
+                        //L.polyline([[y0, x0],[y1, x1]], {color: 'blue'}).addTo(map);
+                        //L.polyline([[y1, x1],[y2, x2]], {color: 'red'}).addTo(map);
+                         b0 = turf.bearing(p1, p0);
+                         b1 = turf.bearing(p1, p2);
+                         break outer;
+                      }
+                    }
                   }
                 }
-              }
-            }
 
             
            
@@ -4443,138 +4492,48 @@ async function marshrut_avto(){
               //L.polyline([[y0, x0],[y1, x1]], {color: '#55ff33'}).addTo(map);
               //L.polyline([[y1, x1],[y2, x2]], {color: '#55ff33'}).addTo(map);
               
-            
-
-              adres='невідомо';
-            for (let j = 0; j<stor.length; j++){
-              if(wialon.util.Geometry.getDistance(y1,x1,stor[j][0],stor[j][1])<stor[j][2]){
-                adres=stor[j][3];
-                if (adres0 != adres || adres=='невідомо') {
-                  kkk++;
-                  let mar = L.marker([y1,x1], {icon: L.divIcon({ className: 'div-icon',iconSize: "auto", html: "<center style = 'background:rgb(170, 248, 170);'>"+kkk+": "+adres+"</center>" }),draggable: true,opacity:0.9,zIndexOffset:1000}).addTo(map);
-                  zup_mark_data.push(mar);
-                  html+="<span style = 'background:rgb(170, 248, 170);'> "+adres+"</span> -";
-                  adres0 =adres;
+              for (let j = 0; j<stor.length; j++){
+                if(wialon.util.Geometry.getDistance(y1,x1,stor[j][0],stor[j][1])<stor[j][2]){
+                  adres=stor[j][3];
+                  if(adres0!=adres){
+                    html+="<span style = 'background:rgb(170, 248, 170);'> "+adres+"</span> -";
+                    adres0=adres;
+                  }
+                  break;
                 }
-                adres0 =adres;
-                break;
+                if(j ==stor.length-1){
+                  for (let jj = 0; jj<temp_stor.length; jj++){
+                    if(wialon.util.Geometry.getDistance(y1,x1,temp_stor[jj][0],temp_stor[jj][1])<temp_stor[jj][2]){
+                      adres=temp_stor[jj][3];
+                      if(adres0!=adres){
+                        html+=" "+adres+" -";
+                        adres0=adres;
+                      }
+                      break;
+                    }
+                    if(jj ==temp_stor.length-1){
+                      adres='НЕВІДОМО';
+                      wialon.util.Gis.getLocations([{lat: y1, lon: x1}], function(code, data) {
+                        if (code) { msg(wialon.core.Errors.getErrorText(code));adres='НЕВІДОМО'; return; } // exit if error code
+                        if (data) {let adr =data[0].split(', '); adres =adr[adr.length-1].replace(/[0-9]| km from |\.|\s/g, '');}});
+                      await sleep(500); 
+                      if(adres0!=adres){
+                        html+=" "+adres+" -";
+                        adres0=adres;
+                      }
+                      temp_stor.push([y1, x1,600,adres]);
+                      //L.marker([y1,x1]).addTo(map);
+                    }
+                  }     
+                }
               }
-              if(j ==stor.length-1){
-                $.get('https://nominatim.openstreetmap.org/reverse?format=jsonv2&accept-language=UA&lat='+y1+'&lon='+x1+'', function(data){
-                  let type='невідомо';
-                   if (data.category =="shop")type="магазин"
-                   if (data.type =="hospital")type="лікарня"
-                   if (data.type =="pharmacy")type="аптека"
-                   if (data.type =="car_wash")type="автомийка"
-                   if (data.type =="kindergarten")type="садок"
-                   if (data.type =="supermarket")type="супермаркет"
-                   if (data.type =="parking")type="парковка"
-                   if (data.type =="hotel")type="готель"
-                   if (data.type =="fitness_centre")type="спортзал"
-                   if (data.type =="dentist")type="дантист"
-                   if (data.type =="university")type="університет"
-                   if (data.type =="unclassified")type="невідомо"
-                   if (data.type =="residential")type="жила зона"
-                   if (data.type =="apartments")type="жила зона"
-                   if (data.type =="primary")type="дорога"
-                   if (data.type =="secondary")type="дорога"
-                   if (data.type =="trunk")type="дорога"
-                   if (data.type =="post_office")type="пошта"
-        
-
-                   adres=type;
-                   if (adres0 != adres || adres=='невідомо') {
-                    kkk++;
-                    let mar = L.marker([y1,x1], {icon: L.divIcon({ className: 'div-icon',iconSize: "auto", html: '<center>'+kkk+': '+type+' - '+data.name+'</center>' }),draggable: true,opacity:0.9,zIndexOffset:1000}).addTo(map);
-                     zup_mark_data.push(mar);
-                   }
-                   adres0 =adres;
-                  });
-         
-                await sleep(1500); 
-                html+=" "+adres+" -";
-
-              }
-            }
-               
-              
-                      
-               
-            
             }
           }
           stoyanka=0;
           points=0;
           adres='';
        }
-       if(ii==Global_DATA[i].length-2){
-        if(stoyanka>sttime){ 
-          let y = parseFloat(Global_DATA[i][ii][0].split(',')[0]);
-          let x = parseFloat(Global_DATA[i][ii][0].split(',')[1]);
 
-
-
-
- 
-          adres='невідомо';
-            for (let j = 0; j<stor.length; j++){
-              if(wialon.util.Geometry.getDistance(y,x,stor[j][0],stor[j][1])<stor[j][2]){
-                adres=stor[j][3];
-                if (adres0 != adres || adres=='невідомо') {
-                  kkk++;
-                  let mar = L.marker([y,x], {icon: L.divIcon({ className: 'div-icon',iconSize: "auto", html: "<center style = 'background:rgb(170, 248, 170);'>"+kkk+": "+adres+"</center>" }),draggable: true,opacity:0.9,zIndexOffset:1000}).addTo(map);
-                  zup_mark_data.push(mar);
-                  html+="<span style = 'background:rgb(170, 248, 170);'> "+adres+"</span> -";
-                  adres0 =adres;
-                }
-                adres0 =adres;
-                break;
-              }
-              if(j ==stor.length-1){
-                $.get('https://nominatim.openstreetmap.org/reverse?format=jsonv2&accept-language=UA&lat='+y+'&lon='+x+'', function(data){
-                  let type='невідомо';
-                   if (data.category =="shop")type="магазин"
-                   if (data.type =="hospital")type="лікарня"
-                   if (data.type =="pharmacy")type="аптека"
-                   if (data.type =="car_wash")type="автомийка"
-                   if (data.type =="kindergarten")type="садок"
-                   if (data.type =="supermarket")type="супермаркет"
-                   if (data.type =="parking")type="парковка"
-                   if (data.type =="hotel")type="готель"
-                   if (data.type =="fitness_centre")type="спортзал"
-                   if (data.type =="dentist")type="дантист"
-                   if (data.type =="university")type="університет"
-                   if (data.type =="unclassified")type="невідомо"
-                   if (data.type =="residential")type="жила зона"
-                   if (data.type =="apartments")type="жила зона"
-                   if (data.type =="primary")type="дорога"
-                   if (data.type =="secondary")type="дорога"
-                   if (data.type =="trunk")type="дорога"
-                   if (data.type =="post_office")type="пошта"
-        
-
-                   adres=type;
-                   if (adres0 != adres || adres=='невідомо') {
-                    kkk++;
-                    let mar = L.marker([y,x], {icon: L.divIcon({ className: 'div-icon',iconSize: "auto", html: '<center>'+kkk+': '+type+' - '+data.name+'</center>' }),draggable: true,opacity:0.9,zIndexOffset:1000}).addTo(map);
-                     zup_mark_data.push(mar);
-                   }
-                   adres0 =adres;
-                  });
-         
-                await sleep(1500); 
-                html+=" "+adres+" -";
-
-              }
-            }
-             
-             
-                  
-            
-         
-        }
-
-       }
  
      }
      if(km.toFixed()>0)$("#unit_table").append("<tr class='fail_trak' id='"+id+"," + lat+","+lon+ "'><td align='left'>"+nametr+"</td><td>"+start.slice(11, 16) +"</td><td>"+end.slice(11, 16) +"</td><td>"+html.slice(0, -1) +"</td><td>"+ km.toFixed()+"</td></tr>");
@@ -4582,6 +4541,7 @@ async function marshrut_avto(){
     }
     msg('Завантажено зівт маршрутів авто');
     }
+
 
     async function magazin(data) { 
       msg('ЗАЧЕКАЙТЕ зівт зупинок біля магазинів');
@@ -4602,18 +4562,25 @@ async function marshrut_avto(){
             let x = parseFloat(data[0][st][0].split(',')[1]);
             $.get('https://nominatim.openstreetmap.org/reverse?format=jsonv2&accept-language=UA&lat='+y+'&lon='+x+'', function(data){
               let type=0;
-               if (data.category =="shop")type="магазин"
-               if (data.type =="hospital")type="лікарня"
-               if (data.type =="pharmacy")type="аптека"
-               if (data.type =="car_wash")type="автомийка"
-               if (data.type =="kindergarten")type="садок"
-               if (data.type =="supermarket")type="супермаркет"
-               if (data.type =="parking")type="парковка"
-               if (data.type =="hotel")type="готель"
-               if (data.type =="fitness_centre")type="спортзал"
-               if (data.type =="dentist")type="дантист"
-               if (data.type =="university")type="університет"
-               if (type !=0){
+                 if (data.category =="shop")type="магазин"
+                 if (data.type =="hospital")type="лікарня"
+                 if (data.type =="pharmacy")type="аптека"
+                 if (data.type =="car_wash")type="автомийка"
+                 if (data.type =="kindergarten")type="садок"
+                 if (data.type =="supermarket")type="супермаркет"
+                 if (data.type =="parking")type="парковка"
+                 if (data.type =="hotel")type="готель"
+                 if (data.type =="fitness_centre")type="спортзал"
+                 if (data.type =="dentist")type="дантист"
+                 if (data.type =="university")type="університет"
+                 if (data.type =="unclassified")type="невідомо"
+                 if (data.type =="residential")type="жила зона"
+                 if (data.type =="apartments")type="жила зона"
+                 if (data.type =="primary")type="дорога"
+                 if (data.type =="secondary")type="дорога"
+                 if (data.type =="trunk")type="дорога"
+                 if (data.type =="post_office")type="пошта"
+                 if (type !=0){
                 let mar = L.tooltip([y,x], {content: ""+type+" - "+data.name+"",permanent: true, opacity:0.9, direction: 'top'}).addTo(map);
                  zup_mark_data.push(mar);
                 }
@@ -5906,7 +5873,7 @@ if(!row) return;
               $("#lis0").trigger("chosen:updated");
               layers[0]=0;
               show_track(t0,t2);
-		  slider.value=(Date.parse(t1)-Date.parse($('#fromtime1').val()))/(Date.parse($('#fromtime2').val())-Date.parse($('#fromtime1').val()))*2000;
+              slider.value=(Date.parse(t1)-Date.parse($('#fromtime1').val()))/(Date.parse($('#fromtime2').val())-Date.parse($('#fromtime1').val()))*2000;
               position(Date.parse(t1));
              
           })
@@ -6189,73 +6156,7 @@ $("div").on("click", '.point_checkbox', function () {
 
 
 
-
-function routing (ay,ax,by,bx,r,i,calbek){
-  clearGarbage(marshrut_garbage);
-  clearGarbage(marshrut_treck);
-  let aay=ay;
-  let aax=ax;
-  if (marshrut_point.length>0){
-    aay=marshrut_point[marshrut_point.length-1][0];
-    aax=marshrut_point[marshrut_point.length-1][1];;
-  }
-  wialon.util.Gis.getRoute(aay,aax,by,bx,0, function(error, data) {
-    if (error) { // error was happened
-      msg(wialon.core.Errors.getErrorText(error));
-      return;
-    }
-    if (data.status=="OK"){
-      let line=[];
-      //console.log(data)
-      for (v = 0; v < data.points.length; v+=3) {
-       line.push ([data.points[v].lat,data.points[v].lon]);
-       } 
-       marshrut_data.push(line);
-       marshrut_probeg+=data.distance.value;
-       marshrut_vremya+=data.duration.value;
-
-       if (marshrut_point.length==0){
-        marshrut_point.push([ay,ax,frrr]);
-       }
-       marshrut_point.push([by,bx,r]);
-       if (i-3>0)document.getElementById("log_marh_tb").rows[0].cells[i-3].innerText=marshrut_point.length-1;
-    }
-    dataLoop: for (v = marshrut_point.length-1; v >=0; v--) {
-      //let ll = L.circle([marshrut_point[v][0],marshrut_point[v][1]], { color: 'red', fillColor: 'red', fillOpacity: 0, radius: marshrut_point[v][2]}).addTo(map);
-      //marshrut_garbage.push(ll);
-      let y=marshrut_point[v][0];
-      let x=marshrut_point[v][1];
-      let n='';
-      for (vv = v+1; vv <marshrut_point.length ; vv++) {
-        let yy=marshrut_point[vv][0];
-        let xx=marshrut_point[vv][1];
-       if ( wialon.util.Geometry.getDistance(y, x, yy, xx)<100) {
-        continue dataLoop;
-       }
-      }
-      for (vvv = 0; vvv <v ; vvv++) {
-        let yyy=marshrut_point[vvv][0];
-        let xxx=marshrut_point[vvv][1];
-       if ( wialon.util.Geometry.getDistance(y, x, yyy, xxx)<100) {
-        n+=vvv+'-';
-       }
-      }
-      n+=v+'';
-      let tooltipp = L.tooltip([y,x], {content: ""+n+"",permanent: true, opacity:0.8, direction: 'bottom'}).addTo(map);
-      marshrut_garbage.push(tooltipp);
-      } 
-    
-    let l = L.polyline([marshrut_data], {color: 'blue',weight:10,opacity:0.3}).addTo(map);
-    marshrut_garbage.push(l);
-    
-
-    let d = (marshrut_probeg/1000).toFixed(1);
-    let t = (marshrut_vremya/60).toFixed();
-
-    calbek(i,by,bx);
-  });
-  }
-//=============dodavannya marshrutu do avto====================================================
+//=============створити маршрут====================================================
 let logistik_size=0;
 let logistik_data=[];
 function update_logistik_data(calbek){
@@ -6536,7 +6437,7 @@ let name = evt.target.parentNode.cells[0].innerText;
      }
 
 });
-//=============controluvannya marshrutu ====================================================
+//=============контроль маршруту====================================================
 async function control_avto(){
    let control_date = document.getElementById("log_time_inp").valueAsNumber;
    let now_date = new Date();
@@ -7536,108 +7437,6 @@ function point_in_data(y,x) {
          
  }
 
-
-function vsi_marshruty(){
-  let t = new Date();
-  t.setHours(0, 0, 0, 0);
-  t =Date.parse(t);
-  let n=[];
-  let povtor=false;
-  for (let v = 1; v<logistik_data.length; v++){
-    let hue = Math.floor(Math.random() * 360);
-    let saturation = 100;
-    let lightness = 45;
-    let color=  `hsl(${hue}, ${saturation}%, ${lightness}%)`;
-    let m=logistik_data[v].split('|');
-    if(m[0]>=t+86400000 && m[0]<t+172800000){
-      povtor=false;
-      n.forEach((element) => {if(m[1].indexOf(element)>=0){povtor=true;}});
-      n.push(m[1]);
-      if(povtor==true)continue;
-      if(m[2]=='ремонт')continue;
-      if(m[2]=='готовий')continue;
-      if(m[2]=='видалено')continue;
-      
-      let marshrut =m[2].split('//');
-   
-      for (let i = 0; i<marshrut.length-1; i++){
-        let a=marshrut[i];
-        let b=marshrut[i+1];
-        vsi_marshruty_name_to_point (a,b,0,0,m[1],color);
-      }
-    }
-  }
-}
-
-
-function vsi_marshruty_visual (ay,ax,by,bx,name,color){
-  wialon.util.Gis.getRoute(ay,ax,by,bx,0, function(error, data) {
-    if (error) { // error was happened
-      msg(wialon.core.Errors.getErrorText(error));
-      return;
-    }
-    if (data.status=="OK"){
-      let line=[];
-      for (v = 0; v < data.points.length; v+=5) {
-       line.push ([data.points[v].lat,data.points[v].lon]);
-       } 
-    let l = L.polyline([line], {color: color,weight:5,opacity:0.3}).bindTooltip(name,{opacity:0.8,sticky:true});
-    marshrut_leyer_0.addLayer(l);
-      }
-  });
-  }
-
-  function vsi_marshruty_name_to_point (a,b,y,x,name,color){
-    let text='';
-    if (y==0) {text=a;}else{text=b;}
-    let yy=0;
-    let xx=0;
-    if(text){
-      if(text[0]==','){
-        yy=parseFloat(text.split(',')[1]);
-        xx=parseFloat(text.split(',')[2]);
-        if (y==0) {
-          vsi_marshruty_name_to_point (a,b,yy,xx,name,color)
-        }else{
-          vsi_marshruty_visual (y,x,yy,xx,name,color);
-        }
-        return;
-      }else{
-        for (let j = 0; j<stor.length; j++){
-          if(text==stor[j][3]){
-              yy=stor[j][0];
-              xx=stor[j][1];
-              if (y==0) {
-                vsi_marshruty_name_to_point (a,b,yy,xx,name,color)
-              }else{
-                vsi_marshruty_visual (y,x,yy,xx,name,color);
-              }
-              return;
-              break;
-          }
-          if(j ==stor.length-1){
-            wialon.util.Gis.searchByString(text,0,1, function(code, data) {
-              if (code) { msg(wialon.core.Errors.getErrorText(code)); return; } // exit if error code
-              if (data) {
-                if (data[0]){
-                    yy=data[0].items[0].y;
-                    xx=data[0].items[0].x;
-                    if (y==0) {
-                      vsi_marshruty_name_to_point (a,b,yy,xx,name,color)
-                    }else{
-                      vsi_marshruty_visual (y,x,yy,xx,name,color);
-                    }
-                    return;
-                 }
-              }});
-              return;
-
-          }
-        }
-
-      } 
-    }
-    }
 
 
 
