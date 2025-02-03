@@ -7100,6 +7100,8 @@ async function logistik_zvit(data){
              
                   let b0=100;
                   let b1=50;
+		  let b00=100;
+                  let b11=50;
               outer:for (let v = 1; v<1000; v++){
                
                 if(data[0].length-1<ii+v)break;
@@ -7133,7 +7135,39 @@ async function logistik_zvit(data){
                 }
               }
 
-              if(Math.abs(b0-b1)<30 || Math.abs(b0-b1)>330){ 
+                         outer:for (let v = 1; v<1000; v++){ 
+                if(data[0].length-1<ii+v)break;
+                if(!data[0][ii+v][0])continue;
+                if(parseInt(data[0][ii+v][2])<=5)continue;
+                let yt = parseFloat(data[0][ii+v][0].split(',')[0]);
+                let xt = parseFloat(data[0][ii+v][0].split(',')[1]);
+                if(wialon.util.Geometry.getDistance(yt,xt,y1,x1)>60){
+                  for (let vv = 1; vv<1000; vv++){
+                    if(ii-vv<5)break outer;
+                    if(!data[0][ii-vv][0])continue;
+                    if(parseInt(data[0][ii-vv][2])<=5)continue;
+                    let ytt = parseFloat(data[0][ii-vv][0].split(',')[0]);
+                    let xtt = parseFloat(data[0][ii-vv][0].split(',')[1]);       
+                    if(wialon.util.Geometry.getDistance(ytt,xtt,y1,x1)>60){
+                     
+                      let p0 = turf.point([xt, yt]);
+                      let p1 = turf.point([x1, y1]);
+                      let p2 = turf.point([xtt, ytt]);
+                      x0=xt;
+                      y0=yt;
+                      x2=xtt;
+                      y2=ytt;
+                      //L.polyline([[y0, x0],[y1, x1]], {color: 'blue'}).addTo(map);
+                      //L.polyline([[y1, x1],[y2, x2]], {color: 'red'}).addTo(map);
+                       b00 = turf.bearing(p1, p0);
+                       b11 = turf.bearing(p1, p2);
+                       break outer;
+                    }
+                  }
+                }
+              }
+
+              if(Math.abs(b0-b1)<30 || Math.abs(b0-b1)>330 || Math.abs(b00-b11)<30 || Math.abs(b00-b11)>330){ 
                 //L.polyline([[y0, x0],[y1, x1]], {color: '#55ff33'}).addTo(map);
                 //L.polyline([[y1, x1],[y2, x2]], {color: '#55ff33'}).addTo(map);
 
