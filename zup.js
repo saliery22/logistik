@@ -4148,6 +4148,7 @@ for(let i = 0; i<geozonesgrup.length; i++){
       if(!Global_DATA[i][ii][4])continue;
       if(!Global_DATA[i][ii+1][4])continue;
       if(Global_DATA[i][ii][3][0]==0 || Global_DATA[i][ii+1][3][0]==0){
+	if(Global_DATA[i][ii][3][0]!=0)continue;
         if(Global_DATA[i][ii][2] !='-----')p1=Global_DATA[i][ii][2];
         if(Global_DATA[i][ii+1][2] !='-----')p2=Global_DATA[i][ii+1][2];
 
