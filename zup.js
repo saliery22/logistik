@@ -29,7 +29,7 @@ var from222 = (new Date(Date.now() - tzoffset)).toISOString().slice(0, -8);
 
 
 $('#vchora').click(function() { 
-   from111 = (new Date(Date.now() - tzoffset-86400000)).toISOString().slice(0, -13)+ '00:00';
+   from111 = (new Date(Date.now() - tzoffset-86400000)).toISOString().slice(0, -13)+ '05:00';
    from222 = (new Date(Date.now() - tzoffset-86400000)).toISOString().slice(0, -13)+ '23:59';
    $('#fromtime1').val(from111);
    $('#fromtime2').val(from222);
@@ -2996,7 +2996,7 @@ function ObrabotkaPolya(spisok=[],zaxvat=10){
         if(tableRow[j].cells[1].textContent==traktor){
           tableRow[j].cells[0].style.backgroundColor = color;
           tableRow[j].cells[2].textContent=(area-areaI).toFixed(2);
-          tableRow[j].cells[3].textContent=(area-areaU-areaI).toFixed(2);
+          tableRow[j].cells[3].textContent=((area-areaI)-(areaU-areaI)).toFixed(2);
           tableRow[j].cells[4].textContent=(areaU-areaI).toFixed(2);
         }
       } 
@@ -4459,6 +4459,8 @@ async function marshrut_avto(){
         
                 let b0=100;
                 let b1=50;
+		let b00=100;
+                let b11=50;
                 outer:for (let v = 1; v<1000; v++){
                
                   if(Global_DATA[i].length-1<ii+v)break;
@@ -4491,11 +4493,39 @@ async function marshrut_avto(){
                     }
                   }
                 }
-
-            
-           
-
-            if(Math.abs(b0-b1)<30 || Math.abs(b0-b1)>330){ 
+                  outer:for (let v = 1; v<1000; v++){
+                  if(Global_DATA[i].length-1<ii+v)break;
+                  if(!Global_DATA[i][ii+v][0])continue;
+                  if(parseInt(Global_DATA[i][ii+v][3])<=5)continue;
+                  let yt = parseFloat(Global_DATA[i][ii+v][0].split(',')[0]);
+                  let xt = parseFloat(Global_DATA[i][ii+v][0].split(',')[1]);
+                  if(wialon.util.Geometry.getDistance(yt,xt,y1,x1)>60){
+                    for (let vv = 1; vv<1000; vv++){
+                      if(ii-vv<5)break outer;
+                      if(!Global_DATA[i][ii-vv][0])continue;
+                      if(parseInt(Global_DATA[i][ii-vv][3])<=5)continue;
+                      let ytt = parseFloat(Global_DATA[i][ii-vv][0].split(',')[0]);
+                      let xtt = parseFloat(Global_DATA[i][ii-vv][0].split(',')[1]);    
+                      if(wialon.util.Geometry.getDistance(ytt,xtt,y1,x1)>60){
+                       
+                        let p0 = turf.point([xt, yt]);
+                        let p1 = turf.point([x1, y1]);
+                        let p2 = turf.point([xtt, ytt]);
+                        x0=xt;
+                        y0=yt;
+                        x2=xtt;
+                        y2=ytt;
+                        //L.polyline([[y0, x0],[y1, x1]], {color: 'blue'}).addTo(map);
+                        //L.polyline([[y1, x1],[y2, x2]], {color: 'red'}).addTo(map);
+                         b00 = turf.bearing(p1, p0);
+                         b11 = turf.bearing(p1, p2);
+                         break outer;
+                      }
+                    }
+                  }
+                }
+  
+                if(Math.abs(b0-b1)<30 || Math.abs(b0-b1)>330 || Math.abs(b00-b11)<30 || Math.abs(b00-b11)>330){ 
               //L.polyline([[y0, x0],[y1, x1]], {color: '#55ff33'}).addTo(map);
               //L.polyline([[y1, x1],[y2, x2]], {color: '#55ff33'}).addTo(map);
               
