@@ -5872,7 +5872,7 @@ if(!row) return;
           mar.on('mouseup', () => {
               map.dragging.enable();
               map.removeEventListener('mousemove');
-              if ($('#log_control_tb').is(':hidden'))return;
+              
               clearGarbage(marshrut_treck);
             let y = parseFloat(mar._latlng.lat);
             let x = parseFloat(mar._latlng.lng);
@@ -5896,7 +5896,7 @@ if(!row) return;
                 break;
               }
               }
-            
+            if ($('#log_control_tb').is(':hidden'))return;
               if (t0==0) {t0 = t1}
               if (t2==0) {t2 = t1}
               $("#lis0").chosen().val(idd);     
