@@ -29,7 +29,7 @@ var from222 = (new Date(Date.now() - tzoffset)).toISOString().slice(0, -8);
 
 
 $('#vchora').click(function() { 
-   from111 = (new Date(Date.now() - tzoffset-86400000)).toISOString().slice(0, -13)+ '05:00';
+   from111 = (new Date(Date.now() - tzoffset-86400000)).toISOString().slice(0, -13)+ '00:00';
    from222 = (new Date(Date.now() - tzoffset-86400000)).toISOString().slice(0, -13)+ '23:59';
    $('#fromtime1').val(from111);
    $('#fromtime2').val(from222);
