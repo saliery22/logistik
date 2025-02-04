@@ -412,16 +412,7 @@ if ($("#grupi_avto").val()=="v000") {
     $('#map').css('width', '50%');
     this.style.background = '#b2f5b4';
     $('.leaflet-container').css('cursor','crosshair');
-    var tableRow =document.querySelectorAll('#marshrut tr');
-    var radddddd;
-     for ( j = 1; j < tableRow.length; j++){
-       raddddddd =  L.circle([parseFloat(tableRow[j].cells[2].textContent.split(',')[0]),parseFloat(tableRow[j].cells[2].textContent.split(',')[1])], {stroke: false,  fillColor: '#0000FF', fillOpacity: 0.2,radius: tableRow[j].cells[6].textContent}).addTo(map);
-       marshrutMarkers.push(raddddddd);
-       raddddddd =  L.circle([parseFloat(tableRow[j].cells[3].textContent.split(',')[0]),parseFloat(tableRow[j].cells[3].textContent.split(',')[1])], {stroke: false,  fillColor: '#f03', fillOpacity: 0.2,radius: tableRow[j].cells[7].textContent}).addTo(map);
-       marshrutMarkers.push(raddddddd);
-       var polyline = L.polyline([[parseFloat(tableRow[j].cells[2].textContent.split(',')[0]),parseFloat(tableRow[j].cells[2].textContent.split(',')[1])],[parseFloat(tableRow[j].cells[3].textContent.split(',')[0]),parseFloat(tableRow[j].cells[3].textContent.split(',')[1])]], {opacity: 0.3, color: '#0000FF'}).addTo(map);
-       marshrutMarkers.push(polyline); 
-     } 
+
      
   }else{
     $('#marrr').hide();
@@ -5399,6 +5390,7 @@ $("#log_b1").on("click", function (){
   $('#adresy').hide();
   $('#log_help').show();
   $('#marshrut_text').show();
+  clearGEO();
   marshrut();
   update_logistik_data(vibir_avto);
 });
@@ -5415,6 +5407,7 @@ $("#log_b2").on("click", function (){
   $('#log_time').show();
   $('#log_help').hide();
   $('#marshrut_text').hide();
+  clearGEO();
   update_logistik_data(control_avto);
   clearGarbage(marshrut_garbage);
 });
