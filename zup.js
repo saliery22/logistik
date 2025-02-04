@@ -6852,7 +6852,7 @@ async function logistik_zvit(data){
           let time1 = Date.parse(data[0][ii-1][1])/1000;
           let time2 = Date.parse(data[0][ii][1])/1000;
        
-         if(parseInt(data[0][ii][2])<5){
+         if(parseInt(data[0][ii][2])<7){
           stoyanka+=time2-time1; 
           stoyanka0=stoyanka;
           if(!data[0][ii][0])continue;
