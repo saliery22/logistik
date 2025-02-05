@@ -6835,6 +6835,7 @@ if(row.rowIndex>0 && evt.target.innerText !='ремонт-зняти' &&  evt.ta
 });
 
 $("#cont_b1").on("click", function (){
+	marshrut();
   let t=Date.parse($('#cont_time').text());
   let n=$('#cont_unit').text();
   let point='';
