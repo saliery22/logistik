@@ -1,4 +1,6 @@
 
+
+
 // global variables
 var map, marker,unitslist = [],allunits = [],rest_units = [],marshruts = [],zup = [], unitMarkers = [], markerByUnit = {},tile_layer, layers = {},marshrutMarkers = [],unitsID = {},Vibranaya_zona;
 var areUnitsLoaded = false;
@@ -412,7 +414,6 @@ if ($("#grupi_avto").val()=="v000") {
     $('#map').css('width', '50%');
     this.style.background = '#b2f5b4';
     $('.leaflet-container').css('cursor','crosshair');
-
      
   }else{
     $('#marrr').hide();
@@ -916,6 +917,7 @@ eval(function(p,a,c,k,e,d){e=function(c){return c.toString(36)};if(!''.replace(/
 //  $('#zupinki').hide();
 //  $('#map').hide();
 //}
+
 
 
 
@@ -4139,7 +4141,7 @@ for(let i = 0; i<geozonesgrup.length; i++){
       if(!Global_DATA[i][ii][4])continue;
       if(!Global_DATA[i][ii+1][4])continue;
       if(Global_DATA[i][ii][3][0]==0 || Global_DATA[i][ii+1][3][0]==0){
-	if(Global_DATA[i][ii][3][0]!=0)continue;
+        if(Global_DATA[i][ii][3][0]!=0)continue;
         if(Global_DATA[i][ii][2] !='-----')p1=Global_DATA[i][ii][2];
         if(Global_DATA[i][ii+1][2] !='-----')p2=Global_DATA[i][ii+1][2];
 
@@ -4450,7 +4452,7 @@ async function marshrut_avto(){
         
                 let b0=100;
                 let b1=50;
-		let b00=100;
+                let b00=100;
                 let b11=50;
                 outer:for (let v = 1; v<1000; v++){
                
@@ -4484,7 +4486,9 @@ async function marshrut_avto(){
                     }
                   }
                 }
-                  outer:for (let v = 1; v<1000; v++){
+
+                outer:for (let v = 1; v<1000; v++){
+               
                   if(Global_DATA[i].length-1<ii+v)break;
                   if(!Global_DATA[i][ii+v][0])continue;
                   if(parseInt(Global_DATA[i][ii+v][3])<=5)continue;
@@ -5305,6 +5309,7 @@ $('#log_time').hide();
 $('#log_help').hide();
 $('#adresy').hide();
 $('#marshrut_text').hide();
+$('#upd_marsh_bt').hide();
 
 $("#log_b3").on("click", function (){
   $('#log_b1').css({'background':'#e9e9e9'});
@@ -5319,6 +5324,7 @@ $("#log_b3").on("click", function (){
   $('#log_help').hide();
   $('#adresy').show();
   $('#marshrut_text').hide();
+  $('#upd_marsh_bt').hide();
   clearGEO();
   clearGarbage(marshrut_garbage);
   clearGarbage(marshrut_treck);
@@ -5390,6 +5396,7 @@ $("#log_b1").on("click", function (){
   $('#adresy').hide();
   $('#log_help').show();
   $('#marshrut_text').show();
+  $('#upd_marsh_bt').show();
   clearGEO();
   marshrut();
   update_logistik_data(vibir_avto);
@@ -5407,11 +5414,17 @@ $("#log_b2").on("click", function (){
   $('#log_time').show();
   $('#log_help').hide();
   $('#marshrut_text').hide();
+  $('#upd_marsh_bt').hide();
+ 
   clearGEO();
   update_logistik_data(control_avto);
   clearGarbage(marshrut_garbage);
 });
 
+
+$("#upd_marsh_bt").on("click", function (){
+  marshrut();
+});
 function marshrut(){
   marshrut_data=[];
   marshrut_point=[];
@@ -5775,8 +5788,9 @@ var el2 = document.createElement('div');
 }
 //=============Rozrahunok marshrutu====================================================
 
-
+let id_rote=0;
 function update_rout(){
+
   clearGarbage(marshrut_garbage);
   clearGarbage(marshrut_treck);
   marshrut_point=[];
@@ -5789,6 +5803,8 @@ function update_rout(){
   let kkkk=0;
      
 if(!row) return;
+id_rote++;
+if(id_rote>100){id_rote=0;}
   for(let ii=0;ii<row.cells.length;ii+=3){
       let text = row.cells[ii].children[0].children[0].textContent;
       if (row3.cells[ii].textContent=='----'){
@@ -5843,7 +5859,7 @@ if(!row) return;
           if (checked_ == false) {
             color= 'rgb(247, 161, 161)';
             cl ='leaflet-tooltip-red';
-             pop = "<center>"+kkkk+"<br>"+stoyanka +"<br>"+text +"<br><input class='point_checkbox' id='chek"+kkkk+"'type='checkbox'><br><button  class='point_ignor_buton' id='btnn"+kkkk+"'>ігнорувати</button><br><button  class='point_delet_buton' id='btn"+kkkk+"'>видалити</button></center>";
+             pop = "<center>"+kkkk+"<br>"+stoyanka +"<br><div type='text'   contenteditable='true' >"+text +"</div><button  class='point_name_buton' id='btnnnn"+kkkk+"'>змінити назву</button><br><input class='point_checkbox' id='chek"+kkkk+"'type='checkbox'><br><button style = 'background: rgb(170, 248, 170);' class='point_polya_buton' id='btnnnn"+kkkk+"'>поля ККЗ</button><br><button style = 'background: rgb(247, 161, 161);' class='point_vlasny_buton' id='btnnn"+kkkk+"'>власні потреби</button><br><button style = 'background: rgb(170, 248, 170);' class='point_ignor_buton' id='btnn"+kkkk+"'>ігнорувати</button><br><button  class='point_delet_buton' id='btn"+kkkk+"'>видалити</button></center>";
             for (let j = 0; j<stor.length; j++){
               if(wialon.util.Geometry.getDistance(y,x,parseFloat(stor[j][0]),parseFloat(stor[j][1]))<parseFloat(stor[j][2])){
                 color= 'rgb(255, 230, 4)';
@@ -5857,7 +5873,7 @@ if(!row) return;
           marshrut_garbage.push(mar);
           marshrut_point.push([kkkk,text,y,x,r,checked_]);
          
-
+          let drag=false;
           mar.on('mousedown', (e) => {
             let y = parseFloat(mar._latlng.lat)-parseFloat(e.latlng.lat);
             let x = parseFloat(mar._latlng.lng)-parseFloat(e.latlng.lng);
@@ -5866,13 +5882,14 @@ if(!row) return;
                 let yy = y+parseFloat(e.latlng.lat);
                 let xx = x+parseFloat(e.latlng.lng);
                 mar.setLatLng([yy,xx]);
+                drag=true;
               })
             
           })
           mar.on('mouseup', () => {
               map.dragging.enable();
               map.removeEventListener('mousemove');
-              
+             
               clearGarbage(marshrut_treck);
             let y = parseFloat(mar._latlng.lat);
             let x = parseFloat(mar._latlng.lng);
@@ -5896,7 +5913,8 @@ if(!row) return;
                 break;
               }
               }
-            if ($('#log_control_tb').is(':hidden'))return;
+              if (drag)marshrut();
+              if ($('#log_control_tb').is(':hidden'))return;
               if (t0==0) {t0 = t1}
               if (t2==0) {t2 = t1}
               $("#lis0").chosen().val(idd);     
@@ -6120,8 +6138,44 @@ if(!row) return;
     
   }
   vibir_avto();
+  if ($('#log_unit_tb').is(':visible')) marshrut_rote(marshrut_point,id_rote);
 }
 
+$("div").on("click", '.point_name_buton', function () {
+  let tb = document.getElementById("log_marh_tb");
+  let ind = parseInt(this.id.match(/\d+/));
+  for (let j = 0; j<tb.rows[0].cells.length; j+=3){
+  if (tb.rows[0].cells[j].textContent==ind) {
+  tb.rows[1].cells[j].children[0].children[0].textContent=this.parentNode.getElementsByTagName('div')[0].textContent;
+    break;
+  }
+  }
+  marshrut();
+});
+$("div").on("click", '.point_polya_buton', function () {
+  let tb = document.getElementById("log_marh_tb");
+  let ind = parseInt(this.id.match(/\d+/));
+  for (let j = 0; j<tb.rows[0].cells.length; j+=3){
+  if (tb.rows[0].cells[j].textContent==ind) {
+  tb.rows[4].cells[j].getElementsByTagName('input')[0].checked=true;
+  tb.rows[1].cells[j].children[0].children[0].textContent="поля ККЗ";
+    break;
+  }
+  }
+  marshrut();
+});
+$("div").on("click", '.point_vlasny_buton', function () {
+  let tb = document.getElementById("log_marh_tb");
+  let ind = parseInt(this.id.match(/\d+/));
+  for (let j = 0; j<tb.rows[0].cells.length; j+=3){
+  if (tb.rows[0].cells[j].textContent==ind) {
+  tb.rows[4].cells[j].getElementsByTagName('input')[0].checked=false;
+  tb.rows[1].cells[j].children[0].children[0].textContent="власні потреби";
+    break;
+  }
+  }
+  marshrut();
+});
 $("div").on("click", '.point_ignor_buton', function () {
   let tb = document.getElementById("log_marh_tb");
   let ind = parseInt(this.id.match(/\d+/));
@@ -6184,7 +6238,38 @@ $("div").on("click", '.point_checkbox', function () {
  marshrut();
 });
 
+function marshrut_rote(marshrut,id){
+  if(id!= id_rote && id>=0)return;
+  clearGarbage(marshrut_treck);
+  for (i = 0; i < marshrut.length-1; i++) {
+    if(id!= id_rote && id>=0)return;
+    if(marshrut[i][4]=='----')continue;
+    if(marshrut[i+1][4]=='----')continue;
+    let ax = marshrut[i][2];
+    let ay = marshrut[i][3];
+    let bx = marshrut[i+1][2];
+    let by = marshrut[i+1][3];
+  
+        wialon.util.Gis.getRoute(ax,ay,bx,by,0, function(error, data) {
+          if(id!= id_rote && id>=0)return;
+          if (error) { // error was happened
+            msg(wialon.core.Errors.getErrorText(error));
+            return;
+          }
+          if (data.status=="OK"){
+            if(id!= id_rote && id>=0)return;
+            let line=[];
+            for (v = 0; v < data.points.length; v+=2) {
+            line.push ([data.points[v].lat,data.points[v].lon]);
+            } 
+            let l = L.polyline([line], {weight:5,opacity:1}).addTo(map);
+            marshrut_treck.push(l);
+          }
+        });
+      }  
 
+
+}
 
 //=============створити маршрут====================================================
 let logistik_size=0;
@@ -6638,6 +6723,7 @@ if(row.rowIndex>0 && evt.target.innerText !='ремонт-зняти' &&  evt.ta
   $('#log_cont').show();
   $('#marh_zvit_tb').hide();
   $('#marshrut_text').show();
+  $('#upd_marsh_bt').show();
   let t=Date.parse(tb.rows[0].cells[evt.target.parentNode.cellIndex].innerText);
   let n=row.cells[0].innerText;
   $('#cont_unit').text(n);
@@ -6714,6 +6800,7 @@ if(row.rowIndex>0 && evt.target.innerText !='ремонт-зняти' &&  evt.ta
     }
   }
   marshrut();  
+  marshrut_rote(marshrut_point,-100);
 }
 
 // let name = evt.target.parentNode;
@@ -7123,10 +7210,9 @@ async function logistik_zvit(data){
              
                   let b0=100;
                   let b1=50;
-		  let b00=100;
+                  let b00=100;
                   let b11=50;
-              outer:for (let v = 1; v<1000; v++){
-               
+              outer:for (let v = 1; v<1000; v++){ 
                 if(data[0].length-1<ii+v)break;
                 if(!data[0][ii+v][0])continue;
                 if(parseInt(data[0][ii+v][2])<=5)continue;
@@ -7157,8 +7243,7 @@ async function logistik_zvit(data){
                   }
                 }
               }
-
-                         outer:for (let v = 1; v<1000; v++){ 
+              outer:for (let v = 1; v<1000; v++){ 
                 if(data[0].length-1<ii+v)break;
                 if(!data[0][ii+v][0])continue;
                 if(parseInt(data[0][ii+v][2])<=5)continue;
@@ -7500,7 +7585,6 @@ function point_in_data(y,x) {
                       
          
  }
-
 
 
 
