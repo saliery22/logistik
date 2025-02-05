@@ -7027,7 +7027,7 @@ async function logistik_zvit(data){
          }
 
 
-         if(parseInt(data[0][ii][2])>=5){
+         if(parseInt(data[0][ii][2])>=7){
           if(!data[0][ii][0])continue;
          if(!data[0][ii-1][2])continue;
          if(!data[0][ii+1][2])continue;
