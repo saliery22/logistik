@@ -6839,7 +6839,7 @@ $("#cont_b1").on("click", function (){
   let n=$('#cont_unit').text();
   let point='';
   let text='';
-  let chek='true';
+  let chek='';
   let radius ='';
   let coment = 'маршрут';
   if($('#marshrut_text').val())coment =$('#marshrut_text').val();
