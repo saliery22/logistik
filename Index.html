@@ -285,34 +285,12 @@ button, input, span, select,textarea {margin: 2px 2px 0px 0px;   font-family: "A
     <select class='livesearch' id='lis0'style='width:200px;'> <option value='0'>—</option></select>
 
 
-    <select  id="grupi_avto" style='width:150px;'>
+
+      
+      <select  id="grupi_avto" style='width:150px;'>
         <option value="v1">Вся техніка</option>
         <option value="v000">Обраний</option>
-        <option value="v2">Камази</option>
-        <option value="v3">МАЗи</option>
-        <option value="v4">Сканії</option>
-        <option value="v5">Погрузчики</option>
-        <option value="v6">ГАЗи</option>
-        <option value="v12">Трактори</option>
-        <option value="v13">Легкові авто</option>
-        <option value="v15">Перевезення людей</option>
-        <option value="v14">Найм</option>
-        <optgroup label="Агрегати">
-            <option value="v21">Диски</option>
-            <option value="v22">Культиватори</option>
-            <option value="v23">Боронування</option>
-            <option value="v24">Рихлитель</option>
-            <option value="v25">Оранка</option>
-            <option value="v26">Розкидачи</option>
-            <option value="v27">Оприскувачи</option>
-            <option value="v28">Сівалки</option>
-            <option value="v29">Комбайни</option>
-            <option value="v30">Без агрегату</option>
-          </optgroup>
-      </select>  
-      
-
-
+    </select>  
 
 <button id='v9'style = "min-width: 110px;">Ті що рухаються</button> 
 <!-- <button id='v2'>Камази</button> 
@@ -336,7 +314,7 @@ button, input, span, select,textarea {margin: 2px 2px 0px 0px;   font-family: "A
 </div>
 <div>
     
-
+    <!-- <button id='v11'style = "min-width: 70px;">Графік &#128200</button> -->
     <button id='men5'style = "min-width: 70px;">Зупинки &#9940</button>
     <button id='fast_obr_poliv'style = "min-width: 70px;">Обробка полів &#128668</button> 
     <button id='men4'style = "min-width: 70px;">Звіти &#128204</button>
@@ -448,10 +426,12 @@ button, input, span, select,textarea {margin: 2px 2px 0px 0px;   font-family: "A
         <option value="z4">звіт по мотогодинах</option>
         <option value="z5">перевірка навігації</option>
         <option value="z6">робота по регіонах</option>
+        <!-- <option value="z8">зливи</option> -->
         <option value="z7">звіт маршрутів авто</option>
         <option value="z9">звіт по журналу</option>
         <option value="z10">обробка полів</option>
         <option value="z11">зупинки в магазині</option>
+<!--         <option value="z12">звіт авто OBD</option> -->
       </select>  
       <br>
       <hr>
@@ -500,12 +480,12 @@ button, input, span, select,textarea {margin: 2px 2px 0px 0px;   font-family: "A
     <div id="zz7" class='zvit'> 
         <div class='textforma'>
         <button id='marsh_bt'>маршрути авто</button>
-        <textarea id='unit_marsh'  rows="2" cols="80"></textarea>
+        <textarea id='unit_marsh'  rows="2" cols="80">ВМ0229АF,ВМ1280СТ,ВМ1640АТ,ВМ1641ВЕ,ВМ1953ВС,ВМ1988ВС,ВМ2559ВК,ВМ3454ЕЕ,ВМ4110АА,ВМ4466АО,ВМ4524АА,ВМ4632АА,ВМ5203ВВ,ВМ5326ВМ,ВМ5607Е,ВМ5629Е,ВМ5645Е,ВМ5647Е,ВМ5887E,ВМ7393ВВ,ВМ7912Е,ВМ7913Е,ВМ7914,ВМ7915Е,ВМ7916Е,ВМ7921Е,ВМ7922Е,ВМ7925Е,ВМ8607Е,ВМ8610ЕН,ВМ8684ЕН,ВМ8692ЕН,ВМ8693ЕН,ВМ9595А,ВМ9708ВЕ,ВМ9987С</textarea>
         </div>
     </div> 
     <div id="zz8" class='zvit'> 
         <button id='sliv_det'>перевірка зливів</button>
-         мінімальний злив л<input id='min_sliv' type='number' placeholder='3' value="3">
+         мінімальний злив л<input id='min_sliv' type='number' placeholder='5' value="5">
     </div> 
     <div id="zz9" class='zvit'> 
         <input id="jurnal_time1" type="datetime-local"/>
@@ -580,6 +560,15 @@ button, input, span, select,textarea {margin: 2px 2px 0px 0px;   font-family: "A
         <button id='magaz'style = "width: 200px;">звіт</button> 
         </div>
     </div>
+    <div id="zz12" class='zvit'>
+        <input id="obd_time1" type="datetime-local"/>
+        <input id="obd_time2" type="datetime-local"/>
+        <br>
+        авто берутся з групи легкові_нові в Wialon
+        <br>
+        <button id='bbd'style = "width: 200px;">звіт</button> 
+
+    </div>
  <table id="unit_table"class='table'></table>
  </div>
 
@@ -619,6 +608,7 @@ button, input, span, select,textarea {margin: 2px 2px 0px 0px;   font-family: "A
         <button id='log_b1'style = "min-width: 32%;">створити маршрут</button> 
         <button id='log_b2'style = "min-width: 32%;">контроль маршрутів</button> 
         <button id='log_b3'style = "min-width: 32%;">адреси</button> 
+ 
    
         <div id="adresy">
             для створення нової зони оберіть радіус та <b>подвійно натисніть</b> праву кнопку на мапі де створити зону відповідного радіусу
@@ -646,17 +636,14 @@ button, input, span, select,textarea {margin: 2px 2px 0px 0px;   font-family: "A
             <br>
             маршрут можна редагувати додаючи чи віднісаючи точки за допомогою + -
             <br>
-            назву маршрута можна редагувати
-            <br>
-            маршрут можна переміщувати за допомогою миші на мапі
-            <br>
-            під назвою маршрута вказаний радіус - його можна редагувати
-            <br>
-            для оновлення маршрута натисніть + або -
+            назву маршрута можна редагувати, маршрут можна переміщувати за допомогою миші на мапі,  під назвою маршрута вказаний радіус - його можна редагувати
+         
           
         </div>
-          <button id='upd_marsh_bt'>оновлення маршруту після змін в таблиці маршрута</button>
+  
+        <button id='upd_marsh_bt'>оновлення маршруту після змін в таблиці маршрута</button>
         <div id="mars_table_div">
+           
         <table id="log_marh_tb">
             <tr>
                 <td>1</td>
