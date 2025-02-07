@@ -949,7 +949,6 @@ eval(function(p,a,c,k,e,d){e=function(c){return c.toString(36)};if(!''.replace(/
 
 
 
-
 function show_track (time1,time2) {
 
 	var unit_id =  $("#lis0").chosen().val(),
@@ -5869,7 +5868,7 @@ if(id_rote>100){id_rote=0;}
           if (checked_ == false) {
             color= 'rgb(247, 161, 161)';
             cl ='leaflet-tooltip-red';
-             pop = "<center>"+kkkk+"<br>"+stoyanka +"<br><div type='text'   contenteditable='true' >"+text +"</div><button  class='point_name_buton' id='btnnnn"+kkkk+"'>змінити назву</button><br><input class='point_checkbox' id='chek"+kkkk+"'type='checkbox'><br><button style = 'background: rgb(170, 248, 170);' class='point_polya_buton' id='btnnnn"+kkkk+"'>поля ККЗ</button><br><button style = 'background: rgb(247, 161, 161);' class='point_vlasny_buton' id='btnnn"+kkkk+"'>власні потреби</button><br><button style = 'background: rgb(170, 248, 170);' class='point_ignor_buton' id='btnn"+kkkk+"'>ігнорувати</button><br><button  class='point_delet_buton' id='btn"+kkkk+"'>видалити</button></center>";
+             pop = "<center>"+kkkk+"<br>"+stoyanka +"<br><div type='text'   contenteditable='true' >"+text +"</div><button  class='point_name_buton' id='btnnnn"+kkkk+"'>змінити назву</button><br><input class='point_checkbox' id='chek"+kkkk+"'type='checkbox'><br><button style = 'background: rgb(170, 248, 170);' class='point_polya_buton' id='btnnnn"+kkkk+"'>поля ККЗ</button><br><button style = 'background: rgb(170, 248, 170);' class='point_ferma_buton' id='btnnnnn"+kkkk+"'>працівник Райгородок</button><br><button style = 'background: rgb(247, 161, 161);' class='point_vlasny_buton' id='btnnn"+kkkk+"'>власні потреби</button><br><button style = 'background: rgb(170, 248, 170);' class='point_podorozi_buton' id='btnggn"+kkkk+"'>по дорозі</button><br><button style = 'background: rgb(170, 248, 170);' class='point_ignor_buton' id='btnn"+kkkk+"'>ігнорувати</button><br><button  class='point_delet_buton' id='btn"+kkkk+"'>видалити</button></center>";
             for (let j = 0; j<stor.length; j++){
               if(wialon.util.Geometry.getDistance(y,x,parseFloat(stor[j][0]),parseFloat(stor[j][1]))<parseFloat(stor[j][2])){
                 color= 'rgb(255, 230, 4)';
@@ -6174,6 +6173,18 @@ $("div").on("click", '.point_polya_buton', function () {
   }
   marshrut();
 });
+$("div").on("click", '.point_ferma_buton', function () {
+  let tb = document.getElementById("log_marh_tb");
+  let ind = parseInt(this.id.match(/\d+/));
+  for (let j = 0; j<tb.rows[0].cells.length; j+=3){
+  if (tb.rows[0].cells[j].textContent==ind) {
+  tb.rows[4].cells[j].getElementsByTagName('input')[0].checked=true;
+  tb.rows[1].cells[j].children[0].children[0].textContent="працівник Райгородок";
+    break;
+  }
+  }
+  marshrut();
+});
 $("div").on("click", '.point_vlasny_buton', function () {
   let tb = document.getElementById("log_marh_tb");
   let ind = parseInt(this.id.match(/\d+/));
@@ -6181,6 +6192,18 @@ $("div").on("click", '.point_vlasny_buton', function () {
   if (tb.rows[0].cells[j].textContent==ind) {
   tb.rows[4].cells[j].getElementsByTagName('input')[0].checked=false;
   tb.rows[1].cells[j].children[0].children[0].textContent="власні потреби";
+    break;
+  }
+  }
+  marshrut();
+});
+$("div").on("click", '.point_podorozi_buton', function () {
+  let tb = document.getElementById("log_marh_tb");
+  let ind = parseInt(this.id.match(/\d+/));
+  for (let j = 0; j<tb.rows[0].cells.length; j+=3){
+  if (tb.rows[0].cells[j].textContent==ind) {
+  tb.rows[4].cells[j].getElementsByTagName('input')[0].checked=true;
+  tb.rows[1].cells[j].children[0].children[0].textContent="по дорозі";
     break;
   }
   }
