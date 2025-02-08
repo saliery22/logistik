@@ -396,7 +396,7 @@ if (Date.parse($('#fromtime1').val())/1000 > unit.getPosition().t){rest_units.pu
 
  
 
-  session.searchItems({itemsType: "avl_unit_group", propName: "", propValueMask: "", sortType: ""},true, 1, 0, 0, function(code, data) {
+  session.searchItems({itemsType: "avl_unit_group", propName: "", propValueMask: "", sortType: "sys_name"},true, 1, 0, 0, function(code, data) {
     if (code) {
         msg(wialon.core.Errors.getErrorText(code));
         return;
@@ -405,12 +405,14 @@ if (Date.parse($('#fromtime1').val())/1000 > unit.getPosition().t){rest_units.pu
     for(let i = 0; i<data.items.length; i++){
       let name = data.items[i].$$user_name;
       let gr= '';
-      for(let ii = 0; ii<data.items[i].$$user_units.length; ii++){
-        gr+=markerByUnit[data.items[i].$$user_units[ii]]._tooltip._content+',';
+      let grup_id = data.items[i].$$user_units;
+      grup_id.sort()
+      for(let ii = 0; ii<grup_id.length; ii++){
+        gr+=markerByUnit[grup_id[ii]]._tooltip._content+',';
       }
       gr = gr.slice(0, -1);
       unitsgrup[name] = gr;
-      if (data.items[i].$$user_units.length>0) {
+      if (grup_id.length>=0) {
         let newOption = new Option(name+" ("+data.items[i].$$user_units.length+")", name);
          select.append(newOption);
       }
@@ -946,6 +948,7 @@ eval(function(p,a,c,k,e,d){e=function(c){return c.toString(36)};if(!''.replace(/
 //  $('#zupinki').hide();
 //  $('#map').hide();
 //}
+
 
 
 
@@ -4796,13 +4799,18 @@ $('#bbd').click(function() {
   });
 function avto_OBD(data){
   $("#unit_table").empty();
-  $("#unit_table").append("<tr><td>ТЗ</td><td>холостий хід</td><td>холостий хід більше 1хв</td><td>пробіг</td></tr>");
+  $("#unit_table").append("<tr><td>ТЗ</td><td>пробіг по треку</td><td>пробіг по одометру</td><td>мотогодини</td><td>холостий хід</td><td>холостий хід більше 1хв</td><td>швидкість > 110 понад 1хв</td></tr>");
   for (let i = 0; i<data.length; i++){
     let name = data[i][0][1];
     let hl0 = 0;
     let hl1 = 0;
     let st = 0;
     let km = 0;
+    let km_odo_start = 0;
+    let km_odo = 0;
+    let moto_hr = 0;
+    let sped_hr_interval = 0;
+    let sped_hr = 0;
     for (let ii = 1; ii<data[i].length-1; ii++){
       if(!data[i][ii][1])continue;
       if(!data[i][ii+1][1])continue;
@@ -4810,6 +4818,11 @@ function avto_OBD(data){
       if(!data[i][ii+1][0])continue;
       if(!data[i][ii][19])continue;
       if(!data[i][ii+1][19])continue;
+      if(parseInt(data[i][ii][21])){
+        if(km_odo_start==0) km_odo_start = parseInt(data[i][ii][21]);
+        km_odo = parseInt(data[i][ii][21])-km_odo_start;
+      }
+      
       let time1 = Date.parse(data[i][ii][1])/1000;
       let time2 = Date.parse(data[i][ii+1][1])/1000;
       let rpm1 = parseInt(data[i][ii][19]);
@@ -4822,32 +4835,43 @@ function avto_OBD(data){
       let d = wialon.util.Geometry.getDistance(y,x,yy,xx);
       if(d<60000)km+=wialon.util.Geometry.getDistance(y,x,yy,xx);
       
-      
+      let sped = parseInt(data[i][ii][2]);
+      if(sped>110){
+        sped_hr_interval+=time2-time1;
+        if(sped_hr_interval>61)sped_hr+=time2-time1;
+      }else{
+        sped_hr_interval=0;
+      }
+
       if(!rpm1)continue;
       if(!rpm2)continue;
+        if(rpm1>300 && rpm2>300){moto_hr+= time2-time1;}     
       if(y==yy && x==xx ){
-        if(rpm1>300 && rpm2>300){st+=time2-time1;  hl0+=time2-time1; }     
+        if(rpm1>300 && rpm2>300){
+          st+=time2-time1;
+          hl0+=time2-time1;     
         if(st>61)hl1+=time2-time1;
+        }
       }else{
         st=0;
       }
      
 
   }   
-  let m = Math.trunc(hl0 / 60) + '';
-  let h = Math.trunc(m / 60) + '';
-  m=(m % 60) + '';
-  let s =(hl0 % 60) + '';
-  let m1 = Math.trunc(hl1 / 60) + '';
-  let h1 = Math.trunc(m1 / 60) + '';
-  m1=(m1 % 60) + '';
-  let s1 =(hl1 % 60) + '';
+
  
-  $("#unit_table").append("<tr><td align='left'>"+name+"</td><td>"+h.padStart(2, 0) + ':' + m.padStart(2, 0) +':'+s.padStart(2, 0)+"</td><td>"+h1.padStart(2, 0) + ':' + m1.padStart(2, 0) +':'+s1.padStart(2, 0)+"</td><td align='left'>"+ (km/1000).toFixed()+"</td></tr>");
+  $("#unit_table").append("<tr><td align='left'>"+name+"</td><td>"+ (km/1000).toFixed()+"</td><td>"+km_odo+"</td><td>"+sec_to_time(moto_hr)+"</td><td>"+sec_to_time(hl0)+"</td><td>"+sec_to_time(hl1)+"</td><td>"+sec_to_time(sped_hr)+"</td></tr>");
   }
 }
 
-
+function sec_to_time(sek){
+  let m = Math.trunc(sek / 60) + '';
+  let h = Math.trunc(m / 60) + '';
+  m=(m % 60) + '';
+  let s =(sek % 60) + '';
+  let time = h.padStart(2, 0) + ':' + m.padStart(2, 0) +':'+s.padStart(2, 0);
+  return time
+}
 //===========================ЖУРНАЛ=======================================================================================
 //===========================ЖУРНАЛ=======================================================================================
 //===========================ЖУРНАЛ=======================================================================================
