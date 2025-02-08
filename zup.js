@@ -412,7 +412,7 @@ if (Date.parse($('#fromtime1').val())/1000 > unit.getPosition().t){rest_units.pu
       }
       gr = gr.slice(0, -1);
       unitsgrup[name] = gr;
-      if (grup_id.length>=0) {
+      if (grup_id.length>0) {
         let newOption = new Option(name+" ("+data.items[i].$$user_units.length+")", name);
          select.append(newOption);
       }
