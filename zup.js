@@ -6793,6 +6793,7 @@ if(row.rowIndex>0 && evt.target.innerText !='ремонт-зняти' &&  evt.ta
     if(m[1]==n && m[0]>=t && m[0]<t+86400000){
       if(m[2]=='ремонт')continue;
       if(m[2]=='готовий')continue;
+      if(m[2]=='видалено')continue;
      $('#marshrut_text').val(m[6]);
    let text =m[2].split('//');
    let point =m[3].split('//');
