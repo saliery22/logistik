@@ -7133,7 +7133,7 @@ async function logistik_zvit(data){
                   }
                 }else{
                   adres=await point_in_global(y,x); 
-                  if(wialon.util.Geometry.getDistance(y000,x000,y,x)>300 && yp!=0){
+                  if(wialon.util.Geometry.getDistance(y000,x000,y,x)>300 && y!=0){
                     kkk++;
                     let point=y+","+x;
                     add_point_to_table(kkk,adres,point,100,false,id,time0,stoyanka0);
@@ -7181,7 +7181,7 @@ async function logistik_zvit(data){
                   }
                 }else{
                   adres=await point_in_global(y,x); 
-                  if(wialon.util.Geometry.getDistance(y000,x000,y,x)>300 && yp!=0){
+                  if(wialon.util.Geometry.getDistance(y000,x000,y,x)>300 && y!=0){
                     kkk++;
                     let point=y+","+x;
                     add_point_to_table(kkk,adres,point,100,false,id,time0,stoyanka0);
@@ -7232,7 +7232,7 @@ async function logistik_zvit(data){
                     x000=x;
                 }else{
                   adres=await point_in_global(y,x); 
-                  if(wialon.util.Geometry.getDistance(y000,x000,y,x)<300 && yp==0)continue;
+                  if(wialon.util.Geometry.getDistance(y000,x000,y,x)<300 && y==0)continue;
                   kkk++;
                   let point=y+","+x;
                   add_point_to_table(kkk,adres,point,100,false,id,time0,stoyanka0);
@@ -7368,7 +7368,7 @@ async function logistik_zvit(data){
                     x000=x1;
                   }else{
                     adres=await point_in_global(y1,x1); 
-                    if(wialon.util.Geometry.getDistance(y000,x000,y1,x1)<300 && yp==0)continue;
+                    if(wialon.util.Geometry.getDistance(y000,x000,y1,x1)<300 && y1==0)continue;
                     kkk++;
                     //let mar = L.marker([y1,x1], {icon: L.divIcon({ className: 'div-icon',iconSize: "auto", html: "<center style = 'background:rgb(247, 161, 161);'>"+kkk+": "+adres+"</center>" }),draggable: true,opacity:0.9,zIndexOffset:1000}).addTo(map);
                    // zup_mark_data.push(mar);
