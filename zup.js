@@ -408,6 +408,7 @@ if (Date.parse($('#fromtime1').val())/1000 > unit.getPosition().t){rest_units.pu
       let grup_id = data.items[i].$$user_units;
       grup_id.sort()
       for(let ii = 0; ii<grup_id.length; ii++){
+	if (!markerByUnit[grup_id[ii]]) continue;
         gr+=markerByUnit[grup_id[ii]]._tooltip._content+',';
       }
       gr = gr.slice(0, -1);
