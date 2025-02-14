@@ -4790,17 +4790,9 @@ async function marshrut_avto(){
 }
 $('#men7').css({'background':'#fffd7e'});
 }
-$('#bbd').click(function() {
-  let n=unitsgrup.легкові_нові;
-  if(!n)return;
-  let fr =Date.parse($('#obd_time1').val())/1000;
-  let to =Date.parse($('#obd_time2').val())/1000;
-  if(!fr){fr=0; to=0;}
-   SendDataReportInCallback(fr,to,n,zvit2,[],0,avto_OBD);
-  });
 function avto_OBD(data){
   $("#unit_table").empty();
-  $("#unit_table").append("<tr><td>ТЗ</td><td>пробіг по треку</td><td>пробіг по одометру</td><td>мотогодини</td><td>холостий хід</td><td>холостий хід більше 1хв</td><td>швидкість > 110 понад 1хв</td></tr>");
+  $("#unit_table").append("<tr><td>ТЗ</td><td>пробіг по треку км.</td><td>пробіг по одометру км.</td><td>мотогодини</td><td>холостий хід</td><td>холостий хід більше 5хв</td><td>максимальна швидкість</td><td>швидкість > 110 понад 1хв</td><td>витрата пального л.</td><td>витрата пального л/100км</td><td>заправлено л.</td></tr>");
   for (let i = 0; i<data.length; i++){
     let name = data[i][0][1];
     let hl0 = 0;
@@ -4812,11 +4804,39 @@ function avto_OBD(data){
     let moto_hr = 0;
     let sped_hr_interval = 0;
     let sped_hr = 0;
+    let sped_max=0;
+    let dut0=-10;
+    let dut1=-10;
+    let zapr0=-10;
+    let zapr1=-10;
+    let zapr=0;
     for (let ii = 1; ii<data[i].length-1; ii++){
       if(!data[i][ii][1])continue;
       if(!data[i][ii+1][1])continue;
       if(!data[i][ii][0])continue;
       if(!data[i][ii+1][0])continue;
+
+      if(data[i][ii][6]){
+        if(data[i][ii][6]!='-----'){
+          if(dut0==-10)dut0 = parseFloat(data[i][ii][6]);
+          dut1 = parseFloat(data[i][ii][6]);
+        }
+      }
+      if(parseInt(data[i][ii][2])>0){
+        if(data[i][ii][6] && data[i][ii][6]!='-----'){
+          zapr1= parseFloat(data[i][ii][6]);
+          if(zapr0>=0 && zapr1>=0){
+            if(zapr1-zapr0>5)zapr+=zapr1-zapr0;
+            zapr0=zapr1;
+          }
+          if(zapr0==-10){zapr0 = parseFloat(data[i][ii][6]);}
+
+          }
+      }
+      if(ii==data[i].length-2 && zapr0>=0 && zapr1>=0){
+        if(zapr1-zapr0>5)zapr+=zapr1-zapr0;
+      }
+
       if(!data[i][ii][19])continue;
       if(!data[i][ii+1][19])continue;
       if(parseInt(data[i][ii][21])){
@@ -4837,9 +4857,18 @@ function avto_OBD(data){
       if(d<60000)km+=wialon.util.Geometry.getDistance(y,x,yy,xx);
       
       let sped = parseInt(data[i][ii][2]);
+      if(sped>sped_max)sped_max=sped;
       if(sped>110){
         sped_hr_interval+=time2-time1;
-        if(sped_hr_interval>61)sped_hr+=time2-time1;
+        if(sped_hr_interval>61){
+          sped_hr+=time2-time1;
+          if($("#bbd_chek").is(":checked")){
+            let l = L.polyline([[y,x],[yy,xx]], {color: 'red',weight:8,opacity:0.7}).bindTooltip(''+name+'<br />'+sped+'км/год',{opacity:0.7}).addTo(map);
+
+            zup_mark_data.push(l);
+          }
+        
+        }
       }else{
         sped_hr_interval=0;
       }
@@ -4851,17 +4880,38 @@ function avto_OBD(data){
         if(rpm1>300 && rpm2>300){
           st+=time2-time1;
           hl0+=time2-time1;     
-        if(st>61)hl1+=time2-time1;
+        if(st>300)hl1+=time2-time1;
         }
       }else{
+        if(st>300 && d>1000){
+        hl1-=st-300;
+        hl0-=st;
+        }else{
+          if($("#bbd_chek").is(":checked") && st>300){
+            let mark = L.marker([y, x], {
+              zIndexOffset:-1000,
+              draggable: true,
+              icon: L.icon({
+              iconUrl: '111.png',
+              iconSize:   [24, 24],
+              iconAnchor: [12, 24] // set icon center
+              })
+              }).bindTooltip(''+name+'<br />'+sec_to_time(st-300),{opacity:0.7}).addTo(map);
+    zup_mark_data.push(mark);
+          }
+        }
+
         st=0;
       }
      
 
   }   
 
- 
-  $("#unit_table").append("<tr><td align='left'>"+name+"</td><td>"+ (km/1000).toFixed()+"</td><td>"+km_odo+"</td><td>"+sec_to_time(moto_hr)+"</td><td>"+sec_to_time(hl0)+"</td><td>"+sec_to_time(hl1)+"</td><td>"+sec_to_time(sped_hr)+"</td></tr>");
+  if(dut0>=0 && dut1>=0){dut0=dut0-dut1+zapr;}else{dut0=0;}
+  let sr = dut0/km_odo*100;
+  if(!sr || sr=='Infinity'){sr ="----";}else{sr = sr.toFixed(2)}
+
+  $("#unit_table").append("<tr><td align='left'>"+name+"</td><td>"+ (km/1000).toFixed()+"</td><td>"+km_odo+"</td><td>"+sec_to_time(moto_hr)+"</td><td>"+sec_to_time(hl0)+"</td><td>"+sec_to_time(hl1)+"</td><td>"+sped_max+"</td><td>"+sec_to_time(sped_hr)+"</td><td>"+dut0.toFixed(2)+"</td><td>"+sr+"</td><td>"+zapr.toFixed(2)+"</td></tr>");
   }
 }
 
