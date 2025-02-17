@@ -374,6 +374,7 @@ function initUIData() {
     // Add option
 $('#lis0').append($('<option>').text(unit.getName()).val(unit.getId()));
 
+
 //unit.addListener('changePosition', function(event) {
 //  let id = unit.getId();
 //  for (let i = 0; i < list_zavatajennya.length; i++){
@@ -401,35 +402,71 @@ if (Date.parse($('#fromtime1').val())/1000 > unit.getPosition().t){rest_units.pu
         msg(wialon.core.Errors.getErrorText(code));
         return;
     }
-    let select = document.getElementById('grupi_avto');
+
     for(let i = 0; i<data.items.length; i++){
       let name = data.items[i].$$user_name;
       let gr= '';
       let grup_id = data.items[i].$$user_units;
-      grup_id.sort()
       for(let ii = 0; ii<grup_id.length; ii++){
-	if (!markerByUnit[grup_id[ii]]) continue;
+        if (!markerByUnit[grup_id[ii]]) continue;
         gr+=markerByUnit[grup_id[ii]]._tooltip._content+',';
       }
       gr = gr.slice(0, -1);
       unitsgrup[name] = gr;
       if (grup_id.length>0) {
-        let newOption = new Option(name+" ("+data.items[i].$$user_units.length+")", name);
-         select.append(newOption);
+     
+         if (name=='John Deere' || name=='Навантажувачі'){
+          $('#m_lis').append($('<option selected>').text(name+" ("+data.items[i].$$user_units.length+")").val(name));
+         }else{
+          $('#m_lis').append($('<option>').text(name+" ("+data.items[i].$$user_units.length+")").val(name));
+         }
+         $('#lis1').append($('<option>').text(name+" ("+data.items[i].$$user_units.length+")").val(name)); 
+        
+
+         
       }
     }
-    select.innerHTML +='<optgroup label="Агрегати"><option value="v21">Диски</option><option value="v22">Культиватори</option><option value="v23">Боронування</option><option value="v24">Рихлитель</option><option value="v25">Оранка</option><option value="v26">Розкидачи</option><option value="v27">Оприскувачи</option><option value="v28">Сівалки</option><option value="v29">Комбайни</option><option value="v30">Без агрегату</option></optgroup>';
+  
+    $('#lis1').append('<optgroup label="Агрегати"><option value="v21">Диски</option><option value="v22">Культиватори</option><option value="v23">Боронування</option><option value="v24">Рихлитель</option><option value="v25">Оранка</option><option value="v26">Розкидачи</option><option value="v27">Оприскувачи</option><option value="v28">Сівалки</option><option value="v29">Комбайни</option><option value="v30">Без агрегату</option></optgroup>');
+
     //console.log(unitsgrup);
+   
+    $("#m_lis").trigger("chosen:updated"); //обновляем select  
+    $("#lis1").trigger("chosen:updated"); //обновляем select    
     });
 
+    $('#lis1').on('change', function(evt, params) {
+      
+      if(params.selected=="v000" || params.selected=="v1" || params.selected=="v21" || params.selected=="v22"|| params.selected=="v23" || params.selected=="v24"|| params.selected=="v25" || params.selected=="v26"|| params.selected=="v27" || params.selected=="v28"|| params.selected=="v29" || params.selected=="v30"){
+        $("#lis1").chosen().val(params.selected);  
+        $('#lis1').trigger("chosen:updated");
+      }else{
+        $("#lis1 option[value='v1']").prop('selected', false);
+        $("#lis1 option[value='v000']").prop('selected', false);
+        $("#lis1 option[value='v21']").prop('selected', false);
+        $("#lis1 option[value='v22']").prop('selected', false);
+        $("#lis1 option[value='v23']").prop('selected', false);
+        $("#lis1 option[value='v24']").prop('selected', false);
+        $("#lis1 option[value='v25']").prop('selected', false);
+        $("#lis1 option[value='v26']").prop('selected', false);
+        $("#lis1 option[value='v27']").prop('selected', false);
+        $("#lis1 option[value='v28']").prop('selected', false);
+        $("#lis1 option[value='v29']").prop('selected', false);
+        $("#lis1 option[value='v30']").prop('selected', false);
+        $('#lis1').trigger("chosen:updated");
+      }
 
+chuse(0,$("#lis1").chosen().val());
+
+
+        });
   
   
-$(".livesearch").chosen({search_contains : true});
+  $(".livesearch").chosen({search_contains : true});
  $('#lis0').on('change', function(evt, params) {
 
-if ($("#grupi_avto").val()=="v000") {
-  chuse(0,"v000");
+if ($("#lis1").chosen().val()[0]=="v000") {
+  chuse(0,["v000"]);
 }
 
    onUnitSelected();
@@ -725,7 +762,9 @@ bufer=[];
     $('#v4').click(chuse);
     $('#v5').click(chuse);
     $('#v6').click(chuse);
+    
     $('#v9').click(chuse);
+
     $('#v12').click(chuse);
     $('#v13').click(chuse);
     $('#v14').click(chuse);
@@ -2196,21 +2235,35 @@ function clear2(){
 
  }
 
- $( "#grupi_avto" ).on( "change", function() {
-  chuse(0,this.value);
- });
+
 
  let filtr=false;
  let filtr_data=[];
 function chuse(a,vibor) {
   var nmm,mm,idd;
-  let str = null;
-  if (unitsgrup[vibor]){ str = unitsgrup[vibor].split(','); }
+  let str = ' ';
+  let grup = null;
 
-   if(!vibor){ vibor=this.id; }
-   
-   $("#"+vibor).css("background", '#b2f5b4');
-  if (vibor=='v9'){
+
+  if(!vibor){ str=this.id; }else{
+    for(var i=0; i < vibor.length; i++){
+      if(unitsgrup[vibor[i]]){
+        if (i==0){ str += unitsgrup[vibor[i]];
+      }else{
+        str += ','+unitsgrup[vibor[i]];
+      }
+      grup = true;
+    }else{
+      str = vibor[i]; 
+      grup = null;
+      break;
+      }
+    }
+  }
+
+
+ 
+  if (str=='v9'){
     if(rux==0){
       rux = 1;
       $('#v9').css("background", '#b2f5b4');
@@ -2220,23 +2273,36 @@ function chuse(a,vibor) {
       position(t);
       $('#v9').css({'background':'#e9e9e9'});
     } 
-    vibor=$("#grupi_avto option:selected").val();
-    if (unitsgrup[vibor]){ str = unitsgrup[vibor].split(','); }
+    vibor = $("#lis1").chosen().val();
+    for(var i=0; i < vibor.length; i++){
+      if(unitsgrup[vibor[i]]){
+        if (i==0){ str += unitsgrup[vibor[i]];
+      }else{
+        str += ','+unitsgrup[vibor[i]];
+      }
+      grup = true;
+    }else{
+      str = vibor[i]; 
+      grup = null;
+      break;
+      }
+    }
+ 
 
   }else{
     agregat=0;
     filtr_data=[];
   }
-  if (vibor=='v21'){agregat = 21; }
-  if (vibor=='v22'){agregat = 22; }
-  if (vibor=='v23'){agregat = 23; }
-  if (vibor=='v24'){agregat = 24; }
-  if (vibor=='v25'){agregat = 25; }
-  if (vibor=='v26'){agregat = 26; }
-  //if (vibor=='v27'){if(rux==0)rux = 27;}
-  if (vibor=='v28'){agregat = 28; }
-  if (vibor=='v29'){agregat = 29; }
-  if (vibor=='v30'){agregat = 30; }
+  if (str=='v21'){agregat = 21; }
+  if (str=='v22'){agregat = 22; }
+  if (str=='v23'){agregat = 23; }
+  if (str=='v24'){agregat = 24; }
+  if (str=='v25'){agregat = 25; }
+  if (str=='v26'){agregat = 26; }
+  //if (str=='v27'){if(rux==0)rux = 27;}
+  if (str=='v28'){agregat = 28; }
+  if (str=='v29'){agregat = 29; }
+  if (str=='v30'){agregat = 30; }
   
 for(var i=0; i < allunits.length; i++){
 nmm =allunits[i].getName();
@@ -2244,8 +2310,9 @@ idd =allunits[i].getId();
 mm = markerByUnit[idd];
  mm.setOpacity(0);
 
- if (str){
- str.forEach((element) => {
+ if (grup){
+  let strr = str.split(',');
+ strr.forEach((element) => {
   if(nmm.indexOf(element)==0){
     mm.setOpacity(1);
     mm.setZIndexOffset(1000);
@@ -2256,14 +2323,14 @@ mm = markerByUnit[idd];
  if(rux==1){mm.setOpacity(0);} 
  continue;
  }
-     if (vibor=='v1'){
+     if (str=='v1'){
       mm.setOpacity(1);
       filtr=false; 
      }
      
    
 
-     if (vibor=='v27'){
+     if (str=='v27'){
       if(nmm.indexOf('CASE 4430')>=0 || nmm.indexOf('R4045')>=0|| nmm.indexOf('612R')>=0){
        mm.setOpacity(1);
        mm.setZIndexOffset(1000);
@@ -2272,7 +2339,7 @@ mm = markerByUnit[idd];
       }
       }
 
-     if (vibor=='v30'){
+     if (str=='v30'){
       if(nmm.indexOf('John')>=0 || nmm.indexOf('JD')>=0 || nmm.indexOf(' CL ')>=0|| nmm.indexOf('CASE')>=0 || nmm.indexOf(' NH ')>=0 ){
        mm.setOpacity(1);
        mm.setZIndexOffset(1000);
@@ -2281,7 +2348,7 @@ mm = markerByUnit[idd];
       }
       }
 
-      if (vibor=='v21'||vibor=='v22'||vibor=='v23'||vibor=='v24'||vibor=='v25'||vibor=='v26'||vibor=='v28'||vibor=='v29'){
+      if (str=='v21'||str=='v22'||str=='v23'||str=='v24'||str=='v25'||str=='v26'||str=='v28'||str=='v29'){
         if(nmm.indexOf('John')>=0 || nmm.indexOf('JD')>=0 || nmm.indexOf(' CL ')>=0|| nmm.indexOf('CASE')>=0 || nmm.indexOf(' NH ')>=0 ){
          mm.setOpacity(0);
          mm.setZIndexOffset(1000);
@@ -2290,7 +2357,7 @@ mm = markerByUnit[idd];
         }
         }
 
-        if (vibor=='v000'){
+        if (str=='v000'){
           if(nmm.indexOf( $("#lis0 option:selected").text())>=0){
            mm.setOpacity(1);
            mm.setZIndexOffset(1000);
@@ -3254,8 +3321,8 @@ let rows = document.querySelectorAll('#monitoring_table tr');
 
       if(stoyanka==-1){
       if(stroka.length>0){
-      if(stroka[stroka.length-1]!='сто'){
-      stroka.push('сто');
+      if(stroka[stroka.length-1]!='зуп'){
+      stroka.push('зуп');
       }
       }
       }
@@ -4621,8 +4688,8 @@ async function marshrut_avto(){
               if(Global_DATA[i][ii][3][0]=='0'){ 
                 stoyanka+=(Global_DATA[i][ii][4]-Global_DATA[i][ii-1][4])/1000;
                 if(stroka.length>0 && stoyanka>sttime){
-                  if(stroka[stroka.length-1]!='сто'){
-                  stroka.push('сто');
+                  if(stroka[stroka.length-1]!='зуп'){
+                  stroka.push('зуп');
                   }
                   stoyanka=0;
                   continue;
@@ -4790,6 +4857,14 @@ async function marshrut_avto(){
 }
 $('#men7').css({'background':'#fffd7e'});
 }
+$('#bbd').click(function() {
+  let n=unitsgrup.легкові_нові;
+  if(!n)return;
+  let fr =Date.parse($('#obd_time1').val())/1000;
+  let to =Date.parse($('#obd_time2').val())/1000;
+  if(!fr){fr=0; to=0;}
+   SendDataReportInCallback(fr,to,n,zvit2,[],0,avto_OBD);
+  });
 function avto_OBD(data){
   $("#unit_table").empty();
   $("#unit_table").append("<tr><td>ТЗ</td><td>пробіг по треку км.</td><td>пробіг по одометру км.</td><td>мотогодини</td><td>холостий хід</td><td>холостий хід більше 5хв</td><td>максимальна швидкість</td><td>швидкість > 110 понад 1хв</td><td>витрата пального л.</td><td>витрата пального л/100км</td><td>заправлено л.</td></tr>");
@@ -4833,7 +4908,8 @@ function avto_OBD(data){
 
           }
       }
-      if(ii==data[i].length-2 && zapr0>=0 && zapr1>=0){
+      if(ii==data[i].length-2 && zapr0>=0){
+        zapr1= parseFloat(data[i][ii][6]);
         if(zapr1-zapr0>5)zapr+=zapr1-zapr0;
       }
 
@@ -4909,9 +4985,12 @@ function avto_OBD(data){
 
   if(dut0>=0 && dut1>=0){dut0=dut0-dut1+zapr;}else{dut0=0;}
   let sr = dut0/km_odo*100;
-  if(!sr || sr=='Infinity'){sr ="----";}else{sr = sr.toFixed(2)}
+  if(!sr || sr=='Infinity'){sr ="----";}else{sr = sr.toFixed(2).toString().replace(/\./g, ",");}
+  if(hl1>0){hl1 =sec_to_time(hl1);}else{hl1 = "----";}
+  if(sped_hr>0){sped_hr =sec_to_time(sped_hr);}else{sped_hr = "----";}
 
-  $("#unit_table").append("<tr><td align='left'>"+name+"</td><td>"+ (km/1000).toFixed()+"</td><td>"+km_odo+"</td><td>"+sec_to_time(moto_hr)+"</td><td>"+sec_to_time(hl0)+"</td><td>"+sec_to_time(hl1)+"</td><td>"+sped_max+"</td><td>"+sec_to_time(sped_hr)+"</td><td>"+dut0.toFixed(2)+"</td><td>"+sr+"</td><td>"+zapr.toFixed(2)+"</td></tr>");
+
+  $("#unit_table").append("<tr><td align='left'>"+name+"</td><td>"+ (km/1000).toFixed()+"</td><td>"+km_odo+"</td><td>"+sec_to_time(moto_hr)+"</td><td>"+sec_to_time(hl0)+"</td><td>"+hl1+"</td><td>"+sped_max+"</td><td>"+sped_hr+"</td><td>"+dut0.toFixed(2).toString().replace(/\./g, ",")+"</td><td>"+sr+"</td><td>"+zapr.toFixed(2).toString().replace(/\./g, ",")+"</td></tr>");
   }
 }
 
@@ -6784,6 +6863,7 @@ let marshrut_probeg_deny=[];
 let control_date0 = 0;
 function km_in_cels(data){ 
   marshrut_probeg_deny=data;
+
   let tb = document.getElementById("log_control_tb");
   for (let i = 1; i<tb.rows.length; i++){
     for (let j = 0; j<marshrut_probeg_deny.length; j++){
