@@ -86,7 +86,12 @@
     pointer-events: none;
     box-shadow: 0 1px 3px rgba(0,0,0,0.4);
 }
-
+.leaflet-popup-content-wrapper{
+    background-color: rgba(255, 255, 255, 0.7);
+}
+.leaflet-popup-tip{
+    background-color: rgba(255, 255, 255, 0.7);
+}
 
 
 #grafik { width: 100%; border: 1px solid #c6c6c6;}
@@ -198,7 +203,7 @@ button, input, span, select,textarea {margin: 2px 2px 0px 0px;   font-family: "A
 
 
 #v8{ background-color: #b2f5b4; cursor: pointer;}
-#v18{ background-color: #cbf5b2; cursor: pointer;margin-left: 100px;}
+#v18{ background-color: #cbf5b2; cursor: pointer;}
 
 
 
@@ -272,6 +277,10 @@ button, input, span, select,textarea {margin: 2px 2px 0px 0px;   font-family: "A
 }
 
 
+.search-choice span{
+    font-family: "Arial"; font-size: 10px;
+}
+
 </style>
 
 
@@ -283,16 +292,10 @@ button, input, span, select,textarea {margin: 2px 2px 0px 0px;   font-family: "A
     <div id="shapka">
         <div>
     <select class='livesearch' id='lis0'style='width:200px;'> <option value='0'>—</option></select>
-
-
-
+    <select class='livesearch' id='lis1'style='min-width:300px;' multiple> <option value="v1" selected>Вся техніка</option><option value="v000">Обраний</option></select>
       
-      <select  id="grupi_avto" style='width:150px;'>
-        <option value="v1">Вся техніка</option>
-        <option value="v000">Обраний</option>
-    </select>  
 
-<button id='v9'style = "min-width: 110px;">Ті що рухаються</button> 
+    <button id='v9'style = "min-width: 110px;">Ті що рухаються</button> 
 <!-- <button id='v2'>Камази</button> 
 <button id='v1'>Всі</button> 
 <button id='v3'>МАЗи</button> 
@@ -301,9 +304,9 @@ button, input, span, select,textarea {margin: 2px 2px 0px 0px;   font-family: "A
 <button id='v6'>ГАЗи</button> 
 <button id='v12'>Трактори</button> 
 <button id='v13'>Автомобілі</button> 
-<button id='v14'>Найм</button> -->
+<button id='v14'>Найм</button> 
 
-<button id='v15' style = "min-width: 110px;">Прих.неактивні</button>
+<button id='v15' style = "min-width: 110px;">Прих.неактивні</button>-->
 
 
 
@@ -431,7 +434,7 @@ button, input, span, select,textarea {margin: 2px 2px 0px 0px;   font-family: "A
         <option value="z9">звіт по журналу</option>
         <option value="z10">обробка полів</option>
         <option value="z11">зупинки в магазині</option>
-<!--         <option value="z12">звіт авто OBD</option> -->
+         <!--<option value="z12">звіт авто OBD</option> -->
       </select>  
       <br>
       <hr>
@@ -566,6 +569,8 @@ button, input, span, select,textarea {margin: 2px 2px 0px 0px;   font-family: "A
         <br>
         авто берутся з групи легкові_нові в Wialon
         <br>
+        <input id='bbd_chek' type="checkbox"> візуалізація порушень
+        <br>
         <button id='bbd'style = "width: 200px;">звіт</button> 
 
     </div>
@@ -608,7 +613,6 @@ button, input, span, select,textarea {margin: 2px 2px 0px 0px;   font-family: "A
         <button id='log_b1'style = "min-width: 32%;">створити маршрут</button> 
         <button id='log_b2'style = "min-width: 32%;">контроль маршрутів</button> 
         <button id='log_b3'style = "min-width: 32%;">адреси</button> 
- 
    
         <div id="adresy">
             для створення нової зони оберіть радіус та <b>подвійно натисніть</b> праву кнопку на мапі де створити зону відповідного радіусу
@@ -640,7 +644,7 @@ button, input, span, select,textarea {margin: 2px 2px 0px 0px;   font-family: "A
          
           
         </div>
-  
+        
         <button id='upd_marsh_bt'>оновлення маршруту після змін в таблиці маршрута</button>
         <div id="mars_table_div">
            
@@ -702,8 +706,10 @@ button, input, span, select,textarea {margin: 2px 2px 0px 0px;   font-family: "A
         </div>
      </div>
     <div id="monitoring">
+    <select class='livesearch' id='m_lis'style='width:100%;' multiple></select>
         фільтр техніки(JD,Камаз,SCANIA)
         <div class='textforma'>
+            
         <textarea id='unit_monitoring'  rows="1" cols="50">John,JD,NH,CL,CASE</textarea>
         <button id='monitoring_bt'>розрахунок</button> 
         </div> 
@@ -715,6 +721,7 @@ button, input, span, select,textarea {margin: 2px 2px 0px 0px;   font-family: "A
         <br>
 
         <table id="monitoring_table"></table>
+       
      </div> 
 
 
