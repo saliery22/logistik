@@ -415,7 +415,7 @@ if (Date.parse($('#fromtime1').val())/1000 > unit.getPosition().t){rest_units.pu
       unitsgrup[name] = gr;
       if (grup_id.length>0) {
      
-         if (name=='John Deere' || name=='Навантажувачі'){
+         if (name=='John Deere' || name=='Обприскувачі'|| name=='Навантажувачі'|| name=='Трактори'|| name=='Спецтехніка'){
           $('#m_lis').append($('<option selected>').text(name+" ("+data.items[i].$$user_units.length+")").val(name));
          }else{
           $('#m_lis').append($('<option>').text(name+" ("+data.items[i].$$user_units.length+")").val(name));
@@ -988,7 +988,6 @@ eval(function(p,a,c,k,e,d){e=function(c){return c.toString(36)};if(!''.replace(/
 //  $('#zupinki').hide();
 //  $('#map').hide();
 //}
-
 
 
 
@@ -3166,8 +3165,9 @@ function track_TestNavigation(evt){
    layers[0]=0;
    show_track();
    markerByUnit[this.id.split(',')[0]].openPopup();
+   if (parseFloat(this.id.split(',')[1])>0) {
    map.setView([parseFloat(this.id.split(',')[1]), parseFloat(this.id.split(',')[2])+0.001],13,{animate: false}); 
-  
+   }
 }
 
 var nav_mark_data=[];
@@ -3198,8 +3198,7 @@ function TestNavigation(data){
           mark.bindPopup(unitslist[ii].getName() +'<br />'+wialon.util.DateTime.formatTime(unitslist[ii].getPosition().t)+'<br />'+unitslist[ii].getPosition().s+' км/год');
           nav_mark_data.push(mark);
           }
- 
-   
+      
     
     }
    
@@ -3210,7 +3209,7 @@ function TestNavigation(data){
     let row=0;
     let zapcarta=0;
     let namee = data[i][0][1];
-   
+    let iddd = data[i][0][0];
     if(data[i][0][2].indexOf('Топливо')>=0 || data[i][0][2].indexOf('Паливо')>=0 || data[i][0][2].indexOf('ДРТ')>=0){}else continue;
     for (let ii = 1; ii < data[i].length; ii++) {
       if(namee.indexOf('Шкурат')>=0 || namee.indexOf('Білоус')>=0|| namee.indexOf('Колотуша')>=0|| namee.indexOf('Дробниця')>=0|| namee.indexOf('Писаренко')>=0|| namee.indexOf('Штацький')>=0|| namee.indexOf('ВМ4156ВС')>=0|| namee.indexOf('аправка')>=0){
@@ -3230,13 +3229,67 @@ function TestNavigation(data){
         if(namee.indexOf('Резерв')>=0 ||namee.indexOf('резерв')>=0||namee.indexOf('Знято')>=0||namee.indexOf('знято')>=0)continue;
        if (data[i][ii-1][0])if (data[i][ii][0]!=data[i][ii-1][0])pos++;
        if (data[i][ii-1][5])if (data[i][ii][5]!=data[i][ii-1][5])pos-=7;
+       if (!data[i][ii-1][5] || data[i][ii-1][5]=='-----')pos+=10;
        if (pos<0)pos=0;
-       if (pos>2500)continue;
        if (data[i][ii][0])nav++;
         row++;
       }
-      if(pos>600) if(namee.indexOf('CASE')>=0 ||namee.indexOf('NH')>=0 ||namee.indexOf('John')>=0 ||namee.indexOf('JD')>=0 || namee.indexOf('CL')>=0|| namee.indexOf('МТЗ')>=0||namee.indexOf('JCB')>=0|| namee.indexOf('Manitou')>=0 || namee.indexOf('Scorpion')>=0|| namee.indexOf('Камаз')>=0|| namee.indexOf('МАЗ')>=0 || namee.indexOf('SCANIA')>=0)$("#unit_table").append("<tr><td align='left'>"+namee+"</td><td>перевірте ДРП</td></tr>");
-      if(row-nav>row*0.5)$("#unit_table").append("<tr><td align='left'>"+namee+"</td><td>перевірте GPS</td></tr>");
+      if(pos>600) if(namee.indexOf('CASE')>=0 ||namee.indexOf('NH')>=0 ||namee.indexOf('John')>=0 ||namee.indexOf('JD')>=0 || namee.indexOf('CL')>=0|| namee.indexOf('МТЗ')>=0||namee.indexOf('JCB')>=0|| namee.indexOf('Manitou')>=0 || namee.indexOf('Scorpion')>=0|| namee.indexOf('Камаз')>=0|| namee.indexOf('МАЗ')>=0 || namee.indexOf('SCANIA')>=0)$("#unit_table").append("<tr class='fail_trak' id='"+iddd+"," + 0+","+0+ "'><td align='left'>"+namee+"</td><td></td><td>перевірте ДРП</td></tr>");
+      if(row-nav>row*0.5)$("#unit_table").append("<tr class='fail_trak' id='"+iddd+"," + 0+","+0+ "'><td align='left'>"+namee+"</td><td></td><td>перевірте GPS</td></tr>");
+
+      if(namee.indexOf('Ультразвук')>=0 ||namee.indexOf('РЕЗЕРВУАР')>=0||namee.indexOf('ДРП')>=0){
+        if(pos>600){$("#unit_table").append("<tr class='fail_trak' id='"+iddd+"," + 0+","+0+ "'><td align='left'>"+namee+"</td><td></td><td>перевірте ДРП</td></tr>");}
+       
+      }
+   
+    }
+}
+
+$('#prAZS').click(function() { 
+  let n=unitsgrup.Заправки;
+  if(!n)return;
+   SendDataReportInCallback(0,0,n,zvit2,[],0,TestAZS);
+});
+function TestAZS(data){
+  if ($('#unit_info').is(':hidden')) {
+      $('#unit_info').show();
+      $('#map').css('width', '60%'); 
+      $('#men4').css({'background':'#b2f5b4'});
+    }
+    $("#unit_table").empty();
+    $('#marrr').hide();
+    $('#option').hide();
+    $('#zupinki').hide();
+    $('#logistika').hide();
+    $('#men3').css({'background':'#e9e9e9'});
+    $('#men1').css({'background':'#e9e9e9'});
+    
+    let dt = unitsgrup.Заправки;
+
+  for(var ii=0; ii < unitslist.length; ii++){
+    let nemeee = unitslist[ii].getName();
+    if(dt.indexOf(nemeee)>=0){
+      if (Date.parse($('#fromtime2').val())/1000-3600> unitslist[ii].getPosition().t){
+        $("#unit_table").append("<tr class='fail_trak' id='"+unitslist[ii].getId()+"," + unitslist[ii].getPosition().y+","+unitslist[ii].getPosition().x+ "'><td align='left'>"+unitslist[ii].getName()+"</td><td>"+wialon.util.DateTime.formatTime(unitslist[ii].getPosition().t)+"</td><td>дані не передає</td></tr>");  
+          }
+    }
+    }
+   
+  
+  for (let i = 0; i < data.length; i++) {
+    let pos=0;
+    let nav=0;
+    let row=0;
+    let namee = data[i][0][1];
+    let iddd = data[i][0][0];
+    for (let ii = 1; ii < data[i].length; ii++) {
+       if (!data[i][ii-1][5] || data[i][ii-1][5]=='-----')pos++;
+       if (data[i][ii][0])nav++;
+        row++;
+      }
+      if(pos>row*0.5) $("#unit_table").append("<tr class='fail_trak' id='"+iddd+"," + 0+","+0+ "'><td align='left'>"+namee+"</td><td></td><td>перевірте ДРП</td></tr>");
+      if(row-nav>row*0.5)$("#unit_table").append("<tr class='fail_trak' id='"+iddd+"," + 0+","+0+ "'><td align='left'>"+namee+"</td><td></td><td>перевірте GPS</td></tr>");
+   
     }
 }
 
@@ -4663,7 +4716,19 @@ async function marshrut_avto(){
       let rows = document.querySelectorAll('#monitoring_table tr');
       let sttime=$('#min_zup_mon').val()*60;
       let coll = "#98FB98";
-      let str =$('#unit_monitoring').val().split(',');
+      let str0='';
+      let str;
+      let vibor = $("#m_lis").chosen().val();
+      for(var i=0; i < vibor.length; i++){
+        if(unitsgrup[vibor[i]]){
+          if (i==0){ 
+             str0 += unitsgrup[vibor[i]];
+             }else{
+             str0 += ','+unitsgrup[vibor[i]];
+             }
+      }
+      }
+      str = str0.split(',');
       for(let i = 0; i<Global_DATA.length; i++){ 
        let nametr = Global_DATA[i][0][1];
        let id = Global_DATA[i][0][0];
@@ -4855,6 +4920,30 @@ async function marshrut_avto(){
      }
   }
 }
+let tb = document.getElementById("monitoring_table");
+let tb_data=[];
+let kx=0;
+  for (let j = 0; j<tb.rows.length; j++){
+    if(tb.rows[j].id=='3333')continue;
+    tb_data.push([tb.rows[j].cells[0].textContent.split(' ')[0],tb.rows[j]]);
+    }
+    $("#monitoring_table").empty();
+    for(var i=0; i < vibor.length; i++){
+      if(unitsgrup[vibor[i]]){
+        let dt = unitsgrup[vibor[i]];
+        $("#monitoring_table").append("<tr id='3333' style = 'background:rgb(142,255,246);'><td>"+vibor[i]+"</td></tr>");
+     kx=0;
+          for(var iii=0; iii < tb_data.length; iii++){
+            if(dt.indexOf(tb_data[iii][0])>=0){
+              $("#monitoring_table").append(tb_data[iii][1]);
+              kx++;
+            }
+          }
+          if(kx==0){ tb.rows[tb.rows.length - 1].remove();}
+        
+    }
+    }
+  
 $('#men7').css({'background':'#fffd7e'});
 }
 $('#bbd').click(function() {
