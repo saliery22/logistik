@@ -145,10 +145,10 @@ function init() { // Execute after login succeed
 		    if (templ[i].ct != "avl_unit") continue; // skip non-unit report templates
 		    // add report template to select list
 		     //console.log(templ[i].id +"     "+ templ[i].n+ + '\n' );
-         if(templ[i].n=="яx001") {zvit1=templ[i].id; msg('звіт зливи      1/4 завінтажено');}
-         if(templ[i].n=="яx002") {zvit2=templ[i].id; msg('звіт трасування 2/4 завінтажено');}
-         if(templ[i].n=="яx003") {zvit3=templ[i].id; msg('звіт зупинки    3/4 завінтажено');}
-         if(templ[i].n=="яx004") {zvit4=templ[i].id; msg('звіт підсумок   4/4 завінтажено');}
+         if(templ[i].n=="яx001") {zvit1=templ[i].id; msg('звіт зливи      1/4 завантажено');}
+         if(templ[i].n=="яx002") {zvit2=templ[i].id; msg('звіт трасування 2/4 завантажено');}
+         if(templ[i].n=="яx003") {zvit3=templ[i].id; msg('звіт зупинки    3/4 завантажено');}
+         if(templ[i].n=="яx004") {zvit4=templ[i].id; msg('звіт підсумок   4/4 завантажено');}
 	      }
         // add received data to the UI, setup UI events
         initUIData();
