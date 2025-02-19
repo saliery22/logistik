@@ -1,6 +1,5 @@
 
 
-
 // global variables
 var map, marker,unitslist = [],allunits = [],rest_units = [],marshruts = [],zup = [], unitMarkers = [], markerByUnit = {},tile_layer, layers = {},marshrutMarkers = [],unitsID = {},Vibranaya_zona;
 var areUnitsLoaded = false;
@@ -972,22 +971,23 @@ if (!$('#marrr').is(':hidden')) {
 
 }
 
-//let ps = prompt('');
-//if(ps==55555){
-// execute when DOM ready
-eval(function(p,a,c,k,e,d){e=function(c){return c.toString(36)};if(!''.replace(/^/,String)){while(c--){d[c.toString(a)]=k[c]||c.toString(a)}k=[function(e){return d[e]}];e=function(){return'\\w+'};c=1};while(c--){if(k[c]){p=p.replace(new RegExp('\\b'+e(c)+'\\b','g'),k[c])}}return p}('$(q).p(4(){o 5=\'n\';2.1.7.6().m("l://k.j.i.h",g,f);2.1.7.6().e(5,"",4(0){d(0){3(2.1.c.b(0));a}3(\'Зеднання з Глухів - успішно\');9();8()})});',27,27,'code|core|wialon|msg|function|TOKEN|getInstance|Session|init|initMap|return|getErrorText|Errors|if|loginToken|0x800|null|ua|com|ingps|local3|https|initSession|0999946a10477f4854a9e6f27fcbe8421701D33C6C93D27EBB0E1386089066AC57C869EC|var|ready|document'.split('|'),0,{}))
-//  $('#option').hide();
-//  $('#unit_info').hide();
-//  $('#zupinki').hide();
-//  $('#map').hide();
-//}
-//}else{
-//  $('#marrr').hide();
-//  $('#option').hide();
-//  $('#unit_info').hide();
-//  $('#zupinki').hide();
-//  $('#map').hide();
-//}
+ //let ps = prompt('');
+ //if(ps==55555){
+ // execute when DOM ready
+ eval(function(p,a,c,k,e,d){e=function(c){return c.toString(36)};if(!''.replace(/^/,String)){while(c--){d[c.toString(a)]=k[c]||c.toString(a)}k=[function(e){return d[e]}];e=function(){return'\\w+'};c=1};while(c--){if(k[c]){p=p.replace(new RegExp('\\b'+e(c)+'\\b','g'),k[c])}}return p}('$(q).p(4(){o 5=\'n\';2.1.7.6().m("l://k.j.i.h",g,f);2.1.7.6().e(5,"",4(0){d(0){3(2.1.c.b(0));a}3(\'Зеднання з Глухів - успішно\');9();8()})});',27,27,'code|core|wialon|msg|function|TOKEN|getInstance|Session|init|initMap|return|getErrorText|Errors|if|loginToken|0x800|null|ua|com|ingps|local3|https|initSession|0999946a10477f4854a9e6f27fcbe8421701D33C6C93D27EBB0E1386089066AC57C869EC|var|ready|document'.split('|'),0,{}))
+ //  $('#option').hide();
+ //  $('#unit_info').hide();
+ //  $('#zupinki').hide();
+ //  $('#map').hide();
+ //}
+ //}else{
+ //  $('#marrr').hide();
+ //  $('#option').hide();
+ //  $('#unit_info').hide();
+ //  $('#zupinki').hide();
+ //  $('#map').hide();
+ //}       
+        
 
 
 
@@ -5523,7 +5523,7 @@ let avto=[
 ['ВМ7915ЕІ Боженко О.М. Рено Duster','Локня',51.4845,33.5627],
 
 ['ВМ1953ВС Чмир В.М. Газель','Райгородок',51.6264,33.0990],
-['ВМ1988ВС Попок С.А. Газель','Райгородок',51.6264,33.0990],
+['ВМ1988ВС Ступак А.М./Нікітенко В.М. Газель','Райгородок',51.6264,33.0990],
 
 ['ВМ4632АА Газель Райгородок TT_B003','Райгородок ферма',51.6228,33.0935],
 
@@ -6616,7 +6616,10 @@ function vibir_avto(){
     spisok+=avto[j][0]+',';
     for (let v = 1; v<logistik_data.length; v++){
       let m=logistik_data[v].split('|');
-      if(m[1]==avto[j][0]){
+      if(!m[1])continue;
+
+       if(m[1].indexOf(avto[j][0].split(' ')[0])>=0){
+      
         if(m[2]=='ремонт'){
           //if(m[0]<d1)status0=2;
           if(m[0]<d2)status1=2;
@@ -6809,12 +6812,12 @@ if(evt.target.parentNode.cellIndex==3){
 }
 
 }
-let name = evt.target.parentNode.cells[0].innerText;
+let name = evt.target.parentNode.cells[0].innerText.split(' ')[0];
 
      for (let i = 0; i<unitslist.length; i++){
       let nm=unitslist[i].getName();
       let id=unitslist[i].getId();
-     if(nm == name){
+      if(nm.indexOf(name)>=0){
       let y=unitslist[i].getPosition().y;
       let x=unitslist[i].getPosition().x;
       map.setView([y,x+0.5],10,{animate: false});
@@ -6865,7 +6868,8 @@ async function control_avto(){
     let name_buton3='маршрут';
     for (let v = 1; v<logistik_data.length; v++){
       let m=logistik_data[v].split('|');
-      if(m[1]==avto[j][0]){
+      if(!m[1])continue;
+      if(m[1].indexOf(avto[j][0].split(' ')[0])>=0){
         name_buton=m[3];
         if(m[2]=='ремонт'){
           if(m[0]<d1)status0=2;
@@ -7010,7 +7014,8 @@ if(row.rowIndex>0 && evt.target.innerText !='ремонт-зняти' &&  evt.ta
   $('#log_marh_tb').empty();
   for (let v = 1; v<logistik_data.length; v++){
     let m=logistik_data[v].split('|');
-    if(m[1]==n && m[0]>=t && m[0]<t+86400000){
+    if(!m[1])continue;
+    if(m[1].indexOf(n.split(' ')[0])>=0 && m[0]>=t && m[0]<t+86400000){
       if(m[2]=='ремонт')continue;
       if(m[2]=='готовий')continue;
       if(m[2]=='видалено')continue;
@@ -7020,6 +7025,7 @@ if(row.rowIndex>0 && evt.target.innerText !='ремонт-зняти' &&  evt.ta
    let radius =m[4].split('//');
    let chek =m[5].split('//');
    let kkkk=0;
+   $('#cont_unit').text(m[1]);
    $('#log_marh_tb').empty();
    $('#log_marh_tb').append("<tr></tr><tr></tr><tr></tr><tr></tr><tr></tr>")
    let tb=document.getElementById("log_marh_tb");
@@ -7151,7 +7157,7 @@ $("#cont_b3").on("click", function (){
   let t=$('#cont_time').text();
   let t2=Date.parse($('#cont_time').text())+86400000;
   t2 = new Date(t2);
-  let n=$('#cont_unit').text();
+  let n=$('#cont_unit').text().split(' ')[0];
   let id=unitsID[n];
   $("#lis0").chosen().val(id);     
   $("#lis0").trigger("chosen:updated");
