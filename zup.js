@@ -965,10 +965,33 @@ if (!$('#marrr').is(':hidden')) {
 
  map.on('click', function(e) { 
  if($('#zz1').is(':visible') || $('#zz2').is(':visible') || $('#zz3').is(':visible')) { RemainsFuel(e); }
- 
-
  });
 
+	 const areaSelection = new window.leafletAreaSelection.DrawAreaSelection({
+  onButtonActivate : (polygon) => {
+    $('#draw-panel-help').text('Визначте багатокутник, клацнувши на карті - щоб визначити вершини, або клацніть і перетягніть, щоб отримати прямокутну форму.') ;
+  },
+  
+  onPolygonReady: (polygon) => {
+    let area = (turf.area(polygon.toGeoJSON())/10000).toFixed(2);
+    console.log(area);
+    polygon.bindTooltip(''+area+'га',{opacity:0.8});
+  },
+  onPolygonDblClick: (polygon, control, ev) => {
+    let area = (turf.area(polygon.toGeoJSON())/10000).toFixed(2);
+    let geojson = L.geoJSON(polygon.toGeoJSON(), {
+      style: {
+        opacity: 0.5,
+        fillOpacity: 0.2,
+        color: 'red',
+      },
+    }).bindTooltip(''+area+'га',{opacity:0.8});
+    geojson.addTo(map);
+    control.deactivate();
+  },
+  position: 'topleft',
+});
+ map.addControl(areaSelection);
 }
 
  //let ps = prompt('');
