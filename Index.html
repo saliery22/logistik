@@ -13,13 +13,13 @@
      integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI="
      crossorigin=""/>
 
+  
      <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"
      integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM="
      crossorigin=""></script>
 
      <link rel="stylesheet" href="https://unpkg.com/@bopen/leaflet-area-selection@0.6.1/dist/index.css" />
      <script src="https://unpkg.com/@bopen/leaflet-area-selection@0.6.1/dist/index.umd.js"></script>
-    
 
      <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 
@@ -39,6 +39,8 @@
 #zupinki { width: 20%-6px; height:80vh; margin-left: 80%; overflow-y: auto; overflow-x: auto;border-left: 2px solid #b1b1b1;padding-left: 4px;}
 #logistika { width: 50%-6px; height:80vh; margin-left: 50%; overflow-y: auto; overflow-x: auto;border-left: 2px solid #b1b1b1;padding-left: 4px;}
 #monitoring { width: 35%-6px; height:80vh; margin-left: 65%; overflow-y: scroll; overflow-x: scroll;border-left: 2px solid #b1b1b1;padding-left: 4px;}
+#geomodul { width: 50%-6px; height:80vh; margin-left: 50%; overflow-y: auto; overflow-x: auto;border-left: 2px solid #b1b1b1;padding-left: 4px;}
+
 
 .div-icon{
     font-family: "Arial"; 
@@ -116,6 +118,10 @@
 .table {min-width: 98%;}
 .table thead th {font-weight: bold;	text-align: left;border: none;padding: 2px 5px;	background: #e7e7e7;border: 1px solid #292929;border-right: 1px solid #292929;}
 .table tbody td {text-align: left;border: 1px solid #292929;padding: 2px 5px;vertical-align: top;}
+
+.table2 {min-width: 98%;}
+.table2 thead th {font-weight: bold;	text-align: left;border: none;padding: 2px 5px;	background: #e7e7e7;border: 1px solid #292929;border-right: 1px solid #292929;}
+.table2 tbody td {text-align: left;border: 1px solid #292929;padding: 2px 5px;vertical-align: top; max-width: 200px; white-space: nowrap; overflow: hidden;text-overflow: ellipsis;}
 
 
 #log { float: left; width: 30%; border: 1px solid #c6c6c6; max-height:30px; overflow-y: auto; margin: 0px 0px 10px 0px;}
@@ -294,6 +300,7 @@ button, input, span, select,textarea {margin: 2px 2px 0px 0px;   font-family: "A
 
 <!-- load map -->
 
+
     <div id="shapka">
         <div>
     <select class='livesearch' id='lis0'style='width:200px;'> <option value='0'>—</option></select>
@@ -322,9 +329,9 @@ button, input, span, select,textarea {margin: 2px 2px 0px 0px;   font-family: "A
 </div>
 <div>
     
-    <!-- <button id='v11'style = "min-width: 70px;">Графік &#128200</button> -->
+    <!--<button id='v11'style = "min-width: 70px;">Графік &#128200</button>-->
     <button id='men5'style = "min-width: 70px;">Зупинки &#9940</button>
-    <button id='fast_obr_poliv'style = "min-width: 70px;">Обробка полів &#128668</button> 
+    <button id='men8'style = "min-width: 70px;">Обробка полів &#128668</button> 
     <button id='men4'style = "min-width: 70px;">Звіти &#128204</button>
     <button id='men1'style = "min-width: 70px;">Маршрути &#128259</button>  
     <button id='men6'style = "min-width: 70px;">Логістика &#128661</button>
@@ -432,14 +439,13 @@ button, input, span, select,textarea {margin: 2px 2px 0px 0px;   font-family: "A
         <option value="z2">вїзд-виїзд-стоянка в геозоні</option>
         <option value="z3">звіт по мотогодинах в геозоні</option>
         <option value="z4">звіт по мотогодинах</option>
-        <!--<option value="z5">перевірка навігації</option>-->
+<!--         <option value="z5">перевірка навігації</option> -->
         <option value="z6">робота по регіонах</option>
-        <!-- <option value="z8">зливи</option> -->
+<!--         <option value="z8">зливи</option> -->
         <option value="z7">звіт маршрутів авто</option>
         <option value="z9">звіт по журналу</option>
-        <option value="z10">обробка полів</option>
         <option value="z11">зупинки в магазині</option>
-         <!--<option value="z12">звіт авто OBD</option> -->
+<!--         <option value="z12">звіт авто OBD</option> -->
       </select>  
       <br>
       <hr>
@@ -477,7 +483,10 @@ button, input, span, select,textarea {margin: 2px 2px 0px 0px;   font-family: "A
         <button id='prNV'>перевірка навігації</button>
         <input id='no_activ' type="checkbox"checked />
          не показувати техніку яка зависла більше 5 дней
+         <br>
         <button id='prDUT'>перевірка ДРП/GPS</button>
+        <br>
+        <button id='prAZS'>перевірка АЗС</button>
     </div> 
     <div id="zz6" class='zvit'> 
         <div class='textforma'>
@@ -503,65 +512,8 @@ button, input, span, select,textarea {margin: 2px 2px 0px 0px;   font-family: "A
         <button id='jurnal_zvit_buton'>звіт за період</button>
         </div>
     </div> 
-    <div id="zz10" class='zvit'>
-        <div id="robota_polya_help">
-        1.оберіть поле на мапі, або зі списку РЕЕСТР РОБОТИ НА ПОЛЯХ
-        <br>
-        2.натисніть НАРЯДИ щоб визначити техніку що працювала на полі
-        <br>
-        3.переконайтесь що техніка працювала на полі [натисніть на назву ТЗ в табличці] 
-        <br>
-        4.відмітте галочками техніку роботу якої потрібно порахувати 
-        <br>
-        5.оберіть ширину обробітку роботу і натичніть РОЗРАХУВАТИ 
-        <br>
-        6.якшо під час тривалого розрахунку зявиться повідомлення натисніть ПОЧЕКАТИ
-        <br>
-        7.запис до журналу доступний лише після авторизації в ЖУРНАЛІ
-        <br>
-        <hr>
-        </div>
-        <div id="robota_polya">
-        <button id='robota_polya_BT'>СФОРМУВАТИ РЕЕСТР РОБОТИ НА ПОЛЯХ</button>
-        <div id="reestr_polya">
-        <table id="robota_polya_tb" class='table'></table> 
-        </div> 
-        </div>
-        <div id="getary_pole" style="font-weight: 700; text-align:center"></div>
-        <div class='textforma'>
-        <button id='obrabotkaBT' style = "width: 200px;">НАРЯДИ</button>
-        <textarea id='tehnikaobr' rows="1" cols="70">John,JD,CL,NH,CASE</textarea>
-        </div>
-        <table id="obrobkatehnika" class='table'></table>  
-        <button id='gektaryBT'style = "width: 200px;">РОЗРАХУВАТИ</button>
-        ширина обробітку<input id='shirzahvata' type='number' placeholder='10' value="10"> 
-        робота
-        <select id="robota_polya_spisok">
-            <option value="невідомо">невідомо</option>
-            <option value="оранка">оранка</option>
-            <option value="дискування">дискування</option>
-            <option value="рихлення">рихлення</option>
-            <option value="посів">посів</option>
-            <option value="оприскування">оприскування</option>
-            <option value="внесення добрив">внесення добрив</option>
-          </select>  
-        <br>
-        <br>
-        
-        <div class='textforma'>
-            <button id='polya_jurnal'style = "width: 200px;">ЗАПИС В ЖУРНАЛ</button> 
-            <button class='jurnal_autorization_buton'style = "width: 200px;">АВТОРЕЗУЙТЕСЬ</button>
-            <input id="polya_jurnal_time" type="date"/>
-            <textarea id='polya_jurnal_text' placeholder="авторезуйтесь для відправки повідомлення введіть повідомлення" rows="1" cols="70"></textarea>
-            
-            </div>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <!-- <button id='hidezone'>приховати геозону</button>  -->
-    </div>
+    <!-- <div id="zz10" class='zvit'>
+    </div> -->
     <div id="zz11" class='zvit'>
         <div class='textforma'>
         <textarea id='magaz_unit' placeholder="номер авто" rows="1" cols="20"></textarea>
@@ -724,7 +676,54 @@ button, input, span, select,textarea {margin: 2px 2px 0px 0px;   font-family: "A
         <table id="monitoring_table"></table>
        
      </div> 
+     <div id="geomodul">
+            <div id="robota_polya_help">
+            1.оберіть групи техніки, для вибору індивідуального ТЗ видаліть всі групи з вибору груп - техніка буде обрана та яку ви обрали на мапі чи у  швидкому пошуку техніки
+            <br>
+            2.оберіть поле на мапі, або зі списку РЕЕСТР РОБОТИ НА ПОЛЯХ
+            <br>
+            3.натисніть НАРЯДИ щоб визначити техніку що працювала на полі, переконайтесь що техніка працювала на полі [натисніть на назву ТЗ в табличці] 
+            <br>
+            4.відмітте галочками техніку - роботу якої потрібно порахувати, всі властивості техніки можна редагувати [агрегат,захват, водій і т.п.] 
+            <br>
+            5.якшо під час тривалого розрахунку зявиться повідомлення натисніть ПОЧЕКАТИ
+            <br>
+            6.РЕЕСТР РОБОТИ НА ПОЛЯХ можна редагувати - все окрім поля,площі поля 
+            <br>
+            <hr>
+            </div>
+            <div id="robota_polya">
+            <select class='livesearch' id='r_lis'style='width:100%;' multiple></select>
+            <button id='robota_polya_BT' style = "width: 69%; background:rgb(247, 248, 170);">РЕЕСТР РОБОТИ НА ПОЛЯХ</button>
+            <button id='reestr_save_BT' style = "width: 29%; background:rgb(252, 205, 136);">ЗБЕРЕГТИ/КОПІЮВАТИ РЕЕСТР</button>
+            <div id="reestr_polya">
+            <table id="robota_polya_tb" class='table2'></table> 
+            </div> 
+            </div>
+            <div style="font-weight: 700; text-align:center" > <span id="name_pole" style="font-weight: 700;"></span><span id="getary_pole" style="font-weight: 700;"></span></div>
+           
+            <button id='obrabotkaBT' style = "width: 100%; background:rgb(171, 170, 248); ">НАРЯДИ</button>
 
+            <table id="obrobkatehnika" class='table'></table>  
+            <button id='gektaryBT' style = "width: 69%; background: rgb(170, 248, 170); ">РОЗРАХУВАТИ</button>
+            <button id='gektaryBTtrue' style = "width: 29%; background: rgb(103, 252, 140); ">РОЗР. ЗАКРИТЕ ПОЛЕ</button>
+            <br>
+            <br>
+            
+            <div class='textforma'>
+                <button id='polya_jurnal'style = "width: 200px;">ЗАПИС В ЖУРНАЛ</button> 
+                <button class='jurnal_autorization_buton'style = "width: 200px;">АВТОРЕЗУЙТЕСЬ</button>
+                <input id="polya_jurnal_time" type="date"/>
+                <textarea id='polya_jurnal_text' placeholder="авторезуйтесь для відправки повідомлення введіть повідомлення" rows="1" cols="70"></textarea>
+                
+                </div>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <!-- <button id='hidezone'>приховати геозону</button>  -->
+         </div> 
 
  <div id="niz">
     <input id="fromtime1" type="datetime-local"/>
@@ -742,13 +741,6 @@ button, input, span, select,textarea {margin: 2px 2px 0px 0px;   font-family: "A
  <div class="slidecontainer">
    <input type="range" min="1" max="2000" value="2000" class="slider" id="myRange">
  </div>     
-        
-       
-        
-        
-        
-            
-        
         
         
 
@@ -777,4 +769,5 @@ button, input, span, select,textarea {margin: 2px 2px 0px 0px;   font-family: "A
 
 </body>
 </html>
+
 
