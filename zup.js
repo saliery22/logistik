@@ -5012,15 +5012,15 @@ function avto_OBD(data){
       if(parseInt(data[i][ii][2])>0){
         if(data[i][ii][6] && data[i][ii][6]!='-----'){
           zapr1= parseFloat(data[i][ii][6]);
-          if(zapr0>=0 && zapr1>=0){
-            if(zapr1-zapr0>5)zapr+=zapr1-zapr0;
-            zapr0=zapr1;
-          }
           if(zapr0==-10){zapr0 = parseFloat(data[i][ii][6]);}
-
           }
+      }else{
+        if(zapr0>=0 && zapr1>=0){
+          if(zapr1-zapr0>5)zapr+=zapr1-zapr0;
+          zapr0=zapr1;
+        }
       }
-      if(ii==data[i].length-2 && zapr0>=0){
+      if(ii==data[i].length-2 && zapr0>=0 && parseInt(data[i][ii][2])==0){
         zapr1= parseFloat(data[i][ii][6]);
         if(zapr1-zapr0>5)zapr+=zapr1-zapr0;
       }
