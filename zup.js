@@ -5526,7 +5526,7 @@ let avto=[
 
 
 ['ВМ5645ЕІ Черненко О.В. ФОРД','Глухів',51.6774,33.9235],
-	
+
 ['ВМ8607ЕН Яковенко Ю.О. ФОРД','Кролевець',51.56,33.3501],
 ['ВМ8693ЕН Максименко С.М. Форд','Кролевець',51.5459,33.3714],
 ['ВМ1280СТ Інєшин Ю.В. Газель','Кролевець',51.5607,33.4025],
@@ -6637,7 +6637,7 @@ function vibir_avto(){
     let status2=0;
     let name_buton1='маршрут';
     let name_buton2='маршрут';
-    spisok+=avto[j][0]+',';
+    spisok+=avto[j][0].split(' ')[0]+',';
     for (let v = 1; v<logistik_data.length; v++){
       let m=logistik_data[v].split('|');
       if(!m[1])continue;
@@ -6711,7 +6711,7 @@ function svod(data){
   let tb = document.getElementById("log_unit_tb");
   for (let i = 1; i<tb.rows.length; i++){
     for (let j = 0; j<marshrut_probeg_nedelya.length; j++){
-    if (tb.rows[i].cells[0].innerText==marshrut_probeg_nedelya[j][0][1]) {
+    if (tb.rows[i].cells[0].innerText.split(' ')[0]==marshrut_probeg_nedelya[j][0][1].split(' ')[0]) {
       tb.rows[i].cells[2].innerText=marshrut_probeg_nedelya[j][1][1];
       break;
     }
@@ -6960,7 +6960,7 @@ if(status3==2){
   let tb=document.getElementById("log_control_tb");
 let spisok=''
   for (let i = 1; i<tb.rows.length; i++){
-    if(tb.rows[i].cells[2].innerText== "")spisok+=tb.rows[i].cells[0].innerText+','
+    if(tb.rows[i].cells[2].innerText== "")spisok+=tb.rows[i].cells[0].innerText.split(' ')[0]+',';
   }
   if(control_date!=control_date0){
     control_date0=control_date;
@@ -6984,7 +6984,7 @@ function km_in_cels(data){
   let tb = document.getElementById("log_control_tb");
   for (let i = 1; i<tb.rows.length; i++){
     for (let j = 0; j<marshrut_probeg_deny.length; j++){
-    if (tb.rows[i].cells[0].innerText==marshrut_probeg_deny[j][0][1] && parseInt(marshrut_probeg_deny[j][1][1])>0 && tb.rows[i].cells[2].innerText== "") {
+    if (tb.rows[i].cells[0].innerText.split(' ')[0]==marshrut_probeg_deny[j][0][1].split(' ')[0] && parseInt(marshrut_probeg_deny[j][1][1])>0 && tb.rows[i].cells[2].innerText== "") {
       tb.rows[i].cells[2].innerHTML="<button style = 'background: rgb(252, 244, 163);width: 100%;' >"+marshrut_probeg_deny[j][1][1]+"</button>";
       break;
     }
@@ -7181,8 +7181,9 @@ $("#cont_b3").on("click", function (){
   let t=$('#cont_time').text();
   let t2=Date.parse($('#cont_time').text())+86400000;
   t2 = new Date(t2);
-  let n=$('#cont_unit').text().split(' ')[0];
+  let n=$('#cont_unit').text();
   let id=unitsID[n];
+  n=n.split(' ')[0];
   $("#lis0").chosen().val(id);     
   $("#lis0").trigger("chosen:updated");
   //layers[0]=0;
@@ -7897,7 +7898,6 @@ function point_in_data(y,x) {
                       
          
  }
-
 
 
   
