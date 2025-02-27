@@ -7477,7 +7477,7 @@ async function logistik_zvit(data){
   $('#log_marh_tb').append("<tr></tr><tr></tr><tr></tr><tr></tr><tr></tr>");
 
 
-      let sttime = 300;
+      let sttime = 150;
 
       let adres='';
       let adres0='';
@@ -7503,7 +7503,7 @@ async function logistik_zvit(data){
           let time1 = Date.parse(data[0][ii-1][1])/1000;
           let time2 = Date.parse(data[0][ii][1])/1000;
        
-         if(parseInt(data[0][ii][2])<7){
+         if(parseInt(data[0][ii][2])<10){
           stoyanka+=time2-time1; 
           stoyanka0=stoyanka;
           if(!data[0][ii][0])continue;
@@ -7543,7 +7543,7 @@ async function logistik_zvit(data){
                 let point = yp+","+xp;
                 let r =  parseInt(adres[0][3]);
                 let c = adres[0][4];
-                  if(wialon.util.Geometry.getDistance(y000,x000,yp,xp)<r )continue;
+                  if(wialon.util.Geometry.getDistance(y000,x000,yp,xp)<r && km<0.5)continue;
                 kkk++;
                 marshrut_point0.splice(adres[1], 1);
                 add_point_to_table(kkk,name,point,r,c,id,time0,stoyanka0);
@@ -7559,7 +7559,7 @@ async function logistik_zvit(data){
                   let point = yp+","+xp;
                   let r =  parseInt(adres[2]);
                   let c = false;
-                  if(wialon.util.Geometry.getDistance(y000,x000,yp,xp)<r )continue;
+                  if(wialon.util.Geometry.getDistance(y000,x000,yp,xp)<r && km<0.5)continue;
                     kkk++;
                   //let mar = L.marker([y1,x1], {icon: L.divIcon({ className: 'div-icon',iconSize: "auto", html: "<center style = 'background:rgb(170, 248, 170);'>"+kkk+": "+name+"</center>" }),draggable: true,opacity:0.9,zIndexOffset:1000}).addTo(map);
                   //zup_mark_data.push(mar);
@@ -7569,7 +7569,7 @@ async function logistik_zvit(data){
                   x000=x;
                 }else{
                   adres=await point_in_global(y,x); 
-                  if(wialon.util.Geometry.getDistance(y000,x000,y,x)<300 )continue;
+                  if(wialon.util.Geometry.getDistance(y000,x000,y,x)<300  && km<500)continue;
                   kkk++;
                   //let mar = L.marker([y,x], {icon: L.divIcon({ className: 'div-icon',iconSize: "auto", html: "<center style = 'background:rgb(247, 161, 161);'>"+kkk+": "+adres+"</center>" }),draggable: true,opacity:0.9,zIndexOffset:1000}).addTo(map);
                   //zup_mark_data.push(mar);
@@ -7585,7 +7585,7 @@ async function logistik_zvit(data){
          }
 
 
-         if(parseInt(data[0][ii][2])>=7){
+         if(parseInt(data[0][ii][2])>=10){
           if(!data[0][ii][0])continue;
          if(!data[0][ii-1][2])continue;
          if(!data[0][ii+1][2])continue;
@@ -7617,6 +7617,7 @@ async function logistik_zvit(data){
                   marshrut_point0.splice(adres[1], 1);
                   add_point_to_table(kkk,name,point,r,c,id,time0,stoyanka0);
                   adres0 =name;
+                  km=0;
                   y000=y;
                   x000=x;
                   }
@@ -7633,6 +7634,7 @@ async function logistik_zvit(data){
                     kkk++;
                   add_point_to_table(kkk,name,point,r,c,id,time0,stoyanka0);
                   adres0 =name;
+                  km=0;
                   y000=y;
                   x000=x;
                   }
@@ -7643,6 +7645,7 @@ async function logistik_zvit(data){
                     let point=y+","+x;
                     add_point_to_table(kkk,adres,point,100,false,id,time0,stoyanka0);
                     adres0 =adres;
+                    km=0;
                     y000=y;
                     x000=x;
                   }  
@@ -7665,6 +7668,7 @@ async function logistik_zvit(data){
                   marshrut_point0.splice(adres[1], 1);
                   add_point_to_table(kkk,name,point,r,c,id,time0,stoyanka0);
                   adres0 =name;
+                  km=0;
                   y000=y;
                   x000=x;
                   }
@@ -7681,6 +7685,7 @@ async function logistik_zvit(data){
                     kkk++;
                   add_point_to_table(kkk,name,point,r,c,id,time0,stoyanka0);
                   adres0 =name;
+                  km=0;
                   y000=y;
                   x000=x;
                   }
@@ -7691,6 +7696,7 @@ async function logistik_zvit(data){
                     let point=y+","+x;
                     add_point_to_table(kkk,adres,point,100,false,id,time0,stoyanka0);
                     adres0 =adres;
+                    km=0;
                     y000=y;
                     x000=x;
                   }  
@@ -7718,6 +7724,7 @@ async function logistik_zvit(data){
                 marshrut_point0.splice(adres[1], 1);
                 add_point_to_table(kkk,name,point,r,c,id,time0,stoyanka0);
                 adres0 =name;
+                km=0;
                 y000=y;
                 x000=x;
               }else{
@@ -7735,6 +7742,7 @@ async function logistik_zvit(data){
                     add_point_to_table(kkk,name,point,r,c,id,time0,stoyanka0);
                    
                     adres0 =name;
+                    km=0;
                     y000=y;
                     x000=x;
                 }else{
@@ -7745,6 +7753,7 @@ async function logistik_zvit(data){
                   let point=y+","+x;
                   add_point_to_table(kkk,adres,point,100,false,id,time0,stoyanka0);
                   adres0 =adres;
+                  km=0;
                   y000=y;
                   x000=x;
                 }
@@ -7856,6 +7865,7 @@ async function logistik_zvit(data){
                 marshrut_point0.splice(adres[1], 1);
                 add_point_to_table(kkk,name,point,r,c,id,time0,stoyanka0);
                 adres0 =name;
+                km=0;
                 y000=y1;
                 x000=x1;
                 }else{
@@ -7874,6 +7884,7 @@ async function logistik_zvit(data){
                    // zup_mark_data.push(mar);
                     add_point_to_table(kkk,name,point,r,c,id,time0,stoyanka0);
                     adres0 =name;
+                    km=0;
                     y000=y1;
                     x000=x1;
                   }else{
@@ -7886,6 +7897,7 @@ async function logistik_zvit(data){
                     let point=y1+","+x1;
                     add_point_to_table(kkk,adres,point,100,false,id,time0,stoyanka0);
                     adres0 =adres;
+                    km=0;
                     y000=y1;
                     x000=x1;
                   }
