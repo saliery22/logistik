@@ -5780,11 +5780,11 @@ let avto=[
 
 ['ВМ5645ЕІ Черненко О.В. ФОРД','Глухів',51.6774,33.9235],
 
+['ВМ5887EI Лубенець Автобус TT_B063','ККЗ',51.5515,33.3511],
 ['ВМ8607ЕН Яковенко Ю.О. ФОРД','Кролевець',51.56,33.3501],
 ['ВМ8693ЕН Максименко С.М. Форд','Кролевець',51.5459,33.3714],
 ['ВМ1280СТ Інєшин Ю.В. Газель','Кролевець',51.5607,33.4025],
 ['ВМ5629ЕІ Дубровін Р.В. ФОРД','Кролевець',51.5469,33.3917],
-['ВМ5887EI Лубенець Автобус TT_B063','Кролевець',51.5578,33.3841],
 ['ВМ7925ЕІ Жабко В. Рено Duster','Кролевець',51.5406,33.3801],
 ['ВМ2487СЕ Нива Шевроле','Кролевець Жабко тимчасово',51.5406,33.3801],
 ['ВМ8692ЕН Шепелюк В.Д. Форд','Кролевець',51.5624,33.3344],
@@ -6975,12 +6975,14 @@ function svod(data){
 function sort_table(table,colum){
 let data=[];
   for (let i = 1; i<table.rows.length; i++){
-    let a=parseFloat(table.rows[i].cells[colum].innerText)
- data.push([i,a]);
+    let a=parseFloat(table.rows[i].cells[colum].innerText);
+    if (table.rows[i].cells[colum-1].getElementsByTagName('button')[0])if (table.rows[i].cells[colum-1].getElementsByTagName('button')[0].innerText !='ремонт') { data.push([i,a]);}
   }
   data.sort(function (a, b) { return a[1] - b[1]; });
+  let color=  `hsl(${120}, ${50}%, ${50}%)`;
   for (let i = 0; i<5; i++){
-    table.rows[data[i][0]].cells[colum].style = 'background: rgb(170, 248, 170);';
+    if (i>data.length-2) continue;
+    table.rows[data[i][0]].cells[colum].style = 'background: '+`hsl(${120}, ${50}%, ${40+i*10}%)`+';';
     table.rows[data[i][0]].cells[0].style = 'background: rgb(170, 248, 170);';
   }
 }
@@ -8168,3 +8170,4 @@ function point_in_data(y,x) {
 
   
   
+
