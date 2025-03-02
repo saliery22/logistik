@@ -1,4 +1,5 @@
 
+
 // global variables
 var map, marker,unitslist = [],allunits = [],rest_units = [],marshruts = [],zup = [], unitMarkers = [], markerByUnit = {},tile_layer, layers = {},marshrutMarkers = [],unitsID = {},Vibranaya_zona;
 var areUnitsLoaded = false;
@@ -13,6 +14,8 @@ let zvit2=0;
 let zvit3=0;
 let zvit4=0;
 let RES_ID=26227;// 20030 "11_ККЗ"  26227 "KKZ_Gluhiv"
+
+let kof = 1.0038; // TURF corection
 
 
 
@@ -172,7 +175,7 @@ function initUIData() {
   var session = wialon.core.Session.getInstance();
   var resource = wialon.core.Session.getInstance().getItem(20030); //26227 - Gluhiv 20030 "11_ККЗ"
     let gzgroop = resource.getZonesGroups();
-  resource.getZonesData(null, function(code, geofences) {
+  resource.getZonesData(null,0x19, function(code, geofences) {
     var cord=[];
       for (let i = 0; i < geofences.length; i++) {
         cord=[];
@@ -197,6 +200,7 @@ function initUIData() {
           // geozona.bindPopup(zone.n);
            geozona.bindTooltip(zone.n +'<br />' +zonegr,{opacity:0.8,sticky:true});
            geozona.zone = zone;
+           geozona.gr = zonegr;
            geozones.push(geozona);   
 
            geozona.on('click', function(e) {
@@ -228,7 +232,7 @@ function initUIData() {
               var plo=0;
               var kol2=0;
               var plo2=0;
-              resource.getZonesData(null,0x11, function(code, geofences) {
+              resource.getZonesData(null,0x19, function(code, geofences) {
               for (let i = 0; i < geofences.length; i++) {
                  var zonee = geofences[i];
                  var color2 = "#" + wialon.util.String.sprintf("%08x", zonee.c).substr(2);
@@ -260,26 +264,34 @@ function initUIData() {
              
               
                if ($('#geomodul').is(':hidden')==false){
-                $('#obrobka').empty();
-                $('#obrobkatehnika').empty();
-                $('#getary_pole').text(Area_Field_Name(Vibranaya_zona.n));
-                $('#name_pole').text(Vibranaya_zona.n);
-                let point = e.target._latlngs[0];
-                let ramka=[];
-                for (let i = 0; i < point.length; i++) {
-                let lat =point[i].lat;
-                let lng =point[i].lng;
-                geozonepoint.push({x:lat, y:lng}); 
-                geozonepointTurf.push([lng,lat]);
-                ramka.push([lat, lng]);
-                if(i == point.length-1 && geozonepoint[0]!=geozonepoint[i]){
-                  geozonepoint.push(geozonepoint[0]); 
-                  geozonepointTurf.push(geozonepointTurf[0]);
-                  ramka.push(ramka[0]);
+                if($('#name_pole').text()!=Vibranaya_zona.n){
+                  $('#obrobka').empty();
+                  $('#obrobkatehnika').empty();
                 }
-                }
-                let polilane = L.polyline(ramka, {color: 'blue'}).addTo(map);
-                geo_layer.push(polilane);
+                  $('#getary_pole').text(Area_Field_Name(Vibranaya_zona.n));
+                  $('#grup_pole').text(e.target.gr);
+                  $('#name_pole').text(Vibranaya_zona.n);
+                  let point = e.target._latlngs[0];
+                  let ramka=[];
+                  for (let i = 0; i < point.length; i++) {
+                  let lat =point[i].lat;
+                  let lng =point[i].lng;
+                  geozonepoint.push({x:lat, y:lng}); 
+                  geozonepointTurf.push([lng,lat]);
+                  ramka.push([lat, lng]);
+                  if(i == point.length-1 && geozonepoint[0]!=geozonepoint[i]){
+                    geozonepoint.push(geozonepoint[0]); 
+                    geozonepointTurf.push(geozonepointTurf[0]);
+                    ramka.push(ramka[0]);
+                  }
+                  }
+                  let polilane = L.polyline(ramka, {color: 'blue'}).addTo(map);
+                  geo_layer.push(polilane);
+             
+                  Naryady_start();
+               // console.log(turf.area( turf.polygon([geozonepointTurf]))*1.0038);
+               // console.log(turf.area( turf.polygon([geozonepointTurf])));
+               // console.log(e.target.zone.ar);
                }
 
 
@@ -1015,11 +1027,11 @@ if (!$('#marrr').is(':hidden')) {
   },
   
   onPolygonReady: (polygon) => {
-    let area = (turf.area(polygon.toGeoJSON())/10000).toFixed(2);
+    let area = (turf.area(polygon.toGeoJSON())*kof/10000).toFixed(2);
     polygon.bindTooltip(''+area+'га',{opacity:0.8});
   },
   onPolygonDblClick: (polygon, control, ev) => {
-    let area = (turf.area(polygon.toGeoJSON())/10000).toFixed(2);
+    let area = (turf.area(polygon.toGeoJSON())*kof/10000).toFixed(2);
     let geojson = L.geoJSON(polygon.toGeoJSON(), {
       style: {
         opacity: 0.5,
@@ -2848,6 +2860,10 @@ function CollectDataReport(t1,t2,maska,idrep,olddata,i,unit,calbek){ // execute 
 
 //=================Geomodul===================================================================================
 $('#obrabotkaBT').click(function() {
+  Naryady_start();
+});
+
+function Naryady_start(){
   let str='';
   let vibor = $("#r_lis").chosen().val();
   if(vibor){
@@ -2865,7 +2881,7 @@ $('#obrabotkaBT').click(function() {
     str = $("#lis0 :selected").html();
   }
   Naryady(Global_DATA,str);
-});
+}
 
 
 
@@ -2893,7 +2909,7 @@ function Naryady(data=[],maska='JD'){
   let str = maska.split(',');
   geo_splines= [];
   $("#obrobkatehnika").empty();
-  $('#obrobkatehnika').append("<th><td>вдій</td><td>агрегат</td><td>захват</td><td>тз</td><td>обр</td><td>пер</td><td>чистий обр</td></th>");
+  $('#obrobkatehnika').append("<th><td>водій</td><td>агрегат</td><td>захват</td><td>тз</td><td>обр</td><td>пер</td><td>чистий обр</td></th>");
   geo_splines.lenght = 0;
    let texnika=[];
    let kx =0;
@@ -2905,8 +2921,8 @@ function Naryady(data=[],maska='JD'){
    let spline=[];
    let p_start=[];
    let p_end=[];
-   let data_start=[];
-   let data_end=[];
+   let data_start=0;
+   let data_end='';
    let agregat = '----';
    let vodiy = '----';
    let vodiy0 =0;
@@ -2923,114 +2939,84 @@ function Naryady(data=[],maska='JD'){
       if(vodiy0==0)vodiy0=vodiy;
     }else{
       vodiy = '----';
-      if(vodiy0==0)vodiy0=vodiy;
     }
 
+    if(vodiy0==vodiy){
 
-    
+      let lat  = parseFloat(data[i][ii][0].split(',')[0]);
+      let lon  = parseFloat(data[i][ii][0].split(',')[1]);
 
-     let lat  = parseFloat(data[i][ii][0].split(',')[0]);
-     let lon  = parseFloat(data[i][ii][0].split(',')[1]);
-
-     if(spline.length>0) {
-       if(spline[spline.length-1][0]!=lon && spline[spline.length-1][1]!=lat) {
-        //if(wialon.util.Geometry.getDistance(lat, lon, spline[spline.length-1][1],spline[spline.length-1][0])>5){
-          if(wialon.util.Geometry.pointInShape(geozonepoint, 0, lat, lon)){
-            spline.push([lon,lat]); 
-            newspline=false;
-            data_end.push(data[i][ii][1]); 
-          }else {
-            newspline=true;
-            p_end=[lon,lat];
-          }
-       //}
-       }
-      }else{
-        if(wialon.util.Geometry.pointInShape(geozonepoint, 0, lat, lon)){
-          spline.push([lon,lat]); 
-          newspline=false;
-          data_start.push(data[i][ii][1]); 
-        }else {
-          newspline=false;
-          p_start=[lon,lat];
+      if(spline.length>0) {
+        if(spline[spline.length-1][0]!=lon && spline[spline.length-1][1]!=lat) {
+         //if(wialon.util.Geometry.getDistance(lat, lon, spline[spline.length-1][1],spline[spline.length-1][0])>5){
+           if(wialon.util.Geometry.pointInShape(geozonepoint, 0, lat, lon)){
+             spline.push([lon,lat]); 
+             newspline=false;
+             data_end = data[i][ii][1];
+           }else {
+             newspline=true;
+             p_end=[lon,lat]; 
+           }
+        //}
         }
-      }
+       }else{
+         if(wialon.util.Geometry.pointInShape(geozonepoint, 0, lat, lon)){
+           spline.push([lon,lat]); 
+           newspline=false;
+           if(data_start==0)data_start = data[i][ii][1]; 
+         }else {
+           newspline=true;
+           p_start=[lon,lat]; 
+         }
+       }
 
-      if(newspline==true){
-      
-        if(spline.length>0) {
-            if(p_start.length>0)spline.unshift(p_start);
-            if(p_end.length>0)spline.push(p_end);
+       if(newspline==true){
 
-            if(vodiy0!=vodiy){
-              if(vodiy0!=0){
-                splines[0][2]=kx;
-                if(agregat != '----'){splines[0][3]=parseFloat(agregat.split(' ').pop());}else{ splines[0][3]=10;}
-                splines[0][4]=data_start[0];
-                splines[0][5]=data_end[data_end.length-2];
-                splines[0][6]=vodiy0;
-                splines[0][7]=agregat;
-
-                kx++;
-                if(splines.length>1)geo_splines.push(splines);
-                splines=[];
-                vodiy0=vodiy;
-                data_start=[data_start.pop()];
-                data_end=[];
-              }else{
-                vodiy0=vodiy;
-              }   
-            }
-            if(splines.length==0) splines.push([data[i][0][0],data[i][0][1],kx]);
-            splines.push(spline);
+            if(spline.length>3) {
+              if(p_start.length>0)spline.unshift(p_start);
+              if(p_end.length>0)spline.push(p_end);
+              splines.push(spline);
+              }
           //var linestring1 = turf.lineString(spline);
           //var polyline = L.geoJSON(linestring1).addTo(map);
-          spline=[];
-          p_start=p_end;
-          p_end=[];
-          newspline=false;
-        }
+       
+        spline=[];
+        p_start=p_end;
+        p_end=[];
+        newspline=false;
       }
-      if(vodiy0!=vodiy && newspline==false){
-        if(spline.length>0) {
-          if(p_start.length>0)spline.unshift(p_start);
-          if(p_end.length>0)spline.push(p_end);
 
-              splines[0][2]=kx;
-              if(agregat != '----'){splines[0][3]=parseFloat(agregat.split(' ').pop());}else{ splines[0][3]=10;}
-              splines[0][4]=data_start[0];
-              splines[0][5]=data[i][ii][1];
-              splines[0][6]=vodiy0;
-              splines[0][7]=agregat;
-              kx++;
-              splines.push(spline);
-              if(splines.length>1)geo_splines.push(splines);
-              splines=[];
-              splines.push([data[i][0][0],data[i][0][1],kx]);
-              vodiy0=vodiy;
-              data_start=[];
-              data_end=[];
-              spline=[];
-              p_start=p_end;
-              p_end=[];
-              newspline=false;
-      }
-      }
+    }else{
+      splines[0][2]=kx;
+      if(agregat != '----'){splines[0][3]=parseFloat(agregat.split(' ').pop());}else{ splines[0][3]=10;}
+      splines[0][4]=data_start;
+      splines[0][5]=data_end;
+      splines[0][6]=vodiy0;
+      splines[0][7]=agregat;
+      kx++;
+      if(spline.length>0)splines.push(spline);
+      if(splines.length>1)geo_splines.push(splines);
+      spline=[];
+      splines=[];
+      if(splines.length==0) splines.push([data[i][0][0],data[i][0][1],kx]);
+      vodiy0=vodiy;
+      data_start=0;
+      data_end=''; 
+      ii-=1;
+    }
 
     }
     if(splines.length>1 || spline.length>5){
-    if(vodiy0==vodiy || vodiy0==0){
       splines[0][2]=kx;
       if(agregat != '----'){splines[0][3]=parseFloat(agregat.split(' ').pop());}else{ splines[0][3]=10;}
-      splines[0][4]=data_start[0];
-      splines[0][5]=data_end[data_end.length-1];
+      splines[0][4]=data_start;
+      splines[0][5]=data_end;
       splines[0][6]=vodiy;
       splines[0][7]=agregat;
       kx++;
       splines.push(spline);
       if(splines.length>0)geo_splines.push(splines);
       splines=[];
-      }
     }
   }
 
@@ -3064,6 +3050,7 @@ for (let i = 0; i < geo_splines.length; i++) {
     i--;
   }
 }
+
 for (let i = 0; i < geo_splines.length; i++) {
     if(i>0 && geo_splines[i][0][0]==geo_splines[i-1][0][0] && geo_splines[i][0][6]==geo_splines[i-1][0][6]){
       geo_splines[i-1][0][5] = geo_splines[i][0][5];
@@ -3072,10 +3059,20 @@ for (let i = 0; i < geo_splines.length; i++) {
       }
       geo_splines.splice(i, 1);
       i--;
-    }else{
+      continue;
+    }
+    if( geo_splines.length>1 && i==0 && geo_splines[i][0][0]==geo_splines[i+1][0][0] && geo_splines[i][0][6]==geo_splines[i+1][0][6]){
+      geo_splines[i][0][5] = geo_splines[i+1][0][5];
+      for (let ii = 1; ii < geo_splines[i+1].length; ii++) {
+        geo_splines[i].push(geo_splines[i+1][ii]);
+      }
+      geo_splines.splice(i+1, 1);
+      i--;
+      continue;
+    }
       geo_splines[i][0][2] = i;
       $('#obrobkatehnika').append("<tr class='geo_trak' id='" + geo_splines[i][0][0] +","+geo_splines[i][0][4]+","+ geo_splines[i][0][5] +"'><td><input type='checkbox'></td><td contenteditable='true' >"+geo_splines[i][0][6]+"</td><td contenteditable='true'>"+geo_splines[i][0][7]+"</td><td contenteditable='true'>"+geo_splines[i][0][3]+"</td><td contenteditable='true'>"+geo_splines[i][0][1]+"</td><td contenteditable='true'>0</td><td contenteditable='true'>0</td><td contenteditable='true'>0</td></tr>");
-    }
+    
 }
 }
 
@@ -3199,11 +3196,11 @@ function myroutine(){
       let union =polis[0];
       if(polis.length>1){
         union =turf.union(turf.featureCollection(polis));
-        areaU = (turf.area(union)/10000).toFixed(2);
+        areaU = (turf.area(union)*kof/10000).toFixed(2);
       }
 
       union = turf.intersect(turf.featureCollection([union, turfPole]));
-      areaI = (areaU -turf.area(union)/10000).toFixed(2);
+      areaI = (areaU -turf.area(union)*kof/10000).toFixed(2);
 
       
        hue += 60+Math.floor(Math.random() * 30);
@@ -3240,7 +3237,7 @@ function myroutine(){
           let AareaU = Aarea;
           if(UnionPolis.length>1){
             let Aunion =turf.union(turf.featureCollection(UnionPolis));
-            AareaU = (turf.area(Aunion)/10000).toFixed(2);
+            AareaU = (turf.area(Aunion)*kof/10000).toFixed(2);
           }
 
           $('#obrobkatehnika').append("<tr><td><input type='checkbox'></td><td></td><td></td><td></td><td>ВСЬОГО</td><td>"+ Aarea +"</td><td>"+ (Aarea-AareaU).toFixed(2) +"</td><td>"+ AareaU +"</td></tr>");
@@ -3249,19 +3246,31 @@ function myroutine(){
           let vibor_raboty = 'робота';
           $("#robota_polya_help").hide();
           $('#polya_jurnal_text').val(vibor_raboty+" "+AareaU+" га");
+          function vid_roboty(agr){
+            if(agr.indexOf('зубова')>=0){return 'боронування'}
+            if(agr.indexOf('шлейфова')>=0){return 'боронування'}
+            if(agr.indexOf('искова')>=0){return 'дисковка'}
+            if(agr.indexOf('ультиватор')>=0){return 'культивація'}
+            if(agr.indexOf('бприскувач')>=0){return 'обприскування'}
+            if(agr.indexOf('озкидач')>=0){return 'внесення добрив'}
+            if(agr.indexOf('івалка')>=0){return 'посів'}
+            if(agr.indexOf('атка')>=0){return 'збирання'}
+            if(agr.indexOf('луг')>=0){return 'оранка'}
+            return '----'
+          }
           if(table_polya.rows.length>0){
             for(let i = 0; i<table_polya.rows.length; i++){
-              if(table_polya.rows[i].cells[2].innerText==$('#name_pole').text() && table_polya.rows[i].cells[4].innerText=='----'){
+              if(table_polya.rows[i].cells[6].innerText==$('#name_pole').text() && table_polya.rows[i].cells[2].innerText=='----'){
                 table_polya.rows[i].remove();
                 i--;
                   for ( j = 0; j < tableRow.length; j++){ 
                       if(tableRow[j].cells[0].children[0].checked){
-                        let corection = (parseFloat(tableRow[j].cells[7].textContent)-(parseFloat(tableRow[j].cells[7].textContent)/Aarea*(Aarea-AareaU).toFixed(2))).toFixed(2);
+                        let corection = (parseFloat(tableRow[j].cells[7].textContent)-(parseFloat(tableRow[j].cells[7].textContent)/Aarea*(Aarea-AareaU).toFixed(2))).toFixed(1);
                         if(zakr){
-                          corection = (parseFloat(tableRow[j].cells[7].textContent)+((parseFloat($('#getary_pole').text()) - AareaU)*parseFloat(tableRow[j].cells[7].textContent)/Aarea)).toFixed(2);
+                          corection = (parseFloat(tableRow[j].cells[7].textContent)+((parseFloat($('#getary_pole').text()) - Aarea)*parseFloat(tableRow[j].cells[7].textContent)/Aarea)).toFixed(1);
                         }
                         let newRow = table_polya.insertRow(-1);
-                        newRow.innerHTML = "<td>-</td><td>+</td><td align='left'>"+ $('#name_pole').text()+"</td><td>"+$('#getary_pole').text()+"</td><td contenteditable='true'>"+geo_splines[j][0][4].split(' ')[0]+"</td><td contenteditable='true'>"+tableRow[j].cells[1].textContent+"</td><td contenteditable='true'>"+tableRow[j].cells[2].textContent+"</td><td contenteditable='true'>"+tableRow[j].cells[4].textContent+"</td><td contenteditable='true'>"+tableRow[j].cells[7].textContent+"</td><td contenteditable='true'>"+corection+"</td>"; 
+                        newRow.innerHTML = "<td>-</td><td>+</td><td>"+geo_splines[j][0][4].split(' ')[0]+"</td><td contenteditable='true'>"+tableRow[j].cells[1].textContent+"</td><td contenteditable='true'>"+tableRow[j].cells[4].textContent+"</td><td>"+ $('#grup_pole').text()+"</td><td>"+ $('#name_pole').text()+"</td><td contenteditable='true'>"+ tableRow[j].cells[2].textContent+"</td><td contenteditable='true'>"+ vid_roboty(tableRow[j].cells[2].textContent)+"</td><td contenteditable='true'>"+$('#getary_pole').text()+"</td><td contenteditable='true'>"+corection+"</td><td contenteditable='true'>"+parseFloat(tableRow[j].cells[7].textContent).toFixed(1)+"</td>";
                         i++;
                       }
                   } 
@@ -3270,12 +3279,12 @@ function myroutine(){
                if(i==table_polya.rows.length-1){
                 for ( j = 0; j < tableRow.length; j++){ 
                   if(tableRow[j].cells[0].children[0].checked){
-                    let corection = (parseFloat(tableRow[j].cells[7].textContent)-(parseFloat(tableRow[j].cells[7].textContent)/Aarea*(Aarea-AareaU).toFixed(2))).toFixed(2);
+                    let corection = (parseFloat(tableRow[j].cells[7].textContent)-(parseFloat(tableRow[j].cells[7].textContent)/Aarea*(Aarea-AareaU).toFixed(2))).toFixed(1);
                     if(zakr){
-                      corection = (parseFloat(tableRow[j].cells[7].textContent)+((parseFloat($('#getary_pole').text()) - AareaU)*parseFloat(tableRow[j].cells[7].textContent)/Aarea)).toFixed(2);
+                      corection = (parseFloat(tableRow[j].cells[7].textContent)+((parseFloat($('#getary_pole').text()) - Aarea)*parseFloat(tableRow[j].cells[7].textContent)/Aarea)).toFixed(1);
                     }
                     let newRow = table_polya.insertRow(-1);
-                    newRow.innerHTML = "<td>-</td><td>+</td><td align='left'>"+ $('#name_pole').text()+"</td><td>"+$('#getary_pole').text()+"</td><td contenteditable='true'>"+geo_splines[j][0][4].split(' ')[0]+"</td><td contenteditable='true'>"+tableRow[j].cells[1].textContent+"</td><td contenteditable='true'>"+tableRow[j].cells[2].textContent+"</td><td contenteditable='true'>"+tableRow[j].cells[4].textContent+"</td><td contenteditable='true'>"+tableRow[j].cells[7].textContent+"</td><td contenteditable='true'>"+corection+"</td>";  
+                    newRow.innerHTML = "<td>-</td><td>+</td><td>"+geo_splines[j][0][4].split(' ')[0]+"</td><td contenteditable='true'>"+tableRow[j].cells[1].textContent+"</td><td contenteditable='true'>"+tableRow[j].cells[4].textContent+"</td><td>"+ $('#grup_pole').text()+"</td><td>"+ $('#name_pole').text()+"</td><td contenteditable='true'>"+ tableRow[j].cells[2].textContent+"</td><td contenteditable='true'>"+ vid_roboty(tableRow[j].cells[2].textContent)+"</td><td contenteditable='true'>"+$('#getary_pole').text()+"</td><td contenteditable='true'>"+corection+"</td><td contenteditable='true'>"+parseFloat(tableRow[j].cells[7].textContent).toFixed(1)+"</td>";
                   }
                 } 
                 break;
@@ -3283,15 +3292,15 @@ function myroutine(){
             }
 
           }else{
-            $("#robota_polya_tb").append("<tr><th>-</th><th>+</th><th>поле</th><th>площа</th><th>дата</th><th>водій</th><th>агрегат</th><th>трактор</th><th>гектари кор</th><th>гектари</th></tr>");
+            $("#robota_polya_tb").append("<tr><th>-</th><th>+</th><th>дата</th><th>механізатор</th><th>тз</th><th>група</th><th>поле</th><th>агрегат</th><th>робота</th><th>плоша поля</th><th>оброблена площа</th><th>оброблена площа факт</th></tr>");
             for ( j = 0; j < tableRow.length; j++){ 
               if(tableRow[j].cells[0].children[0].checked){
-                let corection = (parseFloat(tableRow[j].cells[7].textContent)-(parseFloat(tableRow[j].cells[7].textContent)/Aarea*(Aarea-AareaU).toFixed(2))).toFixed(2);
+                let corection = (parseFloat(tableRow[j].cells[7].textContent)-(parseFloat(tableRow[j].cells[7].textContent)/Aarea*(Aarea-AareaU).toFixed(2))).toFixed(1);
                 if(zakr){
-                  corection = (parseFloat(tableRow[j].cells[7].textContent)+((parseFloat($('#getary_pole').text()) - AareaU)*parseFloat(tableRow[j].cells[7].textContent)/Aarea)).toFixed(2);
+                  corection = (parseFloat(tableRow[j].cells[7].textContent)+((parseFloat($('#getary_pole').text()) - Aarea)*parseFloat(tableRow[j].cells[7].textContent)/Aarea)).toFixed(1);
                 }
                 let newRow = table_polya.insertRow(-1);
-                newRow.innerHTML = "<td>-</td><td>+</td><td align='left'>"+ $('#name_pole').text()+"</td><td>"+$('#getary_pole').text()+"</td><td contenteditable='true'>"+geo_splines[j][0][4].split(' ')[0]+"</td><td contenteditable='true'>"+tableRow[j].cells[1].textContent+"</td><td contenteditable='true'>"+tableRow[j].cells[2].textContent+"</td><td contenteditable='true'>"+tableRow[j].cells[4].textContent+"</td><td contenteditable='true'>"+tableRow[j].cells[7].textContent+"</td><td contenteditable='true'>"+corection+"</td>"; 
+                newRow.innerHTML = "<td>-</td><td>+</td><td>"+geo_splines[j][0][4].split(' ')[0]+"</td><td contenteditable='true'>"+tableRow[j].cells[1].textContent+"</td><td contenteditable='true'>"+tableRow[j].cells[4].textContent+"</td><td>"+ $('#grup_pole').text()+"</td><td>"+ $('#name_pole').text()+"</td><td contenteditable='true'>"+ tableRow[j].cells[2].textContent+"</td><td contenteditable='true'>"+ vid_roboty(tableRow[j].cells[2].textContent)+"</td><td contenteditable='true'>"+$('#getary_pole').text()+"</td><td contenteditable='true'>"+corection+"</td><td contenteditable='true'>"+parseFloat(tableRow[j].cells[7].textContent).toFixed(1)+"</td>";
               }
           } 
           }
@@ -3301,7 +3310,7 @@ function myroutine(){
 }
 function GetPoligonsArea(poligons=[]){
   let area=0;
-  poligons.forEach(function(poligon) { area+=turf.area(poligon)/10000; });
+  poligons.forEach(function(poligon) { area+=turf.area(poligon)*kof/10000; });
   area= area.toFixed(2);
   return area;
 }
@@ -3343,9 +3352,10 @@ $('#robota_polya_BT').click(function (){
   str =str.split(',');
   for(let i = 0; i<Global_DATA.length; i++){ 
    let nametr = Global_DATA[i][0][1];
-    for(let v = 0; v<str.length; v++){ 
-      if(nametr.indexOf(str[v])<0)continue;
-     for (let ii = 1; ii<Global_DATA[i].length-1; ii+=2){
+      if(str.indexOf(nametr)<0)continue;
+      let nnn = '';
+      let kol=0;
+     for (let ii = 2; ii<Global_DATA[i].length-1; ii+=2){
       if(!Global_DATA[i][ii][3])continue;
       if(!Global_DATA[i][ii][0])continue;
       if(!Global_DATA[i][ii][4])continue;
@@ -3353,25 +3363,31 @@ $('#robota_polya_BT').click(function (){
       if(Global_DATA[i][ii][3][0]=='0')continue;
       let y0 = parseFloat(Global_DATA[i][ii][0].split(',')[0]);
       let x0 = parseFloat(Global_DATA[i][ii][0].split(',')[1]);
-      let nn = PointInField(y0,x0);
-      if(nn[2]=="-"){
-        if(polya_mot[nn]){
-          let t = polya_mot[nn];
-            t+=(Global_DATA[i][ii+1][4]-Global_DATA[i][ii][4])/1000;
-             polya_mot[nn]=t;
-        } else{polya_mot[nn]=(Global_DATA[i][ii+1][4]-Global_DATA[i][ii][4])/1000;}
-       
-      }
+
+       let nn = PointInField(y0,x0);
+       if(nnn=='')nnn=nn;
+       //невідомо
+       if(nnn!=nn || nn[2]!="-"){
+        nnn=nn;
+        kol=0;
+        continue;
+       }
+       if(polya_mot[nn]){
+        kol=0;
+        }else{
+          kol++;
+        }
+      nnn=nn;
+      if(kol>3){polya_mot[nn]=1;}
      }
-    }
+    
   }
   $("#robota_polya_help").hide();
-  $("#robota_polya_tb").append("<tr><th>-</th><th>+</th><th>поле</th><th>площа</th><th>дата</th><th>водій</th><th>агрегат</th><th>трактор</th><th>гектари</th><th>гектари кор</th></tr>");
+  $("#robota_polya_tb").append("<tr><th>-</th><th>+</th><th>дата</th><th>механізатор</th><th>тз</th><th>група</th><th>поле</th><th>агрегат</th><th>робота</th><th>плоша поля</th><th>оброблена площа</th><th>оброблена площа факт</th></tr>");
   for (let key in polya_mot) {
-    if(polya_mot[key]>200){
       let area = Area_Field_Name(key);
-      $("#robota_polya_tb").append("<tr><td>-</td><td>+</td><td align='left'>"+key+"</td><td>"+area+"</td><td contenteditable='true'>----</td><td contenteditable='true'>----</td><td contenteditable='true'>----</td><td contenteditable='true'>----</td><td contenteditable='true'>----</td><td contenteditable='true'>----</td></tr>");
-    }
+      $("#robota_polya_tb").append("<tr><td>-</td><td>+</td><td contenteditable='true'>----</td contenteditable='true'><td contenteditable='true'>----</td contenteditable='true'><td contenteditable='true'>----</td><td contenteditable='true'>----</td><td>"+key+"</td><td contenteditable='true'>----</td><td contenteditable='true'>----</td><td>"+area+"</td><td contenteditable='true'>----</td><td contenteditable='true'>----</td></tr>");
+      //$("#robota_polya_tb").append("<tr><td>-</td><td>+</td><td align='left'>"+key+"</td><td>"+area+"</td><td contenteditable='true'>----</td><td contenteditable='true'>----</td><td contenteditable='true'>----</td><td contenteditable='true'>----</td><td contenteditable='true'>----</td><td contenteditable='true'>----</td></tr>");
   }
 });
 
@@ -3380,7 +3396,7 @@ function Area_Field_Name(a){
     let zonee = geozones[i].zone;
     let name = zonee.n;
     if(name ==a){
-      let area = (turf.area(geozones[i].toGeoJSON())/10000).toFixed(2);
+      let area = (zonee.ar/10000).toFixed(1);
       return area;
     }
  }
@@ -3403,12 +3419,12 @@ $("#robota_polya_tb").on("click", function (evt){
      if (evt.target.cellIndex==1){
       let ind =  row.rowIndex;
       let newRow = row.parentNode.insertRow(ind+1);
-      newRow.innerHTML = "<td>-</td><td>+</td><td align='left'>"+ row.cells[2].textContent+"</td><td>"+row.cells[3].textContent+"</td><td contenteditable='true'>---</td><td contenteditable='true'>---</td><td contenteditable='true'>---</td><td contenteditable='true'>---</td><td contenteditable='true'>---</td><td contenteditable='true'>---</td>";
+      newRow.innerHTML = "<tr><td>-</td><td>+</td><td contenteditable='true'>----</td contenteditable='true'><td contenteditable='true'>----</td contenteditable='true'><td contenteditable='true'>----</td><td contenteditable='true'>----</td><td>"+key+"</td><td contenteditable='true'>----</td><td contenteditable='true'>----</td><td>"+area+"</td><td contenteditable='true'>----</td><td contenteditable='true'>----</td></tr>"
       return;
      }
 
     row.style.backgroundColor = 'pink';
-    let name = row.cells[2].textContent;
+    let name = row.cells[6].textContent;
      for (let i = 0; i<geozones.length; i++){
      if(geozones[i].zone.n == name){
       let y=geozones[i]._bounds._northEast.lat;
@@ -3417,10 +3433,14 @@ $("#robota_polya_tb").on("click", function (evt){
            geozonepoint.length =0;
            geozonepointTurf.length =0;
            clearGEO();
-        $('#obrobka').empty();
-        $('#obrobkatehnika').empty();
+           if($('#name_pole').text()!=name){
+            $('#obrobka').empty();
+            $('#obrobkatehnika').empty();
+          }
         $('#name_pole').text(name);
-        $('#getary_pole').text(row.cells[3].textContent);
+        $('#grup_pole').text(geozones[i].gr);
+        $('#getary_pole').text(row.cells[9].textContent);
+        grup_pole
         let point = geozones[i]._latlngs[0];
         let ramka=[];
         for (let i = 0; i < point.length; i++) {
@@ -3437,6 +3457,7 @@ $("#robota_polya_tb").on("click", function (evt){
           }
         let polilane = L.polyline(ramka, {color: 'blue'}).addTo(map);
         geo_layer.push(polilane);
+        Naryady_start();
         break;
      }
      }
@@ -3447,8 +3468,8 @@ $("#reestr_save_BT").on("click", function (evt){
   let table_polya=document.getElementById('robota_polya_tb');
   if(table_polya.rows.length>1){
     for(let i = 1; i<table_polya.rows.length; i++){
-      if(table_polya.rows[i].cells[4].innerText!='----'){
-         cpdata += table_polya.rows[i].cells[2].innerText + '\t' +table_polya.rows[i].cells[3].innerText.replace(/\./g, ",") + '\t' +table_polya.rows[i].cells[4].innerText + ' \t' + table_polya.rows[i].cells[5].innerText + '\t' + table_polya.rows[i].cells[6].innerText + '\t' + table_polya.rows[i].cells[7].innerText +'\t' + table_polya.rows[i].cells[8].innerText.replace(/\./g, ",") + '\t' + table_polya.rows[i].cells[9].innerText.replace(/\./g, ",") +'\n';
+      if(table_polya.rows[i].cells[2].innerText!='----'){
+         cpdata += table_polya.rows[i].cells[2].innerText + '\t' +table_polya.rows[i].cells[3].innerText.replace(/\./g, ",") + '\t' +table_polya.rows[i].cells[4].innerText + ' \t' + table_polya.rows[i].cells[5].innerText + '\t' + table_polya.rows[i].cells[6].innerText.split(' ')[0] + '\t' + table_polya.rows[i].cells[7].innerText +'\t'+ table_polya.rows[i].cells[8].innerText +'\t' + table_polya.rows[i].cells[9].innerText.replace(/\./g, ",") + '\t' + table_polya.rows[i].cells[10].innerText.replace(/\./g, ",") + '\t' + table_polya.rows[i].cells[11].innerText.replace(/\./g, ",")+'\n';
       }
     }
   }
@@ -8170,4 +8191,3 @@ function point_in_data(y,x) {
 
   
   
-
