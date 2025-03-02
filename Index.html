@@ -121,7 +121,7 @@
 
 .table2 {min-width: 98%;}
 .table2 thead th {font-weight: bold;	text-align: left;border: none;padding: 2px 5px;	background: #e7e7e7;border: 1px solid #292929;border-right: 1px solid #292929;}
-.table2 tbody td {text-align: left;border: 1px solid #292929;padding: 2px 5px;vertical-align: top; max-width: 200px; white-space: nowrap; overflow: hidden;text-overflow: ellipsis;}
+.table2 tbody td {text-align: left;border: 1px solid #292929;padding: 2px 5px;vertical-align: top; max-width: 150px; white-space: nowrap; overflow: hidden;text-overflow: ellipsis;}
 
 
 #log { float: left; width: 30%; border: 1px solid #c6c6c6; max-height:30px; overflow-y: auto; margin: 0px 0px 10px 0px;}
@@ -329,7 +329,7 @@ button, input, span, select,textarea {margin: 2px 2px 0px 0px;   font-family: "A
 </div>
 <div>
     
-    <!--<button id='v11'style = "min-width: 70px;">Графік &#128200</button>-->
+<!--     <button id='v11'style = "min-width: 70px;">Графік &#128200</button> -->
     <button id='men5'style = "min-width: 70px;">Зупинки &#9940</button>
     <button id='men8'style = "min-width: 70px;">Обробка полів &#128668</button> 
     <button id='men4'style = "min-width: 70px;">Звіти &#128204</button>
@@ -700,9 +700,13 @@ button, input, span, select,textarea {margin: 2px 2px 0px 0px;   font-family: "A
             <table id="robota_polya_tb" class='table2'></table> 
             </div> 
             </div>
-            <div style="font-weight: 700; text-align:center" > <span id="name_pole" style="font-weight: 700;"></span><span id="getary_pole" style="font-weight: 700;"></span></div>
+            <div style="font-weight: 700; text-align:center" > 
+                <span id="name_pole" style="font-weight: 700;"></span>
+                <span id="grup_pole" style="font-weight: 700;"></span>
+                <span id="getary_pole" style="font-weight: 700;"></span>
+            </div>
            
-            <button id='obrabotkaBT' style = "width: 100%; background:rgb(171, 170, 248); ">НАРЯДИ</button>
+            <button id='obrabotkaBT' style = "width: 100%; ">наряди</button>
 
             <table id="obrobkatehnika" class='table'></table>  
             <button id='gektaryBT' style = "width: 69%; background: rgb(170, 248, 170); ">РОЗРАХУВАТИ</button>
@@ -769,5 +773,3 @@ button, input, span, select,textarea {margin: 2px 2px 0px 0px;   font-family: "A
 
 </body>
 </html>
-
-
