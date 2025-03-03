@@ -2899,6 +2899,7 @@ function Naryady_start(){
     $("#lis0").trigger("chosen:updated");
     layers[0]=0;
     show_track(st,en);
+    markerByUnit[id].openPopup();
    // msg(this.classList);
      
  }
@@ -3247,15 +3248,16 @@ function myroutine(){
           $("#robota_polya_help").hide();
           $('#polya_jurnal_text').val(vibor_raboty+" "+AareaU+" га");
           function vid_roboty(agr){
-            if(agr.indexOf('зубова')>=0){return 'боронування'}
-            if(agr.indexOf('шлейфова')>=0){return 'боронування'}
-            if(agr.indexOf('искова')>=0){return 'дисковка'}
-            if(agr.indexOf('ультиватор')>=0){return 'культивація'}
-            if(agr.indexOf('бприскувач')>=0){return 'обприскування'}
-            if(agr.indexOf('озкидач')>=0){return 'внесення добрив'}
-            if(agr.indexOf('івалка')>=0){return 'посів'}
-            if(agr.indexOf('атка')>=0){return 'збирання'}
-            if(agr.indexOf('луг')>=0){return 'оранка'}
+            if(agr.indexOf('зубова')>=0){return 'Боронування'}
+            if(agr.indexOf('шлейфова')>=0){return 'Боронування'}
+            if(agr.indexOf('искова')>=0){return 'Дискування'}
+            if(agr.indexOf('либокорозпушувач')>=0){return 'Глибоке рихлення'}
+            if(agr.indexOf('ультиватор')>=0){return 'Культивація'}
+            if(agr.indexOf('бприскувач')>=0){return 'Обприскування культур'}
+            if(agr.indexOf('озкидач')>=0){return 'Внесення добрив'}
+            if(agr.indexOf('івалка')>=0){return 'Висів зернових'}
+            if(agr.indexOf('атка')>=0){return 'Збір врожаю'}
+            if(agr.indexOf('луг')>=0){return 'Оранка'}
             return '----'
           }
           if(table_polya.rows.length>0){
@@ -3270,7 +3272,7 @@ function myroutine(){
                           corection = (parseFloat(tableRow[j].cells[7].textContent)+((parseFloat($('#getary_pole').text()) - Aarea)*parseFloat(tableRow[j].cells[7].textContent)/Aarea)).toFixed(1);
                         }
                         let newRow = table_polya.insertRow(-1);
-                        newRow.innerHTML = "<td>-</td><td>+</td><td>"+geo_splines[j][0][4].split(' ')[0]+"</td><td contenteditable='true'>"+tableRow[j].cells[1].textContent+"</td><td contenteditable='true'>"+tableRow[j].cells[4].textContent+"</td><td>"+ $('#grup_pole').text()+"</td><td>"+ $('#name_pole').text()+"</td><td contenteditable='true'>"+ tableRow[j].cells[2].textContent+"</td><td contenteditable='true'>"+ vid_roboty(tableRow[j].cells[2].textContent)+"</td><td contenteditable='true'>"+$('#getary_pole').text()+"</td><td contenteditable='true'>"+corection+"</td><td contenteditable='true'>"+parseFloat(tableRow[j].cells[7].textContent).toFixed(1)+"</td>";
+                        newRow.innerHTML = "<td>-</td><td>+</td><td>"+geo_splines[j][0][4].split(' ')[0]+"</td><td contenteditable='true'>"+tableRow[j].cells[1].textContent+"</td><td contenteditable='true'>"+tableRow[j].cells[4].textContent+"</td><td>"+ $('#grup_pole').text()+"</td><td>"+ $('#name_pole').text()+"</td><td contenteditable='true'>"+ tableRow[j].cells[2].textContent+"</td><td contenteditable='true'>"+ vid_roboty(tableRow[j].cells[2].textContent)+"</td><td contenteditable='true'>"+$('#getary_pole').text()+"</td><td contenteditable='true'>"+parseFloat(tableRow[j].cells[7].textContent).toFixed(1)+"</td><td contenteditable='true'>"+corection+"</td>";
                         i++;
                       }
                   } 
@@ -3284,7 +3286,7 @@ function myroutine(){
                       corection = (parseFloat(tableRow[j].cells[7].textContent)+((parseFloat($('#getary_pole').text()) - Aarea)*parseFloat(tableRow[j].cells[7].textContent)/Aarea)).toFixed(1);
                     }
                     let newRow = table_polya.insertRow(-1);
-                    newRow.innerHTML = "<td>-</td><td>+</td><td>"+geo_splines[j][0][4].split(' ')[0]+"</td><td contenteditable='true'>"+tableRow[j].cells[1].textContent+"</td><td contenteditable='true'>"+tableRow[j].cells[4].textContent+"</td><td>"+ $('#grup_pole').text()+"</td><td>"+ $('#name_pole').text()+"</td><td contenteditable='true'>"+ tableRow[j].cells[2].textContent+"</td><td contenteditable='true'>"+ vid_roboty(tableRow[j].cells[2].textContent)+"</td><td contenteditable='true'>"+$('#getary_pole').text()+"</td><td contenteditable='true'>"+corection+"</td><td contenteditable='true'>"+parseFloat(tableRow[j].cells[7].textContent).toFixed(1)+"</td>";
+                    newRow.innerHTML = "<td>-</td><td>+</td><td>"+geo_splines[j][0][4].split(' ')[0]+"</td><td contenteditable='true'>"+tableRow[j].cells[1].textContent+"</td><td contenteditable='true'>"+tableRow[j].cells[4].textContent+"</td><td>"+ $('#grup_pole').text()+"</td><td>"+ $('#name_pole').text()+"</td><td contenteditable='true'>"+ tableRow[j].cells[2].textContent+"</td><td contenteditable='true'>"+ vid_roboty(tableRow[j].cells[2].textContent)+"</td><td contenteditable='true'>"+$('#getary_pole').text()+"</td><td contenteditable='true'>"+parseFloat(tableRow[j].cells[7].textContent).toFixed(1)+"</td><td contenteditable='true'>"+corection+"</td>";
                   }
                 } 
                 break;
@@ -3300,7 +3302,7 @@ function myroutine(){
                   corection = (parseFloat(tableRow[j].cells[7].textContent)+((parseFloat($('#getary_pole').text()) - Aarea)*parseFloat(tableRow[j].cells[7].textContent)/Aarea)).toFixed(1);
                 }
                 let newRow = table_polya.insertRow(-1);
-                newRow.innerHTML = "<td>-</td><td>+</td><td>"+geo_splines[j][0][4].split(' ')[0]+"</td><td contenteditable='true'>"+tableRow[j].cells[1].textContent+"</td><td contenteditable='true'>"+tableRow[j].cells[4].textContent+"</td><td>"+ $('#grup_pole').text()+"</td><td>"+ $('#name_pole').text()+"</td><td contenteditable='true'>"+ tableRow[j].cells[2].textContent+"</td><td contenteditable='true'>"+ vid_roboty(tableRow[j].cells[2].textContent)+"</td><td contenteditable='true'>"+$('#getary_pole').text()+"</td><td contenteditable='true'>"+corection+"</td><td contenteditable='true'>"+parseFloat(tableRow[j].cells[7].textContent).toFixed(1)+"</td>";
+                newRow.innerHTML = "<td>-</td><td>+</td><td>"+geo_splines[j][0][4].split(' ')[0]+"</td><td contenteditable='true'>"+tableRow[j].cells[1].textContent+"</td><td contenteditable='true'>"+tableRow[j].cells[4].textContent+"</td><td>"+ $('#grup_pole').text()+"</td><td>"+ $('#name_pole').text()+"</td><td contenteditable='true'>"+ tableRow[j].cells[2].textContent+"</td><td contenteditable='true'>"+ vid_roboty(tableRow[j].cells[2].textContent)+"</td><td contenteditable='true'>"+$('#getary_pole').text()+"</td><td contenteditable='true'>"+parseFloat(tableRow[j].cells[7].textContent).toFixed(1)+"</td><td contenteditable='true'>"+corection+"</td>";
               }
           } 
           }
@@ -3387,7 +3389,7 @@ $('#robota_polya_BT').click(function (){
   for (let key in polya_mot) {
       let area = Area_Field_Name(key);
       $("#robota_polya_tb").append("<tr><td>-</td><td>+</td><td contenteditable='true'>----</td contenteditable='true'><td contenteditable='true'>----</td contenteditable='true'><td contenteditable='true'>----</td><td contenteditable='true'>----</td><td>"+key+"</td><td contenteditable='true'>----</td><td contenteditable='true'>----</td><td>"+area+"</td><td contenteditable='true'>----</td><td contenteditable='true'>----</td></tr>");
-      //$("#robota_polya_tb").append("<tr><td>-</td><td>+</td><td align='left'>"+key+"</td><td>"+area+"</td><td contenteditable='true'>----</td><td contenteditable='true'>----</td><td contenteditable='true'>----</td><td contenteditable='true'>----</td><td contenteditable='true'>----</td><td contenteditable='true'>----</td></tr>");
+      
   }
 });
 
@@ -3469,7 +3471,7 @@ $("#reestr_save_BT").on("click", function (evt){
   if(table_polya.rows.length>1){
     for(let i = 1; i<table_polya.rows.length; i++){
       if(table_polya.rows[i].cells[2].innerText!='----'){
-         cpdata += table_polya.rows[i].cells[2].innerText + '\t' +table_polya.rows[i].cells[3].innerText.replace(/\./g, ",") + '\t' +table_polya.rows[i].cells[4].innerText + ' \t' + table_polya.rows[i].cells[5].innerText + '\t' + table_polya.rows[i].cells[6].innerText.split(' ')[0] + '\t' + table_polya.rows[i].cells[7].innerText +'\t'+ table_polya.rows[i].cells[8].innerText +'\t' + table_polya.rows[i].cells[9].innerText.replace(/\./g, ",") + '\t' + table_polya.rows[i].cells[10].innerText.replace(/\./g, ",") + '\t' + table_polya.rows[i].cells[11].innerText.replace(/\./g, ",")+'\n';
+         cpdata += table_polya.rows[i].cells[2].innerText + '\t' +table_polya.rows[i].cells[3].innerText + '\t' +table_polya.rows[i].cells[4].innerText + ' \t' + table_polya.rows[i].cells[5].innerText + '\t' + table_polya.rows[i].cells[6].innerText.split(' ')[0] + '\t' + table_polya.rows[i].cells[7].innerText +'\t'+ table_polya.rows[i].cells[8].innerText +'\t' + table_polya.rows[i].cells[9].innerText.replace(/\./g, ",") + '\t' + table_polya.rows[i].cells[10].innerText.replace(/\./g, ",") + '\t' + table_polya.rows[i].cells[11].innerText.replace(/\./g, ",")+'\n';
       }
     }
   }
