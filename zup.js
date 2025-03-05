@@ -1,4 +1,5 @@
 
+var TOKEN = '0999946a10477f4854a9e6f27fcbe8424E7222985DA6B8C3366AABB4B94147D6C5BAE69F';
 
 // global variables
 var map, marker,unitslist = [],allunits = [],rest_units = [],marshruts = [],zup = [], unitMarkers = [], markerByUnit = {},tile_layer, layers = {},marshrutMarkers = [],unitsID = {},Vibranaya_zona;
@@ -198,11 +199,10 @@ function initUIData() {
            
            var geozona =  L.polygon([cord], {color: '#FF00FF', stroke: true,weight: 1, opacity: 0.5, fillOpacity: 0.4, fillColor: color});
           // geozona.bindPopup(zone.n);
-           geozona.bindTooltip(zone.n +'<br />' +zonegr,{opacity:0.8,sticky:true});
+           geozona.bindTooltip(zone.n +'<br />'+(zone.ar/10000).toFixed(1)+'га <br />'+zonegr,{opacity:0.8,sticky:true});
            geozona.zone = zone;
            geozona.gr = zonegr;
-           geozones.push(geozona);   
-
+           geozones.push(geozona);
            geozona.on('click', function(e) {
           
            
@@ -289,7 +289,7 @@ function initUIData() {
                   geo_layer.push(polilane);
              
                   Naryady_start();
-               // console.log(turf.area( turf.polygon([geozonepointTurf]))*1.0038);
+               //console.log(turf.area( turf.polygon([geozonepointTurf]))*1.0038);
                // console.log(turf.area( turf.polygon([geozonepointTurf])));
                // console.log(e.target.zone.ar);
                }
@@ -1046,7 +1046,6 @@ if (!$('#marrr').is(':hidden')) {
 });
  map.addControl(areaSelection);
 }
-
 
 //let ps = prompt('');
 //if(ps==55555){
@@ -3110,6 +3109,7 @@ function ObrabotkaPolya(zakr){
         tableRow[j].cells[7].textContent=0;
     } 
   let spline,p0,p1,p2,p3,p4,ang,ang1,ang2,traktor;
+  let zakrite='не розраховане';
   let hue = Math.floor(Math.random() * 360);
   let UnionPolis=[];
   
@@ -3260,6 +3260,8 @@ function myroutine(){
             if(agr.indexOf('луг')>=0){return 'Оранка'}
             return '----'
           }
+
+          zakrite='не розраховане';
           if(table_polya.rows.length>0){
             for(let i = 0; i<table_polya.rows.length; i++){
               if(table_polya.rows[i].cells[6].innerText==$('#name_pole').text() && table_polya.rows[i].cells[2].innerText=='----'){
@@ -3270,9 +3272,10 @@ function myroutine(){
                         let corection = (parseFloat(tableRow[j].cells[7].textContent)-(parseFloat(tableRow[j].cells[7].textContent)/Aarea*(Aarea-AareaU).toFixed(2))).toFixed(1);
                         if(zakr){
                           corection = (parseFloat(tableRow[j].cells[7].textContent)+((parseFloat($('#getary_pole').text()) - Aarea)*parseFloat(tableRow[j].cells[7].textContent)/Aarea)).toFixed(1);
+                          zakrite='розраховане';
                         }
                         let newRow = table_polya.insertRow(-1);
-                        newRow.innerHTML = "<td>-</td><td>+</td><td>"+geo_splines[j][0][4].split(' ')[0]+"</td><td contenteditable='true'>"+tableRow[j].cells[1].textContent+"</td><td contenteditable='true'>"+tableRow[j].cells[4].textContent+"</td><td>"+ $('#grup_pole').text()+"</td><td>"+ $('#name_pole').text()+"</td><td contenteditable='true'>"+ tableRow[j].cells[2].textContent+"</td><td contenteditable='true'>"+ vid_roboty(tableRow[j].cells[2].textContent)+"</td><td contenteditable='true'>"+$('#getary_pole').text()+"</td><td contenteditable='true'>"+parseFloat(tableRow[j].cells[7].textContent).toFixed(1)+"</td><td contenteditable='true'>"+corection+"</td>";
+                        newRow.innerHTML = "<td>-</td><td>+</td><td>"+geo_splines[j][0][4].split(' ')[0]+"</td><td contenteditable='true'>"+tableRow[j].cells[1].textContent+"</td><td contenteditable='true'>"+tableRow[j].cells[4].textContent+"</td><td>"+ $('#grup_pole').text()+"</td><td>"+ $('#name_pole').text()+"</td><td contenteditable='true'>"+ tableRow[j].cells[2].textContent+"</td><td contenteditable='true'>"+ vid_roboty(tableRow[j].cells[2].textContent)+"</td><td contenteditable='true'>"+$('#getary_pole').text()+"</td><td contenteditable='true'>"+parseFloat(tableRow[j].cells[7].textContent).toFixed(1)+"</td><td contenteditable='true'>"+corection+"</td><td contenteditable='true'>"+zakrite+"</td><td contenteditable='true'></td>";
                         i++;
                       }
                   } 
@@ -3284,9 +3287,10 @@ function myroutine(){
                     let corection = (parseFloat(tableRow[j].cells[7].textContent)-(parseFloat(tableRow[j].cells[7].textContent)/Aarea*(Aarea-AareaU).toFixed(2))).toFixed(1);
                     if(zakr){
                       corection = (parseFloat(tableRow[j].cells[7].textContent)+((parseFloat($('#getary_pole').text()) - Aarea)*parseFloat(tableRow[j].cells[7].textContent)/Aarea)).toFixed(1);
+                      zakrite='розраховане';
                     }
                     let newRow = table_polya.insertRow(-1);
-                    newRow.innerHTML = "<td>-</td><td>+</td><td>"+geo_splines[j][0][4].split(' ')[0]+"</td><td contenteditable='true'>"+tableRow[j].cells[1].textContent+"</td><td contenteditable='true'>"+tableRow[j].cells[4].textContent+"</td><td>"+ $('#grup_pole').text()+"</td><td>"+ $('#name_pole').text()+"</td><td contenteditable='true'>"+ tableRow[j].cells[2].textContent+"</td><td contenteditable='true'>"+ vid_roboty(tableRow[j].cells[2].textContent)+"</td><td contenteditable='true'>"+$('#getary_pole').text()+"</td><td contenteditable='true'>"+parseFloat(tableRow[j].cells[7].textContent).toFixed(1)+"</td><td contenteditable='true'>"+corection+"</td>";
+                    newRow.innerHTML = "<td>-</td><td>+</td><td>"+geo_splines[j][0][4].split(' ')[0]+"</td><td contenteditable='true'>"+tableRow[j].cells[1].textContent+"</td><td contenteditable='true'>"+tableRow[j].cells[4].textContent+"</td><td>"+ $('#grup_pole').text()+"</td><td>"+ $('#name_pole').text()+"</td><td contenteditable='true'>"+ tableRow[j].cells[2].textContent+"</td><td contenteditable='true'>"+ vid_roboty(tableRow[j].cells[2].textContent)+"</td><td contenteditable='true'>"+$('#getary_pole').text()+"</td><td contenteditable='true'>"+parseFloat(tableRow[j].cells[7].textContent).toFixed(1)+"</td><td contenteditable='true'>"+corection+"</td><td contenteditable='true'>"+zakrite+"</td><td contenteditable='true'></td>";
                   }
                 } 
                 break;
@@ -3300,9 +3304,10 @@ function myroutine(){
                 let corection = (parseFloat(tableRow[j].cells[7].textContent)-(parseFloat(tableRow[j].cells[7].textContent)/Aarea*(Aarea-AareaU).toFixed(2))).toFixed(1);
                 if(zakr){
                   corection = (parseFloat(tableRow[j].cells[7].textContent)+((parseFloat($('#getary_pole').text()) - Aarea)*parseFloat(tableRow[j].cells[7].textContent)/Aarea)).toFixed(1);
+                  zakrite='розраховане';
                 }
                 let newRow = table_polya.insertRow(-1);
-                newRow.innerHTML = "<td>-</td><td>+</td><td>"+geo_splines[j][0][4].split(' ')[0]+"</td><td contenteditable='true'>"+tableRow[j].cells[1].textContent+"</td><td contenteditable='true'>"+tableRow[j].cells[4].textContent+"</td><td>"+ $('#grup_pole').text()+"</td><td>"+ $('#name_pole').text()+"</td><td contenteditable='true'>"+ tableRow[j].cells[2].textContent+"</td><td contenteditable='true'>"+ vid_roboty(tableRow[j].cells[2].textContent)+"</td><td contenteditable='true'>"+$('#getary_pole').text()+"</td><td contenteditable='true'>"+parseFloat(tableRow[j].cells[7].textContent).toFixed(1)+"</td><td contenteditable='true'>"+corection+"</td>";
+                newRow.innerHTML = "<td>-</td><td>+</td><td>"+geo_splines[j][0][4].split(' ')[0]+"</td><td contenteditable='true'>"+tableRow[j].cells[1].textContent+"</td><td contenteditable='true'>"+tableRow[j].cells[4].textContent+"</td><td>"+ $('#grup_pole').text()+"</td><td>"+ $('#name_pole').text()+"</td><td contenteditable='true'>"+ tableRow[j].cells[2].textContent+"</td><td contenteditable='true'>"+ vid_roboty(tableRow[j].cells[2].textContent)+"</td><td contenteditable='true'>"+$('#getary_pole').text()+"</td><td contenteditable='true'>"+parseFloat(tableRow[j].cells[7].textContent).toFixed(1)+"</td><td contenteditable='true'>"+corection+"</td><td contenteditable='true'>"+zakrite+"</td><td contenteditable='true'></td>";
               }
           } 
           }
@@ -3385,12 +3390,16 @@ $('#robota_polya_BT').click(function (){
     
   }
   $("#robota_polya_help").hide();
-  $("#robota_polya_tb").append("<tr><th>-</th><th>+</th><th>дата</th><th>механізатор</th><th>тз</th><th>група</th><th>поле</th><th>агрегат</th><th>робота</th><th>плоша поля</th><th>оброблена площа</th><th>оброблена площа факт</th></tr>");
+  $("#robota_polya_tb").append("<tr><th>-</th><th>+</th><th>дата</th><th>механізатор</th><th>тз</th><th>група</th><th>поле</th><th>агрегат</th><th>робота</th><th>плоша поля</th><th>оброблена площа</th><th>оброблена площа факт</th><th></th><th>примітка</th></tr>");
+  let srt_arr = [];
   for (let key in polya_mot) {
       let area = Area_Field_Name(key);
-      $("#robota_polya_tb").append("<tr><td>-</td><td>+</td><td contenteditable='true'>----</td contenteditable='true'><td contenteditable='true'>----</td contenteditable='true'><td contenteditable='true'>----</td><td contenteditable='true'>----</td><td>"+key+"</td><td contenteditable='true'>----</td><td contenteditable='true'>----</td><td>"+area+"</td><td contenteditable='true'>----</td><td contenteditable='true'>----</td></tr>");
-      
+    srt_arr.push([key,area]);
   }
+  srt_arr.sort();
+  for (let i = 0; i < srt_arr.length; i++) {
+    $("#robota_polya_tb").append("<tr><td>-</td><td>+</td><td contenteditable='true'>----</td contenteditable='true'><td contenteditable='true'>----</td contenteditable='true'><td contenteditable='true'>----</td><td contenteditable='true'>----</td><td>"+srt_arr[i][0]+"</td><td contenteditable='true'>----</td><td contenteditable='true'>----</td><td>"+srt_arr[i][1]+"</td><td contenteditable='true'>----</td><td contenteditable='true'>----</td><td contenteditable='true'>----</td><td contenteditable='true'>----</td></tr>");  
+ }
 });
 
 function Area_Field_Name(a){
@@ -3471,7 +3480,7 @@ $("#reestr_save_BT").on("click", function (evt){
   if(table_polya.rows.length>1){
     for(let i = 1; i<table_polya.rows.length; i++){
       if(table_polya.rows[i].cells[2].innerText!='----'){
-         cpdata += table_polya.rows[i].cells[2].innerText + '\t' +table_polya.rows[i].cells[3].innerText + '\t' +table_polya.rows[i].cells[4].innerText + ' \t' + table_polya.rows[i].cells[5].innerText + '\t' + table_polya.rows[i].cells[6].innerText.split(' ')[0] + '\t' + table_polya.rows[i].cells[7].innerText +'\t'+ table_polya.rows[i].cells[8].innerText +'\t' + table_polya.rows[i].cells[9].innerText.replace(/\./g, ",") + '\t' + table_polya.rows[i].cells[10].innerText.replace(/\./g, ",") + '\t' + table_polya.rows[i].cells[11].innerText.replace(/\./g, ",")+'\n';
+         cpdata += table_polya.rows[i].cells[2].innerText + '\t' +table_polya.rows[i].cells[3].innerText + '\t' +table_polya.rows[i].cells[4].innerText + ' \t' + table_polya.rows[i].cells[5].innerText + '\t' + table_polya.rows[i].cells[6].innerText.split(' ')[0] + '\t' + table_polya.rows[i].cells[7].innerText +'\t'+ table_polya.rows[i].cells[8].innerText +'\t' + table_polya.rows[i].cells[9].innerText.replace(/\./g, ",") + '\t' + table_polya.rows[i].cells[10].innerText.replace(/\./g, ",") + '\t' + table_polya.rows[i].cells[11].innerText.replace(/\./g, ",") +'\t'+''+'\t'+table_polya.rows[i].cells[12].innerText +'\t'+''+'\t'+''+'\t'+''+'\t'+''+'\t'+''+'\t'+table_polya.rows[i].cells[13].innerText+ '\n';
       }
     }
   }
@@ -5405,7 +5414,13 @@ function avto_OBD(data){
   $("#unit_table").append("<tr><td align='left'>"+name+"</td><td>"+ (km/1000).toFixed()+"</td><td>"+km_odo+"</td><td>"+sec_to_time(moto_hr)+"</td><td>"+sec_to_time(hl0)+"</td><td>"+hl1+"</td><td>"+sped_max+"</td><td>"+sped_hr+"</td><td>"+dut0.toFixed(2).toString().replace(/\./g, ",")+"</td><td>"+sr+"</td><td>"+zapr.toFixed(2).toString().replace(/\./g, ",")+"</td></tr>");
   }
 }
-
+$('#polya_kkz').click(function() {
+  $("#unit_table").empty();
+  $("#unit_table").append("<tr><td>НАЗВА</td><td>ПЛОЩА</td><td>ГРУПА</td></tr>");
+  for (let i = 0; i<geozones.length; i++){
+    $("#unit_table").append("<tr><td>"+geozones[i].zone.n+"</td><td>"+(geozones[i].zone.ar/10000).toFixed(1).toString().replace(/\./g, ",")+"</td><td>"+geozones[i].gr+"</td></tr>");
+  }
+  });
 function sec_to_time(sek){
   let m = Math.trunc(sek / 60) + '';
   let h = Math.trunc(m / 60) + '';
@@ -5542,7 +5557,7 @@ $('#jurnal_write_buton').hide();
 $('#polya_jurnal').hide();
 $('.jurnal_autorization_buton').click(function() { 
   let ps = prompt('');
-  if(ps==0000){
+  if(ps==2222){
     autorization="Баришевський В.";
     msg(autorization);   
     $('#jurnal_autorization_buton').hide();
