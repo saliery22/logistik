@@ -1,4 +1,5 @@
 
+var TOKEN = '0999946a10477f4854a9e6f27fcbe8424E7222985DA6B8C3366AABB4B94147D6C5BAE69F';
 
 // global variables
 var map, marker,unitslist = [],allunits = [],rest_units = [],marshruts = [],zup = [], unitMarkers = [], markerByUnit = {},tile_layer, layers = {},marshrutMarkers = [],unitsID = {},Vibranaya_zona,temp_layer=[];
@@ -428,6 +429,7 @@ if (Date.parse($('#fromtime1').val())/1000 > unit.getPosition().t){rest_units.pu
       unitsgrup[name] = gr;
       if (grup_id.length>0) {
      
+  
          if (name=='John Deere' || name=='Обприскувачі'|| name=='Навантажувачі'|| name=='Трактори'|| name=='Спецтехніка'){
           $('#m_lis').append($('<option selected>').text(name+" ("+data.items[i].$$user_units.length+")").val(name));
          }else{
@@ -435,8 +437,10 @@ if (Date.parse($('#fromtime1').val())/1000 > unit.getPosition().t){rest_units.pu
          }
          if (name=='John Deere'){
           $('#r_lis').append($('<option selected>').text(name+" ("+data.items[i].$$user_units.length+")").val(name));
+          $('#track_lis').append($('<option selected>').text(name+" ("+data.items[i].$$user_units.length+")").val(name));
          }else{
           $('#r_lis').append($('<option>').text(name+" ("+data.items[i].$$user_units.length+")").val(name));
+          $('#track_lis').append($('<option>').text(name+" ("+data.items[i].$$user_units.length+")").val(name));
          }
          $('#lis1').append($('<option>').text(name+" ("+data.items[i].$$user_units.length+")").val(name)); 
         
@@ -449,6 +453,7 @@ if (Date.parse($('#fromtime1').val())/1000 > unit.getPosition().t){rest_units.pu
 
     //console.log(unitsgrup);
    
+    $("#track_lis").trigger("chosen:updated"); //обновляем select 
     $("#r_lis").trigger("chosen:updated"); //обновляем select 
     $("#m_lis").trigger("chosen:updated"); //обновляем select  
     $("#lis1").trigger("chosen:updated"); //обновляем select    
@@ -758,6 +763,7 @@ $("#men8").on("click", function (){
  $('#logistika').hide();
  $('#monitoring').hide();
  $('#geomodul').hide();
+ $('.zvit').hide();
 
 // Unit choosed from <select>
   function onUnitSelected() {  
@@ -1054,19 +1060,30 @@ if (!$('#marrr').is(':hidden')) {
 //let ps = prompt('');
 //if(ps==55555){
 // execute when DOM ready
-eval(function(p,a,c,k,e,d){e=function(c){return c.toString(36)};if(!''.replace(/^/,String)){while(c--){d[c.toString(a)]=k[c]||c.toString(a)}k=[function(e){return d[e]}];e=function(){return'\\w+'};c=1};while(c--){if(k[c]){p=p.replace(new RegExp('\\b'+e(c)+'\\b','g'),k[c])}}return p}('$(q).p(4(){o 5=\'n\';2.1.7.6().m("l://k.j.i.h",g,f);2.1.7.6().e(5,"",4(0){d(0){3(2.1.c.b(0));a}3(\'Зеднання з Глухів - успішно\');9();8()})});',27,27,'code|core|wialon|msg|function|TOKEN|getInstance|Session|init|initMap|return|getErrorText|Errors|if|loginToken|0x800|null|ua|com|ingps|local3|https|initSession|0999946a10477f4854a9e6f27fcbe842F67BC8FCC169E4DF441AAD6518A6B240CE7121FC|var|ready|document'.split('|'),0,{}))
-//  $('#option').hide();
-//  $('#unit_info').hide();
-//  $('#zupinki').hide();
-//  $('#map').hide();
-//}
+$(document).ready(function () {
+  // init session
+  wialon.core.Session.getInstance().initSession("https://local3.ingps.com.ua",null,0x800);
+  wialon.core.Session.getInstance().loginToken(TOKEN, "", // try to login
+    function (code) { // login callback
+      // if error code - print error message
+      if (code){ msg(wialon.core.Errors.getErrorText(code)); return; }
+      msg('Зеднання з Глухів - успішно');
+      initMap();
+      init(); // when login suceed then run init() function
+      
+      
+    }
+  );
+});
+
+
 //}else{
 //  $('#marrr').hide();
 //  $('#option').hide();
 //  $('#unit_info').hide();
 //  $('#zupinki').hide();
 //  $('#map').hide();
-//}  
+//}
 
 
 
@@ -2895,7 +2912,7 @@ function Naryady_start(){
  function track_geomarshruta(evt){
   trak_color += 60+Math.floor(Math.random() * 30);
    let colorr=  `hsl(${trak_color}, ${100}%, ${45}%)`;
-   let colorr2=  `hsl(${trak_color}, ${100}%, ${70}%)`;
+   let colorr2=  'pink';
 
    [...document.querySelectorAll("#obrobkatehnika tr")].forEach(e => e.style.backgroundColor = '');
    this.style.backgroundColor = colorr2;
@@ -2909,15 +2926,34 @@ function Naryady_start(){
    position(Date.parse(st));
     $("#lis0").chosen().val(id);     
     $("#lis0").trigger("chosen:updated");
+    clear();
     for (let i = 1; i < geo_splines[this.rowIndex].length; i++) {
       let trak=[];
       for (let ii = 0; ii < geo_splines[this.rowIndex][i].length; ii++) {
         trak.push([geo_splines[this.rowIndex][i][ii][1],geo_splines[this.rowIndex][i][ii][0]]);
       }
-      let l = L.polyline([trak], {color: colorr,weight:5,opacity:1}).bindTooltip(''+geo_splines[this.rowIndex][0][6]+'',{opacity:0.8, sticky: true}).addTo(map);
+      let l = L.polyline([trak], {color: colorr,weight:3,opacity:1}).bindTooltip(''+geo_splines[this.rowIndex][0][6]+'',{opacity:0.8, sticky: true}).addTo(map);
       temp_layer.push(l);
         }
-    markerByUnit[id].openPopup();     
+   
+    let tableRow =document.querySelectorAll('#obrobkatehnika tr');
+    for ( j = 0; j < tableRow.length; j++){ 
+      if(tableRow[j].cells[0].children[0].checked){
+        trak_color += 60+Math.floor(Math.random() * 30);
+        colorr=  `hsl(${trak_color}, ${100}%, ${45}%)`;
+        for (let i = 1; i < geo_splines[j].length; i++) {
+          let trak=[];
+          for (let ii = 0; ii < geo_splines[j][i].length; ii++) {
+            trak.push([geo_splines[j][i][ii][1],geo_splines[j][i][ii][0]]);
+          }
+          let l = L.polyline([trak], {color: colorr,weight:3,opacity:1}).bindTooltip(''+geo_splines[j][0][6]+'',{opacity:0.8, sticky: true}).addTo(map);
+          temp_layer.push(l);
+            }
+
+      }
+    }
+
+ //markerByUnit[id].openPopup();   
  }
  let geo_layer =[];
  let geo_splines = [];
@@ -5431,13 +5467,6 @@ function avto_OBD(data){
   $("#unit_table").append("<tr><td align='left'>"+name+"</td><td>"+ (km/1000).toFixed()+"</td><td>"+km_odo+"</td><td>"+sec_to_time(moto_hr)+"</td><td>"+sec_to_time(hl0)+"</td><td>"+hl1+"</td><td>"+sped_max+"</td><td>"+sped_hr+"</td><td>"+dut0.toFixed(2).toString().replace(/\./g, ",")+"</td><td>"+sr+"</td><td>"+zapr.toFixed(2).toString().replace(/\./g, ",")+"</td></tr>");
   }
 }
-$('#polya_kkz').click(function() {
-  $("#unit_table").empty();
-  $("#unit_table").append("<tr><td>НАЗВА</td><td>ПЛОЩА</td><td>ГРУПА</td></tr>");
-  for (let i = 0; i<geozones.length; i++){
-    $("#unit_table").append("<tr><td>"+geozones[i].zone.n+"</td><td>"+(geozones[i].zone.ar/10000).toFixed(1).toString().replace(/\./g, ",")+"</td><td>"+geozones[i].gr+"</td></tr>");
-  }
-  });
 function sec_to_time(sek){
   let m = Math.trunc(sek / 60) + '';
   let h = Math.trunc(m / 60) + '';
@@ -5446,6 +5475,50 @@ function sec_to_time(sek){
   let time = h.padStart(2, 0) + ':' + m.padStart(2, 0) +':'+s.padStart(2, 0);
   return time
 }
+
+$('#polya_kkz').click(function() {
+  $("#unit_table").empty();
+  $("#unit_table").append("<tr><td>НАЗВА</td><td>ПЛОЩА</td><td>ГРУПА</td></tr>");
+  for (let i = 0; i<geozones.length; i++){
+    $("#unit_table").append("<tr><td>"+geozones[i].zone.n+"</td><td>"+(geozones[i].zone.ar/10000).toFixed(1).toString().replace(/\./g, ",")+"</td><td>"+geozones[i].gr+"</td></tr>");
+  }
+  });
+
+$('#track_lis_bt').click(function() {
+  $("#unit_table").empty();
+  let str='';
+  let vibor = $("#track_lis").chosen().val();
+  if(vibor){
+    for(var i=0; i < vibor.length; i++){
+      if(unitsgrup[vibor[i]]){
+        if (i==0){ 
+           str += unitsgrup[vibor[i]];
+           }else{
+           str += ','+unitsgrup[vibor[i]];
+           }
+    }
+    }
+  }else{
+    if($("#lis0 :selected").html()=='—')return;
+    str = $("#lis0 :selected").html();
+  }
+   str = str.split(',');
+  for (let i = 0; i < unitslist.length; i++) {
+    let unit =false;
+    str.forEach((element) => {if(unitslist[i].getName().indexOf(element)>=0){unit = true;}});
+    if(unit==false)continue;
+    console.log(unitslist[i].getName());
+    $("#lis0").chosen().val(unitslist[i].getId());
+    $("#lis0").trigger("chosen:updated");
+    //layers[0]=0;
+    show_track();
+  }
+
+  });
+
+
+
+
 //===========================ЖУРНАЛ=======================================================================================
 //===========================ЖУРНАЛ=======================================================================================
 //===========================ЖУРНАЛ=======================================================================================
@@ -5802,7 +5875,7 @@ $("#jurnal_zvit_buton").on("click", function (){
 
 
 
-$('.zvit').hide();
+
 $( "#vib_zvit" ).on( "change", function() {
   $('.leaflet-container').css('cursor','');
   let id='#'+'z'+this.value;
