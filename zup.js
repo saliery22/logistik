@@ -1,8 +1,7 @@
 
-var TOKEN = '0999946a10477f4854a9e6f27fcbe8424E7222985DA6B8C3366AABB4B94147D6C5BAE69F';
 
 // global variables
-var map, marker,unitslist = [],allunits = [],rest_units = [],marshruts = [],zup = [], unitMarkers = [], markerByUnit = {},tile_layer, layers = {},marshrutMarkers = [],unitsID = {},Vibranaya_zona;
+var map, marker,unitslist = [],allunits = [],rest_units = [],marshruts = [],zup = [], unitMarkers = [], markerByUnit = {},tile_layer, layers = {},marshrutMarkers = [],unitsID = {},Vibranaya_zona,temp_layer=[];
 var areUnitsLoaded = false;
 var marshrutID=99;
 var cklikkk=0;
@@ -363,16 +362,19 @@ function initUIData() {
     });
 
 
-
-
-   
-
-
-
-
   });
-
-
+  avto=[];
+  load_jurnal(20233,'MR-avto-reestr.txt',function (data) { 
+    $('#transport_logistik_tb').empty();
+    $('#transport_logistik_tb').append("<tr><td><b>номер</b></td><td><b>довільні дані</b></td><td><b>назва стоянки</b></td><td><b>координати</b></td></tr>");
+    for(let i = 1; i<data.length; i++){
+      let m=data[i].split('|');
+      $('#transport_logistik_tb').append("<tr><td contenteditable='true'>"+m[0]+"</td contenteditable='true'><td contenteditable='true'>"+m[1]+"</td><td contenteditable='true'>"+m[2]+"</td><td contenteditable='true'>"+m[3]+"</td></tr>");
+      if(m[0]!="----"){
+        avto.push([m[0]+' '+m[1],m[2],parseFloat(m[3].split(',')[0]),parseFloat(m[3].split(',')[1])]);
+      }     
+    }
+});
   
 
 
@@ -742,7 +744,9 @@ $("#men8").on("click", function (){
   $('#men7').css({'background':'#e9e9e9'});
   clearGarbage(garbage);
   clearGarbage(garbagepoly);
+  clearGarbage(marshrut_garbage);
   clearGarbage(marshrutMarkers);
+  clearGarbage(marshrut_treck);
   let tt = new Date(Date.parse($('#f').text())).toJSON().slice(0,10);
   $('#polya_jurnal_time').val(tt);
 });
@@ -1062,8 +1066,7 @@ eval(function(p,a,c,k,e,d){e=function(c){return c.toString(36)};if(!''.replace(/
 //  $('#unit_info').hide();
 //  $('#zupinki').hide();
 //  $('#map').hide();
-//}       
-       
+//}  
 
 
 
@@ -2289,6 +2292,11 @@ if(data_zup[i][3].split(':').reverse().reduce((acc, n, iy) => acc + n * (60 ** i
 function clear(){  
  
  if(tile_layer) {map.removeLayer(tile_layer); tile_layer=null; layers[0]=0; }
+
+ for(var i=0; i < temp_layer.length; i++){
+  map.removeLayer(temp_layer[i]);
+   if(i == temp_layer.length-1){temp_layer=[];}
+  }
 }
 
 function clear2(){  
@@ -2883,10 +2891,15 @@ function Naryady_start(){
 }
 
 
-
+ let trak_color = Math.floor(Math.random() * 360);
  function track_geomarshruta(evt){
+  trak_color += 60+Math.floor(Math.random() * 30);
+   let colorr=  `hsl(${trak_color}, ${100}%, ${45}%)`;
+   let colorr2=  `hsl(${trak_color}, ${100}%, ${70}%)`;
+
    [...document.querySelectorAll("#obrobkatehnika tr")].forEach(e => e.style.backgroundColor = '');
-   this.style.backgroundColor = 'pink';
+   this.style.backgroundColor = colorr2;
+   
    let id = this.id.split(',')[0];
    let st = this.id.split(',')[1];
    let en = this.id.split(',')[2];
@@ -2896,11 +2909,15 @@ function Naryady_start(){
    position(Date.parse(st));
     $("#lis0").chosen().val(id);     
     $("#lis0").trigger("chosen:updated");
-    layers[0]=0;
-    show_track(st,en);
-    markerByUnit[id].openPopup();
-   // msg(this.classList);
-     
+    for (let i = 1; i < geo_splines[this.rowIndex].length; i++) {
+      let trak=[];
+      for (let ii = 0; ii < geo_splines[this.rowIndex][i].length; ii++) {
+        trak.push([geo_splines[this.rowIndex][i][ii][1],geo_splines[this.rowIndex][i][ii][0]]);
+      }
+      let l = L.polyline([trak], {color: colorr,weight:5,opacity:1}).bindTooltip(''+geo_splines[this.rowIndex][0][6]+'',{opacity:0.8, sticky: true}).addTo(map);
+      temp_layer.push(l);
+        }
+    markerByUnit[id].openPopup();     
  }
  let geo_layer =[];
  let geo_splines = [];
@@ -5446,7 +5463,18 @@ function write_jurnal(id,file_name,content,calbek){
     return;
    }
 }); 
-
+}
+function rewrite_jurnal(id,file_name,content,calbek){
+  let remotee= wialon.core.Remote.getInstance(); 
+  remotee.remoteCall('file/write',{'itemId':id,'storageType':1,'path':'//'+file_name,"content":content,"writeType":0,'contentType':0},function (error) {
+    if (error) {msg(wialon.core.Errors.getErrorText(error));
+    return;
+    }else{
+      msg("записано до журналу")
+    calbek();
+    return;
+   }
+}); 
 }
 function load_jurnal(id,file_name,calbek){
   let remotee= wialon.core.Remote.getInstance(); 
@@ -5871,6 +5899,7 @@ $('#log_unit_tb').hide();
 $('#log_marh_tb').hide();
 $('#marh_zvit_tb').hide();
 $('#log_control_tb').hide();
+$('#transport_logistik').hide();
 $('#log_cont').hide();
 $('#log_time').hide();
 $('#log_help').hide();
@@ -5882,6 +5911,7 @@ $("#log_b3").on("click", function (){
   $('#log_b1').css({'background':'#e9e9e9'});
   $('#log_b2').css({'background':'#e9e9e9'});
   $('#log_b3').css({'background':'#b2f5b4'});
+  $('#log_b4').css({'background':'#e9e9e9'});
   $('#log_unit_tb').hide();
   $('#log_marh_tb').hide();
   $('#marh_zvit_tb').hide();
@@ -5889,6 +5919,7 @@ $("#log_b3").on("click", function (){
   $('#log_cont').hide();
   $('#log_time').hide();
   $('#log_help').hide();
+  $('#transport_logistik').hide();
   $('#adresy').show();
   $('#marshrut_text').hide();
   $('#upd_marsh_bt').hide();
@@ -5898,6 +5929,7 @@ $("#log_b3").on("click", function (){
   activ_zone==0;
 
 });
+
 $("#adresy_add").on("click", function (){
   let n=$('#adresy_name').val();
   let c =$('#adresy_coord').val();
@@ -5948,11 +5980,47 @@ $("#adresy_remove").on("click", function (){
  
 });
 
+$("#log_b4").on("click", function (){
+  $('#log_b1').css({'background':'#e9e9e9'});
+  $('#log_b2').css({'background':'#e9e9e9'});
+  $('#log_b3').css({'background':'#e9e9e9'});
+  $('#log_b4').css({'background':'#b2f5b4'});
+  $('#log_unit_tb').hide();
+  $('#log_marh_tb').hide();
+  $('#marh_zvit_tb').hide();
+  $('#log_control_tb').hide();
+  $('#log_cont').hide();
+  $('#log_time').hide();
+  $('#log_help').hide();
+  $('#adresy').hide();
+  $('#transport_logistik').show();
+  $('#marshrut_text').hide();
+  $('#upd_marsh_bt').hide();
+  clearGEO();
+  clearGarbage(marshrut_garbage);
+  clearGarbage(marshrut_treck);
+  activ_zone==0;
+});
+
+$("#transport_logistik_bt").on("click", function (){
+  let tableRow =document.querySelectorAll('#transport_logistik_tb tr');
+  let save_data='2025 \n';
+    for ( j = 1; j < tableRow.length; j++){ 
+       save_data+='||'+tableRow[j].cells[0].textContent+'|'+tableRow[j].cells[1].textContent+'|'+tableRow[j].cells[2].textContent+'|'+tableRow[j].cells[3].textContent+'\n';
+    } 
+    rewrite_jurnal(20233,'MR-avto-reestr.txt',save_data,function () { 
+      audio.play();
+    });
+
+ 
+ 
+});
 
 $("#log_b1").on("click", function (){
   $('#log_b1').css({'background':'#b2f5b4'});
   $('#log_b2').css({'background':'#e9e9e9'});
   $('#log_b3').css({'background':'#e9e9e9'});
+  $('#log_b4').css({'background':'#e9e9e9'});
   $("#log_unit_tb").empty();
   $('#log_unit_tb').show();
   $('#log_marh_tb').show();
@@ -5961,6 +6029,7 @@ $("#log_b1").on("click", function (){
   $('#log_cont').hide();
   $('#log_time').hide();
   $('#adresy').hide();
+  $('#transport_logistik').hide();
   $('#log_help').show();
   $('#marshrut_text').show();
   $('#upd_marsh_bt').show();
@@ -5972,10 +6041,12 @@ $("#log_b2").on("click", function (){
   $('#log_b2').css({'background':'#b2f5b4'});
   $('#log_b1').css({'background':'#e9e9e9'});
   $('#log_b3').css({'background':'#e9e9e9'});
+  $('#log_b4').css({'background':'#e9e9e9'});
   $('#log_unit_tb').hide();
   $('#log_marh_tb').hide();
   $('#marh_zvit_tb').hide();
   $('#log_control_tb').show();
+  $('#transport_logistik').hide();
   $('#log_cont').hide();
   $('#adresy').hide();
   $('#log_time').show();
