@@ -319,9 +319,10 @@ function initUIData() {
     
 
 
-      load_jurnal(20233,'zony.txt',function (data) { 
+            load_jurnal(20233,'zony.txt',function (data) { 
         let log_zone=[];
         let log_zone_del=[];
+
         dataLoop: for(let i = data.length-1; i>0; i--){
           let m=data[i].split('|');
           let y = parseFloat(m[0].split(',')[0]);
@@ -329,12 +330,12 @@ function initUIData() {
           let r = parseFloat(m[1]);
           let s =m[3];
           if (m[3]=='false') {
-            log_zone_del.push(m[0]+''+m[1]);
+            log_zone_del.push([y,x,m[1],m[2]]);
           }else{
+           
             for(let ii = 0; ii<log_zone_del.length; ii++){
-              if (log_zone_del[ii]==m[0]+''+m[1]){continue dataLoop;}
+              if (log_zone_del[ii][0]==y && log_zone_del[ii][1]==x && log_zone_del[ii][2]==m[1]&& log_zone_del[ii][3]==m[2]){continue dataLoop;}
             }
-
               let poly = L.circle([y,x], {stroke: false, fillColor: '#0000FF', fillOpacity: 0.2,radius: r}).bindTooltip(""+m[2]+"",{permanent: true, opacity:0.7, direction: 'top'});
               poly.on('click', function(e) {
                 $('#adresy_name').val(e.target._tooltip._content);
@@ -352,12 +353,13 @@ function initUIData() {
               log_zone.push(poly);
               stor.push([y,x,r,m[2]]);
               adresa.push(m[2]);
-           
+              
           }
           
           }
           lgeozoneee = L.layerGroup(log_zone);
           layerControl.addOverlay(lgeozoneee, "Логістика");
+          
     });
 
 
