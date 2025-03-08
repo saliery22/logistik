@@ -6001,7 +6001,7 @@ $("#adresy_add").on("click", function (){
   let r =$('#adresy_radius').val();
   let s ='true';
   if(n && c && r && s){
-  write_jurnal(20233,'zony.txt','||'+c+'|'+r+'|'+n+'|'+s,function () { 
+  write_jurnal(20233,'zony.txt','||'+c+'|'+r+'|'+n+'|'+s+'\n',function () { 
     audio.play();
 
     let y = parseFloat(c.split(',')[0]);
@@ -6034,7 +6034,7 @@ $("#adresy_remove").on("click", function (){
   let s ='false';
  
   if(n && c && r && s && activ_zone!=0){
-    write_jurnal(20233,'zony.txt','||'+c+'|'+r+'|'+n+'|'+s,function () { 
+    write_jurnal(20233,'zony.txt','||'+c+'|'+r+'|'+n+'|'+s+'\n',function () { 
       audio.play();
       lgeozoneee.removeLayer(activ_zone);
       activ_zone=0;
