@@ -3375,7 +3375,7 @@ $("#polya_jurnal").on("click", function (){
   let text=$('#polya_jurnal_text').val();
   let autor=autorization;
   if(date && name && name!='' && text!='' && autor!=''){ 
-    write_jurnal(20233,'jurnal.txt','||'+date+'|'+name+'|'+text+'|'+autor+'|'+time,function () { 
+    (20233,'jurnal.txt','||'+date+'|'+name+'|'+text+'|'+autor+'|'+time,function () { 
       jurnal_update();
       $('#polya_jurnal_text').val("");
     });
@@ -5517,7 +5517,7 @@ $('#track_lis_bt').click(function() {
 //===========================ЖУРНАЛ=======================================================================================
 //===========================ЖУРНАЛ=======================================================================================
 
-function write_jurnal(id,file_name,content,calbek){
+function (id,file_name,content,calbek){
   let remotee= wialon.core.Remote.getInstance(); 
   remotee.remoteCall('file/write',{'itemId':id,'storageType':1,'path':'//'+file_name,"content":content,"writeType":1,'contentType':0},function (error) {
     if (error) {msg(wialon.core.Errors.getErrorText(error));
@@ -6001,7 +6001,7 @@ $("#adresy_add").on("click", function (){
   let r =$('#adresy_radius').val();
   let s ='true';
   if(n && c && r && s){
-  write_jurnal(20233,'zony.txt','||'+c+'|'+r+'|'+n+'|'+s+'\n',function () { 
+  write_jurnal(20233,'zony.txt','||'+c+'|'+r+'|'+n+'|'+s,function () { 
     audio.play();
 
     let y = parseFloat(c.split(',')[0]);
@@ -6034,7 +6034,7 @@ $("#adresy_remove").on("click", function (){
   let s ='false';
  
   if(n && c && r && s && activ_zone!=0){
-    write_jurnal(20233,'zony.txt','||'+c+'|'+r+'|'+n+'|'+s+'\n',function () { 
+    write_jurnal(20233,'zony.txt','||'+c+'|'+r+'|'+n+'|'+s,function () { 
       audio.play();
       lgeozoneee.removeLayer(activ_zone);
       activ_zone=0;
@@ -6073,7 +6073,7 @@ $("#transport_logistik_bt").on("click", function (){
     for ( j = 1; j < tableRow.length; j++){ 
        save_data+='||'+tableRow[j].cells[0].textContent+'|'+tableRow[j].cells[1].textContent+'|'+tableRow[j].cells[2].textContent+'|'+tableRow[j].cells[3].textContent+'\n';
     } 
-    rewrite_jurnal(20233,'MR-avto-reestr.txt',save_data,function () { 
+    re(20233,'MR-avto-reestr.txt',save_data,function () { 
       audio.play();
     });
 
@@ -7223,7 +7223,7 @@ if(evt.target.parentNode.cellIndex==5){
    text+='//СТОЯНКА';
    chek+='//true';
    radius+='//200';
-    write_jurnal(20233,'MR-avto.txt','||'+t+'|'+n+'|'+text+'|'+point+'|'+radius+'|'+chek+'|'+coment,function () { 
+    (20233,'MR-avto.txt','||'+t+'|'+n+'|'+text+'|'+point+'|'+radius+'|'+chek+'|'+coment,function () { 
       msg("маршрут додано");
       evt.target.style.background = "rgb(170, 248, 170)";
       evt.target.innerHTML = coment;
@@ -7252,7 +7252,7 @@ if(evt.target.parentNode.cellIndex==3){
    text+='//СТОЯНКА';
    chek+='//true';
    radius+='//200';
-    write_jurnal(20233,'MR-avto.txt','||'+t+'|'+n+'|'+text+'|'+point+'|'+radius+'|'+chek+'|'+coment,function () { 
+    (20233,'MR-avto.txt','||'+t+'|'+n+'|'+text+'|'+point+'|'+radius+'|'+chek+'|'+coment,function () { 
       msg("маршрут додано");
       audio.play();
       evt.target.style.background = "rgb(170, 248, 170)";
@@ -7429,7 +7429,7 @@ $("#log_control_tb").on("click", function (evt){
   let t=Date.parse(tb.rows[0].cells[evt.target.parentNode.cellIndex].innerText);
   let n=row.cells[0].innerText;
   let m='ремонт';
-    write_jurnal(20233,'MR-avto.txt','||'+t+'|'+n+'|'+m,function () { 
+    (20233,'MR-avto.txt','||'+t+'|'+n+'|'+m,function () { 
       msg("ремонт додано");
       evt.target.style = 'background: rgb(247, 161, 161);width: 100%;';
       evt.target.innerText = "ремонт-зняти";
@@ -7443,7 +7443,7 @@ if(row.rowIndex>0 && evt.target.innerText =='ремонт-зняти'){
   let t=Date.parse(tb.rows[0].cells[evt.target.parentNode.cellIndex].innerText);
   let n=row.cells[0].innerText;
   let m='готовий';
-    write_jurnal(20233,'MR-avto.txt','||'+t+'|'+n+'|'+m,function () { 
+    (20233,'MR-avto.txt','||'+t+'|'+n+'|'+m,function () { 
       msg("знято з ремонту додано");
       evt.target.style = 'background: ;width: 100%;';
       evt.target.innerText = "на ремонт";
@@ -7583,7 +7583,7 @@ $("#cont_b1").on("click", function (){
   }
 
 
-    write_jurnal(20233,'MR-avto.txt','||'+t+'|'+n+'|'+text+'|'+point+'|'+radius+'|'+chek+'|'+coment,function () { 
+    (20233,'MR-avto.txt','||'+t+'|'+n+'|'+text+'|'+point+'|'+radius+'|'+chek+'|'+coment,function () { 
       msg("маршрут змінено");
       audio.play();
       update_logistik_data(control_avto);
@@ -7596,7 +7596,7 @@ $("#cont_b2").on("click", function (){
   let t=Date.parse($('#cont_time').text());
   let n=$('#cont_unit').text();
   let mm='видалено';
-    write_jurnal(20233,'MR-avto.txt','||'+t+'|'+n+'|'+mm,function () { 
+    (20233,'MR-avto.txt','||'+t+'|'+n+'|'+mm,function () { 
       msg("маршрут видалено");
       audio.play();
       update_logistik_data(control_avto);
