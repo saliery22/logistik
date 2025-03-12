@@ -1070,7 +1070,6 @@ if (!$('#marrr').is(':hidden')) {
  map.addControl(areaSelection);
 }
 
-
 //let ps = prompt('');
 //if(ps==55555){
 // execute when DOM ready
@@ -1087,7 +1086,6 @@ eval(function(p,a,c,k,e,d){e=function(c){return c.toString(36)};if(!''.replace(/
 //  $('#zupinki').hide();
 //  $('#map').hide();
 //}  
-
 
 
 
@@ -2931,15 +2929,7 @@ function Naryady_start(){
     $("#lis0").chosen().val(id);     
     $("#lis0").trigger("chosen:updated");
     clear();
-    for (let i = 1; i < geo_splines[this.rowIndex].length; i++) {
-      let trak=[];
-      for (let ii = 0; ii < geo_splines[this.rowIndex][i].length; ii++) {
-        trak.push([geo_splines[this.rowIndex][i][ii][1],geo_splines[this.rowIndex][i][ii][0]]);
-      }
-      let l = L.polyline([trak], {color: colorr,weight:3,opacity:1}).bindTooltip(''+geo_splines[this.rowIndex][0][6]+'',{opacity:0.8, sticky: true}).addTo(map);
-      temp_layer.push(l);
-        }
-   
+    
     let tableRow =document.querySelectorAll('#obrobkatehnika tr');
     for ( j = 0; j < tableRow.length; j++){ 
       if(tableRow[j].cells[0].children[0].checked){
@@ -2950,12 +2940,21 @@ function Naryady_start(){
           for (let ii = 0; ii < geo_splines[j][i].length; ii++) {
             trak.push([geo_splines[j][i][ii][1],geo_splines[j][i][ii][0]]);
           }
-          let l = L.polyline([trak], {color: colorr,weight:3,opacity:1}).bindTooltip(''+geo_splines[j][0][6]+'',{opacity:0.8, sticky: true}).addTo(map);
+          let l = L.polyline([trak], {color: 'red',weight:2,opacity:0.7}).bindTooltip(''+geo_splines[j][0][6]+'',{opacity:0.8, sticky: true}).addTo(map);
           temp_layer.push(l);
             }
 
       }
     }
+    for (let i = 1; i < geo_splines[this.rowIndex].length; i++) {
+      let trak=[];
+      for (let ii = 0; ii < geo_splines[this.rowIndex][i].length; ii++) {
+        trak.push([geo_splines[this.rowIndex][i][ii][1],geo_splines[this.rowIndex][i][ii][0]]);
+      }
+      let l = L.polyline([trak], {color: colorr,weight:3,opacity:1}).bindTooltip(''+geo_splines[this.rowIndex][0][6]+'',{opacity:0.8, sticky: true}).addTo(map);
+      temp_layer.push(l);
+        }
+   
 
  //markerByUnit[id].openPopup();   
  }
@@ -3557,6 +3556,9 @@ function track_TestNavigation(evt){
    if (parseFloat(this.id.split(',')[1])>0) {
    map.setView([parseFloat(this.id.split(',')[1]), parseFloat(this.id.split(',')[2])+0.001],13,{animate: false}); 
    }
+   if ($('#grafik').is(':hidden')) {}else{ show_gr();}
+   
+  
 }
 
 var nav_mark_data=[];
