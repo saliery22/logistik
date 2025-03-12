@@ -5516,8 +5516,11 @@ $('#vodiyi_kkz').click(function() {
 
 $('#track_lis_bt').click(function() {
   $("#unit_table").empty();
-  let fr =$('#track_time1').val();
-  let to =$('#track_time2').val();
+  clear();
+  let to = Date.parse($('#track_time2').val())/1000; // end of day in seconds
+  let fr = Date.parse($('#track_time1').val())/1000; // get begin time - beginning of day
+  let trak_color = Math.floor(Math.random() * 360);
+  
   if(!fr){fr=0; to=0;}
   let str='';
   let vibor = $("#track_lis").chosen().val();
@@ -5540,13 +5543,59 @@ $('#track_lis_bt').click(function() {
     let unit =false;
     str.forEach((element) => {if(unitslist[i].getName().indexOf(element)>=0){unit = true;}});
     if(unit==false)continue;
-    $("#lis0").chosen().val(unitslist[i].getId());
-    $("#lis0").trigger("chosen:updated");
-    //layers[0]=0;
-    show_track(fr,to);
+    trak_color += 60+Math.floor(Math.random() * 30);
+    let colorr = HSLToHex(trak_color,100,50);
+    show_all_tracks(unitslist[i].getId(),fr,to,colorr);
   }
 
   });
+  function HSLToHex(h,s,l) {  
+    const hDecimal = l / 100;
+    const a = (s * Math.min(hDecimal, 1 - hDecimal)) / 100;
+    const f = (n) => {
+      const k = (n + h / 30) % 12;
+      const color = hDecimal - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
+  
+      // Convert to Hex and prefix with "0" if required
+      return Math.round(255 * color)
+        .toString(16)
+        .padStart(2, "0");
+    };
+    return `${f(0)}${f(8)}${f(4)}`;
+  }
+
+  function show_all_tracks (unit_id,from,to,colorr) {
+
+      sess = wialon.core.Session.getInstance(), // get instance of current Session	
+      renderer = sess.getRenderer(),
+      callback =  qx.lang.Function.bind(function(code, layer) {
+        if (code) { msg(wialon.core.Errors.getErrorText(code)); return; } // exit if error code
+        if (layer) {  
+          if (map) {         
+            if (!tile_layer)
+              tile_layer = L.tileLayer(sess.getBaseUrl() + "/adfurl" + renderer.getVersion() + "/avl_render/{x}_{y}_{z}/"+ sess.getId() +".png", {zoomReverse: true, zoomOffset: -1,zIndex: 3}).addTo(map);
+            else 
+              tile_layer.setUrl(sess.getBaseUrl() + "/adfurl" + renderer.getVersion() + "/avl_render/{x}_{y}_{z}/"+ sess.getId() +".png");  
+          }
+        }
+    });
+    // query params
+    params = {
+      "layerName": "route_unit_" + unit_id, // layer name
+      "itemId": unit_id, // ID of unit which messages will be requested
+      "timeFrom": from, //interval beginning
+      "timeTo": to, // interval end
+      "tripDetector": 0, //use trip detector: 0 - no, 1 - yes
+      "trackColor": colorr, //track color in ARGB format (A - alpha channel or transparency level)
+      "trackWidth": 2, // track line width in pixels
+      "arrows": 1, //show course of movement arrows: 0 - no, 1 - yes
+      "points": 0, // show points at places where messages were received: 0 - no, 1 - yes
+      "pointColor": colorr, // points color
+      "annotations": 0 //show annotations for points: 0 - no, 1 - yes
+
+    };
+    renderer.createMessagesLayer(params, callback);
+  }
 
   function planuvannya_marshrutiv(data){
 let poly = [];
