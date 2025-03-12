@@ -8355,16 +8355,17 @@ async function logistik_zvit(data){
      let d1 = ((probeg1/1000)+probeg2).toFixed();
      let d2 = d0-d1;
 
-     let t0 = motogod;
+     let t0 = end_marshrut - begin_marshrut;
      let t1 = motogod3+motogod2;
      let t2 = t0-t1;
 
      let r0 = vrusi;
      let r1 = vrusi1+motogod2;
+     if(r1>t1)r1=t1;
      let r2 = r0-r1;
 
-     let s0 = motogod -vrusi;
-     let s1 = t1-vrusi1;
+     let s0 = t0-r0;
+     let s1 = t1-r1;
      let s2 = s0-s1;
 
      
@@ -8374,7 +8375,7 @@ async function logistik_zvit(data){
      $('#marh_zvit_tb').append("<tr><td>"+$('#cont_time').text()+"</td><td>"+$('#cont_unit').text()+"</td><td>"+begin_marshrut0+"</td><td>"+end_marshrut0+"</td><td>"+d0+"</td><td>"+d1+"</td><td>"+d2+"</td><td>"+sec_to_time(t0)+"</td><td>"+sec_to_time(t1)+"</td><td>"+sec_to_time(t2)+"</td><td>"+sec_to_time(r0)+"</td><td>"+sec_to_time(r1)+"</td><td>"+sec_to_time(r2)+"</td><td>"+sec_to_time(s0)+"</td><td>"+sec_to_time(s1)+"</td><td>"+sec_to_time(s2)+"</td><td>"+ $('#marshrut_text').val()+"</td><td>"+mar_text+"</td></tr>");
  
 
-  let cpdata= $('#cont_time').text() + '\t' +$('#cont_unit').text() + '\t' +d0 + ' \t' + d1 + '\t' + d2 + '\t' + h.padStart(2, 0) + ':' + m.padStart(2, 0) +':'+s.padStart(2, 0) +'\t' + $('#marshrut_text').val() + '\t' + mar_text +'\n';
+  let cpdata= $('#cont_time').text() + '\t' +$('#cont_unit').text() + '\t' +begin_marshrut0+ '\t' +end_marshrut0+ '\t' +d0 + ' \t' + d1 + '\t' + d2 + '\t' + sec_to_time(t0) + '\t' + sec_to_time(t1)+ '\t' + sec_to_time(t2)+ '\t' + sec_to_time(r0)+ '\t' + sec_to_time(r1)+ '\t' + sec_to_time(r2)+ '\t' + sec_to_time(s0)+ '\t' + sec_to_time(s1)+ '\t' + sec_to_time(s2)+ '\t'+ $('#marshrut_text').val() + '\t' + mar_text +'\n';
   navigator.clipboard.writeText(cpdata);
 
   $('button').prop("disabled", false);
