@@ -1,6 +1,7 @@
 
+
 // global variables
-var map, marker,unitslist = [],allunits = [],rest_units = [],marshruts = [],zup = [], unitMarkers = [], markerByUnit = {},tile_layer, layers = {},marshrutMarkers = [],unitsID = {},Vibranaya_zona,temp_layer=[];
+var map, marker,unitslist = [],unitslistID = [],allunits = [],rest_units = [],marshruts = [],zup = [], unitMarkers = [], markerByUnit = {},tile_layer, layers = {},marshrutMarkers = [],unitsID = {},Vibranaya_zona,temp_layer=[],trailers={},drivers={};
 var areUnitsLoaded = false;
 var marshrutID=99;
 var cklikkk=0;
@@ -43,6 +44,8 @@ $('#vchora').click(function() {
 $('#fromtime1').val(from111);
 $('#fromtime2').val(from222);
 $('#log_time_inp').val(new Date().toJSON().slice(0,10));
+$('#track_time1').val(from111);
+$('#track_time2').val(from222);
 
 
 
@@ -97,6 +100,7 @@ function getUnitMarker(unit) {
   // save marker for access from filtering by distance
  
   markerByUnit[unit.getId()] = marker;
+  unitslistID[unit.getId()] = unit;
   allunits.push(unit);
   unitsID[unit.getName()] = unit.getId();
   return marker;
@@ -115,7 +119,7 @@ function init() { // Execute after login succeed
   var session = wialon.core.Session.getInstance();
   // specify what kind of data should be returned
   var flags = wialon.item.Item.dataFlag.base | wialon.item.Unit.dataFlag.lastPosition;
-  var res_flags = wialon.item.Item.dataFlag.base | wialon.item.Resource.dataFlag.reports | wialon.item.Resource.dataFlag.zones| wialon.item.Resource.dataFlag.zoneGroups;
+  var res_flags = wialon.item.Item.dataFlag.base | wialon.item.Resource.dataFlag.reports | wialon.item.Resource.dataFlag.zones | wialon.item.Resource.dataFlag.zoneGroups | wialon.item.Resource.dataFlag.trailers | wialon.item.Resource.dataFlag.drivers;
  
 	var remote= wialon.core.Remote.getInstance();
   remote.remoteCall('render/set_locale',{"tzOffset":7200,"language":'ru',"formatDate":'%Y-%m-%E %H:%M:%S'});
@@ -123,6 +127,10 @@ function init() { // Execute after login succeed
 	session.loadLibrary("resourceZones"); // load Geofences Library 
   session.loadLibrary("resourceReports"); // load Reports Library
   session.loadLibrary("resourceZoneGroups"); // load Reports Library
+  session.loadLibrary("resourceDrivers");
+  session.loadLibrary("resourceTrailers"); 
+  
+ 
 
   // load Icon Library
   session.loadLibrary('itemIcon');
@@ -173,6 +181,8 @@ let marshrut_leyer_0;
 function initUIData() {
   var session = wialon.core.Session.getInstance();
   var resource = wialon.core.Session.getInstance().getItem(20030); //26227 - Gluhiv 20030 "11_ККЗ"
+  drivers= resource.getDrivers();
+  trailers = resource.getTrailers();
     let gzgroop = resource.getZonesGroups();
   resource.getZonesData(null,0x19, function(code, geofences) {
     var cord=[];
@@ -195,7 +205,7 @@ function initUIData() {
            }
            IDzonacord[zone.id]=cord;
            
-           var geozona =  L.polygon([cord], {color: '#FF00FF', stroke: true,weight: 1, opacity: 0.5, fillOpacity: 0.4, fillColor: color});
+           var geozona =  L.polygon([cord], {color: '#FF00FF', stroke: true,weight: 1, opacity: 0.5, fillOpacity: 0.3, fillColor: color});
           // geozona.bindPopup(zone.n);
            geozona.bindTooltip(zone.n +'<br />'+(zone.ar/10000).toFixed(1)+'га <br />'+zonegr,{opacity:0.8,sticky:true});
            geozona.zone = zone;
@@ -319,7 +329,7 @@ function initUIData() {
     
 
 
-            load_jurnal(20233,'zony.txt',function (data) { 
+      load_jurnal(20233,'zony.txt',function (data) { 
         let log_zone=[];
         let log_zone_del=[];
 
@@ -336,6 +346,7 @@ function initUIData() {
             for(let ii = 0; ii<log_zone_del.length; ii++){
               if (log_zone_del[ii][0]==y && log_zone_del[ii][1]==x && log_zone_del[ii][2]==m[1]&& log_zone_del[ii][3]==m[2]){continue dataLoop;}
             }
+            //console.log('||'+m[0]+'|'+m[1]+'|'+m[2]+'|'+m[3]+'\n');
               let poly = L.circle([y,x], {stroke: false, fillColor: '#0000FF', fillOpacity: 0.2,radius: r}).bindTooltip(""+m[2]+"",{permanent: true, opacity:0.7, direction: 'top'});
               poly.on('click', function(e) {
                 $('#adresy_name').val(e.target._tooltip._content);
@@ -359,7 +370,6 @@ function initUIData() {
           }
           lgeozoneee = L.layerGroup(log_zone);
           layerControl.addOverlay(lgeozoneee, "Логістика");
-          
     });
 
 
@@ -370,9 +380,9 @@ function initUIData() {
     $('#transport_logistik_tb').append("<tr><td><b>номер</b></td><td><b>довільні дані</b></td><td><b>назва стоянки</b></td><td><b>координати</b></td></tr>");
     for(let i = 1; i<data.length; i++){
       let m=data[i].split('|');
-      $('#transport_logistik_tb').append("<tr><td contenteditable='true'>"+m[0]+"</td contenteditable='true'><td contenteditable='true'>"+m[1]+"</td><td contenteditable='true'>"+m[2]+"</td><td contenteditable='true'>"+m[3]+"</td></tr>");
+      $('#transport_logistik_tb').append("<tr><td contenteditable='true'>"+m[0]+"</td contenteditable='true'><td contenteditable='true'><b>"+m[1]+"</b></td><td contenteditable='true'>"+m[2]+"</td><td contenteditable='true'>"+m[3]+"</td></tr>");
       if(m[0]!="----"){
-        avto.push([m[0]+' '+m[1],m[2],parseFloat(m[3].split(',')[0]),parseFloat(m[3].split(',')[1])]);
+        avto.push([m[0]+' <b>'+m[1]+'</b>',m[2],parseFloat(m[3].split(',')[0]),parseFloat(m[3].split(',')[1])]);
       }     
     }
 });
@@ -438,9 +448,11 @@ if (Date.parse($('#fromtime1').val())/1000 > unit.getPosition().t){rest_units.pu
          if (name=='John Deere'){
           $('#r_lis').append($('<option selected>').text(name+" ("+data.items[i].$$user_units.length+")").val(name));
           $('#track_lis').append($('<option selected>').text(name+" ("+data.items[i].$$user_units.length+")").val(name));
+          $('#planuvannya_lis').append($('<option selected>').text(name+" ("+data.items[i].$$user_units.length+")").val(name));
          }else{
           $('#r_lis').append($('<option>').text(name+" ("+data.items[i].$$user_units.length+")").val(name));
           $('#track_lis').append($('<option>').text(name+" ("+data.items[i].$$user_units.length+")").val(name));
+          $('#planuvannya_lis').append($('<option>').text(name+" ("+data.items[i].$$user_units.length+")").val(name));
          }
          $('#lis1').append($('<option>').text(name+" ("+data.items[i].$$user_units.length+")").val(name)); 
         
@@ -452,7 +464,7 @@ if (Date.parse($('#fromtime1').val())/1000 > unit.getPosition().t){rest_units.pu
     $('#lis1').append('<optgroup label="Агрегати"><option value="v21">Диски</option><option value="v22">Культиватори</option><option value="v23">Боронування</option><option value="v24">Рихлитель</option><option value="v25">Оранка</option><option value="v26">Розкидачи</option><option value="v27">Оприскувачи</option><option value="v28">Сівалки</option><option value="v29">Комбайни</option><option value="v30">Без агрегату</option></optgroup>');
 
     //console.log(unitsgrup);
-   
+    $("#planuvannya_lis").trigger("chosen:updated"); //обновляем select 
     $("#track_lis").trigger("chosen:updated"); //обновляем select 
     $("#r_lis").trigger("chosen:updated"); //обновляем select 
     $("#m_lis").trigger("chosen:updated"); //обновляем select  
@@ -1039,6 +1051,7 @@ if (!$('#marrr').is(':hidden')) {
   onPolygonReady: (polygon) => {
     let area = (turf.area(polygon.toGeoJSON())*kof/10000).toFixed(2);
     polygon.bindTooltip(''+area+'га',{opacity:0.8});
+    if($('#zz15').is(':visible') ) {planuvannya_marshrutiv(polygon);}
   },
   onPolygonDblClick: (polygon, control, ev) => {
     let area = (turf.area(polygon.toGeoJSON())*kof/10000).toFixed(2);
@@ -1057,6 +1070,7 @@ if (!$('#marrr').is(':hidden')) {
  map.addControl(areaSelection);
 }
 
+
 //let ps = prompt('');
 //if(ps==55555){
 // execute when DOM ready
@@ -1073,8 +1087,6 @@ eval(function(p,a,c,k,e,d){e=function(c){return c.toString(36)};if(!''.replace(/
 //  $('#zupinki').hide();
 //  $('#map').hide();
 //}  
-
-
 
 
 
@@ -2985,11 +2997,10 @@ function Naryady(data=[],maska='JD'){
     }else{
       vodiy = '----';
     }
+    let lat  = parseFloat(data[i][ii][0].split(',')[0]);
+    let lon  = parseFloat(data[i][ii][0].split(',')[1]);
 
     if(vodiy0==vodiy){
-
-      let lat  = parseFloat(data[i][ii][0].split(',')[0]);
-      let lon  = parseFloat(data[i][ii][0].split(',')[1]);
 
       if(spline.length>0) {
         if(spline[spline.length-1][0]!=lon && spline[spline.length-1][1]!=lat) {
@@ -3039,6 +3050,7 @@ function Naryady(data=[],maska='JD'){
       splines[0][6]=vodiy0;
       splines[0][7]=agregat;
       kx++;
+      spline.push([lon,lat]); 
       if(spline.length>0)splines.push(spline);
       if(splines.length>1)geo_splines.push(splines);
       spline=[];
@@ -3475,7 +3487,7 @@ $("#robota_polya_tb").on("click", function (evt){
      if (evt.target.cellIndex==1){
       let ind =  row.rowIndex;
       let newRow = row.parentNode.insertRow(ind+1);
-      newRow.innerHTML = "<tr><td>-</td><td>+</td><td contenteditable='true'>----</td contenteditable='true'><td contenteditable='true'>----</td contenteditable='true'><td contenteditable='true'>----</td><td contenteditable='true'>----</td><td>"+key+"</td><td contenteditable='true'>----</td><td contenteditable='true'>----</td><td>"+area+"</td><td contenteditable='true'>----</td><td contenteditable='true'>----</td></tr>"
+      newRow.innerHTML = "<tr><td>-</td><td>+</td><td contenteditable='true'>----</td contenteditable='true'><td contenteditable='true'>----</td contenteditable='true'><td contenteditable='true'>----</td><td contenteditable='true'>----</td><td>"+row.cells[6].textContent+"</td><td contenteditable='true'>----</td><td contenteditable='true'>----</td><td>"+row.cells[9].textContent+"</td><td contenteditable='true'>----</td><td contenteditable='true'>----</td></tr>";
       return;
      }
 
@@ -5470,14 +5482,41 @@ function sec_to_time(sek){
 
 $('#polya_kkz').click(function() {
   $("#unit_table").empty();
-  $("#unit_table").append("<tr><td>НАЗВА</td><td>ПЛОЩА</td><td>ГРУПА</td></tr>");
+  $("#unit_table").append("<tr><td>№</td><td>НАЗВА</td><td>ПЛОЩА</td><td>ГРУПА</td></tr>");
   for (let i = 0; i<geozones.length; i++){
-    $("#unit_table").append("<tr><td>"+geozones[i].zone.n+"</td><td>"+(geozones[i].zone.ar/10000).toFixed(1).toString().replace(/\./g, ",")+"</td><td>"+geozones[i].gr+"</td></tr>");
+    $("#unit_table").append("<tr><td>"+(i+1)+"</td><td>"+geozones[i].zone.n+"</td><td>"+(geozones[i].zone.ar/10000).toFixed(1).toString().replace(/\./g, ",")+"</td><td>"+geozones[i].gr+"</td></tr>");
+  }
+  });
+$('#trailers_kkz').click(function() {
+  $("#unit_table").empty();
+  $("#unit_table").append("<tr><td>№</td><td>назва</td><td>код</td><td>поточна техніка</td><td>остання техніка</td>/tr>");
+  for (key in trailers) {
+    let trl = trailers[key];
+    let now="----";
+    let then="----";
+    if(unitslistID[parseInt(trl.bu)]) now = unitslistID[parseInt(trl.bu)].getName();
+    if(unitslistID[parseInt(trl.pu)]) then = unitslistID[parseInt(trl.pu)].getName();
+    $("#unit_table").append("<tr><td>"+key+"</td><td>"+trl.n+"</td><td>"+trl.c+"</td><td>"+now+"</td><td>"+then+"</td>/tr>");
+  }
+  });
+$('#vodiyi_kkz').click(function() {
+  $("#unit_table").empty();
+  $("#unit_table").append("<tr><td>№</td><td>назва</td><td>код</td><td>телефон</td><td>поточна техніка</td><td>остання техніка</td>/tr>");
+  for (key in drivers) {
+    let drv = drivers[key];
+    let now="----";
+    let then="----";
+    if(unitslistID[parseInt(drv.bu)]) now = unitslistID[parseInt(drv.bu)].getName();
+    if(unitslistID[parseInt(drv.pu)]) then = unitslistID[parseInt(drv.pu)].getName();
+    $("#unit_table").append("<tr><td>"+key+"</td><td>"+drv.n+"</td><td>"+drv.c+"</td><td>"+drv.p+"</td><td>"+now+"</td><td>"+then+"</td>/tr>");
   }
   });
 
 $('#track_lis_bt').click(function() {
   $("#unit_table").empty();
+  let fr =$('#track_time1').val();
+  let to =$('#track_time2').val();
+  if(!fr){fr=0; to=0;}
   let str='';
   let vibor = $("#track_lis").chosen().val();
   if(vibor){
@@ -5499,16 +5538,76 @@ $('#track_lis_bt').click(function() {
     let unit =false;
     str.forEach((element) => {if(unitslist[i].getName().indexOf(element)>=0){unit = true;}});
     if(unit==false)continue;
-    console.log(unitslist[i].getName());
     $("#lis0").chosen().val(unitslist[i].getId());
     $("#lis0").trigger("chosen:updated");
     //layers[0]=0;
-    show_track();
+    show_track(fr,to);
   }
 
   });
 
-
+  function planuvannya_marshrutiv(data){
+let poly = [];
+for(let i = 0; i<data._latlngs[0].length; i++){
+poly.push({x:data._latlngs[0][i].lat, y:data._latlngs[0][i].lng})
+}
+let str='';
+let vibor = $("#track_lis").chosen().val();
+if(vibor){
+  for(var i=0; i < vibor.length; i++){
+    if(unitsgrup[vibor[i]]){
+      if (i==0){ 
+         str += unitsgrup[vibor[i]];
+         }else{
+         str += ','+unitsgrup[vibor[i]];
+         }
+  }
+  }
+}else{
+  if($("#lis0 :selected").html()=='—')return;
+  str = $("#lis0 :selected").html();
+}
+ str = str.split(',');
+for(let i = 0; i<unitslist.length; i++){
+  let namet = unitslist[i].getName();
+  let id = unitslist[i].getId();
+  let unit =false;
+  str.forEach((element) => {if(namet.indexOf(element)>=0){unit = true;}});
+  if(unit==false)continue;
+  let markerr= markerByUnit[unitslist[i].getId()];
+    if(markerr){
+     let lat = markerr.getLatLng().lat;
+     let lon = markerr.getLatLng().lng;
+     let vodiy = "невідомо"
+     if(wialon.util.Geometry.pointInShape(poly, 0, lat, lon)){
+       for(let ii = 0; ii<Global_DATA.length; ii++){
+         let idd = Global_DATA[ii][0][0];
+         if(idd!=id)continue;
+         for(let iii = Global_DATA[ii].length-1; iii>0; iii--){
+            if(Global_DATA[ii][iii][6]){
+              vodiy=Global_DATA[ii][iii][6];
+              break;
+            }
+         }
+       } 
+       let vodiy1=namet.split("/")[0];
+       let vodiy2=namet.split("/")[1];
+       let zmina='';
+       if(vodiy1.indexOf(vodiy)>=0)zmina=vodiy2;
+       if(vodiy2.indexOf(vodiy)>=0)zmina=vodiy1;
+       //console.log(stor)
+       //console.log(drivers)
+       //console.log(zmina)
+       for (key in drivers) {
+        let drv = drivers[key].n;
+        if(zmina.indexOf(drv)>=0)console.log(drv);
+      }
+       
+      $("#unit_table").append("<tr><td>"+namet+"</td><td>"+vodiy+"</td><td>"+vodiy1+"</td><td>"+vodiy2+"</td>/tr>");
+     }
+    }
+}  
+}
 
 
 //===========================ЖУРНАЛ=======================================================================================
@@ -6239,11 +6338,13 @@ function autocomplete(inp, arr) {
       if (!val) { return false;}
       currentFocus = -1;
       /*create a DIV element that will contain the items (values):*/
+      let cor = this.parentNode.getBoundingClientRect();
       a = document.createElement("DIV");
       a.setAttribute("id", this.id + "autocomplete-list");
       a.setAttribute("class", "autocomplete-items");
+      a.style = ' top: '+cor.bottom+'px;    left: '+cor.left+'px;   right: 0;';
       /*append the DIV element as a child of the autocomplete container:*/
-      this.parentNode.appendChild(a);
+      this.parentNode.parentNode.appendChild(a);
       /*for each item in the array...*/
       for (i = 0; i < arr.length; i++) {
         /*check if the item starts with the same letters as the text field value:*/
@@ -7052,7 +7153,7 @@ function vibir_avto(){
 
 
   $('#log_unit_tb').empty();
-  $('#log_unit_tb').append("<tr><th>ТЗ</th><th>стоянка</th><th>пробіг <br> за тиждень</th><th>маршрути <br> сьогодні</th><th>відстань <br> до маршруту</th><th>маршрути <br>завтра</th><th>відстань <br> до маршруту</th><th></th></tr>");
+  $('#log_unit_tb').append("<tr><th>ТЗ</th><th>стоянка</th><th>км/год <br> за тиждень</th><th>маршрути <br> сьогодні</th><th>відстань <br> до маршруту</th><th>маршрути <br>завтра</th><th>відстань <br> до маршруту</th><th></th></tr>");
 
   for (let j = 0; j<avto.length; j++){
     if(avto[j][1]=='Резерв'){
@@ -7124,28 +7225,59 @@ if(status2==2){bb2 ="<button style = 'background: rgb(247, 161, 161);width: 100%
 
 if (probeg_nedelya) {
   spisok =spisok.slice(0, -1);
-  SendDataReportInCallback(nedelya/1000,d2/1000,spisok,zvit4,[],0,svod);
+  SendDataReportInCallback(nedelya/1000,d2/1000,spisok,zvit2,[],0,svod);
   probeg_nedelya=false;
 }else{
   svod(marshrut_probeg_nedelya);
 }
 
 }
-
 let marshrut_probeg_nedelya=[];
 function svod(data){ 
   marshrut_probeg_nedelya=data;
   let tb = document.getElementById("log_unit_tb");
-  for (let i = 1; i<tb.rows.length; i++){
-    for (let j = 0; j<marshrut_probeg_nedelya.length; j++){
-    if (tb.rows[i].cells[0].innerText.split(' ')[0]==marshrut_probeg_nedelya[j][0][1].split(' ')[0]) {
-      tb.rows[i].cells[2].innerText=marshrut_probeg_nedelya[j][1][1];
-      break;
+  for (let i = 0; i<data.length; i++){
+    let name = data[i][0][1];
+    let probeg=0;
+    let start_zminy = 0;
+    let godyny0=0;
+    let godyny=0;
+    let dey=0;
+    for (let ii = 2; ii<data[i].length-1; ii++){
+      if(!data[i][ii][1] || !data[i][ii-1][1])continue;
+      let time1 = Date.parse(data[i][ii-1][1])/1000;
+      let time2 = Date.parse(data[i][ii][1])/1000;
+      let dey_his = new Date(Date.parse(data[i][ii][1])).getDate();
+      if(dey_his!=dey){
+        godyny0=0;
+        start_zminy=0;
+        dey=dey_his;
+      }
+      if(parseInt(data[i][ii][2])>2){
+        if(start_zminy==0)start_zminy=1;
+        godyny+=godyny0;
+        godyny0=0;
+       }
+       if(start_zminy!=0)godyny0+=time2-time1;
+      if(!data[i][ii][0] || !data[i][ii-1][0] || parseInt(data[i][ii][2])<1)continue;
+       let y = parseFloat(data[i][ii-1][0].split(',')[0]);
+       let x = parseFloat(data[i][ii-1][0].split(',')[1]);
+       let yy = parseFloat(data[i][ii][0].split(',')[0]);
+       let xx = parseFloat(data[i][ii][0].split(',')[1]);
+       let dis = wialon.util.Geometry.getDistance(y, x, yy, xx);
+       if(dis>5)probeg+=dis;
     }
+    for (let i = 1; i<tb.rows.length; i++){
+           if (tb.rows[i].cells[0].innerText.split(' ')[0]==name.split(' ')[0]) {
+             tb.rows[i].cells[2].innerText=(probeg/1000).toFixed()+'км    '+(godyny/3600).toFixed()+'год';
+             break;
+           }
+         }
+
   }
-  }
- 
-}  
+
+} 
+
 function sort_table(table,colum){
 let data=[];
   for (let i = 1; i<table.rows.length; i++){
@@ -7304,11 +7436,11 @@ async function control_avto(){
   let d22 =new Date(d2).toJSON().slice(0,10);
 
   $('#log_control_tb').empty();
-  $('#log_control_tb').append("<tr><th>ТЗ</th><th>"+d22+"</th><th>"+d11+"</th><th>"+d00+"</th><th>"+d_11+"</th>></tr>");
+  $('#log_control_tb').append("<tr><th>ТЗ</th><th>"+d11+"</th><th>"+d00+"</th><th>"+d_11+"</th>></tr>");
 
   for (let j = 0; j<avto.length; j++){
     if(avto[j][1]=='Резерв'){
-      $('#log_control_tb').append("<tr><td>"+avto[j][0]+"</td><td>----</td><td>----</td><td>----</td><td>----</td></tr>");
+      $('#log_control_tb').append("<tr><td>"+avto[j][0]+"</td><td>----</td><td>----</td><td>----</td></tr>");
       continue;
     }
     let status0=0;
@@ -7384,12 +7516,12 @@ if(status3==2){
   if(now_date>d_1) bb3 ="<button style = 'background: rgb(247, 161, 161);width: 100%;' >ремонт</button>";
 }
 
-    $('#log_control_tb').append("<tr><td>"+avto[j][0]+"</td><td>"+bb0+"</td><td>"+bb1+"</td><td>"+bb2+"</td><td>"+bb3+"</td></tr>");
+    $('#log_control_tb').append("<tr><td>"+avto[j][0]+"</td><td>"+bb1+"</td><td>"+bb2+"</td><td>"+bb3+"</td></tr>");
   } 
   let tb=document.getElementById("log_control_tb");
 let spisok=''
   for (let i = 1; i<tb.rows.length; i++){
-    if(tb.rows[i].cells[2].innerText== "")spisok+=tb.rows[i].cells[0].innerText.split(' ')[0]+',';
+    if(tb.rows[i].cells[1].innerText== "")spisok+=tb.rows[i].cells[0].innerText.split(' ')[0]+',';
   }
   if(control_date!=control_date0){
     control_date0=control_date;
@@ -7413,8 +7545,8 @@ function km_in_cels(data){
   let tb = document.getElementById("log_control_tb");
   for (let i = 1; i<tb.rows.length; i++){
     for (let j = 0; j<marshrut_probeg_deny.length; j++){
-    if (tb.rows[i].cells[0].innerText.split(' ')[0]==marshrut_probeg_deny[j][0][1].split(' ')[0] && parseInt(marshrut_probeg_deny[j][1][1])>0 && tb.rows[i].cells[2].innerText== "") {
-      tb.rows[i].cells[2].innerHTML="<button style = 'background: rgb(252, 244, 163);width: 100%;' >"+marshrut_probeg_deny[j][1][1]+"</button>";
+    if (tb.rows[i].cells[0].innerText.split(' ')[0]==marshrut_probeg_deny[j][0][1].split(' ')[0] && parseInt(marshrut_probeg_deny[j][1][1])>0 && tb.rows[i].cells[1].innerText== "") {
+      tb.rows[i].cells[1].innerHTML="<button style = 'background: rgb(252, 244, 163);width: 100%;' >"+marshrut_probeg_deny[j][1][1]+"</button>";
       break;
     }
   }
@@ -7608,7 +7740,7 @@ $("#cont_b2").on("click", function (){
 
 $("#cont_b3").on("click", function (){
   let t=$('#cont_time').text();
-  let t2=Date.parse($('#cont_time').text())+86400000;
+  let t2=Date.parse($('#cont_time').text())+79200000;
   t2 = new Date(t2);
   let n=$('#cont_unit').text();
   let id=unitsID[n];
@@ -7620,7 +7752,6 @@ $("#cont_b3").on("click", function (){
   for(let i=0;i<marshrut_point.length;i++){
 
   }
- 
   SendDataReportInCallback(Date.parse(t)/1000,Date.parse(t2)/1000,n,zvit2,[],0,logistik_zvit);
   return;
 });
@@ -8099,6 +8230,16 @@ async function logistik_zvit(data){
      let probeg1=0;
      let probeg2=0;
      let probeg3=0;
+     let motogod=0;
+     let motogod1=0;
+     let motogod2=0;
+     let motogod3=0;
+     let vrusi=0;
+     let vrusi1=0;
+     let begin_marshrut=0;
+     let end_marshrut=0;
+     let begin_marshrut0=0;
+     let end_marshrut0=0;
      let p1=0;
      let p2=0;
      let stops = 0;
@@ -8114,19 +8255,32 @@ async function logistik_zvit(data){
         c2=j;
         to = Date.parse(tb.rows[2].cells[c2+2].textContent);
         if (tb.rows[4].cells[c1].getElementsByTagName('input')[0].checked==false  || tb.rows[4].cells[c2].getElementsByTagName('input')[0].checked==false) {
-     
           for(let i=2;i<data[0].length;i++){
-            if(!data[0][i][0])continue;
-            if(!data[0][i-1][0])continue;
+
+            if(!data[0][i][1] || !data[0][i-1][1])continue;
             let d1=Date.parse(data[0][i][1]);
             if(d1<from || d1>to)continue;
+            let time1 = Date.parse(data[0][i-1][1])/1000;
+            let time2 = Date.parse(data[0][i][1])/1000;
+            if(parseInt(data[0][i][2])>2){
+              if(begin_marshrut==0)begin_marshrut=time2;
+              if(begin_marshrut0==0)begin_marshrut0=data[0][i][1];
+              end_marshrut=time2;
+              end_marshrut0=data[0][i][1];
+              vrusi+=time2-time1;
+             }
+             motogod+=time2-time1;
+
+            if(!data[0][i][0] || !data[0][i-1][0] || parseInt(data[0][i][2])<1)continue;
              let y = parseFloat(data[0][i-1][0].split(',')[0]);
              let x = parseFloat(data[0][i-1][0].split(',')[1]);
              let yy = parseFloat(data[0][i][0].split(',')[0]);
              let xx = parseFloat(data[0][i][0].split(',')[1]);
              let dis = wialon.util.Geometry.getDistance(y, x, yy, xx);
+            
              probeg+=dis;
              probeg3+=dis;
+       
              marshrut_data.push([y,x],[yy,xx]);
           }
           let l = L.polyline([marshrut_data], {color: 'rgb(228, 12, 12)',weight:2,opacity:1}).addTo(map);
@@ -8138,22 +8292,42 @@ async function logistik_zvit(data){
           if (tb.rows[4].cells[c2].getElementsByTagName('input')[0].checked==true) {
             p2=tb.rows[2].cells[c2].textContent;
             if(p1==0)p1=tb.rows[2].cells[c1].textContent;
-            probeg2 += await point_to_point_rote_marshrut(p1,p2);
+            let rout_data = await point_to_point_rote_marshrut(p1,p2);
+            probeg2 += parseFloat(rout_data[0]);
+            motogod2+= parseFloat(rout_data[1]);
           }
 
         } else {
           for(let i=2;i<data[0].length;i++){
-            if(!data[0][i][0])continue;
-            if(!data[0][i-1][0])continue;
+           
+            if(!data[0][i][1] || !data[0][i-1][1])continue;
             let d1=Date.parse(data[0][i][1]);
             if(d1<from || d1>to)continue;
+            let time1 = Date.parse(data[0][i-1][1])/1000;
+            let time2 = Date.parse(data[0][i][1])/1000;
+            if(begin_marshrut!=0)motogod1+=time2-time1;
+            if(parseInt(data[0][i][2])>2){
+             if(begin_marshrut==0)begin_marshrut=time2;
+             if(begin_marshrut0==0)begin_marshrut0=data[0][i][1];
+             end_marshrut=time2;
+             end_marshrut0=data[0][i][1];
+             vrusi+=time2-time1;
+             vrusi1+=time2-time1;
+             motogod+=motogod1;
+             motogod3+=motogod1;
+             motogod1=0;
+            }
+
+            if(!data[0][i][0] || !data[0][i-1][0] || parseInt(data[0][i][2])<1)continue;
              let y = parseFloat(data[0][i-1][0].split(',')[0]);
              let x = parseFloat(data[0][i-1][0].split(',')[1]);
              let yy = parseFloat(data[0][i][0].split(',')[0]);
              let xx = parseFloat(data[0][i][0].split(',')[1]);
              let dis = wialon.util.Geometry.getDistance(y, x, yy, xx);
+             
              probeg+=dis;
              probeg1+=dis;
+
              marshrut_data.push([y,x],[yy,xx]);
           }
           let l = L.polyline([marshrut_data], {color: 'rgb(70, 247, 0)',weight:4,opacity:1}).addTo(map);
@@ -8178,11 +8352,24 @@ async function logistik_zvit(data){
      let d0 = (probeg/1000).toFixed();
      let d1 = ((probeg1/1000)+probeg2).toFixed();
      let d2 = d0-d1;
-   
+
+     let t0 = motogod;
+     let t1 = motogod3+motogod2;
+     let t2 = t0-t1;
+
+     let r0 = vrusi;
+     let r1 = vrusi1+motogod2;
+     let r2 = r0-r1;
+
+     let s0 = motogod -vrusi;
+     let s1 = t1-vrusi1;
+     let s2 = s0-s1;
+
+     
      $('#marh_zvit_tb').empty();
      $('#marh_zvit_tb').show();
-     $('#marh_zvit_tb').append("<thead><td>дата</td><td>ТЗ</td><td>пробіг</td><td>розрахунок</td><td>відхилення</td><td>зупинки</td><td>назва</td><td>маршрут</td></thead>");
-     $('#marh_zvit_tb').append("<tr><td>"+$('#cont_time').text()+"</td><td>"+$('#cont_unit').text()+"</td><td>"+d0+"</td><td>"+d1+"</td><td>"+d2+"</td><td>"+h.padStart(2, 0) + ':' + m.padStart(2, 0) +':'+s.padStart(2, 0)+"</td><td>"+ $('#marshrut_text').val()+"</td><td>"+mar_text+"</td></tr>");
+     $('#marh_zvit_tb').append("<thead><td>дата</td><td>ТЗ</td><td>початок маршруту</td><td>кінкць маршруту</td><td>пробіг</td><td>розрахунок</td><td>відхилення</td><td>час</td><td>розрахунок</td><td>відхилення</td><td>в русі</td><td>розрахунок</td><td>відхилення</td></td><td>простій</td><td>розрахунок</td><td>відхилення</td><td>назва</td><td>маршрут</td></thead>");
+     $('#marh_zvit_tb').append("<tr><td>"+$('#cont_time').text()+"</td><td>"+$('#cont_unit').text()+"</td><td>"+begin_marshrut0+"</td><td>"+end_marshrut0+"</td><td>"+d0+"</td><td>"+d1+"</td><td>"+d2+"</td><td>"+sec_to_time(t0)+"</td><td>"+sec_to_time(t1)+"</td><td>"+sec_to_time(t2)+"</td><td>"+sec_to_time(r0)+"</td><td>"+sec_to_time(r1)+"</td><td>"+sec_to_time(r2)+"</td><td>"+sec_to_time(s0)+"</td><td>"+sec_to_time(s1)+"</td><td>"+sec_to_time(s2)+"</td><td>"+ $('#marshrut_text').val()+"</td><td>"+mar_text+"</td></tr>");
  
 
   let cpdata= $('#cont_time').text() + '\t' +$('#cont_unit').text() + '\t' +d0 + ' \t' + d1 + '\t' + d2 + '\t' + h.padStart(2, 0) + ':' + m.padStart(2, 0) +':'+s.padStart(2, 0) +'\t' + $('#marshrut_text').val() + '\t' + mar_text +'\n';
@@ -8266,7 +8453,7 @@ function point_in_data(y,x) {
           }
           if (data.status=="OK"){
              d= (data.distance.value/1000).toFixed(1);
-             t= (data.duration.value/60).toFixed();
+             t= data.duration.value;
             let line=[];
             for (v = 0; v < data.points.length; v+=3) {
             line.push ([data.points[v].lat,data.points[v].lon]);
@@ -8276,7 +8463,8 @@ function point_in_data(y,x) {
           }
         });
         await sleep(1500); 
-        return new Promise(function(resolve, reject) { resolve(parseFloat(d)); });
+        let dt=[d,t];
+        return new Promise(function(resolve, reject) { resolve(dt); });
     
 
 }
