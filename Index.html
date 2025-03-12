@@ -127,7 +127,7 @@
 #log { float: left; width: 30%; border: 1px solid #c6c6c6; max-height:30px; overflow-y: auto; margin: 0px 0px 10px 0px;}
 #mars_table{max-height:60vh; overflow-y: auto;}
 #control_table{max-height:60vh; overflow-y: auto;}
-#mars_table_div{max-width:99%; overflow-x: auto;white-space: nowrap;}
+#mars_table_div{max-width:99%;  overflow-x: auto; white-space: nowrap;}
 #mars_zvit_table_div{max-width:99%; overflow-x: auto;white-space: nowrap;}
 #marshrut { min-width: 100%; border: 1px solid #c6c6c6; margin: 10px 0px 10px 0px;}
 #zvittt{ border: 1px solid #c6c6c6; margin: 10px 0px 10px 0px;}
@@ -270,14 +270,14 @@ button, input, span, select,textarea {margin: 2px 2px 0px 0px;   font-family: "A
   border-top: none;
   z-index: 99;
   /*position the autocomplete items to be the same width as the container:*/
-  top: 100%;
-  left: 0;
+  top: 20%;
+  left: 51%;
   right: 0;
 }
 .autocomplete-items div {
   cursor: pointer;
   text-align: left;
-  background-color: #fff; 
+  background-color: rgb(232, 255, 230); 
   border-bottom: 1px solid #d4d4d4; 
 }
 .autocomplete-items div:hover {
@@ -446,8 +446,9 @@ button, input, span, select,textarea {margin: 2px 2px 0px 0px;   font-family: "A
         <option value="z9">звіт по журналу</option>
         <option value="z11">зупинки в магазині</option>
         <option value="z12">звіт авто OBD</option>
-        <option value="z13">звіт поля ККЗ</option>
+        <option value="z13">звіт поля, причепи, водії</option>
         <option value="z14">звіт по треках</option>
+        <option value="z15">планування маршрутів</option>
       </select>  
       <br>
       <hr>
@@ -534,13 +535,25 @@ button, input, span, select,textarea {margin: 2px 2px 0px 0px;   font-family: "A
 
     </div>
     <div id="zz13" class='zvit'> 
-        <button id='polya_kkz'style = "width: 200px;">звіт</button> 
+        <button id='polya_kkz'style = "width: 30%;">поля</button>
+        <button id='trailers_kkz'style = "width: 30%;">причепи</button> 
+        <button id='vodiyi_kkz'style = "width: 30%;">водії</button>  
     </div> 
    
     <div id="zz14" class='zvit'> 
+    <input id="track_time1" type="datetime-local"/>
+    <input id="track_time2" type="datetime-local"/>
+    <br>
+    <br>
     <select class='livesearch' id='track_lis'style='width:100%;' multiple></select>
     <br>
+    <br>
         <button id='track_lis_bt' style='width:100%;'>відобразити треки</button> 
+    </div> 
+    <div id="zz15" class='zvit'> 
+        створіть замкнуту геозону за допомаогою інструменту обміру
+        <select class='livesearch' id='planuvannya_lis'style='width:100%;' multiple></select>
+        <br>
     </div> 
  <table id="unit_table"class='table'></table>
  </div>
@@ -651,8 +664,9 @@ button, input, span, select,textarea {margin: 2px 2px 0px 0px;   font-family: "A
                 <td></td>
             </tr>
         </table> 
-    </div>
         <textarea id="marshrut_text"  rows="1" cols="100" placeholder="коментар до маршруту"></textarea>
+    </div>
+       
       </div>
         
 
@@ -792,4 +806,3 @@ button, input, span, select,textarea {margin: 2px 2px 0px 0px;   font-family: "A
 
 </body>
 </html>
-
