@@ -5557,11 +5557,13 @@ $('#vodiyi_kkz').click(function() {
   if($("#lis0 :selected").html()=='—')return;
   str = $("#lis0 :selected").html();
 }
-    SendDataReportInCallback(fr,to,str,zvit2,[],0,avto_OBD);
+    SendDataReportInCallback(fr,to,str,zvit2,[],0,show_all_tracks_data);
     });
 
-    function show_all_tracks_data22(data){
+   function show_all_tracks_data(data){
       $("#unit_table").empty();
+      clear();
+      let trak_color = Math.floor(Math.random() * 360);
       for (let i = 0; i<data.length; i++){
         let name = data[i][0][1];
         let line =[];
@@ -5573,8 +5575,9 @@ $('#vodiyi_kkz').click(function() {
           let x = parseFloat(data[i][ii][0].split(',')[1]);
           line.push ([y,x]);
         }
-        let l = L.polyline([line], {color: 'rgb(255, 230, 4)',weight:2,opacity:1}).addTo(map);
-        marshrut_treck.push(l);
+        trak_color += 60+Math.floor(Math.random() * 30);
+        let l = L.polyline([line], {color: `hsl(${trak_color}, ${100}%, ${45}%)`,weight:2,opacity:1}).bindTooltip(''+name+'',{opacity:0.8, sticky: true}).addTo(map);
+        temp_layer.push(l);
       }
     }
 
