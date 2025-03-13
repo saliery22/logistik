@@ -1,5 +1,6 @@
 
 
+
 // global variables
 var map, marker,unitslist = [],unitslistID = [],allunits = [],rest_units = [],marshruts = [],zup = [], unitMarkers = [], markerByUnit = {},tile_layer, layers = {},marshrutMarkers = [],unitsID = {},Vibranaya_zona,temp_layer=[],trailers={},drivers={};
 var areUnitsLoaded = false;
@@ -1051,24 +1052,48 @@ if (!$('#marrr').is(':hidden')) {
   onPolygonReady: (polygon) => {
     let area = (turf.area(polygon.toGeoJSON())*kof/10000).toFixed(2);
     polygon.bindTooltip(''+area+'га',{opacity:0.8});
-    if($('#zz15').is(':visible') ) {planuvannya_marshrutiv(polygon);}
   },
   onPolygonDblClick: (polygon, control, ev) => {
     let area = (turf.area(polygon.toGeoJSON())*kof/10000).toFixed(2);
+    let colorr=  `hsl(${Math.floor(Math.random() * 360)}, ${100}%, ${45}%)`;
     let geojson = L.geoJSON(polygon.toGeoJSON(), {
       style: {
-        opacity: 0.5,
-        fillOpacity: 0.2,
-        color: 'red',
+        opacity: 0.9,
+        fillOpacity: 0.1,
+        color: colorr,
       },
-    }).bindTooltip(''+area+'га',{opacity:0.8});
-    geojson.addTo(map);
+    })
+    geojson.bindTooltip(''+area+'га',{opacity:0.8, sticky: true}).addTo(map);
     control.deactivate();
+    if($('#zz15').is(':visible') ) {
+      marshrut_treck.push(geojson);
+      planuvannya_marshrutiv(polygon,colorr);
+    }
+
   },
   position: 'topleft',
 });
  map.addControl(areaSelection);
+
+ var options = {
+  position: 'topleft',
+  lengthUnit: {
+      factor: null, //  from km to nm
+      display: 'км',
+      decimal: 2,
+      label: 'Дистанція:'
+  },
+  angleUnit: {
+    display: '&deg;',           // This is the display value will be shown on the screen. Example: 'Gradian'
+    decimal: 2,                 // Bearing result will be fixed to this value.
+    factor: null,                // This option is required to customize angle unit. Specify solid angle value for angle unit. Example: 400 (for gradian).
+    label: 'Кут:'
+  }
+};
+L.control.ruler(options).addTo(map);
+
 }
+
 
 //let ps = prompt('');
 //if(ps==55555){
@@ -2065,19 +2090,18 @@ function position(t)  {
 }
     
 var tik =0;
-var sec =600;
+var sec =1500;
 var sec2=200;
 setInterval(function() {
   sec2--;
   if (sec2 <= 0 ) {jurnal_online();sec2=1000;}
 if($("#gif").is(":checked")) {
   //msg(sec/10);
-   let t=Date.parse($('#f').text())+10000;
-    tik=slider.value;
+    let t=Date.parse($('#f').text())+6000;
     sec++;
     tik++;
-    slider.value=tik;
-    if (tik >= 1999) {tik =1800;slider.value=tik; t = Date.parse($('#fromtime1').val())+(Date.parse($('#fromtime2').val())-Date.parse($('#fromtime1').val()))/2000*tik;}
+    slider.value=(t-Date.parse($('#fromtime1').val()))/(Date.parse($('#fromtime2').val())-Date.parse($('#fromtime1').val()))*2000;
+    if (slider.value >= 1999) {tik =1800;slider.value=tik; t = Date.parse($('#fromtime1').val())+(Date.parse($('#fromtime2').val())-Date.parse($('#fromtime1').val()))/2000*tik;}
     if (sec > 3000) {
     sec =0;
     UpdateGlobalData(0,zvit2,0);
@@ -5513,6 +5537,47 @@ $('#vodiyi_kkz').click(function() {
     $("#unit_table").append("<tr><td>"+key+"</td><td>"+drv.n+"</td><td>"+drv.c+"</td><td>"+drv.p+"</td><td>"+now+"</td><td>"+then+"</td>/tr>");
   }
   });
+  $('#track_lis_bt2').click(function() {
+    let to = Date.parse($('#track_time2').val())/1000; // end of day in seconds
+    let fr = Date.parse($('#track_time1').val())/1000; // get begin time - beginning of day
+    if(!fr){fr=0; to=0;}
+    let str='';
+    let vibor = $("#track_lis").chosen().val();
+    if(vibor){
+      for(var i=0; i < vibor.length; i++){
+        if(unitsgrup[vibor[i]]){
+          if (i==0){ 
+         str += unitsgrup[vibor[i]];
+         }else{
+         str += ','+unitsgrup[vibor[i]];
+         }
+  }
+  }
+}else{
+  if($("#lis0 :selected").html()=='—')return;
+  str = $("#lis0 :selected").html();
+}
+    SendDataReportInCallback(fr,to,str,zvit2,[],0,avto_OBD);
+    });
+
+    function show_all_tracks_data22(data){
+      $("#unit_table").empty();
+      for (let i = 0; i<data.length; i++){
+        let name = data[i][0][1];
+        let line =[];
+        for (let ii = 1; ii<data[i].length-1; ii++){
+          if(!data[i][ii][0])continue;
+          if(!data[i][ii][2])continue;
+          if(parseInt(data[i][ii][2])==0)continue;
+          let y = parseFloat(data[i][ii][0].split(',')[0]);
+          let x = parseFloat(data[i][ii][0].split(',')[1]);
+          line.push ([y,x]);
+        }
+        let l = L.polyline([line], {color: 'rgb(255, 230, 4)',weight:2,opacity:1}).addTo(map);
+        marshrut_treck.push(l);
+      }
+    }
+
 
 $('#track_lis_bt').click(function() {
   $("#unit_table").empty();
@@ -5544,11 +5609,12 @@ $('#track_lis_bt').click(function() {
     str.forEach((element) => {if(unitslist[i].getName().indexOf(element)>=0){unit = true;}});
     if(unit==false)continue;
     trak_color += 60+Math.floor(Math.random() * 30);
-    let colorr = HSLToHex(trak_color,100,50);
+    let colorr = HSLToHex(trak_color,100,40);
     show_all_tracks(unitslist[i].getId(),fr,to,colorr);
+    
   }
-
   });
+
   function HSLToHex(h,s,l) {  
     const hDecimal = l / 100;
     const a = (s * Math.min(hDecimal, 1 - hDecimal)) / 100;
@@ -5564,14 +5630,15 @@ $('#track_lis_bt').click(function() {
     return `${f(0)}${f(8)}${f(4)}`;
   }
 
-  function show_all_tracks (unit_id,from,to,colorr) {
+   function show_all_tracks (unit_id,from,to,colorr) {
 
-      sess = wialon.core.Session.getInstance(), // get instance of current Session	
-      renderer = sess.getRenderer(),
-      callback =  qx.lang.Function.bind(function(code, layer) {
+      let sess = wialon.core.Session.getInstance(); // get instance of current Session	
+      let renderer = sess.getRenderer();
+      let callback =  qx.lang.Function.bind(function(code, layer) {
+        
         if (code) { msg(wialon.core.Errors.getErrorText(code)); return; } // exit if error code
         if (layer) {  
-          if (map) {         
+          if (map) {  
             if (!tile_layer)
               tile_layer = L.tileLayer(sess.getBaseUrl() + "/adfurl" + renderer.getVersion() + "/avl_render/{x}_{y}_{z}/"+ sess.getId() +".png", {zoomReverse: true, zoomOffset: -1,zIndex: 3}).addTo(map);
             else 
@@ -5597,8 +5664,12 @@ $('#track_lis_bt').click(function() {
     renderer.createMessagesLayer(params, callback);
   }
 
-  function planuvannya_marshrutiv(data){
+  function planuvannya_marshrutiv(data,col){
+       //console.log(stor)
+       //console.log(drivers)
+       //console.log(zmina)
 let poly = [];
+let kk=0;
 for(let i = 0; i<data._latlngs[0].length; i++){
 poly.push({x:data._latlngs[0][i].lat, y:data._latlngs[0][i].lng})
 }
@@ -5629,7 +5700,7 @@ for(let i = 0; i<unitslist.length; i++){
     if(markerr){
      let lat = markerr.getLatLng().lat;
      let lon = markerr.getLatLng().lng;
-     let vodiy = "невідомо"
+     let vodiy = "-----"
      if(wialon.util.Geometry.pointInShape(poly, 0, lat, lon)){
        for(let ii = 0; ii<Global_DATA.length; ii++){
          let idd = Global_DATA[ii][0][0];
@@ -5644,17 +5715,35 @@ for(let i = 0; i<unitslist.length; i++){
        let vodiy1=namet.split("/")[0];
        let vodiy2=namet.split("/")[1];
        let zmina='';
+       let zavtra = '-----';
        if(vodiy1.indexOf(vodiy)>=0)zmina=vodiy2;
        if(vodiy2.indexOf(vodiy)>=0)zmina=vodiy1;
-       //console.log(stor)
-       //console.log(drivers)
-       //console.log(zmina)
        for (key in drivers) {
         let drv = drivers[key].n;
-        if(zmina.indexOf(drv)>=0)console.log(drv);
+        if(zmina.indexOf(drv)>=0){
+          zavtra= drv;
+          break;
+        }
       }
-       
-      $("#unit_table").append("<tr><td>"+namet+"</td><td>"+vodiy+"</td><td>"+vodiy1+"</td><td>"+vodiy2+"</td>/tr>");
+      if(zavtra!="-----"){
+        for(let i = stor.length-1; i>=0; i--){
+          if(stor[i][3].indexOf(zavtra)>=0){
+            let m =L.marker([stor[i][0], stor[i][1]], {
+              icon: L.divIcon({
+                iconSize: "auto",
+                className: 'div-icon',
+                html: "<div style=' width: 20px;  height: 20px;border: 1px solid #000000; border-top-left-radius: 0px;  border-top-right-radius: 10px;  border-bottom-right-radius: 10px;  border-bottom-left-radius: 10px;background:"+col+"; '></div> ",
+              })
+            }).bindTooltip(''+stor[i][3]+'',{ sticky: true}).addTo(map);
+            marshrut_treck.push(m);
+            let l = L.polyline([[lat,lon],[stor[i][0], stor[i][1]]], {color: col,weight:2,opacity:1}).addTo(map);
+            marshrut_treck.push(l);
+
+          }
+        }
+      }
+      kk++;
+      $("#unit_table").append("<tr class='fail_trak' id='"+id+"," + lat+","+lon+ "'><td>"+kk+"</td><td style = 'background-color: "+col+";'>&nbsp&nbsp&nbsp&nbsp</td><td>"+namet+"</td><td>"+vodiy+"</td><td>"+zavtra+"</td></tr>");
      }
     }
 }  
