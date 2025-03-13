@@ -2090,11 +2090,11 @@ function position(t)  {
 }
     
 var tik =0;
-var sec =1500;
-var sec2=200;
+var sec =3000;
+var sec2=400;
 setInterval(function() {
   sec2--;
-  if (sec2 <= 0 ) {jurnal_online();sec2=1000;}
+  if (sec2 <= 0 ) {jurnal_online();sec2=2000;}
 if($("#gif").is(":checked")) {
   //msg(sec/10);
     let t=Date.parse($('#f').text())+6000;
@@ -2102,18 +2102,18 @@ if($("#gif").is(":checked")) {
     tik++;
     slider.value=(t-Date.parse($('#fromtime1').val()))/(Date.parse($('#fromtime2').val())-Date.parse($('#fromtime1').val()))*2000;
     if (slider.value >= 1999) {tik =1800;slider.value=tik; t = Date.parse($('#fromtime1').val())+(Date.parse($('#fromtime2').val())-Date.parse($('#fromtime1').val()))/2000*tik;}
-    if (sec > 3000) {
+    if (sec > 6000) {
     sec =0;
     UpdateGlobalData(0,zvit2,0);
     }
-    if (sec == 1000 && $("#monitoring_gif").is(":checked")) {Monitoring2();}
+    if (sec == 2000 && $("#monitoring_gif").is(":checked")) {Monitoring2();}
     
     
     if(t>Date.parse($('#fromtime2').val()))t=Date.parse($('#fromtime2').val());
     slider.value=(t-Date.parse($('#fromtime1').val()))/(Date.parse($('#fromtime2').val())-Date.parse($('#fromtime1').val()))*2000;
     position(t);
   }
-  }, 120);
+  }, 60);
  
 
     
