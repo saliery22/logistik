@@ -3510,7 +3510,7 @@ $("#robota_polya_tb").on("click", function (evt){
      if (evt.target.cellIndex==1){
       let ind =  row.rowIndex;
       let newRow = row.parentNode.insertRow(ind+1);
-      newRow.innerHTML = "<tr><td>-</td><td>+</td><td contenteditable='true'>----</td contenteditable='true'><td contenteditable='true'>----</td contenteditable='true'><td contenteditable='true'>----</td><td contenteditable='true'>----</td><td>"+row.cells[6].textContent+"</td><td contenteditable='true'>----</td><td contenteditable='true'>----</td><td>"+row.cells[9].textContent+"</td><td contenteditable='true'>----</td><td contenteditable='true'>----</td></tr>";
+      newRow.innerHTML = "<tr><td>-</td><td>+</td><td contenteditable='true'>----</td contenteditable='true'><td contenteditable='true'>----</td contenteditable='true'><td contenteditable='true'>----</td><td contenteditable='true'>----</td><td>"+row.cells[6].textContent+"</td><td contenteditable='true'>----</td><td contenteditable='true'>----</td><td>"+row.cells[9].textContent+"</td><td contenteditable='true'>----</td><td contenteditable='true'>----</td><td contenteditable='true'>----</td><td contenteditable='true'>----</td></tr>";
       return;
      }
 
@@ -5667,7 +5667,7 @@ $('#track_lis_bt').click(function() {
     renderer.createMessagesLayer(params, callback);
   }
 
-  function planuvannya_marshrutiv(data,col){
+function planuvannya_marshrutiv(data,col){
        //console.log(stor)
        //console.log(drivers)
        //console.log(zmina)
@@ -5728,6 +5728,7 @@ for(let i = 0; i<unitslist.length; i++){
           break;
         }
       }
+      let poisk=false;
       if(zavtra!="-----"){
         for(let i = stor.length-1; i>=0; i--){
           if(stor[i][3].indexOf(zavtra)>=0){
@@ -5741,16 +5742,22 @@ for(let i = 0; i<unitslist.length; i++){
             marshrut_treck.push(m);
             let l = L.polyline([[lat,lon],[stor[i][0], stor[i][1]]], {color: col,weight:2,opacity:1}).addTo(map);
             marshrut_treck.push(l);
-
+            poisk=true;
+            break;
           }
         }
       }
       kk++;
-      $("#unit_table").append("<tr class='fail_trak' id='"+id+"," + lat+","+lon+ "'><td>"+kk+"</td><td style = 'background-color: "+col+";'>&nbsp&nbsp&nbsp&nbsp</td><td>"+namet+"</td><td>"+vodiy+"</td><td>"+zavtra+"</td></tr>");
+      if(poisk){
+        $("#unit_table").append("<tr class='fail_trak' id='"+id+"," + lat+","+lon+ "'><td>"+kk+"</td><td style = 'background-color: "+col+";'>&nbsp&nbsp&nbsp&nbsp</td><td>"+namet+"</td><td>"+vodiy+"</td><td style ='background-color: #98FB98'>"+zavtra+"</td></tr>");
+      }else{
+        $("#unit_table").append("<tr class='fail_trak' id='"+id+"," + lat+","+lon+ "'><td>"+kk+"</td><td style = 'background-color: "+col+";'>&nbsp&nbsp&nbsp&nbsp</td><td>"+namet+"</td><td>"+vodiy+"</td><td>"+zavtra+"</td></tr>");
+      }
      }
     }
 }  
 }
+
 
 
 //===========================ЖУРНАЛ=======================================================================================
