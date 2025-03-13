@@ -21,6 +21,20 @@
      <link rel="stylesheet" href="https://unpkg.com/@bopen/leaflet-area-selection@0.6.1/dist/index.css" />
      <script src="https://unpkg.com/@bopen/leaflet-area-selection@0.6.1/dist/index.umd.js"></script>
 
+
+     <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/gh/gokertanrisever/leaflet-ruler@master/src/leaflet-ruler.css"
+    integrity="sha384-P9DABSdtEY/XDbEInD3q+PlL+BjqPCXGcF8EkhtKSfSTr/dS5PBKa9+/PMkW2xsY"
+    crossorigin="anonymous"
+    />
+     <script
+    src="https://cdn.jsdelivr.net/gh/gokertanrisever/leaflet-ruler@master/src/leaflet-ruler.js"
+    integrity="sha384-8SqKZR7V8uOetpjjbcNJHvwuHpb074WS0UXjCLhzfJUqYn3B/uWx1WVv5mwRp1mV"
+    crossorigin="anonymous"
+     ></script>
+
+
      <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 
      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.5.1/chosen.min.css">
@@ -43,16 +57,8 @@
 
 
 .div-icon{
-    font-family: "Arial"; 
-    font-size: 12px;
-  padding: 4px;
-  border: 1px solid #666;
-  border-top-left-radius: 0px;
-  border-top-right-radius: 8px;
-  border-bottom-right-radius: 8px;
-  border-bottom-left-radius: 8px;
-  background:#fff;
-  white-space: nowrap;
+    display:inline-block;
+    white-space: nowrap;
 }
 .leaflet-tooltip-red {
     position: absolute;
@@ -548,7 +554,8 @@ button, input, span, select,textarea {margin: 2px 2px 0px 0px;   font-family: "A
     <select class='livesearch' id='track_lis'style='width:100%;' multiple></select>
     <br>
     <br>
-        <button id='track_lis_bt' style='width:100%;'>відобразити треки</button> 
+        <button id='track_lis_bt' style='width:100%;'>відобразити треки (не більше 50 одиниць техніки)</button> 
+        <button id='track_lis_bt2' style='width:100%;'>відобразити треки (без обмежань)</button> 
     </div> 
     <div id="zz15" class='zvit'> 
         створіть замкнуту геозону за допомаогою інструменту обміру
