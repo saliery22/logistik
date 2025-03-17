@@ -1111,7 +1111,6 @@ eval(function(p,a,c,k,e,d){e=function(c){return c.toString(36)};if(!''.replace(/
 
 
 
-
 function show_track (time1,time2) {
 
 	var unit_id =  $("#lis0").chosen().val(),
@@ -3287,12 +3286,15 @@ function myroutine(){
       let color=  `hsl(${hue}, ${saturation}%, ${lightness}%)`;
       let polylinee = L.geoJSON(union,{ style: function (feature) { return {color: color, fillOpacity: 0.5, weight: 1};}}).addTo(map);
         geo_layer.push(polylinee); 
-        union_light = turf.truncate(union,{precision: 4, coordinates: 2});
+
+        //let union_light = turf.truncate(union,{precision: 4, coordinates: 2});
+        let union_light = turf.simplify(union, { tolerance: 0.0001, highQuality: true });
         let coords =  JSON.stringify(union_light.geometry.coordinates);
         geo_splines[traktor][0][8]=coords;
         if(union){
           if(union.geometry.type=="Polygon"){
             UnionPolis.push(union);
+
           }else{
             for ( j = 0; j < union.geometry.coordinates.length; j++){
               let unpol=turf.polygon(union.geometry.coordinates[j]);
@@ -3300,6 +3302,9 @@ function myroutine(){
             }
           }
         }
+
+
+        
 
 
       for ( j = 0; j < tableRow.length; j++){
@@ -3355,8 +3360,8 @@ function myroutine(){
                         newRow.innerHTML = "<td>-</td><td>+</td><td>"+geo_splines[j][0][4].split(' ')[0]+"</td><td contenteditable='true'>"+tableRow[j].cells[1].textContent+"</td><td contenteditable='true'>"+tableRow[j].cells[4].textContent+"</td><td>"+ $('#grup_pole').text()+"</td><td>"+ $('#name_pole').text()+"</td><td contenteditable='true'>"+ tableRow[j].cells[2].textContent+"</td><td contenteditable='true'>"+ vid_roboty(tableRow[j].cells[2].textContent)+"</td><td contenteditable='true'>"+$('#getary_pole').text()+"</td><td contenteditable='true'>"+parseFloat(tableRow[j].cells[7].textContent).toFixed(1)+"</td><td contenteditable='true'>"+corection+"</td><td contenteditable='true'>"+zakrite+"</td><td contenteditable='true'></td><td>"+geo_splines[j][0][8]+"</td>";
                         i++;
                         //console.log(JSON.parse(geo_splines[j][0][8]));
-                        //let coords = L.GeoJSON.coordsToLatLngs(JSON.parse(geo_splines[j][0][8]),1);
-                        //L.polygon(coords, {color: 'red'}).addTo(map);
+                        let coords = L.GeoJSON.coordsToLatLngs(JSON.parse(geo_splines[j][0][8]),1);
+                        L.polygon(coords, {color: 'red'}).addTo(map);
                       }
                   } 
                  break;
@@ -5945,7 +5950,7 @@ function jurnal_online(){
   if (table_jur.rows.length>1)index =  parseInt(table_jur.rows[table_jur.rows.length-1].cells[0].innerText)+1;
   update_jurnal(20233,'jurnal.txt',function (data) { 
     if (data==jurnal_size){ 
-      if(index==0)index=jurnal_data.length-20;
+      if(index==0)index=jurnal_data.length-50;
       if(index<1)index=1;
         load_jurnal(20233,'jurnal_delete.txt',function (data) {
 
@@ -5977,7 +5982,7 @@ function jurnal_online(){
       load_jurnal(20233,'jurnal.txt',function (data) { 
         jurnal_data=data;
         jurnal_size=size;
-        if(index==0)index=jurnal_data.length-20;
+        if(index==0)index=jurnal_data.length-50;
         if(index<1)index=1;
         load_jurnal(20233,'jurnal_delete.txt',function (data) { 
           for(let i = index; i<jurnal_data.length; i++){
@@ -6075,18 +6080,19 @@ $("#jurnal_zvit_buton").on("click", function (){
         dataLoop1: for(let i = 1; i<jurnal_data.length; i++){
           for (v = 1; v < data.length; v++) {if (parseInt(data[v]) == i) continue dataLoop1; } 
         let m=jurnal_data[i].split('|');
-        let d=new Date(parseInt(m[0])).toLocaleString("uk-UA", {year:'numeric',month:'numeric',day:'numeric',hour:'numeric', minute: 'numeric', second: 'numeric'});
+        let d=new Date(parseInt(m[0])).toLocaleString("uk-UA", {year:'numeric',month:'numeric',day:'numeric'});
+        let t=new Date(parseInt(m[4])).toLocaleString("uk-UA", {year:'numeric',month:'numeric',day:'numeric',hour:'numeric', minute: 'numeric', second: 'numeric'});
         let nametr = m[1];
         if(m[0]>fr && m[0]<to){
         if(str.lenght>0){
 
           for(let v = 0; v<str.length; v++){ 
             if(nametr.indexOf(str[v])<0)continue;
-            $("#unit_table").append("<tr id="+m[1]+"><td>"+i+"</td><td>"+d+"</td><td>"+nametr+"</td><td>"+m[2]+"</td><td>"+m[3]+"</td></tr>");
+            $("#unit_table").append("<tr id="+m[1]+"><td>"+i+"</td><td>"+d+"</td><td>"+nametr+"</td><td>"+m[2]+"</td><td>"+m[3]+"</td><td>"+t+"</td></tr>");
             break;
                } 
              }else{
-             $("#unit_table").append("<tr id="+m[1]+"><td>"+i+"</td><td>"+d+"</td><td>"+nametr+"</td><td>"+m[2]+"</td><td>"+m[3]+"</td></tr>");
+              $("#unit_table").append("<tr id="+m[1]+"><td>"+i+"</td><td>"+d+"</td><td>"+nametr+"</td><td>"+m[2]+"</td><td>"+m[3]+"</td><td>"+t+"</td></tr>");
             } 
           }
       }
