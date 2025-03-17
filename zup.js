@@ -1,5 +1,4 @@
 
-
 // global variables
 var map, marker,unitslist = [],unitslistID = [],allunits = [],rest_units = [],marshruts = [],zup = [], unitMarkers = [], markerByUnit = {},tile_layer, layers = {},marshrutMarkers = [],unitsID = {},Vibranaya_zona,temp_layer=[],trailers={},drivers={};
 var areUnitsLoaded = false;
@@ -3360,8 +3359,8 @@ function myroutine(){
                         newRow.innerHTML = "<td>-</td><td>+</td><td>"+geo_splines[j][0][4].split(' ')[0]+"</td><td contenteditable='true'>"+tableRow[j].cells[1].textContent+"</td><td contenteditable='true'>"+tableRow[j].cells[4].textContent+"</td><td>"+ $('#grup_pole').text()+"</td><td>"+ $('#name_pole').text()+"</td><td contenteditable='true'>"+ tableRow[j].cells[2].textContent+"</td><td contenteditable='true'>"+ vid_roboty(tableRow[j].cells[2].textContent)+"</td><td contenteditable='true'>"+$('#getary_pole').text()+"</td><td contenteditable='true'>"+parseFloat(tableRow[j].cells[7].textContent).toFixed(1)+"</td><td contenteditable='true'>"+corection+"</td><td contenteditable='true'>"+zakrite+"</td><td contenteditable='true'></td><td>"+geo_splines[j][0][8]+"</td>";
                         i++;
                         //console.log(JSON.parse(geo_splines[j][0][8]));
-                        let coords = L.GeoJSON.coordsToLatLngs(JSON.parse(geo_splines[j][0][8]),1);
-                        L.polygon(coords, {color: 'red'}).addTo(map);
+                        //let coords = L.GeoJSON.coordsToLatLngs(JSON.parse(geo_splines[j][0][8]),1);
+                        //L.polygon(coords, {color: 'red'}).addTo(map);
                       }
                   } 
                  break;
@@ -5683,12 +5682,19 @@ $('#track_lis_bt').click(function() {
     renderer.createMessagesLayer(params, callback);
   }
 
+  function planuvannya_start(){
+    for(let i = 0; i<10; i++){
+      $("#unit_table").append("<tr><td>"+(i+1)+"</td><td style ='background-color:rgb(255, 0, 0)'>&nbsp&nbsp&nbsp&nbsp</td><td  contenteditable='true'>ККЗ</td><td contenteditable='true'>-----</td></tr>");
+    }
+  }
+
+
+
+
   function planuvannya_marshrutiv(data,col){
-       //console.log(stor)
-       //console.log(drivers)
-       //console.log(zmina)
 let poly = [];
 let kk=0;
+if(data){
 for(let i = 0; i<data._latlngs[0].length; i++){
 poly.push({x:data._latlngs[0][i].lat, y:data._latlngs[0][i].lng})
 }
@@ -5708,6 +5714,7 @@ if(vibor){
   if($("#lis0 :selected").html()=='—')return;
   str = $("#lis0 :selected").html();
 }
+
  str = str.split(',');
 for(let i = 0; i<unitslist.length; i++){
   let namet = unitslist[i].getName();
@@ -5729,51 +5736,83 @@ for(let i = 0; i<unitslist.length; i++){
               vodiy=Global_DATA[ii][iii][6];
               break;
             }
+            vodiy= "не вставив картку в зчитувач";
          }
        } 
+       let poisk=false;
        let vodiy1=namet.split("/")[0];
        let vodiy2=namet.split("/")[1];
        let zmina='';
        let zavtra = '-----';
-       if(vodiy1.indexOf(vodiy)>=0)zmina=vodiy2;
-       if(vodiy2.indexOf(vodiy)>=0)zmina=vodiy1;
-       for (key in drivers) {
-        let drv = drivers[key].n;
-        if(zmina.indexOf(drv)>=0){
-          zavtra= drv;
-          break;
-        }
-      }
-      let poisk=false;
-      if(zavtra!="-----"){
-        for(let i = stor.length-1; i>=0; i--){
-          if(stor[i][3].indexOf(zavtra)>=0){
-            let m =L.marker([stor[i][0], stor[i][1]], {
-              icon: L.divIcon({
-                iconSize: "auto",
-                className: 'div-icon',
-                html: "<div style=' width: 20px;  height: 20px;border: 1px solid #000000; border-top-left-radius: 0px;  border-top-right-radius: 10px;  border-bottom-right-radius: 10px;  border-bottom-left-radius: 10px;background:"+col+"; '></div> ",
-              })
-            }).bindTooltip(''+stor[i][3]+'',{ sticky: true}).addTo(map);
-            marshrut_treck.push(m);
-            let l = L.polyline([[lat,lon],[stor[i][0], stor[i][1]]], {color: col,weight:2,opacity:1}).addTo(map);
-            marshrut_treck.push(l);
-            poisk=true;
-            break;
-          }
-        }
-      }
+       if(vodiy== "не вставив картку в зчитувач"){
+        zavtra = vodiy;
+       }else{
+        if(vodiy1.indexOf(vodiy)>=0)zmina=vodiy2;
+        if(vodiy2.indexOf(vodiy)>=0)zmina=vodiy1;
+        for (key in drivers) {
+         let drv = drivers[key].n;
+         if(zmina.indexOf(drv)>=0){
+           zavtra= drv;
+           break;
+         }
+         zavtra="відсутня картка водія"
+       }         
+    }
       kk++;
-      if(poisk){
-        $("#unit_table").append("<tr class='fail_trak' id='"+id+"," + lat+","+lon+ "'><td>"+kk+"</td><td style = 'background-color: "+col+";'>&nbsp&nbsp&nbsp&nbsp</td><td>"+namet+"</td><td>"+vodiy+"</td><td style ='background-color: #98FB98'>"+zavtra+"</td></tr>");
-      }else{
-        $("#unit_table").append("<tr class='fail_trak' id='"+id+"," + lat+","+lon+ "'><td>"+kk+"</td><td style = 'background-color: "+col+";'>&nbsp&nbsp&nbsp&nbsp</td><td>"+namet+"</td><td>"+vodiy+"</td><td>"+zavtra+"</td></tr>");
-      }
+   
+        $("#unit_table").append("<tr class='fail_trak' id='"+id+"," + lat+","+lon+ "'><td>"+kk+"</td><td style = 'background-color: "+col+";'>&nbsp&nbsp&nbsp&nbsp</td><td  contenteditable='true'>"+namet+"</td><td contenteditable='true'>"+zavtra+"</td></tr>");
+    
      }
     }
 }  
 }
 
+let table_plan=document.getElementById('unit_table');
+  for(let i = 0; i<table_plan.rows.length; i++){
+    let zavtra =  table_plan.rows[i].cells[3].innerText;
+    if(zavtra!="-----" && zavtra.innerText!="не вставив картку в зчитувач" && zavtra!="відсутня картка водія"){
+      let color = table_plan.rows[i].cells[1].style.backgroundColor;
+      for(let ii = stor.length-1; ii>=0; ii--){
+        if(stor[ii][3].indexOf(zavtra)>=0){
+          let m =L.marker([stor[ii][0], stor[ii][1]],{
+            icon: L.divIcon({
+              iconSize: "auto",
+              className: 'div-icon',
+              html: "<div style=' width: 20px;  height: 20px;border: 1px solid #000000; border-top-left-radius: 0px;  border-top-right-radius: 10px;  border-bottom-right-radius: 10px;  border-bottom-left-radius: 10px;background:"+color+"; '></div> ",
+            })
+          }).bindTooltip(''+stor[ii][3]+'',{ sticky: true}).addTo(map);
+          marshrut_treck.push(m);
+          let lat = 51.5506;
+          let lon = 33.3473;
+          if(table_plan.rows[i].id){
+             lat = parseFloat(table_plan.rows[i].id.split(',')[1]);
+             lon = parseFloat(table_plan.rows[i].id.split(',')[2]);
+          }
+          let l = L.polyline([[lat,lon],[stor[ii][0], stor[ii][1]]], {color: color,weight:2,opacity:1}).addTo(map);
+          marshrut_treck.push(l);
+          poisk=true;
+          table_plan.rows[i].cells[3].style ='background-color: #98FB98';
+          break;
+        }
+      }
+    }
+     
+  }
+
+}
+
+$('#planuvannya_bt1').click(function() {
+  $("#unit_table").empty();
+  for(let i = 0; i<10; i++){
+    $("#unit_table").append("<tr><td>"+(i+1)+"</td><td style ='background-color:rgb(255, 0, 0)'>&nbsp&nbsp&nbsp&nbsp</td><td  contenteditable='true'>ККЗ</td><td contenteditable='true'>-----</td></tr>");
+  }
+  clearGarbage(marshrut_treck);
+});
+
+$('#planuvannya_bt2').click(function() {
+  clearGarbage(marshrut_treck);
+  planuvannya_marshrutiv();
+});
 
 //===========================ЖУРНАЛ=======================================================================================
 //===========================ЖУРНАЛ=======================================================================================
@@ -6145,6 +6184,7 @@ $( "#vib_zvit" ).on( "change", function() {
   clearGarbage(garbagepoly);
   clearGarbage(marshrutMarkers);
   let tt = new Date(Date.parse($('#f').text())).toJSON().slice(0,10);
+  if(this.value=='z15') planuvannya_start();
 } );
 
 
