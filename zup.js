@@ -1,4 +1,6 @@
 
+
+
 // global variables
 var map, marker,unitslist = [],unitslistID = [],allunits = [],rest_units = [],marshruts = [],zup = [], unitMarkers = [], markerByUnit = {},tile_layer, layers = {},marshrutMarkers = [],unitsID = {},Vibranaya_zona,temp_layer=[],trailers={},drivers={};
 var areUnitsLoaded = false;
@@ -3286,24 +3288,20 @@ function myroutine(){
       let polylinee = L.geoJSON(union,{ style: function (feature) { return {color: color, fillOpacity: 0.5, weight: 1};}}).addTo(map);
         geo_layer.push(polylinee); 
 
-        //let union_light = turf.truncate(union,{precision: 4, coordinates: 2});
-        let union_light = turf.simplify(union, { tolerance: 0.0001, highQuality: true });
-        let coords =  JSON.stringify(union_light.geometry.coordinates);
-        geo_splines[traktor][0][8]=coords;
+        let union_light0 = turf.simplify(union, { tolerance: 0.0001, highQuality: true });
+        let union_light = turf.truncate(union_light0,{precision: 7, coordinates: 2});
+        geo_splines[traktor][0][8] =  JSON.stringify(union_light.geometry);
+        
         if(union){
           if(union.geometry.type=="Polygon"){
             UnionPolis.push(union);
-
           }else{
             for ( j = 0; j < union.geometry.coordinates.length; j++){
               let unpol=turf.polygon(union.geometry.coordinates[j]);
-              UnionPolis.push(unpol);
+              UnionPolis.push(unpol);  
             }
           }
         }
-
-
-        
 
 
       for ( j = 0; j < tableRow.length; j++){
