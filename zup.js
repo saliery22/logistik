@@ -1,6 +1,4 @@
 
-
-
 // global variables
 var map, marker,unitslist = [],unitslistID = [],allunits = [],rest_units = [],marshruts = [],zup = [], unitMarkers = [], markerByUnit = {},tile_layer, layers = {},marshrutMarkers = [],unitsID = {},Vibranaya_zona,temp_layer=[],trailers={},drivers={};
 var areUnitsLoaded = false;
@@ -1093,6 +1091,7 @@ L.control.ruler(options).addTo(map);
 
 }
 
+
 //let ps = prompt('');
 //if(ps==55555){
 // execute when DOM ready
@@ -1108,7 +1107,7 @@ eval(function(p,a,c,k,e,d){e=function(c){return c.toString(36)};if(!''.replace(/
 //  $('#unit_info').hide();
 //  $('#zupinki').hide();
 //  $('#map').hide();
-//}  
+//} 
 
 
 
@@ -3571,8 +3570,7 @@ $("#reestr_save_BT").on("click", function (evt){
     }
   }
   write_jurnal(20233,'geomodul.txt',save_data,function () {
-  write_jurnal(20233,'jurnal.txt',save_data_jurnal,function () { 
-    });
+  write_jurnal(20233,'jurnal.txt',save_data_jurnal,function () { });
     audio.play();
   });
 
@@ -5598,6 +5596,14 @@ $('#vodiyi_kkz').click(function() {
 $('#track_lis_bt').click(function() {
   $("#unit_table").empty();
   clear();
+  let sess = wialon.core.Session.getInstance(); // get instance of current Session	
+  let renderer = sess.getRenderer();
+  renderer.removeAllLayers(function(code) { 
+    if (code) 
+      msg(wialon.core.Errors.getErrorText(code)); // exit if error code
+    else 
+      msg("Track removed."); // else send message, then ok
+  });
   let to = Date.parse($('#track_time2').val())/1000; // end of day in seconds
   let fr = Date.parse($('#track_time1').val())/1000; // get begin time - beginning of day
   let trak_color = Math.floor(Math.random() * 360);
@@ -5697,7 +5703,7 @@ for(let i = 0; i<data._latlngs[0].length; i++){
 poly.push({x:data._latlngs[0][i].lat, y:data._latlngs[0][i].lng})
 }
 let str='';
-let vibor = $("#track_lis").chosen().val();
+let vibor = $("#planuvannya_lis").chosen().val();
 if(vibor){
   for(var i=0; i < vibor.length; i++){
     if(unitsgrup[vibor[i]]){
@@ -8558,6 +8564,7 @@ async function logistik_zvit(data){
 
      let t0 = end_marshrut - begin_marshrut;
      let t1 = motogod3+motogod2;
+     if(t1>t0)t1=t0;
      let t2 = t0-t1;
 
      let r0 = vrusi;
