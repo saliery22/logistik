@@ -3288,7 +3288,7 @@ function myroutine(){
         geo_layer.push(polylinee); 
 
         let union_light0 = turf.simplify(union, { tolerance: 0.0001, highQuality: true });
-        let union_light = turf.truncate(union_light0,{precision: 7, coordinates: 2});
+        let union_light = turf.truncate(union_light0,{precision: 5, coordinates: 2});
         geo_splines[traktor][0][8] =  JSON.stringify(union_light.geometry);
         
         if(union){
