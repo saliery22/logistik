@@ -5548,6 +5548,25 @@ $('#vodiyi_kkz').click(function() {
     $("#unit_table").append("<tr><td>"+key+"</td><td>"+drv.n+"</td><td>"+drv.c+"</td><td>"+drv.p+"</td><td>"+now+"</td><td>"+then+"</td>/tr>");
   }
   });
+  $('#transport_kkz').click(function() {
+    $("#unit_table").empty();
+    $("#unit_table").append("<tr><td>№</td><td>назва</td><td>латинські букви в номері</td><td>букви</td></tr>");
+    for (let i = 0; i < unitslist.length; i++) {
+      let name = unitslist[i].getName();
+      let nomer = name.split(' ')[0];
+      let name_test = /[a-z]/i.test(name.split(' ')[0]);
+      let aa='';
+      let corektno = 'відсутні';
+      if(name_test){
+        corektno = 'присутні';
+        let nomerchar = nomer.split('');
+        for (let ii = 0; ii < nomerchar.length; ii++) {
+          if(nomerchar[ii].charCodeAt(0)>=64 && nomerchar[ii].charCodeAt(0)<=90)aa+=nomerchar[ii];
+        }
+      }
+      $("#unit_table").append("<tr><td>"+(i+1)+"</td><td>"+name+"</td><td>"+corektno+"</td><td>"+aa+"</td></tr>");
+    }
+    });
   $('#track_lis_bt2').click(function() {
     let to = Date.parse($('#track_time2').val())/1000; // end of day in seconds
     let fr = Date.parse($('#track_time1').val())/1000; // get begin time - beginning of day
