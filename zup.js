@@ -7651,17 +7651,34 @@ async function control_avto(){
    now_date.setHours(0, 0, 0, 0);
    now_date =Date.parse(now_date);
 
-  let d_2 = control_date+86400000*2;
-  let d_1 = control_date+86400000;
-  let d0 =  control_date;
-  let d1 =  control_date-86400000;
-  let d2 =  control_date-86400000*2;
+var d0=new Date(control_date);
+   d0.setHours(0, 0, 0, 0);
+   d0 =Date.parse(d0);
+
+  var d1 = new Date(control_date);
+  d1.setHours(0, 0, 0, 0);
+  d1.setDate(d1.getDate()-1);
+  d1 =Date.parse(d1);
+  
+  var d2=new Date(control_date);
+  d2.setHours(0, 0, 0, 0);
+  d2.setDate(d2.getDate() - 2);
+  d2 =Date.parse(d2);
+  var d_1=new Date(control_date);
+  d_1.setHours(0, 0, 0, 0);
+  d_1.setDate(d_1.getDate() + 1);
+  d_1 =Date.parse(d_1);
+  var d_2=new Date(control_date);
+  d_2.setHours(0, 0, 0, 0);
+  d_2.setDate(d_2.getDate() + 2);
+  d_2 =Date.parse(d_2);
  
 
-  let d_11 =new Date(d_1).toJSON().slice(0,10);
-  let d00 =new Date(d0).toJSON().slice(0,10);
-  let d11 =new Date(d1).toJSON().slice(0,10);
-  let d22 =new Date(d2).toJSON().slice(0,10);
+  let d_11 =new Date(d_2).toJSON().slice(0,10);
+  let d00 =new Date(d_1).toJSON().slice(0,10);
+  let d11 =new Date(d0).toJSON().slice(0,10);
+  let d22 =new Date(d1).toJSON().slice(0,10);
+
 
   $('#log_control_tb').empty();
   $('#log_control_tb').append("<tr><th>ТЗ</th><th>"+d11+"</th><th>"+d00+"</th><th>"+d_11+"</th>></tr>");
