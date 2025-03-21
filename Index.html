@@ -452,9 +452,10 @@ button, input, span, select,textarea {margin: 2px 2px 0px 0px;   font-family: "A
         <option value="z9">звіт по журналу</option>
         <option value="z11">зупинки в магазині</option>
         <option value="z12">звіт авто OBD</option>
-        <option value="z13">звіт поля, причепи, водії</option>
-        <option value="z14">звіт по треках</option>
+        <option value="z13">реєстр поля, причепи, водії, транспорт</option>
+        <option value="z14">візуалізація треків за період</option>
         <option value="z15">планування маршрутів</option>
+        <option value="z16">історія обробки полів</option>
       </select>  
       <br>
       <hr>
@@ -544,7 +545,7 @@ button, input, span, select,textarea {margin: 2px 2px 0px 0px;   font-family: "A
         <button id='polya_kkz'style = "width: 24%;">поля</button>
         <button id='trailers_kkz'style = "width: 24%;">причепи</button> 
         <button id='vodiyi_kkz'style = "width: 24%;">водії</button>
-        <button id='transport_kkz'style = "width: 24%;">транспорт</button>    
+        <button id='transport_kkz'style = "width: 24%;">транспорт</button>   
     </div> 
    
     <div id="zz14" class='zvit'> 
@@ -567,6 +568,27 @@ button, input, span, select,textarea {margin: 2px 2px 0px 0px;   font-family: "A
         <button id='planuvannya_bt2' style='width:49%;'>перерахувати</button> 
         <button id='planuvannya_bt1' style='width:49%;'>очистити</button> 
     </div> 
+    <div id="zz16" class='zvit'> 
+        <input id="geomodul_time1" type="date"/>
+        <input id="geomodul_time2" type="date"/>
+        <br>
+        <br>
+        <select class='livesearch' id='geomodul_lis'style='width:100%;' multiple>
+            <option selected value="Всі">Всі</option>
+            <option value="Боронування">Боронування</option>
+            <option value="Дискування">Дискування</option>
+            <option value="Глибоке рихлення">Глибоке рихлення</option>
+            <option value="Культивація">Культивація</option>
+            <option value="Обприскування культур">Обприскування культур</option>
+            <option value="Внесення добрив">Внесення добрив</option>
+            <option value="Висів зернових">Висів зернових</option>
+            <option value="Збір врожаю">Збір врожаю</option>
+            <option value="Оранка">Оранка</option>
+        </select>
+        <br>
+        <br>
+            <button id='geomodul_bt' style='width:100%;'>завантажити</button> 
+        </div> 
  <table id="unit_table"class='table'></table>
  </div>
 
@@ -637,13 +659,13 @@ button, input, span, select,textarea {margin: 2px 2px 0px 0px;   font-family: "A
         </div>
 
         <div id="log_help">
-            для створення маршруту ведіть назву міста, імя пасажира,пункт призначення або вкажіть місце на карті лівим подвійним кліком
+            <!-- для створення маршруту ведіть назву міста, імя пасажира,пункт призначення або вкажіть місце на карті лівим подвійним кліком
             <br>
             маршрут можна редагувати додаючи чи віднісаючи точки за допомогою + -
             <br>
             назву маршрута можна редагувати, маршрут можна переміщувати за допомогою миші на мапі,  під назвою маршрута вказаний радіус - його можна редагувати
          
-          
+           -->
         </div>
         
         <button id='upd_marsh_bt'>оновлення маршруту після змін в таблиці маршрута</button>
