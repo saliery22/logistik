@@ -1,5 +1,4 @@
 
-
 // global variables
 var map, marker,unitslist = [],unitslistID = [],allunits = [],rest_units = [],marshruts = [],zup = [], unitMarkers = [], markerByUnit = {},tile_layer, layers = {},marshrutMarkers = [],unitsID = {},Vibranaya_zona,temp_layer=[],trailers={},drivers={};
 var areUnitsLoaded = false;
@@ -385,6 +384,15 @@ function initUIData() {
         avto.push([m[0]+' <b>'+m[1]+'</b>',m[2],parseFloat(m[3].split(',')[0]),parseFloat(m[3].split(',')[1])]);
       }     
     }
+});
+
+
+
+load_jurnal(20233,'Pasajiry.txt',function (data) { 
+  for(let i = 1; i<data.length; i++){
+    let m=data[i].split('|');
+    mehanizator_adresa.push([m[0],m[1],m[2],parseFloat(m[3].split(',')[0]),parseFloat(m[3].split(',')[1])]);
+    }       
 });
   
 
@@ -1091,6 +1099,7 @@ if (!$('#marrr').is(':hidden')) {
 L.control.ruler(options).addTo(map);
 
 }
+
 
 //let ps = prompt('');
 //if(ps==55555){
@@ -5706,12 +5715,13 @@ $('#track_lis_bt').click(function() {
   }
 
   function planuvannya_start(){
+    $("#unit_table").append("<tr><td>№</td><td>&nbsp&nbsp&nbsp&nbsp</td><td>ТЗ</td><td>агрегат</td><td>локація</td><td>відвезти</td><td>адреса</td><td>забрати</td><td>адреса</td></tr>");
     //for(let i = 0; i<10; i++){
       //$("#unit_table").append("<tr><td>"+(i+1)+"</td><td style ='background-color:rgb(255, 0, 0)'>&nbsp&nbsp&nbsp&nbsp</td><td  contenteditable='true'>ККЗ</td><td contenteditable='true'>-----</td></tr>");
     //}
   }
 
-
+let mehanizator_adresa=[];
   function planuvannya_marshrutiv(data,col){
 let poly = [];
 let kk=0;
@@ -5747,17 +5757,25 @@ for(let i = 0; i<unitslist.length; i++){
     if(markerr){
      let lat = markerr.getLatLng().lat;
      let lon = markerr.getLatLng().lng;
-     let vodiy = "-----";
+     let namet_a = '-----';
+     let vodiy = "не вставив картку в зчитувач";
+     let vodiy_a =  '-----';
+     let agregat = '-----';
      if(wialon.util.Geometry.pointInShape(poly, 0, lat, lon)){
        for(let ii = 0; ii<Global_DATA.length; ii++){
          let idd = Global_DATA[ii][0][0];
          if(idd!=id)continue;
          for(let iii = Global_DATA[ii].length-1; iii>0; iii--){
-            if(Global_DATA[ii][iii][6]){
-              vodiy=Global_DATA[ii][iii][6];
-              break;
+
+
+            if(Global_DATA[ii][iii][5]  && agregat=='-----'){
+              agregat=Global_DATA[ii][iii][5].split(" ")[0];
             }
-            vodiy= "не вставив картку в зчитувач";
+            if(Global_DATA[ii][iii][6] && vodiy =='не вставив картку в зчитувач' ){
+              vodiy=Global_DATA[ii][iii][6];
+            }
+            if(agregat!='-----' && vodiy !='не вставив картку в зчитувач') break;
+
          }
        } 
        let poisk=false;
@@ -5765,6 +5783,7 @@ for(let i = 0; i<unitslist.length; i++){
        let vodiy2=namet.split("/")[1];
        let zmina='';
        let zavtra = '-----';
+       let zavtra_a =  '-----';
        if(vodiy== "не вставив картку в зчитувач"){
         zavtra = vodiy;
        }else{
@@ -5776,12 +5795,12 @@ for(let i = 0; i<unitslist.length; i++){
            zavtra= drv;
            break;
          }
-         zavtra="відсутня картка водія"
+         zavtra="-----";
        }         
     }
       kk++;
-   
-        $("#unit_table").append("<tr class='fail_trak' id='"+id+"," + lat+","+lon+ "'><td>"+kk+"</td><td style = 'background-color: "+col+";'>&nbsp&nbsp&nbsp&nbsp</td><td  contenteditable='true'>"+namet+"</td><td contenteditable='true'>"+zavtra+"</td></tr>");
+      
+        $("#unit_table").append("<tr class='fail_trak' id='"+id+"," + lat+","+lon+ "'><td>"+kk+"</td><td style = 'background-color: "+col+";'>&nbsp&nbsp&nbsp&nbsp</td><td  contenteditable='true'>"+namet+"</td><td contenteditable='true'>"+agregat+"</td><td  contenteditable='true'>"+namet_a+"</td><td contenteditable='true'>"+zavtra+"</td><td contenteditable='true'>"+zavtra_a+"</td><td contenteditable='true'>"+vodiy+"</td><td contenteditable='true'>"+vodiy_a+"</td></tr>");
     
      }
     }
@@ -5790,18 +5809,19 @@ for(let i = 0; i<unitslist.length; i++){
 
 let table_plan=document.getElementById('unit_table');
   for(let i = 0; i<table_plan.rows.length; i++){
-    let zavtra =  table_plan.rows[i].cells[3].innerText;
+    let zavtra =  table_plan.rows[i].cells[5].innerText;
     if(zavtra!="-----" && zavtra.innerText!="не вставив картку в зчитувач" && zavtra!="відсутня картка водія"){
       let color = table_plan.rows[i].cells[1].style.backgroundColor;
-      for(let ii = stor.length-1; ii>=0; ii--){
-        if(stor[ii][3].indexOf(zavtra)>=0){
-          let m =L.marker([stor[ii][0], stor[ii][1]],{
+      for(let ii = mehanizator_adresa.length-1; ii>=0; ii--){
+        if(mehanizator_adresa[ii][0].indexOf(zavtra)>=0){
+          table_plan.rows[i].cells[6].textContent =mehanizator_adresa[ii][1];
+          let m =L.marker([mehanizator_adresa[ii][3], mehanizator_adresa[ii][4]],{
             icon: L.divIcon({
               iconSize: "auto",
               className: 'div-icon',
               html: "<div style=' width: 20px;  height: 20px;border: 1px solid #000000; border-top-left-radius: 0px;  border-top-right-radius: 10px;  border-bottom-right-radius: 10px;  border-bottom-left-radius: 10px;background:"+color+"; '></div> ",
             })
-          }).bindTooltip(''+stor[ii][3]+'',{ sticky: true}).addTo(map);
+          }).bindTooltip(''+mehanizator_adresa[ii][0]+'',{ sticky: true}).addTo(map);
           marshrut_treck.push(m);
           let lat = 51.5506;
           let lon = 33.3473;
@@ -5813,18 +5833,17 @@ let table_plan=document.getElementById('unit_table');
             ['ККЗ',51.5472,33.3964],
             ['Пост Глухів',51.5472,33.3964]
           ]
-
-          let d1 = wialon.util.Geometry.getDistance(lat,lon,stor[ii][0],stor[ii][1]); //real distance
-          let d2 = wialon.util.Geometry.getDistance(lat,lon,51.5472,33.3964); // KKZ distance
-          let d3 = wialon.util.Geometry.getDistance(stor[ii][0],stor[ii][1],51.5472,33.3964); // Gluhiv post distance
-          let d4 = wialon.util.Geometry.getDistance(stor[ii][0],stor[ii][1],51.7166,33.8750); // Gluhiv post distance
-          let line = [[lat,lon],[stor[ii][0], stor[ii][1]]];
-          if(d1>d2 && d3<d4)line = [[lat,lon],[51.5472,33.3964],[stor[ii][0],stor[ii][1]]];
-          if(d1>d2 && d3>d4)line = [[lat,lon],[51.7166,33.8750],[51.5472,33.3964],[stor[ii][0],stor[ii][1]]];
+          let line = [[lat,lon],[mehanizator_adresa[ii][3], mehanizator_adresa[ii][4]]];
+          // let d1 = wialon.util.Geometry.getDistance(lat,lon,stor[ii][0],stor[ii][1]); //real distance
+          // let d2 = wialon.util.Geometry.getDistance(lat,lon,51.5472,33.3964); // KKZ distance
+          // let d3 = wialon.util.Geometry.getDistance(stor[ii][0],stor[ii][1],51.5472,33.3964); // Gluhiv post distance
+          // let d4 = wialon.util.Geometry.getDistance(stor[ii][0],stor[ii][1],51.7166,33.8750); // Gluhiv post distance
+          // if(d1>d2 && d3<d4)line = [[lat,lon],[51.5472,33.3964],[stor[ii][0],stor[ii][1]]];
+          // if(d1>d2 && d3>d4)line = [[lat,lon],[51.7166,33.8750],[51.5472,33.3964],[stor[ii][0],stor[ii][1]]];
           let l = L.polyline(line, {color: color,weight:2,opacity:1}).addTo(map);
           marshrut_treck.push(l);
           poisk=true;
-          table_plan.rows[i].cells[3].style ='background-color: #98FB98';
+          //table_plan.rows[i].cells[3].style ='background-color: #98FB98';
           break;
         }
       }
