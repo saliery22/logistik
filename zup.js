@@ -7917,6 +7917,9 @@ if(row.rowIndex>0 && evt.target.innerText !='ремонт-зняти' &&  evt.ta
   $('#marshrut_text').show();
   $('#upd_marsh_bt').show();
   let t=Date.parse(tb.rows[0].cells[evt.target.parentNode.cellIndex].innerText);
+  let d0=new Date(t);
+  d0.setHours(0, 0, 0, 0);
+  t =Date.parse(d0);
   let n=row.cells[0].innerText;
   $('#cont_unit').text(n);
   $('#cont_time').text(tb.rows[0].cells[evt.target.parentNode.cellIndex].innerText);
