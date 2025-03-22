@@ -7926,6 +7926,7 @@ if(row.rowIndex>0 && evt.target.innerText !='ремонт-зняти' &&  evt.ta
   $('#marshrut_text').val('');
 
   $('#log_marh_tb').empty();
+  $('#log_marh_tb').append("<tr>  <td>1</td>  <td></td>  <td></td> </tr> <tr><td style = ' border: 1px solid black; '><div class='autocomplete'  ><div class ='inp' id='myInput-1' type='text'   contenteditable='true' ></div></div></td>  <td style = 'font-size:14px;min-width: 15px; cursor: pointer;border: 1px solid black; background:rgb(247, 161, 161);'>-</td><td style = 'font-size:14px;min-width: 15px; cursor: pointer; background:rgb(170, 248, 170);'>+</td> </tr> <tr><td></td> <td></td> <td></td> </tr> <tr> <td></td> <td></td> <td></td> </tr> <tr> <td><input type='checkbox' checked></td>   <td></td> <td></td> </tr>");
   for (let v = 1; v<logistik_data.length; v++){
     let m=logistik_data[v].split('|');
     if(!m[1])continue;
