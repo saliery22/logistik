@@ -1,4 +1,6 @@
 
+
+
 // global variables
 var map, marker,unitslist = [],unitslistID = [],allunits = [],rest_units = [],marshruts = [],zup = [], unitMarkers = [], markerByUnit = {},tile_layer, layers = {},marshrutMarkers = [],unitsID = {},Vibranaya_zona,temp_layer=[],trailers={},drivers={};
 var areUnitsLoaded = false;
@@ -310,15 +312,22 @@ function initUIData() {
       let lgeozone = L.layerGroup(geozones);
       layerControl.addOverlay(lgeozone, "Геозони");
    
+      let poly_color = Math.floor(Math.random() * 360);
 
+          
       for (var key in gzgroop) {
         let point=[];
         if(gzgroop[key].n[0]!='*' && gzgroop[key].n[0]!='#'){
         gzgroop[key].zns.forEach(function(item1) { if(IDzonacord[item1]){IDzonacord[item1].forEach(function(item2) {point.push(turf.point([item2[1],item2[0]]));});}});
         let points = turf.featureCollection(point);
         let hull = turf.convex(points);
-        let poly = L.geoJSON(hull,{fillOpacity: 0,weight:2}).bindTooltip(gzgroop[key].n);
-        geozonesgrup.push(poly);
+        if(hull){
+          poly_color += 60+Math.floor(Math.random() * 30);
+          let scaledPoly = turf.transformScale(hull, 1.1);
+          let poly = L.geoJSON(scaledPoly,{color: `hsl(${poly_color}, ${100}%, ${45}%)`, fillColor: `hsl(${poly_color}, ${100}%, ${45}%)`, fillOpacity: 0.3,weight:2}).bindTooltip(gzgroop[key].n);
+          geozonesgrup.push(poly);
+        }
+        
         }
       }
 
@@ -1069,11 +1078,13 @@ if (!$('#marrr').is(':hidden')) {
         color: colorr,
       },
     })
-    geojson.bindTooltip(''+area+'га',{opacity:0.8, sticky: true}).addTo(map);
+   
     control.deactivate();
     if($('#zz15').is(':visible') ) {
       marshrut_treck.push(geojson);
       planuvannya_marshrutiv(polygon,colorr);
+    }else{
+      geojson.bindTooltip(''+area+'га',{opacity:0.8, sticky: true}).addTo(map);
     }
 
   },
@@ -3977,7 +3988,7 @@ function RemainsFuel(e){
 
 
   if ($('#zz1').is(':visible')) {
-    $("#unit_table").append("<tr><td>&nbsp&nbsp&nbsp&nbsp&nbsp</td><td>-----------</td><td>--------</td><td>--------</td><td>---------</td></tr>");
+    $("#unit_table").append("<tr><td>&nbsp&nbsp&nbsp&nbsp&nbsp</td><td>-----------</td><td>--------</td><td>--------</td><td>--------</td><td>---------</td></tr>");
     let str =$('#unit_palne').val().split(',');
     for(let i = 0; i<unitslist.length; i++){
       let namet = unitslist[i].getName();
@@ -3989,6 +4000,7 @@ function RemainsFuel(e){
          let lat = markerr.getLatLng().lat;
          let lon = markerr.getLatLng().lng;
           if(wialon.util.Geometry.pointInShape(buferpoly, 0, lat, lon)){
+            let vodiy = markerr._popup._content.split('<br />')[5];
             let agregat = markerr._popup._content.split('<br />')[4];
             if(agregat)agregat=agregat.split(' ')[0];
             if(!agregat){
@@ -4026,7 +4038,7 @@ function RemainsFuel(e){
               }
             }
             
-            $("#unit_table").append("<tr class='fail_trak' id='"+unitslist[i].getId()+"," + lat+","+lon+ "'><td bgcolor ="+color+">&nbsp&nbsp&nbsp&nbsp&nbsp</td><td align='left'>"+namet+"</td><td>"+agregat+"</td><td>"+drp+"</td><td>"+mesto+"</td></tr>");
+            $("#unit_table").append("<tr class='fail_trak' id='"+unitslist[i].getId()+"," + lat+","+lon+ "'><td bgcolor ="+color+">&nbsp&nbsp&nbsp&nbsp&nbsp</td><td align='left'>"+namet+"</td><td>"+agregat+"</td><td>"+vodiy+"</td><td>"+drp+"</td><td>"+mesto+"</td></tr>");
 
           }
         } 
@@ -5729,6 +5741,7 @@ if(data){
 for(let i = 0; i<data._latlngs[0].length; i++){
 poly.push({x:data._latlngs[0][i].lat, y:data._latlngs[0][i].lng})
 }
+let center = data.getBounds().getCenter();
 let str='';
 let vibor = $("#planuvannya_lis").chosen().val();
 if(vibor){
@@ -5757,7 +5770,7 @@ for(let i = 0; i<unitslist.length; i++){
     if(markerr){
      let lat = markerr.getLatLng().lat;
      let lon = markerr.getLatLng().lng;
-     let namet_a = '-----';
+     let namet_a = point_in_geozone(lat,lon);
      let vodiy = "не вставив картку в зчитувач";
      let vodiy_a =  '-----';
      let agregat = '-----';
@@ -5800,7 +5813,7 @@ for(let i = 0; i<unitslist.length; i++){
     }
       kk++;
       
-        $("#unit_table").append("<tr class='fail_trak' id='"+id+"," + lat+","+lon+ "'><td>"+kk+"</td><td style = 'background-color: "+col+";'>&nbsp&nbsp&nbsp&nbsp</td><td  contenteditable='true'>"+namet+"</td><td contenteditable='true'>"+agregat+"</td><td  contenteditable='true'>"+namet_a+"</td><td contenteditable='true'>"+zavtra+"</td><td contenteditable='true'>"+zavtra_a+"</td><td contenteditable='true'>"+vodiy+"</td><td contenteditable='true'>"+vodiy_a+"</td></tr>");
+        $("#unit_table").append("<tr class='fail_trak' id='"+id+"," + lat+","+lon+","+center.lat+","+center.lng+"'><td>"+kk+"</td><td style = 'background-color: "+col+";'>&nbsp&nbsp&nbsp&nbsp</td><td  contenteditable='true'>"+namet+"</td><td contenteditable='true'>"+agregat+"</td><td  contenteditable='true'>"+namet_a+"</td><td contenteditable='true'>"+zavtra+"</td><td contenteditable='true'>"+zavtra_a+"</td><td contenteditable='true'>"+vodiy+"</td><td contenteditable='true'>"+vodiy_a+"</td></tr>");
     
      }
     }
@@ -5821,7 +5834,30 @@ let table_plan=document.getElementById('unit_table');
               className: 'div-icon',
               html: "<div style=' width: 20px;  height: 20px;border: 1px solid #000000; border-top-left-radius: 0px;  border-top-right-radius: 10px;  border-bottom-right-radius: 10px;  border-bottom-left-radius: 10px;background:"+color+"; '></div> ",
             })
-          }).bindTooltip(''+mehanizator_adresa[ii][0]+'',{ sticky: true}).addTo(map);
+          }).bindTooltip(''+mehanizator_adresa[ii][0]+'</br>'+mehanizator_adresa[ii][1]+'',{ sticky: true}).addTo(map);
+          m.color=color;
+          m.colorr=color;
+          m.on('click', function(e) {
+           //console.log(this);
+           let  myIcon =  L.divIcon({
+            iconSize: "auto",
+            className: 'div-icon',
+            html: "<div style=' width: 20px;  height: 20px;border: 1px solid #000000; border-top-left-radius: 0px;  border-top-right-radius: 10px;  border-bottom-right-radius: 10px;  border-bottom-left-radius: 10px;background:"+m.color+"; '></div> ",
+          });
+           
+           if(this.color==this.colorr){
+              myIcon =  L.divIcon({
+              iconSize: "auto",
+              className: 'div-icon',
+              html: "<div style=' width: 20px;  height: 20px;border: 1px solid #000000; border-top-left-radius: 0px;  border-top-right-radius: 10px;  border-bottom-right-radius: 10px;  border-bottom-left-radius: 10px;background: rgb(138, 136, 136); '></div> ",
+            });
+            m.colorr="rgb(138, 136, 136)";
+           }else{
+            m.colorr= m.color;
+           }
+           
+           this.setIcon(myIcon);
+          });
           marshrut_treck.push(m);
           let lat = 51.5506;
           let lon = 33.3473;
@@ -5833,7 +5869,9 @@ let table_plan=document.getElementById('unit_table');
             ['ККЗ',51.5472,33.3964],
             ['Пост Глухів',51.5472,33.3964]
           ]
-          let line = [[lat,lon],[mehanizator_adresa[ii][3], mehanizator_adresa[ii][4]]];
+          let mark = L.marker([table_plan.rows[i].id.split(',')[3],table_plan.rows[i].id.split(',')[4]]).addTo(map).bindPopup(point_in_geozone(table_plan.rows[i].id.split(',')[3],table_plan.rows[i].id.split(',')[4]));
+          marshrut_treck.push(mark);
+          let line = [[lat,lon],[table_plan.rows[i].id.split(',')[3],table_plan.rows[i].id.split(',')[4]],[mehanizator_adresa[ii][3], mehanizator_adresa[ii][4]]];
           // let d1 = wialon.util.Geometry.getDistance(lat,lon,stor[ii][0],stor[ii][1]); //real distance
           // let d2 = wialon.util.Geometry.getDistance(lat,lon,51.5472,33.3964); // KKZ distance
           // let d3 = wialon.util.Geometry.getDistance(stor[ii][0],stor[ii][1],51.5472,33.3964); // Gluhiv post distance
@@ -5852,7 +5890,25 @@ let table_plan=document.getElementById('unit_table');
   }
 
 }
-
+function point_in_geozone(y,x){
+  let mesto = "-----";
+for(let i = 0; i<geozonesgrup.length; i++){ 
+  let cord= geozonesgrup[i].toGeoJSON().features[0];
+  let buferpoly2 =[];
+  if(cord){
+    
+    cord.geometry.coordinates[0].forEach(function(item, arr) {
+      buferpoly2.push({x:item[1], y:item[0]}); 
+    });
+    if(wialon.util.Geometry.pointInShape(buferpoly2, 0, y, x)){
+      mesto=geozonesgrup[i]._tooltip._content;
+      return mesto;
+      break;
+    }
+  }
+}
+return mesto; 
+}
 $('#planuvannya_bt1').click(function() {
   $("#unit_table").empty();
   //for(let i = 0; i<10; i++){
@@ -7929,7 +7985,8 @@ if(row.rowIndex>0 && evt.target.innerText !='ремонт-зняти' &&  evt.ta
 
   $('#log_marh_tb').empty();
   $('#log_marh_tb').append("<tr>  <td>1</td>  <td></td>  <td></td> </tr> <tr><td style = ' border: 1px solid black; '><div class='autocomplete'  ><div class ='inp' id='myInput-1' type='text'   contenteditable='true' ></div></div></td>  <td style = 'font-size:14px;min-width: 15px; cursor: pointer;border: 1px solid black; background:rgb(247, 161, 161);'>-</td><td style = 'font-size:14px;min-width: 15px; cursor: pointer; background:rgb(170, 248, 170);'>+</td> </tr> <tr><td></td> <td></td> <td></td> </tr> <tr> <td></td> <td></td> <td></td> </tr> <tr> <td><input type='checkbox' checked></td>   <td></td> <td></td> </tr>");
-  for (let v = 1; v<logistik_data.length; v++){
+  
+   for (let v = 1; v<logistik_data.length; v++){
     let m=logistik_data[v].split('|');
     if(!m[1])continue;
     if(m[1].indexOf(n.split(' ')[0])>=0 && m[0]>=t && m[0]<t+86400000){
@@ -7944,7 +8001,7 @@ if(row.rowIndex>0 && evt.target.innerText !='ремонт-зняти' &&  evt.ta
    let kkkk=0;
    $('#cont_unit').text(m[1]);
    $('#log_marh_tb').empty();
-   $('#log_marh_tb').append("<tr></tr><tr></tr><tr></tr><tr></tr><tr></tr>")
+   $('#log_marh_tb').append("<tr></tr><tr></tr><tr></tr><tr></tr><tr></tr>");
    let tb=document.getElementById("log_marh_tb");
    let row = document.getElementById("log_marh_tb").rows[1];
           for (let i = 0; i<text.length; i++){
