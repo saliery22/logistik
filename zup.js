@@ -1059,6 +1059,8 @@ if (!$('#marrr').is(':hidden')) {
  
 
  });
+ let colorr_logistik= Math.floor(Math.random() * 360);
+
  const areaSelection = new window.leafletAreaSelection.DrawAreaSelection({
   onButtonActivate : (polygon) => {
     $('#draw-panel-help').text('Визначте багатокутник, клацнувши на карті - щоб визначити вершини, або клацніть і перетягніть, щоб отримати прямокутну форму.') ;
@@ -1070,7 +1072,8 @@ if (!$('#marrr').is(':hidden')) {
   },
   onPolygonDblClick: (polygon, control, ev) => {
     let area = (turf.area(polygon.toGeoJSON())*kof/10000).toFixed(2);
-    let colorr=  `hsl(${Math.floor(Math.random() * 360)}, ${100}%, ${45}%)`;
+    colorr_logistik+= 60+Math.floor(Math.random() * 30);
+    let colorr=  `hsl(${colorr_logistik}, ${100}%, ${45}%)`;
     let geojson = L.geoJSON(polygon.toGeoJSON(), {
       style: {
         opacity: 0.9,
@@ -1078,13 +1081,11 @@ if (!$('#marrr').is(':hidden')) {
         color: colorr,
       },
     })
-   
+    geojson.bindTooltip(''+area+'га',{opacity:0.8, sticky: true}).addTo(map);
     control.deactivate();
     if($('#zz15').is(':visible') ) {
       marshrut_treck.push(geojson);
       planuvannya_marshrutiv(polygon,colorr);
-    }else{
-      geojson.bindTooltip(''+area+'га',{opacity:0.8, sticky: true}).addTo(map);
     }
 
   },
@@ -1110,7 +1111,6 @@ if (!$('#marrr').is(':hidden')) {
 L.control.ruler(options).addTo(map);
 
 }
-
 
 //let ps = prompt('');
 //if(ps==55555){
@@ -5733,6 +5733,7 @@ $('#track_lis_bt').click(function() {
     //}
   }
 
+
 let mehanizator_adresa=[];
   function planuvannya_marshrutiv(data,col){
 let poly = [];
@@ -5770,7 +5771,7 @@ for(let i = 0; i<unitslist.length; i++){
     if(markerr){
      let lat = markerr.getLatLng().lat;
      let lon = markerr.getLatLng().lng;
-     let namet_a = point_in_geozone(lat,lon);
+     let namet_a = point_in_region(lat,lon);
      let vodiy = "не вставив картку в зчитувач";
      let vodiy_a =  '-----';
      let agregat = '-----';
@@ -5786,6 +5787,11 @@ for(let i = 0; i<unitslist.length; i++){
             }
             if(Global_DATA[ii][iii][6] && vodiy =='не вставив картку в зчитувач' ){
               vodiy=Global_DATA[ii][iii][6];
+              for(let ii = mehanizator_adresa.length-1; ii>=0; ii--){
+                if(mehanizator_adresa[ii][0].indexOf(vodiy)>=0){
+                  vodiy_a=mehanizator_adresa[ii][1];
+                }
+              }
             }
             if(agregat!='-----' && vodiy !='не вставив картку в зчитувач') break;
 
@@ -5832,24 +5838,27 @@ let table_plan=document.getElementById('unit_table');
             icon: L.divIcon({
               iconSize: "auto",
               className: 'div-icon',
-              html: "<div style=' width: 20px;  height: 20px;border: 1px solid #000000; border-top-left-radius: 0px;  border-top-right-radius: 10px;  border-bottom-right-radius: 10px;  border-bottom-left-radius: 10px;background:"+color+"; '></div> ",
+              html: "<div style=' width: 20px;  height: 20px;border: 2px solid rgb(255, 255, 255); border-top-left-radius: 0px;  border-top-right-radius: 10px;  border-bottom-right-radius: 10px;  border-bottom-left-radius: 10px;background:"+color+"; '></div> ",
             })
-          }).bindTooltip(''+mehanizator_adresa[ii][0]+'</br>'+mehanizator_adresa[ii][1]+'',{ sticky: true}).addTo(map);
+          }).bindTooltip(''+mehanizator_adresa[ii][0]+'</br>'+mehanizator_adresa[ii][1]+' - '+table_plan.rows[i].cells[4].textContent+'</br>'+table_plan.rows[i].cells[3].textContent+'',{ sticky: true}).addTo(map);
           m.color=color;
           m.colorr=color;
+          //m.adres = point_in_region(table_plan.rows[i].id.split(',')[3],table_plan.rows[i].id.split(',')[4]);
           m.on('click', function(e) {
            //console.log(this);
+           
+           navigator.clipboard.writeText(this._tooltip._content.split('</br>')[0]+"\t"+this._tooltip._content.split('</br>')[1]+"\t"+this._tooltip._content.split('</br>')[2]); 
            let  myIcon =  L.divIcon({
             iconSize: "auto",
             className: 'div-icon',
-            html: "<div style=' width: 20px;  height: 20px;border: 1px solid #000000; border-top-left-radius: 0px;  border-top-right-radius: 10px;  border-bottom-right-radius: 10px;  border-bottom-left-radius: 10px;background:"+m.color+"; '></div> ",
+            html: "<div style=' width: 20px;  height: 20px;border: 2px solid rgb(255, 255, 255); border-top-left-radius: 0px;  border-top-right-radius: 10px;  border-bottom-right-radius: 10px;  border-bottom-left-radius: 10px;background:"+m.color+"; '></div> ",
           });
            
            if(this.color==this.colorr){
               myIcon =  L.divIcon({
               iconSize: "auto",
               className: 'div-icon',
-              html: "<div style=' width: 20px;  height: 20px;border: 1px solid #000000; border-top-left-radius: 0px;  border-top-right-radius: 10px;  border-bottom-right-radius: 10px;  border-bottom-left-radius: 10px;background: rgb(138, 136, 136); '></div> ",
+              html: "<div style=' width: 20px;  height: 20px;2px solid rgb(255, 255, 255); border-top-left-radius: 0px;  border-top-right-radius: 10px;  border-bottom-right-radius: 10px;  border-bottom-left-radius: 10px;background: rgb(138, 136, 136); '></div> ",
             });
             m.colorr="rgb(138, 136, 136)";
            }else{
@@ -5869,9 +5878,10 @@ let table_plan=document.getElementById('unit_table');
             ['ККЗ',51.5472,33.3964],
             ['Пост Глухів',51.5472,33.3964]
           ]
-          let mark = L.marker([table_plan.rows[i].id.split(',')[3],table_plan.rows[i].id.split(',')[4]]).addTo(map).bindPopup(point_in_geozone(table_plan.rows[i].id.split(',')[3],table_plan.rows[i].id.split(',')[4]));
+          let mark = L.marker([table_plan.rows[i].id.split(',')[3],table_plan.rows[i].id.split(',')[4]]).addTo(map).bindPopup(point_in_region(table_plan.rows[i].id.split(',')[3],table_plan.rows[i].id.split(',')[4]));
           marshrut_treck.push(mark);
-          let line = [[lat,lon],[table_plan.rows[i].id.split(',')[3],table_plan.rows[i].id.split(',')[4]],[mehanizator_adresa[ii][3], mehanizator_adresa[ii][4]]];
+          //let line = [[lat,lon],[table_plan.rows[i].id.split(',')[3],table_plan.rows[i].id.split(',')[4]],[mehanizator_adresa[ii][3], mehanizator_adresa[ii][4]]];
+          let line = [[lat,lon],[mehanizator_adresa[ii][3], mehanizator_adresa[ii][4]]];
           // let d1 = wialon.util.Geometry.getDistance(lat,lon,stor[ii][0],stor[ii][1]); //real distance
           // let d2 = wialon.util.Geometry.getDistance(lat,lon,51.5472,33.3964); // KKZ distance
           // let d3 = wialon.util.Geometry.getDistance(stor[ii][0],stor[ii][1],51.5472,33.3964); // Gluhiv post distance
@@ -5890,7 +5900,7 @@ let table_plan=document.getElementById('unit_table');
   }
 
 }
-function point_in_geozone(y,x){
+function point_in_region(y,x){
   let mesto = "-----";
 for(let i = 0; i<geozonesgrup.length; i++){ 
   let cord= geozonesgrup[i].toGeoJSON().features[0];
