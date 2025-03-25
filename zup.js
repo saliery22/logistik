@@ -5874,7 +5874,7 @@ let table_plan=document.getElementById('unit_table');
               html: "<div style=' width: 13px;  height: 13px;border: 1px solid rgba(0, 0, 0, 0.4);; border-top-left-radius: 0px;  border-top-right-radius: 5px;  border-bottom-right-radius: 5px;  border-bottom-left-radius: 5px;background: rgba(138, 136, 136, 0.4); '></div> ",
             });
             this.colorr="rgba(138, 136, 136, 0.4)";
-            logistik_treck[this.tb_id+1].setStyle({color: this.color,weight:2,opacity:1});
+            logistik_treck[this.tb_id+1].setStyle({color: this.color,weight:1,opacity:0.4});
            }else{
             this.colorr= this.color;
             logistik_treck[this.tb_id+1].setStyle({color: this.color,weight:2,opacity:1});
