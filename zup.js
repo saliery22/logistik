@@ -5877,7 +5877,7 @@ let table_plan=document.getElementById('unit_table');
             logistik_treck[this.tb_id+1].setStyle({color: this.color,weight:1,opacity:0.4});
            }else{
             this.colorr= this.color;
-            logistik_treck[this.tb_id+1].setStyle({color: this.color,weight:2,opacity:1});
+            logistik_treck[this.tb_id+1].setStyle({color: this.color,weight:3,opacity:1});
            }
            
            this.setIcon(myIcon);
