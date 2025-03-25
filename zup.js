@@ -5945,6 +5945,7 @@ $('#geomodul_bt').click(function() {
       let r = m[6];
       let n = m[0]+'<br>'+m[1]+'<br>'+m[2]+'<br>'+m[3]+'<br>'+m[4]+'<br>'+m[5]+'<br>'+m[6]+'<br>'+m[9];
       for(let ii = 0; ii<vibor.length; ii++){
+	      if(!r)continue;
         if(r.indexOf(vibor[ii])>=0 || vibor[ii]=="Всі"){
         if(t>=fr && t<=to){
           poly_color += 60+Math.floor(Math.random() * 30);
