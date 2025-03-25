@@ -1,6 +1,5 @@
 
 
-
 // global variables
 var map, marker,unitslist = [],unitslistID = [],allunits = [],rest_units = [],marshruts = [],zup = [], unitMarkers = [], markerByUnit = {},tile_layer, layers = {},marshrutMarkers = [],unitsID = {},Vibranaya_zona,temp_layer=[],trailers={},drivers={};
 var areUnitsLoaded = false;
@@ -560,6 +559,7 @@ if ($("#lis1").chosen().val()[0]=="v000") {
   clearGarbage(garbagepoly);
   clearGarbage(marshrut_garbage);
   clearGarbage(marshrut_treck);
+  clearGarbage(logistik_treck);
   bufer=[];
   });
  $('#men3').click(function() { 
@@ -637,6 +637,7 @@ bufer=[];
     clearGarbage(marshrut_garbage);
     clearGarbage(marshrutMarkers);
     clearGarbage(marshrut_treck);
+    clearGarbage(logistik_treck);
     bufer=[];
  });
 
@@ -672,6 +673,7 @@ bufer=[];
   clearGarbage(marshrut_garbage);
   clearGarbage(marshrutMarkers);
   clearGarbage(marshrut_treck);
+  clearGarbage(logistik_treck);
   bufer=[];
 });
 
@@ -709,6 +711,7 @@ bufer=[];
   clearGarbage(marshrut_garbage);
   clearGarbage(marshrutMarkers);
   clearGarbage(marshrut_treck);
+  clearGarbage(logistik_treck);
   bufer=[];
 });
 
@@ -745,7 +748,7 @@ bufer=[];
   clearGarbage(marshrut_garbage);
   clearGarbage(marshrutMarkers);
   clearGarbage(marshrut_treck);
-
+  clearGarbage(logistik_treck);
 });
 
 $("#men8").on("click", function (){
@@ -781,6 +784,8 @@ $("#men8").on("click", function (){
   clearGarbage(marshrut_garbage);
   clearGarbage(marshrutMarkers);
   clearGarbage(marshrut_treck);
+  clearGarbage(logistik_treck);
+
   let tt = new Date(Date.parse($('#f').text())).toJSON().slice(0,10);
 });
 
@@ -1059,7 +1064,7 @@ if (!$('#marrr').is(':hidden')) {
  
 
  });
- let colorr_logistik= Math.floor(Math.random() * 360);
+ let colorr_logistik= -30;
 
  const areaSelection = new window.leafletAreaSelection.DrawAreaSelection({
   onButtonActivate : (polygon) => {
@@ -1072,7 +1077,7 @@ if (!$('#marrr').is(':hidden')) {
   },
   onPolygonDblClick: (polygon, control, ev) => {
     let area = (turf.area(polygon.toGeoJSON())*kof/10000).toFixed(2);
-    colorr_logistik+= 60+Math.floor(Math.random() * 30);
+    colorr_logistik+= 60+Math.floor(Math.random() * 60);
     let colorr=  `hsl(${colorr_logistik}, ${100}%, ${45}%)`;
     let geojson = L.geoJSON(polygon.toGeoJSON(), {
       style: {
@@ -5618,16 +5623,20 @@ $('#vodiyi_kkz').click(function() {
       for (let i = 0; i<data.length; i++){
         let name = data[i][0][1];
         let line =[];
+
         for (let ii = 1; ii<data[i].length-1; ii++){
           if(!data[i][ii][0])continue;
           if(!data[i][ii][2])continue;
+
           if(parseInt(data[i][ii][2])==0)continue;
           let y = parseFloat(data[i][ii][0].split(',')[0]);
           let x = parseFloat(data[i][ii][0].split(',')[1]);
-          line.push ([y,x]);
+        
+            line.push ([y,x]);
+
         }
         trak_color += 60+Math.floor(Math.random() * 30);
-        let l = L.polyline([line], {color: `hsl(${trak_color}, ${100}%, ${45}%)`,weight:2,opacity:1}).bindTooltip(''+name+'',{opacity:0.8, sticky: true}).addTo(map);
+        let l = L.polyline([line], {color: `hsl(${245}, ${100}%, ${45}%)`,weight:1,opacity:1}).bindTooltip(''+name+'',{opacity:0.8, sticky: true}).addTo(map);
         temp_layer.push(l);
       }
     }
@@ -5727,15 +5736,17 @@ $('#track_lis_bt').click(function() {
   }
 
   function planuvannya_start(){
+    clearGarbage(logistik_treck);
     $("#unit_table").append("<tr><td>№</td><td>&nbsp&nbsp&nbsp&nbsp</td><td>ТЗ</td><td>агрегат</td><td>локація</td><td>відвезти</td><td>адреса</td><td>забрати</td><td>адреса</td></tr>");
     //for(let i = 0; i<10; i++){
       //$("#unit_table").append("<tr><td>"+(i+1)+"</td><td style ='background-color:rgb(255, 0, 0)'>&nbsp&nbsp&nbsp&nbsp</td><td  contenteditable='true'>ККЗ</td><td contenteditable='true'>-----</td></tr>");
     //}
   }
 
-
+let logistik_treck =[];
 let mehanizator_adresa=[];
   function planuvannya_marshrutiv(data,col){
+    clearGarbage(logistik_treck);
 let poly = [];
 let kk=0;
 if(data){
@@ -5838,36 +5849,40 @@ let table_plan=document.getElementById('unit_table');
             icon: L.divIcon({
               iconSize: "auto",
               className: 'div-icon',
-              html: "<div style=' width: 20px;  height: 20px;border: 2px solid rgb(255, 255, 255); border-top-left-radius: 0px;  border-top-right-radius: 10px;  border-bottom-right-radius: 10px;  border-bottom-left-radius: 10px;background:"+color+"; '></div> ",
+              html: "<div style=' width: 13px;  height: 13px;border: 1px solid rgb(0, 0, 0); border-top-left-radius: 0px;  border-top-right-radius: 5px;  border-bottom-right-radius: 5px;  border-bottom-left-radius: 5px;background:"+color+"; '></div> ",
             })
-          }).bindTooltip(''+mehanizator_adresa[ii][0]+'</br>'+mehanizator_adresa[ii][1]+' - '+table_plan.rows[i].cells[4].textContent+'</br>'+table_plan.rows[i].cells[3].textContent+'',{ sticky: true}).addTo(map);
+          }).bindTooltip(''+mehanizator_adresa[ii][0]+'</br>'+mehanizator_adresa[ii][1]+'</br>'+table_plan.rows[i].cells[4].textContent+'</br>'+table_plan.rows[i].cells[3].textContent+'',{ sticky: true}).addTo(map);
           m.color=color;
           m.colorr=color;
+          m.tb_id = logistik_treck.length;
           //m.adres = point_in_region(table_plan.rows[i].id.split(',')[3],table_plan.rows[i].id.split(',')[4]);
           m.on('click', function(e) {
-           //console.log(this);
+           //console.log(logistik_treck[this.tb_id]);
+          
            
-           navigator.clipboard.writeText(this._tooltip._content.split('</br>')[0]+"\t"+this._tooltip._content.split('</br>')[1]+"\t"+this._tooltip._content.split('</br>')[2]); 
+           navigator.clipboard.writeText(this._tooltip._content.split('</br>')[0]+"\t"+this._tooltip._content.split('</br>')[1]+"\t"+this._tooltip._content.split('</br>')[2]+"\t"+this._tooltip._content.split('</br>')[3]); 
            let  myIcon =  L.divIcon({
             iconSize: "auto",
             className: 'div-icon',
-            html: "<div style=' width: 20px;  height: 20px;border: 2px solid rgb(255, 255, 255); border-top-left-radius: 0px;  border-top-right-radius: 10px;  border-bottom-right-radius: 10px;  border-bottom-left-radius: 10px;background:"+m.color+"; '></div> ",
+            html: "<div style=' width: 13px;  height: 13px;border: 1px solid rgb(0, 0, 0); border-top-left-radius: 0px;  border-top-right-radius: 5px;  border-bottom-right-radius: 5px;  border-bottom-left-radius: 5px;background:"+m.color+"; '></div> ",
           });
            
            if(this.color==this.colorr){
               myIcon =  L.divIcon({
               iconSize: "auto",
               className: 'div-icon',
-              html: "<div style=' width: 20px;  height: 20px;2px solid rgb(255, 255, 255); border-top-left-radius: 0px;  border-top-right-radius: 10px;  border-bottom-right-radius: 10px;  border-bottom-left-radius: 10px;background: rgb(138, 136, 136); '></div> ",
+              html: "<div style=' width: 13px;  height: 13px;border: 1px solid rgba(0, 0, 0, 0.4);; border-top-left-radius: 0px;  border-top-right-radius: 5px;  border-bottom-right-radius: 5px;  border-bottom-left-radius: 5px;background: rgba(138, 136, 136, 0.4); '></div> ",
             });
-            m.colorr="rgb(138, 136, 136)";
+            this.colorr="rgba(138, 136, 136, 0.4)";
+            logistik_treck[this.tb_id+1].setStyle({color: this.color,weight:2,opacity:1});
            }else{
-            m.colorr= m.color;
+            this.colorr= this.color;
+            logistik_treck[this.tb_id+1].setStyle({color: this.color,weight:2,opacity:1});
            }
            
            this.setIcon(myIcon);
           });
-          marshrut_treck.push(m);
+          logistik_treck.push(m);
           let lat = 51.5506;
           let lon = 33.3473;
           if(table_plan.rows[i].id){
@@ -5878,10 +5893,10 @@ let table_plan=document.getElementById('unit_table');
             ['ККЗ',51.5472,33.3964],
             ['Пост Глухів',51.5472,33.3964]
           ]
-          let mark = L.marker([table_plan.rows[i].id.split(',')[3],table_plan.rows[i].id.split(',')[4]]).addTo(map).bindPopup(point_in_region(table_plan.rows[i].id.split(',')[3],table_plan.rows[i].id.split(',')[4]));
-          marshrut_treck.push(mark);
+          //let mark = L.marker([table_plan.rows[i].id.split(',')[3],table_plan.rows[i].id.split(',')[4]]).addTo(map).bindPopup(point_in_region(table_plan.rows[i].id.split(',')[3],table_plan.rows[i].id.split(',')[4]));
+          //logistik_treck.push(mark);
           //let line = [[lat,lon],[table_plan.rows[i].id.split(',')[3],table_plan.rows[i].id.split(',')[4]],[mehanizator_adresa[ii][3], mehanizator_adresa[ii][4]]];
-          let line = [[lat,lon],[mehanizator_adresa[ii][3], mehanizator_adresa[ii][4]]];
+          let line = [[table_plan.rows[i].id.split(',')[3],table_plan.rows[i].id.split(',')[4]],[mehanizator_adresa[ii][3], mehanizator_adresa[ii][4]]];
           // let d1 = wialon.util.Geometry.getDistance(lat,lon,stor[ii][0],stor[ii][1]); //real distance
           // let d2 = wialon.util.Geometry.getDistance(lat,lon,51.5472,33.3964); // KKZ distance
           // let d3 = wialon.util.Geometry.getDistance(stor[ii][0],stor[ii][1],51.5472,33.3964); // Gluhiv post distance
@@ -5889,7 +5904,7 @@ let table_plan=document.getElementById('unit_table');
           // if(d1>d2 && d3<d4)line = [[lat,lon],[51.5472,33.3964],[stor[ii][0],stor[ii][1]]];
           // if(d1>d2 && d3>d4)line = [[lat,lon],[51.7166,33.8750],[51.5472,33.3964],[stor[ii][0],stor[ii][1]]];
           let l = L.polyline(line, {color: color,weight:2,opacity:1}).addTo(map);
-          marshrut_treck.push(l);
+          logistik_treck.push(l);
           poisk=true;
           //table_plan.rows[i].cells[3].style ='background-color: #98FB98';
           break;
@@ -5924,11 +5939,11 @@ $('#planuvannya_bt1').click(function() {
   //for(let i = 0; i<10; i++){
   //  $("#unit_table").append("<tr><td>"+(i+1)+"</td><td style ='background-color:rgb(255, 0, 0)'>&nbsp&nbsp&nbsp&nbsp</td><td  contenteditable='true'>ККЗ</td><td contenteditable='true'>-----</td></tr>");
   //}
-  clearGarbage(marshrut_treck);
+  clearGarbage(logistik_treck);
 });
 
 $('#planuvannya_bt2').click(function() {
-  clearGarbage(marshrut_treck);
+  clearGarbage(logistik_treck);
   planuvannya_marshrutiv();
 });
 
@@ -5945,19 +5960,19 @@ $('#geomodul_bt').click(function() {
       let r = m[6];
       let n = m[0]+'<br>'+m[1]+'<br>'+m[2]+'<br>'+m[3]+'<br>'+m[4]+'<br>'+m[5]+'<br>'+m[6]+'<br>'+m[9];
       for(let ii = 0; ii<vibor.length; ii++){
-	      if(!r)continue;
+        if(!r)continue;
         if(r.indexOf(vibor[ii])>=0 || vibor[ii]=="Всі"){
         if(t>=fr && t<=to){
           poly_color += 60+Math.floor(Math.random() * 30);
           let poly = JSON.parse(data[i+1]);
           if(poly.type == 'Polygon'){
             let coords = L.GeoJSON.coordsToLatLngs(poly.coordinates,1);
-            let G=L.polygon(coords, {color: `hsl(${poly_color}, ${100}%, ${45}%)`}).bindTooltip(n ,{opacity:0.8,sticky:true}).addTo(map);
+            let G=L.polygon(coords, {color: `hsl(${0}, ${100}%, ${45}%)`, stroke: false,  fillOpacity: 0.5}).bindTooltip(n ,{opacity:0.8,sticky:true}).addTo(map);
             garbagepoly.push(G);
           }else{
                 for(let iii = 0; iii<poly.coordinates.length; iii++){
                   let coords = L.GeoJSON.coordsToLatLngs(poly.coordinates[iii],1);
-                  let G=L.polygon(coords, {color: `hsl(${poly_color}, ${100}%, ${45}%)`, stroke: true, weight: 1, opacity: 0.5, fillOpacity: 0.3}).bindTooltip(n ,{opacity:0.8,sticky:true}).addTo(map);
+                  let G=L.polygon(coords, {color: `hsl(${0}, ${100}%, ${45}%)`, stroke: false,  fillOpacity: 0.5}).bindTooltip(n ,{opacity:0.8,sticky:true}).addTo(map);
                   garbagepoly.push(G);
                 }
           }
