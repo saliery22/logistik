@@ -1,5 +1,4 @@
 
-
 // global variables
 var map, marker,unitslist = [],unitslistID = [],allunits = [],rest_units = [],marshruts = [],zup = [], unitMarkers = [], markerByUnit = {},tile_layer, layers = {},marshrutMarkers = [],unitsID = {},Vibranaya_zona,temp_layer=[],trailers={},drivers={};
 var areUnitsLoaded = false;
@@ -2461,7 +2460,7 @@ mm = markerByUnit[idd];
  if (grup){
   let strr = str.split(',');
  strr.forEach((element) => {
-  if(nmm.indexOf(element)==0){
+  if(element.indexOf(nmm)>=0){
     mm.setOpacity(1);
     mm.setZIndexOffset(1000);
     filtr=true; 
@@ -5737,7 +5736,7 @@ $('#track_lis_bt').click(function() {
 
   function planuvannya_start(){
     clearGarbage(logistik_treck);
-    $("#unit_table").append("<tr><td>№</td><td>&nbsp&nbsp&nbsp&nbsp</td><td>ТЗ</td><td>агрегат</td><td>локація</td><td>відвезти</td><td>адреса</td><td>забрати</td><td>адреса</td></tr>");
+    $("#unit_table").append("<tr><td></td><td></td><td>№</td><td>&nbsp&nbsp&nbsp&nbsp</td><td>ТЗ</td><td>агрегат</td><td>локація</td><td>відвезти</td><td>адреса</td><td>забрати</td><td>адреса</td></tr>");
     //for(let i = 0; i<10; i++){
       //$("#unit_table").append("<tr><td>"+(i+1)+"</td><td style ='background-color:rgb(255, 0, 0)'>&nbsp&nbsp&nbsp&nbsp</td><td  contenteditable='true'>ККЗ</td><td contenteditable='true'>-----</td></tr>");
     //}
@@ -5830,28 +5829,44 @@ for(let i = 0; i<unitslist.length; i++){
     }
       kk++;
       
-        $("#unit_table").append("<tr class='fail_trak' id='"+id+"," + lat+","+lon+","+center.lat+","+center.lng+"'><td>"+kk+"</td><td style = 'background-color: "+col+";'>&nbsp&nbsp&nbsp&nbsp</td><td  contenteditable='true'>"+namet+"</td><td contenteditable='true'>"+agregat+"</td><td  contenteditable='true'>"+namet_a+"</td><td contenteditable='true'>"+zavtra+"</td><td contenteditable='true'>"+zavtra_a+"</td><td contenteditable='true'>"+vodiy+"</td><td contenteditable='true'>"+vodiy_a+"</td></tr>");
+        $("#unit_table").append("<tr class='fail_trak' id='"+id+"," + lat+","+lon+","+center.lat+","+center.lng+"'><td>-</td><td>+</td><td>"+kk+"</td><td style = 'background-color: "+col+";'>&nbsp&nbsp&nbsp&nbsp</td><td  contenteditable='true'>"+namet+"</td><td contenteditable='true'>"+agregat+"</td><td  contenteditable='true'>"+namet_a+"</td><td contenteditable='true'>"+zavtra+"</td><td contenteditable='true'>"+zavtra_a+"</td><td contenteditable='true'>"+vodiy+"</td><td contenteditable='true'>"+vodiy_a+"</td></tr>");
     
      }
     }
+  
 }  
+if(kk==0){
+  kk++;
+  $("#unit_table").append("<tr  id='"+11+"," + 11+","+11+","+center.lat+","+center.lng+"'><td>-</td><td>+</td><td>"+kk+"</td><td style = 'background-color: "+col+";'>&nbsp&nbsp&nbsp&nbsp</td><td  contenteditable='true'>-----</td><td contenteditable='true'>-----</td><td  contenteditable='true'>"+point_in_region(center.lat,center.lng)+"</td><td contenteditable='true'>-----</td><td contenteditable='true'>-----</td><td contenteditable='true'>-----</td><td contenteditable='true'>-----</td></tr>");
+}
 }
 
 let table_plan=document.getElementById('unit_table');
-  for(let i = 0; i<table_plan.rows.length; i++){
-    let zavtra =  table_plan.rows[i].cells[5].innerText;
+let kol_sort = '';
+let num_kk = 0;
+  for(let i = 1; i<table_plan.rows.length; i++){
+    if(kol_sort==table_plan.rows[i].cells[3].style.backgroundColor){
+      num_kk++;
+      table_plan.rows[i].cells[2].textContent=num_kk;
+    }else{
+      kol_sort=table_plan.rows[i].cells[3].style.backgroundColor;
+      num_kk=1;
+      table_plan.rows[i].cells[2].textContent=num_kk;
+    }
+
+    let zavtra =  table_plan.rows[i].cells[7].innerText;
     if(zavtra!="-----" && zavtra.innerText!="не вставив картку в зчитувач" && zavtra!="відсутня картка водія"){
-      let color = table_plan.rows[i].cells[1].style.backgroundColor;
+      let color = table_plan.rows[i].cells[3].style.backgroundColor;
       for(let ii = mehanizator_adresa.length-1; ii>=0; ii--){
         if(mehanizator_adresa[ii][0].indexOf(zavtra)>=0){
-          table_plan.rows[i].cells[6].textContent =mehanizator_adresa[ii][1];
+          table_plan.rows[i].cells[8].textContent =mehanizator_adresa[ii][1];
           let m =L.marker([mehanizator_adresa[ii][3], mehanizator_adresa[ii][4]],{
             icon: L.divIcon({
               iconSize: "auto",
               className: 'div-icon',
               html: "<div style=' width: 13px;  height: 13px;border: 1px solid rgb(0, 0, 0); border-top-left-radius: 0px;  border-top-right-radius: 5px;  border-bottom-right-radius: 5px;  border-bottom-left-radius: 5px;background:"+color+"; '></div> ",
             })
-          }).bindTooltip(''+mehanizator_adresa[ii][0]+'</br>'+mehanizator_adresa[ii][1]+'</br>'+table_plan.rows[i].cells[4].textContent+'</br>'+table_plan.rows[i].cells[3].textContent+'',{ sticky: true}).addTo(map);
+          }).bindTooltip(''+mehanizator_adresa[ii][0]+'</br>'+mehanizator_adresa[ii][1]+'</br>'+table_plan.rows[i].cells[6].textContent+'</br>'+table_plan.rows[i].cells[5].textContent+'',{ sticky: true}).addTo(map);
           m.color=color;
           m.colorr=color;
           m.tb_id = logistik_treck.length;
@@ -5936,15 +5951,43 @@ return mesto;
 }
 $('#planuvannya_bt1').click(function() {
   $("#unit_table").empty();
+  $("#unit_table").append("<tr><td></td><td></td><td>№</td><td>&nbsp&nbsp&nbsp&nbsp</td><td>ТЗ</td><td>агрегат</td><td>локація</td><td>відвезти</td><td>адреса</td><td>забрати</td><td>адреса</td></tr>");
   //for(let i = 0; i<10; i++){
   //  $("#unit_table").append("<tr><td>"+(i+1)+"</td><td style ='background-color:rgb(255, 0, 0)'>&nbsp&nbsp&nbsp&nbsp</td><td  contenteditable='true'>ККЗ</td><td contenteditable='true'>-----</td></tr>");
   //}
   clearGarbage(logistik_treck);
+  clearGarbage(marshrut_treck);
 });
 
 $('#planuvannya_bt2').click(function() {
   clearGarbage(logistik_treck);
   planuvannya_marshrutiv();
+});
+
+$("#unit_table").on("click", function (evt){
+  let row = evt.target.parentNode;
+ 
+  if(row.rowIndex>0){
+
+     if (evt.target.textContent=='-'){
+      row.cells[0].closest('tr').remove();
+      return;
+     }
+
+     if (evt.target.textContent=='+'){
+      let ind =  row.rowIndex;
+      let adr = row.cells[6].textContent;
+      let kk = parseInt(row.cells[2].textContent)+1;
+      let col = row.cells[3].style.backgroundColor;
+      let idd=row.id;
+      let newRow = row.parentNode.insertRow(ind+1);
+      newRow.id = idd;
+      newRow.innerHTML = "<td>-</td><td>+</td><td>"+kk+"</td><td style = 'background-color: "+col+";'>&nbsp&nbsp&nbsp&nbsp</td><td  contenteditable='true'>-----</td><td  contenteditable='true'>-----</td><td contenteditable='true'>"+adr+"</td><td contenteditable='true'>-----</td><td contenteditable='true'>-----</td><td contenteditable='true'>-----</td></tr><td contenteditable='true'>-----</td>";
+      return;
+     }
+
+ 
+  }
 });
 
 $('#geomodul_bt').click(function() {
