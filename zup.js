@@ -6061,7 +6061,7 @@ $("#unit_table").on("click", function (evt){
       el.setAttribute('class', 'autocomplete');
       let el2 = document.createElement('div');
       el2.setAttribute('class', 'inp');
-      el2.setAttribute('id', 'myInput595959595959');
+      el2.setAttribute('id', 'myInput'+kk+'');
       el2.setAttribute('type', 'text');
       el2.setAttribute('contenteditable', 'true');
       el2.textContent = "";
@@ -6108,7 +6108,8 @@ function autocomplete_all(inp, arr) {
           b.innerHTML = "<strong>" + arr[i].substr(0, val.length) + "</strong>";
           b.innerHTML += arr[i].substr(val.length);
           /*insert a input field that will hold the current array item's value:*/
-          b.innerHTML += "<input type='hidden' value='" + arr[i] + "'>";
+           let nm = arr[i].replace(/'/, '&#39');
+          b.innerHTML += "<input type='hidden' value='"+nm+"'>";
           /*execute a function when someone clicks on the item value (DIV element):*/
           b.addEventListener("click", function(e) {
               /*insert the value for the autocomplete text field:*/
