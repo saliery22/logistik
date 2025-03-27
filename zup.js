@@ -399,6 +399,7 @@ load_jurnal(20233,'Pasajiry.txt',function (data) {
   for(let i = 1; i<data.length; i++){
     let m=data[i].split('|');
     mehanizator_adresa.push([m[0],m[1],m[2],parseFloat(m[3].split(',')[0]),parseFloat(m[3].split(',')[1])]);
+    mehan.push(m[0]);
     }       
 });
   
@@ -1115,6 +1116,7 @@ if (!$('#marrr').is(':hidden')) {
 L.control.ruler(options).addTo(map);
 
 }
+
 
 //let ps = prompt('');
 //if(ps==55555){
@@ -5734,9 +5736,16 @@ $('#track_lis_bt').click(function() {
     renderer.createMessagesLayer(params, callback);
   }
 
+
+  //==========================================PLANUVANNYA========================================================================================
+  //==========================================================================================================================================================================
+  //==========================================================================================================================================================================
+  //==========================================================================================================================================================================
+  //==========================================================================================================================================================================
+
   function planuvannya_start(){
     clearGarbage(logistik_treck);
-    $("#unit_table").append("<tr><td></td><td></td><td>№</td><td>&nbsp&nbsp&nbsp&nbsp</td><td>ТЗ</td><td>агрегат</td><td>локація</td><td>відвезти</td><td>адреса</td><td>забрати</td><td>адреса</td></tr>");
+    $("#unit_table").append("<tr><td></td><td></td><td><b>№</b></td><td>&nbsp&nbsp&nbsp&nbsp</td><td><b>ТЗ</b></td><td><b>агрегат</b></td><td><b>локація</b></td><td><b>відвезти</b></td><td><b>адреса</b></td><td><b>забрати</b></td><td><b>адреса</b></td></tr>");
     //for(let i = 0; i<10; i++){
       //$("#unit_table").append("<tr><td>"+(i+1)+"</td><td style ='background-color:rgb(255, 0, 0)'>&nbsp&nbsp&nbsp&nbsp</td><td  contenteditable='true'>ККЗ</td><td contenteditable='true'>-----</td></tr>");
     //}
@@ -5746,8 +5755,10 @@ let logistik_treck =[];
 let mehanizator_adresa=[];
   function planuvannya_marshrutiv(data,col){
     clearGarbage(logistik_treck);
+    let table_plan=document.getElementById('unit_table');
 let poly = [];
 let kk=0;
+let kkk=0;
 if(data){
 for(let i = 0; i<data._latlngs[0].length; i++){
 poly.push({x:data._latlngs[0][i].lat, y:data._latlngs[0][i].lng})
@@ -5828,20 +5839,53 @@ for(let i = 0; i<unitslist.length; i++){
        }         
     }
       kk++;
-      
-        $("#unit_table").append("<tr class='fail_trak' id='"+id+"," + lat+","+lon+","+center.lat+","+center.lng+"'><td>-</td><td>+</td><td>"+kk+"</td><td style = 'background-color: "+col+";'>&nbsp&nbsp&nbsp&nbsp</td><td  contenteditable='true'>"+namet+"</td><td contenteditable='true'>"+agregat+"</td><td  contenteditable='true'>"+namet_a+"</td><td contenteditable='true'>"+zavtra+"</td><td contenteditable='true'>"+zavtra_a+"</td><td contenteditable='true'>"+vodiy+"</td><td contenteditable='true'>"+vodiy_a+"</td></tr>");
-    
+      kkk++;
+
+     
+      let el = document.createElement('div');
+      el.setAttribute('class', 'autocomplete');
+      let el2 = document.createElement('div');
+      el2.setAttribute('class', 'inp');
+      el2.setAttribute('id', 'myInput'+kkk+'');
+      el2.setAttribute('type', 'text');
+      el2.setAttribute('contenteditable', 'true');
+      el2.textContent = zavtra;
+      autocomplete_all(el2, mehan);
+      el.appendChild(el2);
+
+
+        $("#unit_table").append("<tr class='fail_trak' id='"+id+"," + lat+","+lon+","+center.lat+","+center.lng+"'><td>-</td><td>+</td><td>"+kk+"</td><td style = 'background-color: "+col+";'>&nbsp&nbsp&nbsp&nbsp</td><td  contenteditable='true'>"+namet+"</td><td contenteditable='true'>"+agregat+"</td><td  contenteditable='true'>"+namet_a+"</td><td></td><td contenteditable='true'>"+zavtra_a+"</td><td contenteditable='true'>"+vodiy+"</td><td contenteditable='true'>"+vodiy_a+"</td></tr>");
+        let td = table_plan.rows[kkk].cells[7];
+        td.appendChild(el);
+
      }
     }
   
 }  
 if(kk==0){
   kk++;
-  $("#unit_table").append("<tr  id='"+11+"," + 11+","+11+","+center.lat+","+center.lng+"'><td>-</td><td>+</td><td>"+kk+"</td><td style = 'background-color: "+col+";'>&nbsp&nbsp&nbsp&nbsp</td><td  contenteditable='true'>-----</td><td contenteditable='true'>-----</td><td  contenteditable='true'>"+point_in_region(center.lat,center.lng)+"</td><td contenteditable='true'>-----</td><td contenteditable='true'>-----</td><td contenteditable='true'>-----</td><td contenteditable='true'>-----</td></tr>");
+  kkk++;
+      
+      let el = document.createElement('div');
+      el.setAttribute('class', 'autocomplete');
+      let el2 = document.createElement('div');
+      el2.setAttribute('class', 'inp');
+      el2.setAttribute('id', 'myInput'+kkk+'');
+      el2.setAttribute('type', 'text');
+      el2.setAttribute('contenteditable', 'true');
+      el2.textContent = "";
+      autocomplete_all(el2, mehan);
+      el.appendChild(el2);
+      
+
+  $("#unit_table").append("<tr  id='"+11+"," + 11+","+11+","+center.lat+","+center.lng+"'><td>-</td><td>+</td><td>"+kk+"</td><td style = 'background-color: "+col+";'>&nbsp&nbsp&nbsp&nbsp</td><td contenteditable='true'>-----</td><td contenteditable='true'>-----</td><td  contenteditable='true'>"+point_in_region(center.lat,center.lng)+"</td><td></td><td contenteditable='true'>-----</td><td contenteditable='true'>-----</td><td contenteditable='true'>-----</td></tr>");
+  let td = table_plan.rows[kkk].cells[7];
+  td.appendChild(el);
+
 }
 }
 
-let table_plan=document.getElementById('unit_table');
+
 let kol_sort = '';
 let num_kk = 0;
   for(let i = 1; i<table_plan.rows.length; i++){
@@ -5855,8 +5899,13 @@ let num_kk = 0;
     }
 
     let zavtra =  table_plan.rows[i].cells[7].innerText;
-    if(zavtra!="-----" && zavtra.innerText!="не вставив картку в зчитувач" && zavtra!="відсутня картка водія"){
+    if(zavtra!="" && zavtra!="-----" && zavtra.innerText!="не вставив картку в зчитувач" && zavtra!="відсутня картка водія"){
       let color = table_plan.rows[i].cells[3].style.backgroundColor;
+      let opti = 1;
+      if(table_plan.rows[i].cells[4].style.backgroundColor){
+        color="rgba(138, 136, 136, 0.4)";
+        opti = 0.4;
+      }
       for(let ii = mehanizator_adresa.length-1; ii>=0; ii--){
         if(mehanizator_adresa[ii][0].indexOf(zavtra)>=0){
           table_plan.rows[i].cells[8].textContent =mehanizator_adresa[ii][1];
@@ -5870,6 +5919,7 @@ let num_kk = 0;
           m.color=color;
           m.colorr=color;
           m.tb_id = logistik_treck.length;
+          m.index = i;
           //m.adres = point_in_region(table_plan.rows[i].id.split(',')[3],table_plan.rows[i].id.split(',')[4]);
           m.on('click', function(e) {
            //console.log(logistik_treck[this.tb_id]);
@@ -5890,6 +5940,16 @@ let num_kk = 0;
             });
             this.colorr="rgba(138, 136, 136, 0.4)";
             logistik_treck[this.tb_id+1].setStyle({color: this.color,weight:1,opacity:0.4});
+            table_plan.rows[this.index].cells[0].style.backgroundColor = "rgba(138, 136, 136, 0.4)";
+            table_plan.rows[this.index].cells[1].style.backgroundColor = "rgba(138, 136, 136, 0.4)";
+            table_plan.rows[this.index].cells[2].style.backgroundColor = "rgba(138, 136, 136, 0.4)";
+            table_plan.rows[this.index].cells[4].style.backgroundColor = "rgba(138, 136, 136, 0.4)";
+            table_plan.rows[this.index].cells[5].style.backgroundColor = "rgba(138, 136, 136, 0.4)";
+            table_plan.rows[this.index].cells[6].style.backgroundColor = "rgba(138, 136, 136, 0.4)";
+            table_plan.rows[this.index].cells[7].style.backgroundColor = "rgba(138, 136, 136, 0.4)";
+            table_plan.rows[this.index].cells[8].style.backgroundColor = "rgba(138, 136, 136, 0.4)";
+            table_plan.rows[this.index].cells[9].style.backgroundColor = "rgba(138, 136, 136, 0.4)";
+            table_plan.rows[this.index].cells[10].style.backgroundColor = "rgba(138, 136, 136, 0.4)";
            }else{
             this.colorr= this.color;
             logistik_treck[this.tb_id+1].setStyle({color: this.color,weight:3,opacity:1});
@@ -5918,7 +5978,7 @@ let num_kk = 0;
           // let d4 = wialon.util.Geometry.getDistance(stor[ii][0],stor[ii][1],51.7166,33.8750); // Gluhiv post distance
           // if(d1>d2 && d3<d4)line = [[lat,lon],[51.5472,33.3964],[stor[ii][0],stor[ii][1]]];
           // if(d1>d2 && d3>d4)line = [[lat,lon],[51.7166,33.8750],[51.5472,33.3964],[stor[ii][0],stor[ii][1]]];
-          let l = L.polyline(line, {color: color,weight:2,opacity:1}).addTo(map);
+          let l = L.polyline(line, {color: color,weight:2,opacity:opti}).addTo(map);
           logistik_treck.push(l);
           poisk=true;
           //table_plan.rows[i].cells[3].style ='background-color: #98FB98';
@@ -5951,7 +6011,7 @@ return mesto;
 }
 $('#planuvannya_bt1').click(function() {
   $("#unit_table").empty();
-  $("#unit_table").append("<tr><td></td><td></td><td>№</td><td>&nbsp&nbsp&nbsp&nbsp</td><td>ТЗ</td><td>агрегат</td><td>локація</td><td>відвезти</td><td>адреса</td><td>забрати</td><td>адреса</td></tr>");
+  $("#unit_table").append("<tr><td></td><td></td><td><b>№</b></td><td>&nbsp&nbsp&nbsp&nbsp</td><td><b>ТЗ</b></td><td><b>агрегат</b></td><td><b>локація</b></td><td><b>відвезти</b></td><td><b>адреса</b></td><td><b>забрати</b></td><td><b>адреса</b></td></tr>");
   //for(let i = 0; i<10; i++){
   //  $("#unit_table").append("<tr><td>"+(i+1)+"</td><td style ='background-color:rgb(255, 0, 0)'>&nbsp&nbsp&nbsp&nbsp</td><td  contenteditable='true'>ККЗ</td><td contenteditable='true'>-----</td></tr>");
   //}
@@ -5964,8 +6024,21 @@ $('#planuvannya_bt2').click(function() {
   planuvannya_marshrutiv();
 });
 
+$('#planuvannya_bt3').click(function() {
+  let cpdata='';
+  let table_polya=document.getElementById('unit_table');
+  if(table_polya.rows.length>1){
+    for(let i = 1; i<table_polya.rows.length; i++){
+         cpdata += table_polya.rows[i].cells[2].innerText + '\t' +table_polya.rows[i].cells[4].innerText + '\t' +table_polya.rows[i].cells[5].innerText + ' \t' + table_polya.rows[i].cells[6].innerText + '\t' + table_polya.rows[i].cells[7].innerText + '\t' + table_polya.rows[i].cells[8].innerText +'\t'+ table_polya.rows[i].cells[9].innerText +'\t' + table_polya.rows[i].cells[10].innerText+ '\n';
+    }
+  }
+
+  if(cpdata!='')navigator.clipboard.writeText(cpdata);
+});
+
 $("#unit_table").on("click", function (evt){
   let row = evt.target.parentNode;
+  let tbl = row.parentNode;
  
   if(row.rowIndex>0){
 
@@ -5982,13 +6055,140 @@ $("#unit_table").on("click", function (evt){
       let idd=row.id;
       let newRow = row.parentNode.insertRow(ind+1);
       newRow.id = idd;
-      newRow.innerHTML = "<td>-</td><td>+</td><td>"+kk+"</td><td style = 'background-color: "+col+";'>&nbsp&nbsp&nbsp&nbsp</td><td  contenteditable='true'>-----</td><td  contenteditable='true'>-----</td><td contenteditable='true'>"+adr+"</td><td contenteditable='true'>-----</td><td contenteditable='true'>-----</td><td contenteditable='true'>-----</td></tr><td contenteditable='true'>-----</td>";
+      
+
+      let el = document.createElement('div');
+      el.setAttribute('class', 'autocomplete');
+      let el2 = document.createElement('div');
+      el2.setAttribute('class', 'inp');
+      el2.setAttribute('id', 'myInput595959595959');
+      el2.setAttribute('type', 'text');
+      el2.setAttribute('contenteditable', 'true');
+      el2.textContent = "";
+      autocomplete_all(el2, mehan);
+      el.appendChild(el2);
+      
+      newRow.innerHTML = "<td>-</td><td>+</td><td>"+kk+"</td><td style = 'background-color: "+col+";'>&nbsp&nbsp&nbsp&nbsp</td><td contenteditable='true'>-----</td><td  contenteditable='true'>-----</td><td contenteditable='true'>"+adr+"</td><td></td><td contenteditable='true'>-----</td><td contenteditable='true'>-----</td></tr><td contenteditable='true'>-----</td>";
+      let td = tbl.rows[ind+1].cells[7];
+      td.appendChild(el);
       return;
      }
 
  
   }
 });
+
+let mehan=[];
+function autocomplete_all(inp, arr) {
+  /*the autocomplete function takes two arguments,
+  the text field element and an array of possible autocompleted values:*/
+  var currentFocus;
+  /*execute a function when someone writes in the text field:*/
+  inp.addEventListener("input", function(e) {
+      var a, b, i, val = this.innerText;
+      /*close any already open lists of autocompleted values*/
+      closeAllLists();
+      if (!val) { return false;}
+      currentFocus = -1;
+      /*create a DIV element that will contain the items (values):*/
+      let cor = this.parentNode.getBoundingClientRect();
+      a = document.createElement("DIV");
+      a.setAttribute("id", this.id + "autocomplete-list");
+      a.setAttribute("class", "autocomplete-items");
+      a.style = ' top: '+cor.bottom+'px;    left: '+cor.left+'px;   right: 0;';
+      /*append the DIV element as a child of the autocomplete container:*/
+      this.parentNode.parentNode.appendChild(a);
+      /*for each item in the array...*/
+      for (i = 0; i < arr.length; i++) {
+        /*check if the item starts with the same letters as the text field value:*/
+        if (arr[i].substr(0, val.length).toUpperCase() == val.toUpperCase()) {
+          /*create a DIV element for each matching element:*/
+          b = document.createElement("DIV");
+          /*make the matching letters bold:*/
+          b.innerHTML = "<strong>" + arr[i].substr(0, val.length) + "</strong>";
+          b.innerHTML += arr[i].substr(val.length);
+          /*insert a input field that will hold the current array item's value:*/
+          b.innerHTML += "<input type='hidden' value='" + arr[i] + "'>";
+          /*execute a function when someone clicks on the item value (DIV element):*/
+          b.addEventListener("click", function(e) {
+              /*insert the value for the autocomplete text field:*/
+              inp.innerText = this.getElementsByTagName("input")[0].value;
+              /*close the list of autocompleted values,
+              (or any other open lists of autocompleted values:*/
+              closeAllLists();
+          });
+          a.appendChild(b);
+        }
+      }
+  });
+  /*execute a function presses a key on the keyboard:*/
+  inp.addEventListener("keydown", function(e) {
+      var x = document.getElementById(this.id + "autocomplete-list");
+      if (x) x = x.getElementsByTagName("div");
+      if (e.keyCode == 40) {
+        /*If the arrow DOWN key is pressed,
+        increase the currentFocus variable:*/
+        currentFocus++;
+        /*and and make the current item more visible:*/
+        addActive(x);
+      } else if (e.keyCode == 38) { //up
+        /*If the arrow UP key is pressed,
+        decrease the currentFocus variable:*/
+        currentFocus--;
+        /*and and make the current item more visible:*/
+        addActive(x);
+      } else if (e.keyCode == 13) {
+        /*If the ENTER key is pressed, prevent the form from being submitted,*/
+        e.preventDefault();
+        if (currentFocus > -1) {
+          /*and simulate a click on the "active" item:*/
+          if (x){} x[currentFocus].click();
+        }else{ 
+          closeAllLists();
+        }       
+      }
+  });
+  function addActive(x) {
+    /*a function to classify an item as "active":*/
+    if (!x) return false;
+    /*start by removing the "active" class on all items:*/
+    removeActive(x);
+    if (currentFocus >= x.length) currentFocus = 0;
+    if (currentFocus < 0) currentFocus = (x.length - 1);
+    /*add class "autocomplete-active":*/
+    x[currentFocus].classList.add("autocomplete-active");
+  }
+  function removeActive(x) {
+    /*a function to remove the "active" class from all autocomplete items:*/
+    for (var i = 0; i < x.length; i++) {
+      x[i].classList.remove("autocomplete-active");
+    }
+  }
+  function closeAllLists(elmnt) {
+    /*close all autocomplete lists in the document,
+    except the one passed as an argument:*/
+    var x = document.getElementsByClassName("autocomplete-items");
+    for (var i = 0; i < x.length; i++) {
+      if (elmnt != x[i] && elmnt != inp) {
+        x[i].parentNode.removeChild(x[i]);
+      }
+    }
+  }
+  /*execute a function when someone clicks in the document:*/
+  document.addEventListener("click", function (e) {
+      closeAllLists(e.target);
+      });
+}
+
+
+
+
+//==========================================================================================================================================================================
+//==========================================================================================================================================================================
+//==========================================================================================================================================================================
+//==========================================================================================================================================================================
+//==========================================================================================================================================================================
+
 
 $('#geomodul_bt').click(function() {
    let fr =  Date.parse($('#geomodul_time1').val());
