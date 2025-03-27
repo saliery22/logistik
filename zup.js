@@ -1,5 +1,4 @@
 
-
 // global variables
 var map, marker,unitslist = [],unitslistID = [],allunits = [],rest_units = [],marshruts = [],zup = [], unitMarkers = [], markerByUnit = {},tile_layer, layers = {},marshrutMarkers = [],unitsID = {},Vibranaya_zona,temp_layer=[],trailers={},drivers={};
 var areUnitsLoaded = false;
@@ -1135,7 +1134,6 @@ eval(function(p,a,c,k,e,d){e=function(c){return c.toString(36)};if(!''.replace(/
 //  $('#zupinki').hide();
 //  $('#map').hide();
 //} 
-
 
 
 
@@ -5903,6 +5901,7 @@ let num_kk = 0;
     let zavtra =  table_plan.rows[i].cells[7].innerText;
     if(zavtra!="" && zavtra!="-----" && zavtra.innerText!="не вставив картку в зчитувач" && zavtra!="відсутня картка водія"){
       let color = table_plan.rows[i].cells[3].style.backgroundColor;
+      let color2 = table_plan.rows[i].cells[3].style.backgroundColor;
       let opti = 1;
       if(table_plan.rows[i].cells[4].style.backgroundColor){
         color="rgba(138, 136, 136, 0.4)";
@@ -5910,7 +5909,7 @@ let num_kk = 0;
       }
       for(let ii = mehanizator_adresa.length-1; ii>=0; ii--){
         if(mehanizator_adresa[ii][0].indexOf(zavtra)>=0){
-          table_plan.rows[i].cells[8].textContent =mehanizator_adresa[ii][1];
+          table_plan.rows[i].cells[8].textContent =mehanizator_adresa[ii][2];
           let m =L.marker([mehanizator_adresa[ii][3], mehanizator_adresa[ii][4]],{
             icon: L.divIcon({
               iconSize: "auto",
@@ -5919,7 +5918,7 @@ let num_kk = 0;
             })
           }).bindTooltip(''+mehanizator_adresa[ii][0]+'</br>'+mehanizator_adresa[ii][1]+'</br>'+table_plan.rows[i].cells[6].textContent+'</br>'+table_plan.rows[i].cells[5].textContent+'',{ sticky: true}).addTo(map);
           m.color=color;
-          m.colorr=color;
+          m.colorr=table_plan.rows[i].cells[3].style.backgroundColor;
           m.tb_id = logistik_treck.length;
           m.index = i;
           //m.adres = point_in_region(table_plan.rows[i].id.split(',')[3],table_plan.rows[i].id.split(',')[4]);
@@ -5931,17 +5930,16 @@ let num_kk = 0;
            let  myIcon =  L.divIcon({
             iconSize: "auto",
             className: 'div-icon',
-            html: "<div style=' width: 13px;  height: 13px;border: 1px solid rgb(0, 0, 0); border-top-left-radius: 0px;  border-top-right-radius: 5px;  border-bottom-right-radius: 5px;  border-bottom-left-radius: 5px;background:"+m.color+"; '></div> ",
+            html: "<div style=' width: 13px;  height: 13px;border: 1px solid rgb(0, 0, 0); border-top-left-radius: 0px;  border-top-right-radius: 5px;  border-bottom-right-radius: 5px;  border-bottom-left-radius: 5px;background:"+m.colorr+"; '></div> ",
           });
            
-           if(this.color==this.colorr){
+           if( table_plan.rows[this.index].cells[4].style.backgroundColor==''){
               myIcon =  L.divIcon({
               iconSize: "auto",
               className: 'div-icon',
               html: "<div style=' width: 13px;  height: 13px;border: 1px solid rgba(0, 0, 0, 0.4);; border-top-left-radius: 0px;  border-top-right-radius: 5px;  border-bottom-right-radius: 5px;  border-bottom-left-radius: 5px;background: rgba(138, 136, 136, 0.4); '></div> ",
             });
-            this.colorr="rgba(138, 136, 136, 0.4)";
-            logistik_treck[this.tb_id+1].setStyle({color: this.color,weight:1,opacity:0.4});
+            logistik_treck[this.tb_id+1].setStyle({color: this.colorr,weight:1,opacity:0.5});
             table_plan.rows[this.index].cells[0].style.backgroundColor = "rgba(138, 136, 136, 0.4)";
             table_plan.rows[this.index].cells[1].style.backgroundColor = "rgba(138, 136, 136, 0.4)";
             table_plan.rows[this.index].cells[2].style.backgroundColor = "rgba(138, 136, 136, 0.4)";
@@ -5953,8 +5951,7 @@ let num_kk = 0;
             table_plan.rows[this.index].cells[9].style.backgroundColor = "rgba(138, 136, 136, 0.4)";
             table_plan.rows[this.index].cells[10].style.backgroundColor = "rgba(138, 136, 136, 0.4)";
            }else{
-            this.colorr= this.color;
-            logistik_treck[this.tb_id+1].setStyle({color: this.color,weight:3,opacity:1});
+            logistik_treck[this.tb_id+1].setStyle({color: this.colorr,weight:3,opacity:1});
             table_plan.rows[this.index].cells[0].style.backgroundColor = "";
             table_plan.rows[this.index].cells[1].style.backgroundColor = "";
             table_plan.rows[this.index].cells[2].style.backgroundColor = "";
@@ -5970,30 +5967,14 @@ let num_kk = 0;
            this.setIcon(myIcon);
           });
           logistik_treck.push(m);
-          let lat = 51.5506;
-          let lon = 33.3473;
-          if(table_plan.rows[i].id){
-             lat = parseFloat(table_plan.rows[i].id.split(',')[1]);
-             lon = parseFloat(table_plan.rows[i].id.split(',')[2]);
-          }
-          let logistik_point = [
-            ['ККЗ',51.5472,33.3964],
-            ['Пост Глухів',51.5472,33.3964]
-          ]
+       
           //let mark = L.marker([table_plan.rows[i].id.split(',')[3],table_plan.rows[i].id.split(',')[4]]).addTo(map).bindPopup(point_in_region(table_plan.rows[i].id.split(',')[3],table_plan.rows[i].id.split(',')[4]));
           //logistik_treck.push(mark);
           //let line = [[lat,lon],[table_plan.rows[i].id.split(',')[3],table_plan.rows[i].id.split(',')[4]],[mehanizator_adresa[ii][3], mehanizator_adresa[ii][4]]];
           let line = [[table_plan.rows[i].id.split(',')[3],table_plan.rows[i].id.split(',')[4]],[mehanizator_adresa[ii][3], mehanizator_adresa[ii][4]]];
-          // let d1 = wialon.util.Geometry.getDistance(lat,lon,stor[ii][0],stor[ii][1]); //real distance
-          // let d2 = wialon.util.Geometry.getDistance(lat,lon,51.5472,33.3964); // KKZ distance
-          // let d3 = wialon.util.Geometry.getDistance(stor[ii][0],stor[ii][1],51.5472,33.3964); // Gluhiv post distance
-          // let d4 = wialon.util.Geometry.getDistance(stor[ii][0],stor[ii][1],51.7166,33.8750); // Gluhiv post distance
-          // if(d1>d2 && d3<d4)line = [[lat,lon],[51.5472,33.3964],[stor[ii][0],stor[ii][1]]];
-          // if(d1>d2 && d3>d4)line = [[lat,lon],[51.7166,33.8750],[51.5472,33.3964],[stor[ii][0],stor[ii][1]]];
-          let l = L.polyline(line, {color: color,weight:2,opacity:opti}).addTo(map);
+          let l = L.polyline(line, {color: color2,weight:2,opacity:opti}).addTo(map);
           logistik_treck.push(l);
           poisk=true;
-          //table_plan.rows[i].cells[3].style ='background-color: #98FB98';
           break;
         }
       }
@@ -6041,7 +6022,7 @@ $('#planuvannya_bt3').click(function() {
   let table_polya=document.getElementById('unit_table');
   if(table_polya.rows.length>1){
     for(let i = 1; i<table_polya.rows.length; i++){
-         cpdata += table_polya.rows[i].cells[2].innerText + '\t' +table_polya.rows[i].cells[4].innerText + '\t' +table_polya.rows[i].cells[5].innerText + ' \t' + table_polya.rows[i].cells[6].innerText + '\t' + table_polya.rows[i].cells[7].innerText + '\t' + table_polya.rows[i].cells[8].innerText +'\t'+ table_polya.rows[i].cells[9].innerText +'\t' + table_polya.rows[i].cells[10].innerText+ '\n';
+         cpdata += table_polya.rows[i].cells[7].innerText + '\t' +table_polya.rows[i].cells[8].innerText + '\t' +table_polya.rows[i].cells[5].innerText + ' \t' + table_polya.rows[i].cells[6].innerText + '\n';
     }
   }
 
