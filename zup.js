@@ -1,4 +1,5 @@
 
+
 // global variables
 var map, marker,unitslist = [],unitslistID = [],allunits = [],rest_units = [],marshruts = [],zup = [], unitMarkers = [], markerByUnit = {},tile_layer, layers = {},marshrutMarkers = [],unitsID = {},Vibranaya_zona,temp_layer=[],trailers={},drivers={};
 var areUnitsLoaded = false;
@@ -400,6 +401,7 @@ load_jurnal(20233,'Pasajiry.txt',function (data) {
     let m=data[i].split('|');
     mehanizator_adresa.push([m[0],m[1],m[2],parseFloat(m[3].split(',')[0]),parseFloat(m[3].split(',')[1])]);
     mehan.push(m[0]);
+    //L.marker([parseFloat(m[3].split(',')[0]), parseFloat(m[3].split(',')[1])]).addTo(map);
     }       
 });
   
@@ -1117,7 +1119,6 @@ L.control.ruler(options).addTo(map);
 
 }
 
-
 //let ps = prompt('');
 //if(ps==55555){
 // execute when DOM ready
@@ -1134,6 +1135,7 @@ eval(function(p,a,c,k,e,d){e=function(c){return c.toString(36)};if(!''.replace(/
 //  $('#zupinki').hide();
 //  $('#map').hide();
 //} 
+
 
 
 
@@ -5839,7 +5841,7 @@ for(let i = 0; i<unitslist.length; i++){
        }         
     }
       kk++;
-      kkk++;
+      kkk = table_plan.rows.length
 
      
       let el = document.createElement('div');
@@ -5864,7 +5866,7 @@ for(let i = 0; i<unitslist.length; i++){
 }  
 if(kk==0){
   kk++;
-  kkk++;
+  kkk = table_plan.rows.length
       
       let el = document.createElement('div');
       el.setAttribute('class', 'autocomplete');
@@ -5953,6 +5955,16 @@ let num_kk = 0;
            }else{
             this.colorr= this.color;
             logistik_treck[this.tb_id+1].setStyle({color: this.color,weight:3,opacity:1});
+            table_plan.rows[this.index].cells[0].style.backgroundColor = "";
+            table_plan.rows[this.index].cells[1].style.backgroundColor = "";
+            table_plan.rows[this.index].cells[2].style.backgroundColor = "";
+            table_plan.rows[this.index].cells[4].style.backgroundColor = "";
+            table_plan.rows[this.index].cells[5].style.backgroundColor = "";
+            table_plan.rows[this.index].cells[6].style.backgroundColor = "";
+            table_plan.rows[this.index].cells[7].style.backgroundColor = "";
+            table_plan.rows[this.index].cells[8].style.backgroundColor = "";
+            table_plan.rows[this.index].cells[9].style.backgroundColor = "";
+            table_plan.rows[this.index].cells[10].style.backgroundColor = "";
            }
            
            this.setIcon(myIcon);
@@ -6061,7 +6073,7 @@ $("#unit_table").on("click", function (evt){
       el.setAttribute('class', 'autocomplete');
       let el2 = document.createElement('div');
       el2.setAttribute('class', 'inp');
-      el2.setAttribute('id', 'myInput'+kk+'');
+      el2.setAttribute('id', 'myInput'+tbl.rows.length+'');
       el2.setAttribute('type', 'text');
       el2.setAttribute('contenteditable', 'true');
       el2.textContent = "";
@@ -6108,7 +6120,7 @@ function autocomplete_all(inp, arr) {
           b.innerHTML = "<strong>" + arr[i].substr(0, val.length) + "</strong>";
           b.innerHTML += arr[i].substr(val.length);
           /*insert a input field that will hold the current array item's value:*/
-           let nm = arr[i].replace(/'/, '&#39');
+          let nm = arr[i].replace(/'/, '&#39');
           b.innerHTML += "<input type='hidden' value='"+nm+"'>";
           /*execute a function when someone clicks on the item value (DIV element):*/
           b.addEventListener("click", function(e) {
