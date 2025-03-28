@@ -5742,7 +5742,12 @@ $('#track_lis_bt').click(function() {
   //==========================================================================================================================================================================
   //==========================================================================================================================================================================
   //==========================================================================================================================================================================
-
+let krolevec =[ [51.5509,33.3895],[51.5489,33.3847],[51.5526,33.3840],[51.5544,33.3895],[51.5528,33.3947],[51.5491,33.3941],[51.5467,33.3893],[51.5453,33.3832],[51.5504,33.3785],[51.5566,33.3842],[51.5567,33.3943],[51.5506,33.4002],[51.5453,33.3948],[51.5427,33.3887],[51.5470,33.3780],[51.5542,33.3789],[51.5581,33.3893],[51.5545,33.4001],[51.5469,33.4003],[51.5412,33.3941],[51.5415,33.3826],[51.5490,33.3728],[51.5582,33.3787],[51.5600,33.3941],[51.5524,33.4058],[51.5433,33.3996],[51.5393,33.3881],[51.5435,33.3776],[51.5454,33.3724],[51.5528,33.3736],[51.5597,33.3838],[51.5581,33.4000],[51.5489,33.4050],[51.5451,33.4051],[51.5615,33.3888],[51.5564,33.3730],[51.5561,33.4054],[51.5617,33.3991],[51.5638,33.3938],[51.5595,33.4052],[51.5545,33.4102],[51.5502,33.4102],[51.5650,33.3990],[51.5379,33.3935],[51.5416,33.4039],[51.5469,33.4097],[51.5647,33.3886],[51.5615,33.3795],[51.5580,33.4102],[51.5430,33.4093],[51.5392,33.3990],[51.5627,33.4046],[51.5562,33.4154],[51.5525,33.4151],[51.5485,33.4152],[51.5674,33.3941],[51.5616,33.4105],[51.5598,33.4155]];
+let kkz = [[51.5541,33.3295],[51.5540,33.3263],[51.5558,33.3280],[51.5558,33.3313],[51.5539,33.3328],[51.5522,33.3310],[51.5524,33.3278],[51.5557,33.3247],[51.5558,33.3346],[51.5505,33.3293],[51.5508,33.3256],[51.5571,33.3329],[51.5542,33.3224],[51.5522,33.3343],[51.5574,33.3264],[51.5504,33.3324],[51.5524,33.3238],[51.5579,33.3297],[51.5540,33.3359],[51.5573,33.3230],[51.5507,33.3224],[51.5590,33.3249],[51.5556,33.3376],[51.5523,33.3205],[51.5558,33.3209],[51.5540,33.3185],[51.5595,33.3281],[51.5590,33.3323],[51.5589,33.3218],[51.5574,33.3191],[51.5556,33.3171],[51.5583,33.3354],[51.5609,33.3257],[51.5489,33.3242],[51.5490,33.3275],[51.5490,33.3206],[51.5522,33.3171],[51.5505,33.3187],[51.5540,33.3149],[51.5607,33.3222],[51.5573,33.3161],[51.5608,33.3308],[51.5592,33.3189],[51.5560,33.3137],[51.5523,33.3136],[51.5540,33.3114],[51.5622,33.3283],[51.5592,33.3156],[51.5582,33.3126],];
+let gluhiv =[[51.6805,33.9381],[51.6849,33.9379],[51.6753,33.9381],[51.6826,33.9309],[51.6779,33.9450],[51.6826,33.9444],[51.6780,33.9320],[51.6875,33.9449],[51.6865,33.9314],[51.6742,33.9312],[51.6802,33.9252],[51.6801,33.9510],[51.6741,33.9441],[51.6895,33.9375],[51.6717,33.9378],[51.6847,33.9509],[51.6846,33.9250],[51.6756,33.9248],[51.6915,33.9435],[51.6904,33.9303],[51.6893,33.9523],[51.6931,33.9503],[51.6934,33.9360],[51.6958,33.9437],[51.6867,33.9575],[51.6825,33.9579],[51.6753,33.9510],[51.6775,33.9583],[51.6941,33.9296],[51.6977,33.9374],[51.6974,33.9508],[51.7004,33.9444],[51.6923,33.9566],[51.6962,33.9581],[51.6899,33.9620],[51.6939,33.9644],[51.7001,33.9567],[51.7019,33.9502],[51.6852,33.9634],[51.6801,33.9640],[51.6718,33.9487],[51.6727,33.9568],[51.6745,33.9624],[51.6880,33.9678],[51.6916,33.9695],[51.6975,33.9640],[51.6957,33.9709],[51.6768,33.9686],[51.6827,33.9696],[51.6978,33.9308],[51.7019,33.9375],[51.7047,33.9448],[51.7037,33.9557],[51.7064,33.9509],[51.7016,33.9635]]
+let gluhiv_atb =[[51.6795,33.9050],[51.6830,33.9048],[51.6811,33.8993],[51.6850,33.8993],[51.6769,33.8993],[51.6830,33.8929],[51.6789,33.8929],[51.6871,33.8930],[51.6882,33.8989],[51.6870,33.9049],[51.6853,33.8878],[51.6811,33.8880],[51.6755,33.8939],[51.6772,33.8881],[51.6832,33.8825],[51.6792,33.8824],[51.6757,33.8827],[51.6737,33.8880],[51.6869,33.8822],[51.6891,33.8879],[51.6907,33.8942],[51.6850,33.8772],[51.6813,33.8771],[51.6776,33.8769],[51.6885,33.8769],[51.6907,33.8826],[51.6928,33.8890],[51.6796,33.8723],[51.6831,33.8717],[51.6941,33.8836],[51.6866,33.8718],[51.6920,33.8774],[51.6903,33.8712],[51.6938,33.8724],[51.6954,33.8781],[51.6927,33.8671],[51.6879,33.8661],[51.6847,33.8667],[51.6813,33.8672],[51.6780,33.8672]];
+let post_gluhiv = [[51.7205,33.8833],[51.7229,33.8813],[51.7190,33.8784],[51.7177,33.8854],[51.7223,33.8879],[51.7238,33.8848],[51.7214,33.8781],[51.7173,33.8814],[51.7199,33.8877],[51.7236,33.8776],[51.7200,33.8745],[51.7167,33.8778],[51.7243,33.8880],[51.7249,33.8821],[51.7157,33.8838],[51.7179,33.8894]];
+let vilne = [[51.5949,33.0300],[51.5981,33.0300],[51.5950,33.0244],[51.5950,33.0354],[51.5920,33.0301],[51.5973,33.0344],[51.5923,33.0255],[51.5978,33.0254],[51.5926,33.0343]];
   function planuvannya_start(){
     clearGarbage(logistik_treck);
     $("#unit_table").append("<tr><td></td><td></td><td><b>№</b></td><td>&nbsp&nbsp&nbsp&nbsp</td><td><b>ТЗ</b></td><td><b>агрегат</b></td><td><b>локація</b></td><td><b>відвезти</b></td><td><b>адреса</b></td><td><b>забрати</b></td><td><b>адреса</b></td></tr>");
@@ -5753,9 +5758,18 @@ $('#track_lis_bt').click(function() {
 
 let logistik_treck =[];
 let mehanizator_adresa=[];
+let point_planuvannya_list = [];
   function planuvannya_marshrutiv(data,col){
     clearGarbage(logistik_treck);
     let table_plan=document.getElementById('unit_table');
+
+let tochki_krolevec = 0;
+let tochki_gluhiv = 0;
+let tochki_kkz =0;
+let tochki_gluhiv_atb =0;
+let tochki_post_gluhiv =0;
+let tochki_vilne =0;
+
 let poly = [];
 let kk=0;
 let kkk=0;
@@ -5852,9 +5866,22 @@ for(let i = 0; i<unitslist.length; i++){
       el2.textContent = zavtra;
       autocomplete_all(el2, mehan);
       el.appendChild(el2);
+      el2.addEventListener('click', function (evt) {
+        if(evt.target.textContent=='')return;
+        for(let i = point_planuvannya_list.length-1; i>=0; i--){
+          let namet = point_planuvannya_list[i].name;
+          let unit =false;
+          if(namet.indexOf(evt.target.textContent)>=0){unit = true;}
+          if(unit==false)continue;
+          let lat = point_planuvannya_list[i]._latlng.lat;
+          let lon = point_planuvannya_list[i]._latlng.lng;
+          map.setView([lat, lon], 10);
+          point_planuvannya_list[i].openPopup();
+        }
+    });
 
 
-        $("#unit_table").append("<tr class='fail_trak' id='"+id+"," + lat+","+lon+","+center.lat+","+center.lng+"'><td>-</td><td>+</td><td>"+kk+"</td><td style = 'background-color: "+col+";'>&nbsp&nbsp&nbsp&nbsp</td><td  contenteditable='true'>"+namet+"</td><td contenteditable='true'>"+agregat+"</td><td  contenteditable='true'>"+namet_a+"</td><td></td><td contenteditable='true'>"+zavtra_a+"</td><td contenteditable='true'>"+vodiy+"</td><td contenteditable='true'>"+vodiy_a+"</td></tr>");
+        $("#unit_table").append("<tr id='"+id+"," + lat+","+lon+","+center.lat+","+center.lng+"'><td>-</td><td>+</td><td>"+kk+"</td><td style = 'background-color: "+col+";'></td><td  contenteditable='true'>"+namet+"</td><td contenteditable='true'>"+agregat+"</td><td  contenteditable='true'>"+namet_a+"</td><td></td><td contenteditable='true'>"+zavtra_a+"</td><td contenteditable='true'>"+vodiy+"</td><td contenteditable='true'>"+vodiy_a+"</td></tr>");
         let td = table_plan.rows[kkk].cells[7];
         td.appendChild(el);
 
@@ -5876,9 +5903,23 @@ if(kk==0){
       el2.textContent = "";
       autocomplete_all(el2, mehan);
       el.appendChild(el2);
+      el2.addEventListener('click', function (evt) {
+        if(evt.target.textContent=='')return;
+        for(let i = point_planuvannya_list.length-1; i>=0; i--){
+          let namet = point_planuvannya_list[i].name;
+          let unit =false;
+          if(namet.indexOf(evt.target.textContent)>=0){unit = true;}
+          if(unit==false)continue;
+          let lat = point_planuvannya_list[i]._latlng.lat;
+          let lon = point_planuvannya_list[i]._latlng.lng;
+          map.setView([lat, lon], 10);
+          point_planuvannya_list[i].openPopup();
+        }
+    });
+   
       
 
-  $("#unit_table").append("<tr  id='"+11+"," + 11+","+11+","+center.lat+","+center.lng+"'><td>-</td><td>+</td><td>"+kk+"</td><td style = 'background-color: "+col+";'>&nbsp&nbsp&nbsp&nbsp</td><td contenteditable='true'>-----</td><td contenteditable='true'>-----</td><td  contenteditable='true'>"+point_in_region(center.lat,center.lng)+"</td><td></td><td contenteditable='true'>-----</td><td contenteditable='true'>-----</td><td contenteditable='true'>-----</td></tr>");
+  $("#unit_table").append("<tr  id='"+11+"," + 11+","+11+","+center.lat+","+center.lng+"'><td>-</td><td>+</td><td>"+kk+"</td><td style = 'background-color: "+col+";'></td><td contenteditable='true'>-----</td><td contenteditable='true'>-----</td><td  contenteditable='true'>"+point_in_region(center.lat,center.lng)+"</td><td></td><td contenteditable='true'>-----</td><td contenteditable='true'>-----</td><td contenteditable='true'>-----</td></tr>");
   let td = table_plan.rows[kkk].cells[7];
   td.appendChild(el);
 
@@ -5909,69 +5950,69 @@ let num_kk = 0;
       }
       for(let ii = mehanizator_adresa.length-1; ii>=0; ii--){
         if(mehanizator_adresa[ii][0].indexOf(zavtra)>=0){
-          table_plan.rows[i].cells[8].textContent =mehanizator_adresa[ii][2];
-          let m =L.marker([mehanizator_adresa[ii][3], mehanizator_adresa[ii][4]],{
+          if(table_plan.rows[i].cells[3].textContent==''){table_plan.rows[i].cells[8].textContent =mehanizator_adresa[ii][2];}
+          let yyy = mehanizator_adresa[ii][3];
+          let xxx = mehanizator_adresa[ii][4];
+          let rbor = '1px solid rgb(0, 0, 0)';
+
+          if(mehanizator_adresa[ii][2]=='Кролевець' && table_plan.rows[i].cells[3].textContent==''){
+            yyy = krolevec[tochki_krolevec][0];
+            xxx = krolevec[tochki_krolevec][1];
+            tochki_krolevec++;
+          }
+          if(mehanizator_adresa[ii][2]=='Глухів' && table_plan.rows[i].cells[3].textContent==''){
+            yyy = gluhiv[tochki_gluhiv][0];
+            xxx = gluhiv[tochki_gluhiv][1];
+            tochki_gluhiv++;
+          }
+          if( table_plan.rows[i].cells[3].textContent=='1'){
+            yyy = kkz[tochki_kkz][0];
+            xxx = kkz[tochki_kkz][1];
+            tochki_kkz++;
+            rbor = '3px solid rgb(19, 35, 255)';
+          }
+          if( table_plan.rows[i].cells[3].textContent=='2'){
+            yyy = gluhiv_atb[tochki_gluhiv_atb][0];
+            xxx = gluhiv_atb[tochki_gluhiv_atb][1];
+            tochki_gluhiv_atb++;
+            rbor = '3px solid rgb(183, 0, 255)';
+          }
+          if( table_plan.rows[i].cells[3].textContent=='3'){
+            yyy = post_gluhiv[tochki_post_gluhiv][0];
+            xxx = post_gluhiv[tochki_post_gluhiv][1];
+            tochki_post_gluhiv++;
+            rbor = '3px solid rgb(255, 0, 0)';
+          }
+          if( table_plan.rows[i].cells[3].textContent=='4'){
+            yyy = vilne[tochki_vilne][0];
+            xxx = vilne[tochki_vilne][1];
+            tochki_vilne++;
+            rbor = '3px solid rgb(0, 255, 242)';
+          }
+
+
+          let pop = "<center>"+mehanizator_adresa[ii][0]+'</br>'+mehanizator_adresa[ii][2]+'</br>'+table_plan.rows[i].cells[6].textContent+'</br>'+table_plan.rows[i].cells[5].textContent+"<br><button  class='planuvannya_buton' id='btn"+i+"'>кінцева</button><br><button  class='planuvannya_buton' id='btn"+i+"'>пересадка ККЗ</button><br><button  class='planuvannya_buton' id='btn"+i+"'>пересадка Глухів АТБ</button><br><button  class='planuvannya_buton' id='btn"+i+"'>пересадка Глухів пост</button><br><button  class='planuvannya_buton' id='btn"+i+"'>пересадка Вільне</button><br><button  class='planuvannya_buton' id='btn"+i+"'>початкова точка</button></center>";
+          let m =L.marker([yyy, xxx],{
             icon: L.divIcon({
               iconSize: "auto",
               className: 'div-icon',
-              html: "<div style=' width: 13px;  height: 13px;border: 1px solid rgb(0, 0, 0); border-top-left-radius: 0px;  border-top-right-radius: 5px;  border-bottom-right-radius: 5px;  border-bottom-left-radius: 5px;background:"+color+"; '></div> ",
+              html: "<div style=' width: 13px;  height: 13px;border: "+rbor+"; border-top-left-radius: 0px;  border-top-right-radius: 5px;  border-bottom-right-radius: 5px;  border-bottom-left-radius: 5px;background:"+color+"; '></div> ",
             })
-          }).bindTooltip(''+mehanizator_adresa[ii][0]+'</br>'+mehanizator_adresa[ii][1]+'</br>'+table_plan.rows[i].cells[6].textContent+'</br>'+table_plan.rows[i].cells[5].textContent+'',{ sticky: true}).addTo(map);
+          }).bindPopup(pop).bindTooltip(''+mehanizator_adresa[ii][0]+'</br>'+mehanizator_adresa[ii][2]+'</br>'+table_plan.rows[i].cells[6].textContent+'</br>'+table_plan.rows[i].cells[5].textContent+'',{ sticky: true}).addTo(map);
           m.color=color;
           m.colorr=table_plan.rows[i].cells[3].style.backgroundColor;
           m.tb_id = logistik_treck.length;
           m.index = i;
+          m.name = mehanizator_adresa[ii][0];
+          point_planuvannya_list.push(m);
           //m.adres = point_in_region(table_plan.rows[i].id.split(',')[3],table_plan.rows[i].id.split(',')[4]);
-          m.on('click', function(e) {
-           //console.log(logistik_treck[this.tb_id]);
-          
-           
-           navigator.clipboard.writeText(this._tooltip._content.split('</br>')[0]+"\t"+this._tooltip._content.split('</br>')[1]+"\t"+this._tooltip._content.split('</br>')[2]+"\t"+this._tooltip._content.split('</br>')[3]); 
-           let  myIcon =  L.divIcon({
-            iconSize: "auto",
-            className: 'div-icon',
-            html: "<div style=' width: 13px;  height: 13px;border: 1px solid rgb(0, 0, 0); border-top-left-radius: 0px;  border-top-right-radius: 5px;  border-bottom-right-radius: 5px;  border-bottom-left-radius: 5px;background:"+m.colorr+"; '></div> ",
-          });
-           
-           if( table_plan.rows[this.index].cells[4].style.backgroundColor==''){
-              myIcon =  L.divIcon({
-              iconSize: "auto",
-              className: 'div-icon',
-              html: "<div style=' width: 13px;  height: 13px;border: 1px solid rgba(0, 0, 0, 0.4);; border-top-left-radius: 0px;  border-top-right-radius: 5px;  border-bottom-right-radius: 5px;  border-bottom-left-radius: 5px;background: rgba(138, 136, 136, 0.4); '></div> ",
-            });
-            logistik_treck[this.tb_id+1].setStyle({color: this.colorr,weight:1,opacity:0.5});
-            table_plan.rows[this.index].cells[0].style.backgroundColor = "rgba(138, 136, 136, 0.4)";
-            table_plan.rows[this.index].cells[1].style.backgroundColor = "rgba(138, 136, 136, 0.4)";
-            table_plan.rows[this.index].cells[2].style.backgroundColor = "rgba(138, 136, 136, 0.4)";
-            table_plan.rows[this.index].cells[4].style.backgroundColor = "rgba(138, 136, 136, 0.4)";
-            table_plan.rows[this.index].cells[5].style.backgroundColor = "rgba(138, 136, 136, 0.4)";
-            table_plan.rows[this.index].cells[6].style.backgroundColor = "rgba(138, 136, 136, 0.4)";
-            table_plan.rows[this.index].cells[7].style.backgroundColor = "rgba(138, 136, 136, 0.4)";
-            table_plan.rows[this.index].cells[8].style.backgroundColor = "rgba(138, 136, 136, 0.4)";
-            table_plan.rows[this.index].cells[9].style.backgroundColor = "rgba(138, 136, 136, 0.4)";
-            table_plan.rows[this.index].cells[10].style.backgroundColor = "rgba(138, 136, 136, 0.4)";
-           }else{
-            logistik_treck[this.tb_id+1].setStyle({color: this.colorr,weight:3,opacity:1});
-            table_plan.rows[this.index].cells[0].style.backgroundColor = "";
-            table_plan.rows[this.index].cells[1].style.backgroundColor = "";
-            table_plan.rows[this.index].cells[2].style.backgroundColor = "";
-            table_plan.rows[this.index].cells[4].style.backgroundColor = "";
-            table_plan.rows[this.index].cells[5].style.backgroundColor = "";
-            table_plan.rows[this.index].cells[6].style.backgroundColor = "";
-            table_plan.rows[this.index].cells[7].style.backgroundColor = "";
-            table_plan.rows[this.index].cells[8].style.backgroundColor = "";
-            table_plan.rows[this.index].cells[9].style.backgroundColor = "";
-            table_plan.rows[this.index].cells[10].style.backgroundColor = "";
-           }
-           
-           this.setIcon(myIcon);
-          });
+       
           logistik_treck.push(m);
        
           //let mark = L.marker([table_plan.rows[i].id.split(',')[3],table_plan.rows[i].id.split(',')[4]]).addTo(map).bindPopup(point_in_region(table_plan.rows[i].id.split(',')[3],table_plan.rows[i].id.split(',')[4]));
           //logistik_treck.push(mark);
           //let line = [[lat,lon],[table_plan.rows[i].id.split(',')[3],table_plan.rows[i].id.split(',')[4]],[mehanizator_adresa[ii][3], mehanizator_adresa[ii][4]]];
-          let line = [[table_plan.rows[i].id.split(',')[3],table_plan.rows[i].id.split(',')[4]],[mehanizator_adresa[ii][3], mehanizator_adresa[ii][4]]];
+          let line = [[table_plan.rows[i].id.split(',')[3],table_plan.rows[i].id.split(',')[4]],[yyy, xxx]];
           let l = L.polyline(line, {color: color2,weight:2,opacity:opti}).addTo(map);
           logistik_treck.push(l);
           poisk=true;
@@ -5983,6 +6024,58 @@ let num_kk = 0;
   }
 
 }
+
+
+$("div").on("click", '.planuvannya_buton', function () {
+  let table_plan=document.getElementById('unit_table');
+  let id = parseInt(this.id.match(/\d+/));
+  let kol = '';
+  let per = '';
+  if(this.innerHTML=='кінцева'){
+    kol = "rgba(138, 136, 136, 0.4)"; 
+    navigator.clipboard.writeText(table_plan.rows[id].cells[7].textContent+'\t'+table_plan.rows[id].cells[8].textContent+'\t'+table_plan.rows[id].cells[6].textContent+'\t'+table_plan.rows[id].cells[5].textContent);
+  }  
+  if(this.innerHTML=='пересадка ККЗ') {
+    table_plan.rows[id].cells[3].textContent =1;
+    navigator.clipboard.writeText(table_plan.rows[id].cells[7].textContent+'\t'+table_plan.rows[id].cells[8].textContent+'\tпересадка ККЗ\t'+table_plan.rows[id].cells[5].textContent);
+    table_plan.rows[id].cells[8].textContent = 'пересадка ККЗ';
+  } 
+  if(this.innerHTML=='пересадка Глухів АТБ') {
+    table_plan.rows[id].cells[3].textContent =2;
+    navigator.clipboard.writeText(table_plan.rows[id].cells[7].textContent+'\t'+table_plan.rows[id].cells[8].textContent+'\tпересадка Глухів АТБ\t'+table_plan.rows[id].cells[5].textContent);
+    table_plan.rows[id].cells[8].textContent = 'пересадка Глухів АТБ';
+  } 
+  if(this.innerHTML=='пересадка Глухів пост') {
+    table_plan.rows[id].cells[3].textContent =3;
+    navigator.clipboard.writeText(table_plan.rows[id].cells[7].textContent+'\t'+table_plan.rows[id].cells[8].textContent+'\tпересадка Глухів пост\t'+table_plan.rows[id].cells[5].textContent);
+    table_plan.rows[id].cells[8].textContent = 'пересадка Глухів пост';
+  } 
+  if(this.innerHTML=='пересадка Вільне') {
+    table_plan.rows[id].cells[3].textContent =4;
+    navigator.clipboard.writeText(table_plan.rows[id].cells[7].textContent+'\t'+table_plan.rows[id].cells[8].textContent+'\tпересадка Вільне\t'+table_plan.rows[id].cells[5].textContent);
+    table_plan.rows[id].cells[8].textContent = 'пересадка Вільне';
+  } 
+  if(this.innerHTML=='початкова точка')  {
+    table_plan.rows[id].cells[3].textContent ='';
+  } 
+
+  table_plan.rows[id].cells[2].style.backgroundColor = kol;
+  table_plan.rows[id].cells[4].style.backgroundColor = kol;
+  table_plan.rows[id].cells[5].style.backgroundColor = kol;
+  table_plan.rows[id].cells[6].style.backgroundColor = kol;
+  table_plan.rows[id].cells[7].style.backgroundColor = kol;
+  table_plan.rows[id].cells[8].style.backgroundColor = kol;
+  table_plan.rows[id].cells[9].style.backgroundColor = kol;
+  table_plan.rows[id].cells[10].style.backgroundColor = kol;
+
+    map.closePopup();
+    clearGarbage(logistik_treck);
+    planuvannya_marshrutiv(); 
+});
+
+
+
+
 function point_in_region(y,x){
   let mesto = "-----";
 for(let i = 0; i<geozonesgrup.length; i++){ 
@@ -6060,16 +6153,48 @@ $("#unit_table").on("click", function (evt){
       el2.textContent = "";
       autocomplete_all(el2, mehan);
       el.appendChild(el2);
+      el2.addEventListener('click', function (evt) {
+        if(evt.target.textContent=='')return;
+        for(let i = point_planuvannya_list.length-1; i>=0; i--){
+          let namet = point_planuvannya_list[i].name;
+          let unit =false;
+          if(namet.indexOf(evt.target.textContent)>=0){unit = true;}
+          if(unit==false)continue;
+          let lat = point_planuvannya_list[i]._latlng.lat;
+          let lon = point_planuvannya_list[i]._latlng.lng;
+          map.setView([lat, lon], 10);
+          point_planuvannya_list[i].openPopup();
+        }
+    });
       
-      newRow.innerHTML = "<td>-</td><td>+</td><td>"+kk+"</td><td style = 'background-color: "+col+";'>&nbsp&nbsp&nbsp&nbsp</td><td contenteditable='true'>-----</td><td  contenteditable='true'>-----</td><td contenteditable='true'>"+adr+"</td><td></td><td contenteditable='true'>-----</td><td contenteditable='true'>-----</td></tr><td contenteditable='true'>-----</td>";
+      newRow.innerHTML = "<td>-</td><td>+</td><td>"+kk+"</td><td style = 'background-color: "+col+";'></td><td contenteditable='true'>-----</td><td  contenteditable='true'>-----</td><td contenteditable='true'>"+adr+"</td><td></td><td contenteditable='true'>-----</td><td contenteditable='true'>-----</td></tr><td contenteditable='true'>-----</td>";
       let td = tbl.rows[ind+1].cells[7];
       td.appendChild(el);
       return;
      }
-
- 
+     if (evt.target.cellIndex==4){
+      for(let i = 0; i<unitslist.length; i++){
+        let namet = unitslist[i].getName();
+        let id = unitslist[i].getId();
+        let unit =false;
+        if(namet.indexOf(evt.target.textContent)>=0){unit = true;}
+        if(unit==false)continue;
+        let markerr= markerByUnit[id];
+          if(markerr){
+           let lat = markerr.getLatLng().lat;
+           let lon = markerr.getLatLng().lng;
+           map.setView([lat, lon], 10);
+           markerr.openPopup();
+          }
+          }
+     }
   }
 });
+
+
+
+
+
 
 let mehan=[];
 function autocomplete_all(inp, arr) {
@@ -9176,11 +9301,7 @@ function point_in_data(y,x) {
                      tb.rows[4].cells[ind+1].innerHTML = "<input type='checkbox' checked>";
                    }else{
                      tb.rows[4].cells[ind+1].innerHTML = "<input type='checkbox'>";
-                   }
-            
-
-                      
-         
+                   }      
  }
 
 
