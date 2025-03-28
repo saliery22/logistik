@@ -5835,6 +5835,7 @@ for(let i = 0; i<unitslist.length; i++){
        let poisk=false;
        let vodiy1=namet.split("/")[0];
        let vodiy2=namet.split("/")[1];
+	if(!vodiy2)vodiy2=vodiy1;
        let zmina='';
        let zavtra = '-----';
        let zavtra_a =  '-----';
