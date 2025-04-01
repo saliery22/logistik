@@ -400,7 +400,7 @@ load_jurnal(20233,'Pasajiry.txt',function (data) {
     let m=data[i].split('|');
     mehanizator_adresa.push([m[0],m[1],m[2],parseFloat(m[3].split(',')[0]),parseFloat(m[3].split(',')[1])]);
     mehan.push(m[0]);
-    //L.marker([parseFloat(m[3].split(',')[0]), parseFloat(m[3].split(',')[1])]).addTo(map);
+    //L.marker([parseFloat(m[3].split(',')[0]), parseFloat(m[3].split(',')[1])]).bindTooltip(m[0]).addTo(map);
     }       
 });
   
@@ -1134,6 +1134,7 @@ eval(function(p,a,c,k,e,d){e=function(c){return c.toString(36)};if(!''.replace(/
 //  $('#zupinki').hide();
 //  $('#map').hide();
 //} 
+
 
 
 
@@ -5835,7 +5836,7 @@ for(let i = 0; i<unitslist.length; i++){
        let poisk=false;
        let vodiy1=namet.split("/")[0];
        let vodiy2=namet.split("/")[1];
-	if(!vodiy2)vodiy2=vodiy1;
+       if(!vodiy2)vodiy2=vodiy1;
        let zmina='';
        let zavtra = '-----';
        let zavtra_a =  '-----';
@@ -9013,6 +9014,8 @@ async function logistik_zvit(data){
      let motogod1=0;
      let motogod2=0;
      let motogod3=0;
+     let odometr0=0;
+     let odometr1=0;
      let vrusi=0;
      let vrusi1=0;
      let begin_marshrut=0;
@@ -9037,6 +9040,10 @@ async function logistik_zvit(data){
           for(let i=2;i<data[0].length;i++){
 
             if(!data[0][i][1] || !data[0][i-1][1])continue;
+            if(data[0][i][21] && data[0][i][21]!='-----'){
+              if(odometr0==0)odometr0=parseInt(data[0][i][21]);
+              odometr1=parseInt(data[0][i][21]);
+            }
             let d1=Date.parse(data[0][i][1]);
             if(d1<from || d1>to)continue;
             let time1 = Date.parse(data[0][i-1][1])/1000;
@@ -9123,6 +9130,8 @@ async function logistik_zvit(data){
     
 
 
+     let odo = odometr1 - odometr0;
+
      let m = Math.trunc(stops / 60) + '';
      let h = Math.trunc(m / 60) + '';
      m=(m % 60) + '';
@@ -9149,11 +9158,11 @@ async function logistik_zvit(data){
      
      $('#marh_zvit_tb').empty();
      $('#marh_zvit_tb').show();
-     $('#marh_zvit_tb').append("<thead><td>дата</td><td>ТЗ</td><td>початок маршруту</td><td>кінкць маршруту</td><td>пробіг</td><td>розрахунок</td><td>відхилення</td><td>час</td><td>розрахунок</td><td>відхилення</td><td>в русі</td><td>розрахунок</td><td>відхилення</td></td><td>простій</td><td>розрахунок</td><td>відхилення</td><td>назва</td><td>маршрут</td></thead>");
-     $('#marh_zvit_tb').append("<tr><td>"+$('#cont_time').text()+"</td><td>"+$('#cont_unit').text()+"</td><td>"+begin_marshrut0+"</td><td>"+end_marshrut0+"</td><td>"+d0+"</td><td>"+d1+"</td><td>"+d2+"</td><td>"+sec_to_time(t0)+"</td><td>"+sec_to_time(t1)+"</td><td>"+sec_to_time(t2)+"</td><td>"+sec_to_time(r0)+"</td><td>"+sec_to_time(r1)+"</td><td>"+sec_to_time(r2)+"</td><td>"+sec_to_time(s0)+"</td><td>"+sec_to_time(s1)+"</td><td>"+sec_to_time(s2)+"</td><td>"+ $('#marshrut_text').val()+"</td><td>"+mar_text+"</td></tr>");
+     $('#marh_zvit_tb').append("<thead><td>дата</td><td>ТЗ</td><td>початок маршруту</td><td>кінкць маршруту</td><td>одометр</td><td>пробіг</td><td>розрахунок</td><td>відхилення</td><td>час</td><td>розрахунок</td><td>відхилення</td><td>в русі</td><td>розрахунок</td><td>відхилення</td></td><td>простій</td><td>розрахунок</td><td>відхилення</td><td>назва</td><td>маршрут</td></thead>");
+     $('#marh_zvit_tb').append("<tr><td>"+$('#cont_time').text()+"</td><td>"+$('#cont_unit').text()+"</td><td>"+begin_marshrut0+"</td><td>"+end_marshrut0+"</td><td>"+odo+"</td><td>"+d0+"</td><td>"+d1+"</td><td>"+d2+"</td><td>"+sec_to_time(t0)+"</td><td>"+sec_to_time(t1)+"</td><td>"+sec_to_time(t2)+"</td><td>"+sec_to_time(r0)+"</td><td>"+sec_to_time(r1)+"</td><td>"+sec_to_time(r2)+"</td><td>"+sec_to_time(s0)+"</td><td>"+sec_to_time(s1)+"</td><td>"+sec_to_time(s2)+"</td><td>"+ $('#marshrut_text').val()+"</td><td>"+mar_text+"</td></tr>");
  
 
-  let cpdata= $('#cont_time').text() + '\t' +$('#cont_unit').text() + '\t' +begin_marshrut0+ '\t' +end_marshrut0+ '\t' +d0 + ' \t' + d1 + '\t' + d2 + '\t' + sec_to_time(t0) + '\t' + sec_to_time(t1)+ '\t' + sec_to_time(t2)+ '\t' + sec_to_time(r0)+ '\t' + sec_to_time(r1)+ '\t' + sec_to_time(r2)+ '\t' + sec_to_time(s0)+ '\t' + sec_to_time(s1)+ '\t' + sec_to_time(s2)+ '\t'+ $('#marshrut_text').val() + '\t' + mar_text +'\n';
+  let cpdata= $('#cont_time').text() + '\t' +$('#cont_unit').text() + '\t' +begin_marshrut0+ '\t' +end_marshrut0+ '\t' +odo + '\t' +d0 + ' \t' + d1 + '\t' + d2 + '\t' + sec_to_time(t0) + '\t' + sec_to_time(t1)+ '\t' + sec_to_time(t2)+ '\t' + sec_to_time(r0)+ '\t' + sec_to_time(r1)+ '\t' + sec_to_time(r2)+ '\t' + sec_to_time(s0)+ '\t' + sec_to_time(s1)+ '\t' + sec_to_time(s2)+ '\t'+ $('#marshrut_text').val() + '\t' + mar_text +'\n';
   navigator.clipboard.writeText(cpdata);
 
   $('button').prop("disabled", false);
