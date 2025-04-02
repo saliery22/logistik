@@ -1,4 +1,5 @@
 
+
 // global variables
 var map, marker,unitslist = [],unitslistID = [],allunits = [],rest_units = [],marshruts = [],zup = [], unitMarkers = [], markerByUnit = {},tile_layer, layers = {},marshrutMarkers = [],unitsID = {},Vibranaya_zona,temp_layer=[],trailers={},drivers={};
 var areUnitsLoaded = false;
@@ -1134,7 +1135,6 @@ eval(function(p,a,c,k,e,d){e=function(c){return c.toString(36)};if(!''.replace(/
 //  $('#zupinki').hide();
 //  $('#map').hide();
 //} 
-
 
 
 
@@ -3582,7 +3582,23 @@ $("#reestr_save_BT").on("click", function (evt){
       if(table_polya.rows[i].cells[2].innerText!='----'){
          cpdata += table_polya.rows[i].cells[2].innerText + '\t' +table_polya.rows[i].cells[3].innerText + '\t' +table_polya.rows[i].cells[4].innerText + ' \t' + table_polya.rows[i].cells[5].innerText + '\t' + table_polya.rows[i].cells[6].innerText.split(' ')[0] + '\t' + table_polya.rows[i].cells[7].innerText +'\t'+ table_polya.rows[i].cells[8].innerText +'\t' + table_polya.rows[i].cells[9].innerText.replace(/\./g, ",") + '\t' + table_polya.rows[i].cells[10].innerText.replace(/\./g, ",") + '\t' + table_polya.rows[i].cells[11].innerText.replace(/\./g, ",") +'\t'+''+'\t'+table_polya.rows[i].cells[12].innerText +'\t'+''+'\t'+''+'\t'+''+'\t'+''+'\t'+''+'\t'+table_polya.rows[i].cells[13].innerText+ '\n';
 
-        save_data += '||'+table_polya.rows[i].cells[2].innerText + '|' +table_polya.rows[i].cells[3].innerText + '|' +table_polya.rows[i].cells[4].innerText + '|' + table_polya.rows[i].cells[5].innerText + '|' + table_polya.rows[i].cells[6].innerText + '|' + table_polya.rows[i].cells[7].innerText +'|'+ table_polya.rows[i].cells[8].innerText +'|' + table_polya.rows[i].cells[9].innerText + '|' + table_polya.rows[i].cells[10].innerText + '|' + table_polya.rows[i].cells[11].innerText +'|'+table_polya.rows[i].cells[12].innerText +'|'+table_polya.rows[i].cells[13].innerText+'|'+table_polya.rows[i].cells[14].innerText +'\n';
+         let a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12,a13,a14 = '-----';
+         a2= table_polya.rows[i].cells[2].innerText;
+         a3= table_polya.rows[i].cells[3].innerText;
+         a4= table_polya.rows[i].cells[4].innerText;
+         a5= table_polya.rows[i].cells[5].innerText;
+         a6= table_polya.rows[i].cells[6].innerText;
+         a7= table_polya.rows[i].cells[7].innerText;
+         a8= table_polya.rows[i].cells[8].innerText;
+         a9= table_polya.rows[i].cells[9].innerText;
+         a10= table_polya.rows[i].cells[10].innerText;
+         a11= table_polya.rows[i].cells[11].innerText;
+         a12= table_polya.rows[i].cells[12].innerText;
+         a13= table_polya.rows[i].cells[13].innerText;
+         a14= table_polya.rows[i].cells[14].innerText;
+
+        save_data += '||'+a2 + '|' +a3 + '|' +a4 + '|' + a5 + '|' + a6 + '|' + a7 +'|'+ a8 +'|' + a9 + '|' + a10 + '|' + a11 +'|'+a12 +'|'+a13+'\n'+'||'+a14 +'\n';
+
 
          let tx=table_polya.rows[i].cells[6].innerText+table_polya.rows[i].cells[8].innerText+table_polya.rows[i].cells[2].innerText;
          if(jurnal_polya_temp.indexOf(tx)>=0)continue;
@@ -6127,14 +6143,75 @@ $('#planuvannya_bt3').click(function() {
 $("#unit_table").on("click", function (evt){
   let row = evt.target.parentNode;
   let tbl = row.parentNode;
- 
-  if(row.rowIndex>0){
+  let e = document.getElementById("vib_zvit");
+  let ename = e.options[e.selectedIndex].text;
+  if(ename=='історія обробки полів'){
+    if (evt.target.cellIndex>0 ){
+      [...document.querySelectorAll("#unit_table tr")].forEach(e => e.style.backgroundColor = '');
+      row.style.backgroundColor = 'pink';
+    let ind = row.cells[1].textContent+row.cells[2].textContent+row.cells[5].textContent+row.cells[7].textContent;
+    for (let v = 0; v<garbagepoly.length; v++){
+      if(!garbagepoly[v].nam)continue;
+      if(garbagepoly[v].nam==ind){
+        garbagepoly[v].bringToFront();
+        garbagepoly[v].setStyle({color: 'green'});
+      }else{
+        garbagepoly[v].setStyle({color: 'red'});
+      }
+    }
+    
+    let name = row.cells[5].textContent.split(' ')[0];
+    for (let i = 0; i<geozones.length; i++){
+    if(name==geozones[i].zone.n){
+     let y=((geozones[i]._bounds._northEast.lat+geozones[i]._bounds._southWest.lat)/2).toFixed(5);
+     let x=((geozones[i]._bounds._northEast.lng+geozones[i]._bounds._southWest.lng)/2).toFixed(5);
+     map.setView([y,x],14,{animate: false});
+          clearGEO();
+       let point = geozones[i]._latlngs[0];
+       let ramka=[];
+       for (let i = 0; i < point.length; i++) {
+         let lat =point[i].lat;
+         let lng =point[i].lng;
+         geozonepoint.push({x:lat, y:lng}); 
+         geozonepointTurf.push([lng,lat]);
+         ramka.push([lat, lng]);
+         if(i == point.length-1 && geozonepoint[0]!=geozonepoint[i]){
+           geozonepoint.push(geozonepoint[0]); 
+           geozonepointTurf.push(geozonepointTurf[0]);
+           ramka.push(ramka[0]);
+         }
+         }
+       let polilane = L.polyline(ramka, {color: 'blue'}).addTo(map);
+       geo_layer.push(polilane);
+       break;
+    }
+    }
+  }
+  if (evt.target.type=='checkbox'){
+    let ind = evt.target.parentNode.parentNode.cells[1].textContent+evt.target.parentNode.parentNode.cells[2].textContent+evt.target.parentNode.parentNode.cells[5].textContent+evt.target.parentNode.parentNode.cells[7].textContent;
+    if(evt.target.checked){
+      for (let v = 0; v<garbagepoly.length; v++){
+        if(!garbagepoly[v].nam)continue;
+        if(garbagepoly[v].nam==ind){
+          garbagepoly[v].addTo(map);
+        }
+      }
+    }else{
+      for (let v = 0; v<garbagepoly.length; v++){
+        if(!garbagepoly[v].nam)continue;
+        if(garbagepoly[v].nam==ind){
+          garbagepoly[v].remove();
+        }
+      }
+    }
+  }
+  }
 
+  if(row.rowIndex>0 && ename=='планування маршрутів'){
      if (evt.target.textContent=='-'){
       row.cells[0].closest('tr').remove();
       return;
      }
-
      if (evt.target.textContent=='+'){
       let ind =  row.rowIndex;
       let adr = row.cells[6].textContent;
@@ -6317,6 +6394,8 @@ $('#geomodul_bt').click(function() {
    let vibor = $("#geomodul_lis").chosen().val();
    let poly_color = Math.floor(Math.random() * 360);
 
+   $("#unit_table").empty();
+
   load_jurnal(20233,'geomodul.txt',function (data) { 
     for(let i = 1; i<data.length; i+=2){
       let m=data[i].split('|');
@@ -6332,14 +6411,18 @@ $('#geomodul_bt').click(function() {
           if(poly.type == 'Polygon'){
             let coords = L.GeoJSON.coordsToLatLngs(poly.coordinates,1);
             let G=L.polygon(coords, {color: `hsl(${0}, ${100}%, ${45}%)`, stroke: false,  fillOpacity: 0.5}).bindTooltip(n ,{opacity:0.8,sticky:true}).addTo(map);
+            G.nam =m[0]+m[1]+m[4]+m[9];
             garbagepoly.push(G);
           }else{
                 for(let iii = 0; iii<poly.coordinates.length; iii++){
                   let coords = L.GeoJSON.coordsToLatLngs(poly.coordinates[iii],1);
                   let G=L.polygon(coords, {color: `hsl(${0}, ${100}%, ${45}%)`, stroke: false,  fillOpacity: 0.5}).bindTooltip(n ,{opacity:0.8,sticky:true}).addTo(map);
+                  G.nam =m[0]+m[1]+m[4]+m[9];
                   garbagepoly.push(G);
                 }
           }
+
+          $("#unit_table").append("<tr><td><input type='checkbox' checked></td><td>"+m[0]+"</td><td>"+m[1]+"</td><td>"+m[2]+"</td><td>"+m[3]+"</td><td>"+m[4]+"</td><td>"+m[6]+"</td><td>"+m[9]+"</td></tr>");
 
           continue;
         }
