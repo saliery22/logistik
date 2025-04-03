@@ -1068,7 +1068,7 @@ if (!$('#marrr').is(':hidden')) {
  });
  let colorr_logistik= -30;
 
- const areaSelection = new window.leafletAreaSelection.DrawAreaSelection({
+ let areaSelection = new leafletAreaSelection.DrawAreaSelection({
   onButtonActivate : (polygon) => {
     $('#draw-panel-help').text('Визначте багатокутник, клацнувши на карті - щоб визначити вершини, або клацніть і перетягніть, щоб отримати прямокутну форму.') ;
   },
