@@ -1,5 +1,6 @@
 
 
+
 // global variables
 var map, marker,unitslist = [],unitslistID = [],allunits = [],rest_units = [],marshruts = [],zup = [], unitMarkers = [], markerByUnit = {},tile_layer, layers = {},marshrutMarkers = [],unitsID = {},Vibranaya_zona,temp_layer=[],trailers={},drivers={};
 var areUnitsLoaded = false;
@@ -178,6 +179,7 @@ let IDzonacord=[];
 let lgeozoneee;
 let activ_zone=0;
 let marshrut_leyer_0;
+let polya_lablse = [];
 function initUIData() {
   var session = wialon.core.Session.getInstance();
   var resource = wialon.core.Session.getInstance().getItem(20030); //26227 - Gluhiv 20030 "11_ККЗ"
@@ -211,11 +213,12 @@ function initUIData() {
            geozona.zone = zone;
            geozona.gr = zonegr;
            geozones.push(geozona);
+           $('#geomodul_field_lis').append($('<option>').text(zone.n).val(zone.n));
+
+
            geozona.on('click', function(e) {
           
-           
-           
-           
+
            geozonepoint.length =0;
            geozonepointTurf.length =0;
            Vibranaya_zona = this.zone;
@@ -300,6 +303,18 @@ function initUIData() {
                //console.log(turf.area( turf.polygon([geozonepointTurf]))*1.0038);
                // console.log(turf.area( turf.polygon([geozonepointTurf])));
                // console.log(e.target.zone.ar);
+               }else{
+                let m =L.marker(e.latlng,{
+                  clickable: true,
+                  draggable: true,
+                  icon: L.divIcon({
+                    iconSize: "auto",
+                    iconAnchor: [25, 8],
+                    className: 'my-labels',
+                    html: "<div><nobr>"+e.target.zone.n+"</div>",
+                  })
+                }).addTo(map);
+                zup_mark_data.push(m);
                }
 
 
@@ -310,6 +325,7 @@ function initUIData() {
   
       let lgeozone = L.layerGroup(geozones);
       layerControl.addOverlay(lgeozone, "Геозони");
+
    
       let poly_color = Math.floor(Math.random() * 360);
 
@@ -379,7 +395,7 @@ function initUIData() {
           layerControl.addOverlay(lgeozoneee, "Логістика");
     });
 
-
+    $("#geomodul_field_lis").trigger("chosen:updated");
   });
   avto=[];
   load_jurnal(20233,'MR-avto-reestr.txt',function (data) { 
@@ -1068,7 +1084,7 @@ if (!$('#marrr').is(':hidden')) {
  });
  let colorr_logistik= -30;
 
- let areaSelection = new leafletAreaSelection.DrawAreaSelection({
+let areaSelection = new leafletAreaSelection.DrawAreaSelection({
   onButtonActivate : (polygon) => {
     $('#draw-panel-help').text('Визначте багатокутник, клацнувши на карті - щоб визначити вершини, або клацніть і перетягніть, щоб отримати прямокутну форму.') ;
   },
@@ -1135,6 +1151,7 @@ eval(function(p,a,c,k,e,d){e=function(c){return c.toString(36)};if(!''.replace(/
 //  $('#zupinki').hide();
 //  $('#map').hide();
 //} 
+
 
 
 
@@ -5641,21 +5658,47 @@ $('#vodiyi_kkz').click(function() {
       for (let i = 0; i<data.length; i++){
         let name = data[i][0][1];
         let line =[];
+        let km = 0;
+        let kk=0;
 
         for (let ii = 1; ii<data[i].length-1; ii++){
           if(!data[i][ii][0])continue;
+          if(!data[i][ii+1][0])continue;
           if(!data[i][ii][2])continue;
 
           if(parseInt(data[i][ii][2])==0)continue;
+          kk++;
+          let vod = data[i][ii][3];
+          let dat = data[i][ii][1];
+
           let y = parseFloat(data[i][ii][0].split(',')[0]);
           let x = parseFloat(data[i][ii][0].split(',')[1]);
-        
+
+          let yy = parseFloat(data[i][ii+1][0].split(',')[0]);
+          let xx = parseFloat(data[i][ii+1][0].split(',')[1]);
+
+          km += wialon.util.Geometry.getDistance(y,x,yy,xx);
             line.push ([y,x]);
 
+            if(kk>20){
+              let l = L.polyline([line], {color: `hsl(${245}, ${100}%, ${45}%)`,weight:1,opacity:1}).bindTooltip(''+dat+'<br>'+name+'<br>'+vod+'',{opacity:0.8, sticky: true}).addTo(map);
+              l.name = name;
+              temp_layer.push(l);
+              kk=0;
+              line=[];
+              line.push ([y,x]);
+            }
+
         }
-        trak_color += 60+Math.floor(Math.random() * 30);
-        let l = L.polyline([line], {color: `hsl(${245}, ${100}%, ${45}%)`,weight:1,opacity:1}).bindTooltip(''+name+'',{opacity:0.8, sticky: true}).addTo(map);
-        temp_layer.push(l);
+        if(line.length>0){
+          trak_color += 60+Math.floor(Math.random() * 30);
+          let l = L.polyline([line], {color: `hsl(${245}, ${100}%, ${45}%)`,weight:1,opacity:1}).bindTooltip(''+name+'',{opacity:0.8, sticky: true}).addTo(map);
+          l.name = name;
+          temp_layer.push(l);
+        }
+
+        $("#unit_table").append("<tr><td>"+name+"</td><td>"+(km/1000).toFixed(1)+" км</td></tr>");
+
       }
     }
 
@@ -6145,6 +6188,23 @@ $("#unit_table").on("click", function (evt){
   let tbl = row.parentNode;
   let e = document.getElementById("vib_zvit");
   let ename = e.options[e.selectedIndex].text;
+ 
+  if(ename=='візуалізація треків за період'){
+    [...document.querySelectorAll("#unit_table tr")].forEach(e => e.style.backgroundColor = '');
+    row.style.backgroundColor = 'pink';
+    let name = row.cells[0].textContent;
+    for (let v = 0; v<temp_layer.length; v++){
+      if(!temp_layer[v].name)continue;
+      if(temp_layer[v].name==name){
+        temp_layer[v].bringToFront();
+        temp_layer[v].setStyle({color: 'red'});
+        //map.fitBounds(temp_layer[v].getBounds());
+      }else{
+        temp_layer[v].setStyle({color: `hsl(${245}, ${100}%, ${45}%)`});
+      }
+    }
+  }
+
   if(ename=='історія обробки полів'){
     if (evt.target.cellIndex>0 ){
       [...document.querySelectorAll("#unit_table tr")].forEach(e => e.style.backgroundColor = '');
@@ -6392,16 +6452,24 @@ $('#geomodul_bt').click(function() {
    let fr =  Date.parse($('#geomodul_time1').val());
    let to =  Date.parse($('#geomodul_time2').val());
    let vibor = $("#geomodul_lis").chosen().val();
+   let vibor2 = $("#geomodul_field_lis").chosen().val();
    let poly_color = Math.floor(Math.random() * 360);
 
    $("#unit_table").empty();
 
   load_jurnal(20233,'geomodul.txt',function (data) { 
+    
     for(let i = 1; i<data.length; i+=2){
       let m=data[i].split('|');
       let t=Date.parse(m[0]);
+      let p = m[4];
       let r = m[6];
       let n = m[0]+'<br>'+m[1]+'<br>'+m[2]+'<br>'+m[3]+'<br>'+m[4]+'<br>'+m[5]+'<br>'+m[6]+'<br>'+m[9];
+      if(vibor2.join().indexOf('Всі')<0){
+        if(p)p=p.split(' ')[0];
+        if(vibor2.join().indexOf(p)<0)continue;
+      }
+      
       for(let ii = 0; ii<vibor.length; ii++){
         if(!r)continue;
         if(r.indexOf(vibor[ii])>=0 || vibor[ii]=="Всі"){
