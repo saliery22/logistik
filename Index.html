@@ -56,6 +56,18 @@
 #geomodul { width: 50%-6px; height:80vh; margin-left: 50%; overflow-y: auto; overflow-x: auto;border-left: 2px solid #b1b1b1;padding-left: 4px;}
 
 
+.my-labels {
+  background-color: transparent;
+  border: transparent;
+  box-shadow: none;
+  font-weight: bold;
+  font-size: 11px;
+  color:#000000;
+  width: 50px;
+  text-align: center;
+  text-shadow: #ffffff 1px 0 0px, #ffffff 0 1px 0px, #ffffff -1px 0 0px, #ffffff 0 -1px 0px;
+  }
+
 .div-icon{
     display:inline-block;
     white-space: nowrap;
@@ -575,7 +587,7 @@ button, input, span, select,textarea {margin: 2px 2px 0px 0px;   font-family: "A
         <br>
         <br>
         <select class='livesearch' id='geomodul_lis'style='width:100%;' multiple>
-            <option selected value="Всі">Всі</option>
+            <option selected value="Всі">Всі роботи</option>
             <option value="Боронування">Боронування</option>
             <option value="Дискування">Дискування</option>
             <option value="Глибоке рихлення">Глибоке рихлення</option>
@@ -587,6 +599,9 @@ button, input, span, select,textarea {margin: 2px 2px 0px 0px;   font-family: "A
             <option value="Оранка">Оранка</option>
         </select>
         <br>
+        <select class='livesearch' id='geomodul_field_lis'style='width:100%;' multiple>
+            <option selected value="Всі">Всі поля</option>
+        </select>
         <br>
             <button id='geomodul_bt' style='width:100%;'>завантажити</button> 
         </div> 
