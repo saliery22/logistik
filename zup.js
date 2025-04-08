@@ -1,6 +1,5 @@
 
 
-
 // global variables
 var map, marker,unitslist = [],unitslistID = [],allunits = [],rest_units = [],marshruts = [],zup = [], unitMarkers = [], markerByUnit = {},tile_layer, layers = {},marshrutMarkers = [],unitsID = {},Vibranaya_zona,temp_layer=[],trailers={},drivers={};
 var areUnitsLoaded = false;
@@ -403,9 +402,9 @@ function initUIData() {
     $('#transport_logistik_tb').append("<tr><td><b>номер</b></td><td><b>довільні дані</b></td><td><b>назва стоянки</b></td><td><b>координати</b></td></tr>");
     for(let i = 1; i<data.length; i++){
       let m=data[i].split('|');
-      $('#transport_logistik_tb').append("<tr><td contenteditable='true'>"+m[0]+"</td contenteditable='true'><td contenteditable='true'><b>"+m[1]+"</b></td><td contenteditable='true'>"+m[2]+"</td><td contenteditable='true'>"+m[3]+"</td></tr>");
+      $('#transport_logistik_tb').append("<tr><td contenteditable='true'>"+m[0]+"</td contenteditable='true'><td contenteditable='true'><b>"+m[1]+"</b></td><td contenteditable='true'>"+m[2]+"</td><td contenteditable='true'>"+m[3]+"</td><td contenteditable='true'>"+m[4]+"</td></tr>");
       if(m[0]!="----"){
-        avto.push([m[0]+' <b>'+m[1]+'</b>',m[2],parseFloat(m[3].split(',')[0]),parseFloat(m[3].split(',')[1])]);
+        avto.push([m[0]+' <b>'+m[1]+'</b>_'+m[2],m[3],parseFloat(m[4].split(',')[0]),parseFloat(m[4].split(',')[1])]);
       }     
     }
 });
@@ -625,7 +624,7 @@ bufer=[];
  $('#men4').click(function() { 
     if ($('#unit_info').is(':hidden')) {
       $('#unit_info').show();
-      $('#map').css('width', '65%');
+      $('#map').css('width', '60%');
       this.style.background = '#b2f5b4';
       $('.leaflet-container').css('cursor','');
       markerstart.setLatLng([0,0]); 
@@ -1151,7 +1150,6 @@ eval(function(p,a,c,k,e,d){e=function(c){return c.toString(36)};if(!''.replace(/
 //  $('#zupinki').hide();
 //  $('#map').hide();
 //} 
-
 
 
 
@@ -6500,6 +6498,26 @@ $('#geomodul_bt').click(function() {
   });
 });
 
+var newWindow;
+$('#test_b').click(function() {
+if(newWindow)newWindow.close();
+    newWindow = window.open("", '123', "height=200,width=600,status=no,toolbar=no,menubar=no,location=no");
+    newWindow.document.write("<table id='test_tb'></table><button onclick='window.opener.popUP();'>тест</button>");
+
+});
+
+$('#test_b2').click(function() {
+  //console.log(newWindow.document.getElementById("test_tb"));
+  //console.log(document.getElementById("test_b"));
+  let tb = newWindow.document.getElementById("test_tb");
+  console.log($(newWindow.document).find("#test_tb"));
+  $("#test_tb").append("<tr><td>11111</td></tr>");
+ });
+
+ function popUP(){
+  console.log(document.getElementById("test_b"));
+ }
+
 //===========================ЖУРНАЛ=======================================================================================
 //===========================ЖУРНАЛ=======================================================================================
 //===========================ЖУРНАЛ=======================================================================================
@@ -7061,7 +7079,7 @@ $("#transport_logistik_bt").on("click", function (){
   let tableRow =document.querySelectorAll('#transport_logistik_tb tr');
   let save_data='2025 \n';
     for ( j = 1; j < tableRow.length; j++){ 
-       save_data+='||'+tableRow[j].cells[0].textContent+'|'+tableRow[j].cells[1].textContent+'|'+tableRow[j].cells[2].textContent+'|'+tableRow[j].cells[3].textContent+'\n';
+       save_data+='||'+tableRow[j].cells[0].textContent+'|'+tableRow[j].cells[1].textContent+'|'+tableRow[j].cells[2].textContent+'|'+tableRow[j].cells[3].textContent+'|'+tableRow[j].cells[4].textContent+'\n';
     } 
     rewrite_jurnal(20233,'MR-avto-reestr.txt',save_data,function () { 
       audio.play();
@@ -7232,10 +7250,12 @@ function autocomplete(inp, arr) {
       currentFocus = -1;
       /*create a DIV element that will contain the items (values):*/
       let cor = this.parentNode.getBoundingClientRect();
+      let p = cor.left;
+      if(window.innerWidth-200<cor.left)p=window.innerWidth-200;
       a = document.createElement("DIV");
       a.setAttribute("id", this.id + "autocomplete-list");
       a.setAttribute("class", "autocomplete-items");
-      a.style = ' top: '+cor.bottom+'px;    left: '+cor.left+'px;   right: 0;';
+      a.style = ' top: '+cor.bottom+'px;    left: '+p+'px;   right: 0;';
       /*append the DIV element as a child of the autocomplete container:*/
       this.parentNode.parentNode.appendChild(a);
       /*for each item in the array...*/
@@ -8674,6 +8694,7 @@ $("#cont_b3").on("click", function (){
 
   let n=$('#cont_unit').text();
   let id=unitsID[n];
+  logistik_vodiy = n.split('_')[0].replace(/[^ ]+ /, '');
   n=n.split(' ')[0];
   $("#lis0").chosen().val(id);     
   $("#lis0").trigger("chosen:updated");
@@ -8683,7 +8704,7 @@ $("#cont_b3").on("click", function (){
   return;
 });
 
-
+let logistik_vodiy = '';
 let marshrut_point0 =[];
 async function logistik_zvit(data){
   if(data.length==0){
@@ -9189,7 +9210,6 @@ async function logistik_zvit(data){
         to = Date.parse(tb.rows[2].cells[c2+2].textContent);
         if (tb.rows[4].cells[c1].getElementsByTagName('input')[0].checked==false  || tb.rows[4].cells[c2].getElementsByTagName('input')[0].checked==false) {
           for(let i=2;i<data[0].length;i++){
-
             if(!data[0][i][1] || !data[0][i-1][1])continue;
             if(data[0][i][21] && data[0][i][21]!='-----'){
               if(odometr0==0)odometr0=parseInt(data[0][i][21]);
@@ -9238,6 +9258,10 @@ async function logistik_zvit(data){
           for(let i=2;i<data[0].length;i++){
            
             if(!data[0][i][1] || !data[0][i-1][1])continue;
+            if(data[0][i][21] && data[0][i][21]!='-----'){
+              if(odometr0==0)odometr0=parseInt(data[0][i][21]);
+              odometr1=parseInt(data[0][i][21]);
+            }
             let d1=Date.parse(data[0][i][1]);
             if(d1<from || d1>to)continue;
             let time1 = Date.parse(data[0][i-1][1])/1000;
@@ -9309,11 +9333,11 @@ async function logistik_zvit(data){
      
      $('#marh_zvit_tb').empty();
      $('#marh_zvit_tb').show();
-     $('#marh_zvit_tb').append("<thead><td>дата</td><td>ТЗ</td><td>початок маршруту</td><td>кінкць маршруту</td><td>одометр</td><td>пробіг</td><td>розрахунок</td><td>відхилення</td><td>час</td><td>розрахунок</td><td>відхилення</td><td>в русі</td><td>розрахунок</td><td>відхилення</td></td><td>простій</td><td>розрахунок</td><td>відхилення</td><td>назва</td><td>маршрут</td></thead>");
-     $('#marh_zvit_tb').append("<tr><td>"+$('#cont_time').text()+"</td><td>"+$('#cont_unit').text()+"</td><td>"+begin_marshrut0+"</td><td>"+end_marshrut0+"</td><td>"+odo+"</td><td>"+d0+"</td><td>"+d1+"</td><td>"+d2+"</td><td>"+sec_to_time(t0)+"</td><td>"+sec_to_time(t1)+"</td><td>"+sec_to_time(t2)+"</td><td>"+sec_to_time(r0)+"</td><td>"+sec_to_time(r1)+"</td><td>"+sec_to_time(r2)+"</td><td>"+sec_to_time(s0)+"</td><td>"+sec_to_time(s1)+"</td><td>"+sec_to_time(s2)+"</td><td>"+ $('#marshrut_text').val()+"</td><td>"+mar_text+"</td></tr>");
+     $('#marh_zvit_tb').append("<thead><td>дата</td><td>водій</td><td>ТЗ</td><td>початок маршруту</td><td>кінкць маршруту</td><td>одометр</td><td>пробіг</td><td>розрахунок</td><td>відхилення</td><td>час</td><td>розрахунок</td><td>відхилення</td><td>в русі</td><td>розрахунок</td><td>відхилення</td></td><td>простій</td><td>розрахунок</td><td>відхилення</td><td>назва</td><td>маршрут</td></thead>");
+     $('#marh_zvit_tb').append("<tr><td>"+$('#cont_time').text()+"</td><td>"+logistik_vodiy+"</td><td>"+$('#cont_unit').text()+"</td><td>"+begin_marshrut0+"</td><td>"+end_marshrut0+"</td><td>"+odo+"</td><td>"+d0+"</td><td>"+d1+"</td><td>"+d2+"</td><td>"+sec_to_time(t0)+"</td><td>"+sec_to_time(t1)+"</td><td>"+sec_to_time(t2)+"</td><td>"+sec_to_time(r0)+"</td><td>"+sec_to_time(r1)+"</td><td>"+sec_to_time(r2)+"</td><td>"+sec_to_time(s0)+"</td><td>"+sec_to_time(s1)+"</td><td>"+sec_to_time(s2)+"</td><td>"+ $('#marshrut_text').val()+"</td><td>"+mar_text+"</td></tr>");
  
 
-  let cpdata= $('#cont_time').text() + '\t' +$('#cont_unit').text() + '\t' +begin_marshrut0+ '\t' +end_marshrut0+ '\t' +odo + '\t' +d0 + ' \t' + d1 + '\t' + d2 + '\t' + sec_to_time(t0) + '\t' + sec_to_time(t1)+ '\t' + sec_to_time(t2)+ '\t' + sec_to_time(r0)+ '\t' + sec_to_time(r1)+ '\t' + sec_to_time(r2)+ '\t' + sec_to_time(s0)+ '\t' + sec_to_time(s1)+ '\t' + sec_to_time(s2)+ '\t'+ $('#marshrut_text').val() + '\t' + mar_text +'\n';
+  let cpdata= $('#cont_time').text() + '\t'+logistik_vodiy + '\t' +$('#cont_unit').text() + '\t' +begin_marshrut0+ '\t' +end_marshrut0+ '\t' +odo + '\t' +d0 + ' \t' + d1 + '\t' + d2 + '\t' + sec_to_time(t0) + '\t' + sec_to_time(t1)+ '\t' + sec_to_time(t2)+ '\t' + sec_to_time(r0)+ '\t' + sec_to_time(r1)+ '\t' + sec_to_time(r2)+ '\t' + sec_to_time(s0)+ '\t' + sec_to_time(s1)+ '\t' + sec_to_time(s2)+ '\t'+ $('#marshrut_text').val() + '\t' + mar_text +'\n';
   navigator.clipboard.writeText(cpdata);
 
   $('button').prop("disabled", false);
