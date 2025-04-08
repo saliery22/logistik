@@ -399,7 +399,7 @@ function initUIData() {
   avto=[];
   load_jurnal(20233,'MR-avto-reestr.txt',function (data) { 
     $('#transport_logistik_tb').empty();
-    $('#transport_logistik_tb').append("<tr><td><b>номер</b></td><td><b>довільні дані</b></td><td><b>назва стоянки</b></td><td><b>координати</b></td></tr>");
+    $('#transport_logistik_tb').append("<tr><td><b>НОМЕР</b></td><td><b>ВОДІЙ</b></td><td><b>ДОВІЛЬНІ ДАНІ</b></td><td><b>СТОЯНКА</b></td><td><b>КООРДИНАТИ</b></td></tr>");
     for(let i = 1; i<data.length; i++){
       let m=data[i].split('|');
       $('#transport_logistik_tb').append("<tr><td contenteditable='true'>"+m[0]+"</td contenteditable='true'><td contenteditable='true'><b>"+m[1]+"</b></td><td contenteditable='true'>"+m[2]+"</td><td contenteditable='true'>"+m[3]+"</td><td contenteditable='true'>"+m[4]+"</td></tr>");
