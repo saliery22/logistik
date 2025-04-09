@@ -344,13 +344,16 @@ button, input, span, select,textarea {margin: 2px 2px 0px 0px;   font-family: "A
 <div>
     <button id='v18'style = "min-width: 150px;">Очистити маркери</button>
     <button id='v8'style = "min-width: 150px;">Очистити трек</button>
+<!--     <button id='test_b'style = "min-width: 10px;">T</button> -->
+<!--     <button id='test_b2'style = "min-width: 10px;">T2</button> -->
 </div>
 <div>
     
+    
 <!--     <button id='v11'style = "min-width: 70px;">Графік &#128200</button> -->
     <button id='men5'style = "min-width: 70px;">Зупинки &#9940</button>
-    <button id='men8'style = "min-width: 70px;">Обробка полів &#128668</button> 
     <button id='men4'style = "min-width: 70px;">Звіти &#128204</button>
+    <button id='men8'style = "min-width: 70px;">Обробка полів &#128668</button> 
     <button id='men1'style = "min-width: 70px;">Маршрути &#128259</button>  
     <button id='men6'style = "min-width: 70px;">Логістика &#128661</button>
     <button id='men3'style = "min-width: 70px;">Журнал &#128221</button>
@@ -371,49 +374,10 @@ button, input, span, select,textarea {margin: 2px 2px 0px 0px;   font-family: "A
 
   
  <div id="marrr">   
-    для створення маршруту А-Б подвійно натисніть ліву клавішу миші створивши точку А наступним подвійним натиском вкажіть радіус від точки А,
-    повторіть тіж дії для створення точки Б, налаштуйте параметри звіту, виконайте звіт
-    <table id="marshrut">
-    <thead>
-    <td>Місце завантаження</td>
-    <td>Місце розвантаження</td>
-    <td>Техніка</td>
-    <td>мін зупинка</td>
-    <td>враховувати  <br> інші маршрути</td>
-    <td>Розрахунок</td>
-    <td>Видалення</td>
-    </thead>
-</table>
-    
-    <table id='zvittt' ><thead><tr>
-  <td>Номер ТЗ</td>
-  <td>Місце завантаження</td>
-  <td>Місце развантаження</td>
-  <td>Дата </td>
-  <td>Пробіг</td>
-  <td>Тривалість</td>
-  <td>Зупинки</td>
-  <td>Макс. швидкість</td>
-  <td>Водій</td>
-  <td>Вит. пального</td>
-  <td>сер. вит. пального</td>
-  <td>початок</td>
-  <td>кінець</td>
-</tr></thead>
-<tbody id='zvit'></tbody>
-</table>
-<button id='gooo1'>  зберігти маршрути </button>
-<button id='gooo2'> завантажити маршрути  </button>
-<button id='goooo'> копіювати таблицю в буфер </button>
-<table id='zvitttt' ><thead><tr>
-    <td>Номер ТЗ</td>
-    <td>заїзд</td>
-    <td>тривалість</td>
-    <td>віїзд</td>
-    <td>робота</td>
-  </tr></thead>
-  <tbody id='zvitt'></tbody>
-  </table>
+    <table id='marsh_tb' class='table'></table>
+    <button id='marsh_bt'>test</button>
+    <table id='marsh_avto_scania' class='table'></table>
+
  </div>      
  <div id="option"> 
     <audio id=audio src="sound.mp3" ></audio> 
@@ -468,6 +432,7 @@ button, input, span, select,textarea {margin: 2px 2px 0px 0px;   font-family: "A
         <option value="z14">візуалізація треків за період</option>
         <option value="z15">планування маршрутів</option>
         <option value="z16">історія обробки полів</option>
+        <option value="z17">перевезення вантажів</option>
       </select>  
       <br>
       <hr>
@@ -605,6 +570,53 @@ button, input, span, select,textarea {margin: 2px 2px 0px 0px;   font-family: "A
         <br>
             <button id='geomodul_bt' style='width:100%;'>завантажити</button> 
         </div> 
+
+        <div id="zz17" class='zvit'> 
+            для створення маршруту А-Б подвійно натисніть ліву клавішу миші створивши точку А наступним подвійним натиском вкажіть радіус від точки А,
+            повторіть тіж дії для створення точки Б, налаштуйте параметри звіту, виконайте звіт
+            <table id="marshrut">
+            <thead>
+            <td>Місце завантаження</td>
+            <td>Місце розвантаження</td>
+            <td>Техніка</td>
+            <td>мін зупинка</td>
+            <td>враховувати  <br> інші маршрути</td>
+            <td>Розрахунок</td>
+            <td>Видалення</td>
+            </thead>
+        </table>
+            
+            <table id='zvittt' ><thead><tr>
+          <td>Номер ТЗ</td>
+          <td>Місце завантаження</td>
+          <td>Місце развантаження</td>
+          <td>Дата </td>
+          <td>Пробіг</td>
+          <td>Тривалість</td>
+          <td>Зупинки</td>
+          <td>Макс. швидкість</td>
+          <td>Водій</td>
+          <td>Вит. пального</td>
+          <td>сер. вит. пального</td>
+          <td>початок</td>
+          <td>кінець</td>
+        </tr></thead>
+        <tbody id='zvit'></tbody>
+        </table>
+        <button id='gooo1'>  зберігти маршрути </button>
+        <button id='gooo2'> завантажити маршрути  </button>
+        <button id='goooo'> копіювати таблицю в буфер </button>
+        <table id='zvitttt' ><thead><tr>
+            <td>Номер ТЗ</td>
+            <td>заїзд</td>
+            <td>тривалість</td>
+            <td>віїзд</td>
+            <td>робота</td>
+          </tr></thead>
+          <tbody id='zvitt'></tbody>
+          </table>
+            </div> 
+
  <table id="unit_table"class='table'></table>
  </div>
 
@@ -838,6 +850,7 @@ button, input, span, select,textarea {margin: 2px 2px 0px 0px;   font-family: "A
 <button id='v28'>Сівалки</button> 
 <button id='v29'>Комбайни</button>  
 <button id='v30'>Без агрегату</button>  -->
+
 
 <button id='geo_serch'>>></button>
 <input id='geo_data' type="text" onkeydown="this.style.width = ((this.value.length + 1) * 8) + 'px';" placeholder='Пошук міста'value="Пошук міста">
