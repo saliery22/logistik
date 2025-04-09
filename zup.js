@@ -1,5 +1,6 @@
 
 
+
 // global variables
 var map, marker,unitslist = [],unitslistID = [],allunits = [],rest_units = [],marshruts = [],zup = [], unitMarkers = [], markerByUnit = {},tile_layer, layers = {},marshrutMarkers = [],unitsID = {},Vibranaya_zona,temp_layer=[],trailers={},drivers={};
 var areUnitsLoaded = false;
@@ -213,8 +214,8 @@ function initUIData() {
            geozona.gr = zonegr;
            geozones.push(geozona);
            $('#geomodul_field_lis').append($('<option>').text(zone.n).val(zone.n));
-
-
+           $('#lis0').append($('<option>').text(zone.n).val("поле_"+zone.n));
+           
            geozona.on('click', function(e) {
           
 
@@ -321,7 +322,7 @@ function initUIData() {
           });
 
       }
-  
+      $("#lis0").trigger("chosen:updated"); 
       let lgeozone = L.layerGroup(geozones);
       layerControl.addOverlay(lgeozone, "Геозони");
 
@@ -501,7 +502,7 @@ if (Date.parse($('#fromtime1').val())/1000 > unit.getPosition().t){rest_units.pu
     $("#track_lis").trigger("chosen:updated"); //обновляем select 
     $("#r_lis").trigger("chosen:updated"); //обновляем select 
     $("#m_lis").trigger("chosen:updated"); //обновляем select  
-    $("#lis1").trigger("chosen:updated"); //обновляем select    
+    $("#lis1").trigger("chosen:updated"); //обновляем select  
     });
 
     $('#lis1').on('change', function(evt, params) {
@@ -538,6 +539,39 @@ if ($("#lis1").chosen().val()[0]=="v000") {
   chuse(0,["v000"]);
 }
 
+if(params.selected.split('_')[0]=='поле'){
+  let name = params.selected.split('_')[1];
+  for (let i = 0; i<geozones.length; i++){
+    if(geozones[i].zone.n == name){
+     let y=((geozones[i]._bounds._northEast.lat+geozones[i]._bounds._southWest.lat)/2).toFixed(5);
+     let x=((geozones[i]._bounds._northEast.lng+geozones[i]._bounds._southWest.lng)/2).toFixed(5);
+     map.setView([y,x],14,{animate: false});
+          geozonepoint.length =0;
+          geozonepointTurf.length =0;
+          clearGEO();
+       let point = geozones[i]._latlngs[0];
+       let ramka=[];
+       for (let i = 0; i < point.length; i++) {
+         let lat =point[i].lat;
+         let lng =point[i].lng;
+         geozonepoint.push({x:lat, y:lng}); 
+         geozonepointTurf.push([lng,lat]);
+         ramka.push([lat, lng]);
+         if(i == point.length-1 && geozonepoint[0]!=geozonepoint[i]){
+           geozonepoint.push(geozonepoint[0]); 
+           geozonepointTurf.push(geozonepointTurf[0]);
+           ramka.push(ramka[0]);
+         }
+         }
+       let polilane = L.polyline(ramka, {color: 'blue'}).addTo(map);
+       geo_layer.push(polilane);
+       Naryady_start();
+       break;
+    }
+    }
+    return;
+}
+
    onUnitSelected();
   });
 
@@ -546,8 +580,8 @@ if ($("#lis1").chosen().val()[0]=="v000") {
     $('#marrr').show();
     $('#map').css('width', '50%');
     this.style.background = '#b2f5b4';
-    $('.leaflet-container').css('cursor','crosshair');
-     
+    $('.leaflet-container').css('cursor','');
+    marshruty_gruzovi();
   }else{
     $('#marrr').hide();
     $('#map').css('width', '100%');
@@ -624,7 +658,7 @@ bufer=[];
  $('#men4').click(function() { 
     if ($('#unit_info').is(':hidden')) {
       $('#unit_info').show();
-      $('#map').css('width', '60%');
+      $('#map').css('width', '50%');
       this.style.background = '#b2f5b4';
       $('.leaflet-container').css('cursor','');
       markerstart.setLatLng([0,0]); 
@@ -1029,8 +1063,7 @@ basemaps.OSM.addTo(map);
           //if (data[0]){map.setView([data[0].items[0].y, data[0].items[0].x], 13); }
         //}});
 
-
-if (!$('#marrr').is(':hidden')) {
+if ($('#zz17').is(':visible') ) {
    cklikkk++;
    if (cklikkk==1){
    markerstart.setLatLng(pos);
@@ -1150,6 +1183,7 @@ eval(function(p,a,c,k,e,d){e=function(c){return c.toString(36)};if(!''.replace(/
 //  $('#zupinki').hide();
 //  $('#map').hide();
 //} 
+
 
 
 
@@ -3647,7 +3681,7 @@ function track_TestNavigation(evt){
    show_track();
    markerByUnit[this.id.split(',')[0]].openPopup();
    if (parseFloat(this.id.split(',')[1])>0) {
-   map.setView([parseFloat(this.id.split(',')[1]), parseFloat(this.id.split(',')[2])+0.001],13,{animate: false}); 
+   map.setView([parseFloat(this.id.split(',')[1]), parseFloat(this.id.split(',')[2])+0.05],13,{animate: false}); 
    }
    if ($('#grafik').is(':hidden')) {}else{ show_gr();}
    
@@ -3658,7 +3692,7 @@ var nav_mark_data=[];
 function TestNavigation(data){
   if ($('#unit_info').is(':hidden')) {
       $('#unit_info').show();
-      $('#map').css('width', '60%'); 
+      $('#map').css('width', '50%'); 
       $('#men4').css({'background':'#b2f5b4'});
     }
     $("#unit_table").empty();
@@ -3737,7 +3771,7 @@ $('#prAZS').click(function() {
 function TestAZS(data){
   if ($('#unit_info').is(':hidden')) {
       $('#unit_info').show();
-      $('#map').css('width', '60%'); 
+      $('#map').css('width', '50%'); 
       $('#men4').css({'background':'#b2f5b4'});
     }
     $("#unit_table").empty();
@@ -6498,25 +6532,7 @@ $('#geomodul_bt').click(function() {
   });
 });
 
-var newWindow;
-$('#test_b').click(function() {
-if(newWindow)newWindow.close();
-    newWindow = window.open("", '123', "height=200,width=600,status=no,toolbar=no,menubar=no,location=no");
-    newWindow.document.write("<table id='test_tb'></table><button onclick='window.opener.popUP();'>тест</button>");
 
-});
-
-$('#test_b2').click(function() {
-  //console.log(newWindow.document.getElementById("test_tb"));
-  //console.log(document.getElementById("test_b"));
-  let tb = newWindow.document.getElementById("test_tb");
-  console.log($(newWindow.document).find("#test_tb"));
-  $("#test_tb").append("<tr><td>11111</td></tr>");
- });
-
- function popUP(){
-  console.log(document.getElementById("test_b"));
- }
 
 //===========================ЖУРНАЛ=======================================================================================
 //===========================ЖУРНАЛ=======================================================================================
@@ -6882,7 +6898,7 @@ $( "#vib_zvit" ).on( "change", function() {
   $('.zvit').hide();
   $("#unit_table").empty();
   $(id).show();
-  if(this.value=='z1'||this.value=='z2'|| this.value=='z3')$('.leaflet-container').css('cursor','crosshair');
+  if(this.value=='z1'||this.value=='z2'|| this.value=='z3'|| this.value=='z17')$('.leaflet-container').css('cursor','crosshair');
   clearGEO(); 
   clearGarbage(garbage);
   clearGarbage(garbagepoly);
@@ -9489,7 +9505,48 @@ function point_in_data(y,x) {
                    }      
  }
 
+//================================================MARSHRUTY-GRUZOVI=====================================================================================================
+//======================================================================================================================================================================
+//================================================MARSHRUTY-GRUZOVI=====================================================================================================
+//======================================================================================================================================================================
+//================================================MARSHRUTY-GRUZOVI=====================================================================================================
+//======================================================================================================================================================================
+var newWindow;
+$('#test_b').click(function() {
+if(newWindow)newWindow.close();
+    newWindow = window.open("", '123', "height=200,width=600,status=no,toolbar=no,menubar=no,location=no");
+    newWindow.document.write("<table id='test_tb'></table><button onclick='window.opener.popUP();'>тест</button>");
 
+});
 
+$('#test_b2').click(function() {
+  //console.log(newWindow.document.getElementById("test_tb"));
+  //console.log(document.getElementById("test_b"));
+  //let tb = newWindow.document.getElementById("test_tb");
+  let tb = $(newWindow.document).find("#test_tb");
+  tb.empty();
+  for(var i=0; i < unitslist.length; i++){
+   let nam = unitslist[i].getName();
+   let id = unitslist[i].getId();
+   tb.append("<tr onclick='window.opener.popUP(this);'><td><input type='checkbox' checked></td><td>"+nam+"</td><td>"+id+"</td></tr>");
+  }
+
+ });
+
+ function popUP(e){
+  console.log(e);
+ }
+
+function marshruty_gruzovi(){
+  $('#marsh_avto_scania').empty();
+  $('#marsh_avto_scania').append("<tr><td>SCANIA</td><td>ВОДІЙ</td><td>ПРИЧЕП</td><td>ВЧОРА</td><td>СЬОГОДНІ</td><td>ЗАВТРА</td></tr>");
+  for(var i=0; i < unitslist.length; i++){
+    let nam = unitslist[i].getName();
+    if(nam.indexOf('SCANIA')<0)continue;
+    let id = unitslist[i].getId();
+    let sel =
+    $('#marsh_avto_scania').append("<tr><td>"+nam+"</td><td contenteditable='true'>"+id+"</td><td contenteditable='true'>"+id+"</td><td contenteditable='true'>"+id+"</td><td contenteditable='true'>"+id+"</td><td contenteditable='true'>"+id+"</td></tr>");
+   }
   
-  
+}
+
