@@ -1,6 +1,5 @@
 
 
-
 // global variables
 var map, marker,unitslist = [],unitslistID = [],allunits = [],rest_units = [],marshruts = [],zup = [], unitMarkers = [], markerByUnit = {},tile_layer, layers = {},marshrutMarkers = [],unitsID = {},Vibranaya_zona,temp_layer=[],trailers={},drivers={};
 var areUnitsLoaded = false;
@@ -1136,12 +1135,21 @@ let areaSelection = new leafletAreaSelection.DrawAreaSelection({
         color: colorr,
       },
     })
-    geojson.bindTooltip(''+area+'га',{opacity:0.8, sticky: true}).addTo(map);
+
+    geojson.bindTooltip(''+area+'га',{opacity:0.8, sticky: true});
     control.deactivate();
     if($('#zz15').is(':visible') ) {
       marshrut_treck.push(geojson);
+      geojson.addTo(map);
       planuvannya_marshrutiv(polygon,colorr);
+    }else{
+      if($('#marrr').is(':visible') ) {
+        marshruty_gruzovi(polygon,colorr);
+      }else{
+        geojson.addTo(map);
+      }
     }
+    
 
   },
   position: 'topleft',
@@ -1183,7 +1191,6 @@ eval(function(p,a,c,k,e,d){e=function(c){return c.toString(36)};if(!''.replace(/
 //  $('#zupinki').hide();
 //  $('#map').hide();
 //} 
-
 
 
 
@@ -3339,7 +3346,14 @@ function ObrabotkaPolya(zakr){
     for (let i = 0; i < polis.length; i++) {
       polis[i] = turf.truncate(polis_more[i],{precision: 7, coordinates: 2});
     }
-    myroutine();
+    try {
+      myroutine(); 
+    } catch {
+      for (let i = 0; i < polis.length; i++) {
+        polis[i] = turf.truncate(polis_more[i],{precision: 8, coordinates: 2});
+      }
+      myroutine();
+    }
   }
 function myroutine(){
       let turfPole =turf.polygon([geozonepointTurf]);
@@ -3631,7 +3645,7 @@ $("#reestr_save_BT").on("click", function (evt){
       if(table_polya.rows[i].cells[2].innerText!='----'){
          cpdata += table_polya.rows[i].cells[2].innerText + '\t' +table_polya.rows[i].cells[3].innerText + '\t' +table_polya.rows[i].cells[4].innerText + ' \t' + table_polya.rows[i].cells[5].innerText + '\t' + table_polya.rows[i].cells[6].innerText.split(' ')[0] + '\t' + table_polya.rows[i].cells[7].innerText +'\t'+ table_polya.rows[i].cells[8].innerText +'\t' + table_polya.rows[i].cells[9].innerText.replace(/\./g, ",") + '\t' + table_polya.rows[i].cells[10].innerText.replace(/\./g, ",") + '\t' + table_polya.rows[i].cells[11].innerText.replace(/\./g, ",") +'\t'+''+'\t'+table_polya.rows[i].cells[12].innerText +'\t'+''+'\t'+''+'\t'+''+'\t'+''+'\t'+''+'\t'+table_polya.rows[i].cells[13].innerText+ '\n';
 
-         let a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12,a13,a14 = '-----';
+         let a2 ='-----', a3 = '-----',a4 = '-----',a5 = '-----',a6 = '-----',a7 = '-----',a8 = '-----',a9 = '-----',a10 = '-----',a11 = '-----',a12 = '-----',a13 = '-----',a14 = '-----';
          a2= table_polya.rows[i].cells[2].innerText;
          a3= table_polya.rows[i].cells[3].innerText;
          a4= table_polya.rows[i].cells[4].innerText;
@@ -6501,7 +6515,7 @@ $('#geomodul_bt').click(function() {
         if(p)p=p.split(' ')[0];
         if(vibor2.join().indexOf(p)<0)continue;
       }
-      
+      console.log(m)
       for(let ii = 0; ii<vibor.length; ii++){
         if(!r)continue;
         if(r.indexOf(vibor[ii])>=0 || vibor[ii]=="Всі"){
@@ -9511,6 +9525,7 @@ function point_in_data(y,x) {
 //======================================================================================================================================================================
 //================================================MARSHRUTY-GRUZOVI=====================================================================================================
 //======================================================================================================================================================================
+
 var newWindow;
 $('#test_b').click(function() {
 if(newWindow)newWindow.close();
@@ -9537,16 +9552,106 @@ $('#test_b2').click(function() {
   console.log(e);
  }
 
-function marshruty_gruzovi(){
-  $('#marsh_avto_scania').empty();
-  $('#marsh_avto_scania').append("<tr><td>SCANIA</td><td>ВОДІЙ</td><td>ПРИЧЕП</td><td>ВЧОРА</td><td>СЬОГОДНІ</td><td>ЗАВТРА</td></tr>");
-  for(var i=0; i < unitslist.length; i++){
-    let nam = unitslist[i].getName();
-    if(nam.indexOf('SCANIA')<0)continue;
-    let id = unitslist[i].getId();
-    let sel =
-    $('#marsh_avto_scania').append("<tr><td>"+nam+"</td><td contenteditable='true'>"+id+"</td><td contenteditable='true'>"+id+"</td><td contenteditable='true'>"+id+"</td><td contenteditable='true'>"+id+"</td><td contenteditable='true'>"+id+"</td></tr>");
-   }
+ $('#marsh_bt').click(function() {
+  let tb = document.getElementById("marsh_avto");
+  let tb2 = tb.rows[1].cells[1];
+  console.log(tb);
+  console.log(tb2.children[0].rows[1].cells[1].textContent);
+ });
+
+ $('#marsh_bt2').click(function() {
+  navigator.clipboard.readText()
+  .then(text => {
+    console.log(text);
+    let rows = text.split('\r\n');
+    console.log(rows);
+    $('#marsh_avto').empty();
+    $('#marsh_avto').append("<tr><td>ГРУПА</td><td>ТЗ</td><td>ВОДІЙ</td><td>ПРИЧЕП</td><td>НАРЯД</td></tr>");
+    for(var i=0; i < rows.length-1; i++){
+      let td = rows[i].split('\t');
+      let g=td[0];
+      let n=td[2];
+      let v=td[3];
+      let p=td[4];
+      let r=td[5];
   
-}
+      $('#marsh_avto').append("<tr><td>"+g+"</td><td contenteditable='true'>"+n+"</td><td contenteditable='true'>"+v+"</td><td contenteditable='true'>"+p+"</td><td contenteditable='true'>"+r+"</td></tr>");
+     }
+  })
+  .catch(err => {
+    console.log('Something went wrong', err);
+  });
+ });
+
+
+
+ let marshrut_gruzoperevozky_temp = [];
+ let marshrut_zony_temp = [];
+ let marshrut_gruzoperevozky =[];
+ function marshruty_gruzovi(polygon,color){
+  if(polygon){
+    polygon.addTo(map);
+    marshrut_gruzoperevozky_temp.push(polygon);
+    if(marshrut_gruzoperevozky_temp.length>1){
+      marshrut_gruzoperevozky.push([marshrut_gruzoperevozky_temp[0],marshrut_gruzoperevozky_temp[1],color,'-----','вода','-----']);
+      clearGarbage(marshrut_gruzoperevozky_temp);
+      marshrut_gruzoperevozky_temp=[];
+      update_marshrut(marshrut_gruzoperevozky);
+    }
+  }else{
+    update_marshrut(marshrut_gruzoperevozky);
+  }
+ }
+
+ function update_marshrut(data){
+  $('#marsh_tb').empty();
+     $('#marsh_tb').append("<tr><td>№</td><td>НАЗВА</td><td>ВАНТАЖ</td><td>КОМБАЙНИ</td><td>РОЗРАХУНОК</td><td>ФАКТ</td><td>ПЕРЕРАХУВАТИ</td><td>МОНІТОРИНГ</td><td>ВИДАЛИТИ</td></tr>");
+     clearGarbage(marshrut_zony_temp);
+     marshrut_zony_temp=[];
+     for(let i=0; i < data.length; i++){
+      if(data[i][3]=='-----')data[i][3] = 'маршрут'+(i+1);
+      let row = "<tr>";   
+      row += "<td style = 'background-color: "+data[i][2]+";'>"+(i+1)+"</td>";
+      row += "<td contenteditable='true'>"+data[i][3]+"</td>";
+      row += "<td><select><option value='інше'>інше</option><option value='кукурудза'>кукурудза</option><option value='соя'>соя</option><option value='ріпак'>ріпак</option><option value='соняшник'>соняшник</option><option value='ЗЗР'>ЗЗР</option><option value='вода'>вода</option><option value='добрива'>добрива</option></select></td>";
+      row += "<td contenteditable='true'>----</td>";
+      row += "<td>----</td>";
+      row += "<td>----</td>";
+      row += "<td><button>Порахувати</button></td>";
+      row += "<td><button>Моніторинг</button></td>";
+      row += "<td><button>Видалити</button></td></tr>";
+      //add info in table
+      $("#marsh_tb").append(row);
+      let table = document.getElementById('marsh_tb');
+      let sel = table.rows[table.rows.length-1].cells[2].children[0];
+          sel.value = data[i][4];
+          let p1 = data[i][0].setStyle({color: data[i][2]}).setTooltipContent(""+data[i][3]+"").addTo(map);
+          let p2 = data[i][1].setStyle({color: data[i][2]}).setTooltipContent(""+data[i][3]+"").addTo(map);
+          marshrut_zony_temp.push(p1,p2)
+     }
+ }
+
+ $("#marsh_tb").on("click", function (evt){
+ 
+ 
+  if (evt.target.parentNode.cellIndex==8){
+    let ind = evt.target.parentNode.parentNode.rowIndex;
+       marshrut_gruzoperevozky.splice(ind-1, 1);
+       update_marshrut(marshrut_gruzoperevozky);
+    return;
+   }
+
+   let row = evt.target.parentNode;
+   let ind = row.rowIndex;
+  if(ind>0){
+     if (evt.target.cellIndex==1){
+      marshrut_gruzoperevozky[ind-1][0].setStyle({color: marshrut_gruzoperevozky[ind-1][2]}).addTo(map);
+      marshrut_gruzoperevozky[ind-1][1].setStyle({color: marshrut_gruzoperevozky[ind-1][2]}).addTo(map);
+      return;
+     }
+
+  }
+});
+
+
 
