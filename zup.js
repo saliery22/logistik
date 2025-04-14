@@ -6515,7 +6515,6 @@ $('#geomodul_bt').click(function() {
         if(p)p=p.split(' ')[0];
         if(vibor2.join().indexOf(p)<0)continue;
       }
-      console.log(m)
       for(let ii = 0; ii<vibor.length; ii++){
         if(!r)continue;
         if(r.indexOf(vibor[ii])>=0 || vibor[ii]=="Всі"){
