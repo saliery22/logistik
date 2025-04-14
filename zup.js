@@ -6229,6 +6229,18 @@ $('#planuvannya_bt3').click(function() {
   if(cpdata!='')navigator.clipboard.writeText(cpdata);
 });
 
+$('#planuvannya_bt4').click(function() {
+  let cpdata='';
+  let table_polya=document.getElementById('unit_table');
+  if(table_polya.rows.length>1){
+    for(let i = 1; i<table_polya.rows.length; i++){
+         cpdata += table_polya.rows[i].cells[4].innerText + '\t' +table_polya.rows[i].cells[9].innerText + '\t' +table_polya.rows[i].cells[10].innerText + '\t' +table_polya.rows[i].cells[5].innerText + ' \t' + table_polya.rows[i].cells[6].innerText + '\n';
+    }
+  }
+
+  if(cpdata!='')navigator.clipboard.writeText(cpdata);
+});
+
 $("#unit_table").on("click", function (evt){
   let row = evt.target.parentNode;
   let tbl = row.parentNode;
