@@ -3161,15 +3161,15 @@ function Naryady(data=[],maska='JD'){
        if(newspline==true){
 
             if(spline.length>1) {
-              if(p_start.length>0)spline.unshift(p_start);
-              if(p_end.length>0)spline.push(p_end);
+              if(p_start.length>0){spline.unshift(p_start);}
+              if(p_end.length>0){spline.push(p_end);}
               splines.push(spline);
               }
           //var linestring1 = turf.lineString(spline);
           //var polyline = L.geoJSON(linestring1).addTo(map);
        
         spline=[];
-        p_start=p_end;
+        p_start=[lon,lat];
         p_end=[];
         newspline=false;
       }
