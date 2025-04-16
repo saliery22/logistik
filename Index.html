@@ -148,6 +148,7 @@
 #mars_table_div{max-width:99%;  overflow-x: auto; white-space: nowrap;}
 #mars_zvit_table_div{max-width:99%; overflow-x: auto;white-space: nowrap;}
 #marshrut { min-width: 100%; border: 1px solid #c6c6c6; margin: 10px 0px 10px 0px;}
+#marsh_tb { min-width: 100%; border: 1px solid #c6c6c6; margin: 10px 0px 10px 0px;}
 #zvittt{ border: 1px solid #c6c6c6; margin: 10px 0px 10px 0px;}
 #zvitttt{ border: 1px solid #c6c6c6; margin: 10px 0px 10px 0px;}
 body{ font-family: "Arial"; font-size: 12px; background: #f8f7f7;}
@@ -344,8 +345,6 @@ button, input, span, select,textarea {margin: 2px 2px 0px 0px;   font-family: "A
 <div>
     <button id='v18'style = "min-width: 150px;">Очистити маркери</button>
     <button id='v8'style = "min-width: 150px;">Очистити трек</button>
-<!--     <button id='test_b'style = "min-width: 10px;">T</button> -->
-<!--     <button id='test_b2'style = "min-width: 10px;">T2</button> -->
 </div>
 <div>
     
@@ -373,10 +372,15 @@ button, input, span, select,textarea {margin: 2px 2px 0px 0px;   font-family: "A
 
 
   
- <div id="marrr">   
-    <table id='marsh_tb' class='table'></table>
-    <button id='marsh_bt'>test</button>
-    <table id='marsh_avto_scania' class='table'></table>
+ <div id="marrr">  
+    <button id='marsh_bt3' style = "width: 49%;">зберігти маршрути</button>
+    <button id='marsh_bt4' style = "width: 49%;">завантажити маршрути</button> 
+    <table id='marsh_tb'></table>
+    <button id='marsh_bt2'style = "width: 32%;">завантажити наряди з Excel</button>
+    <button id='marsh_bt5'style = "width: 32%;">перерахувати маршрути</button>
+    <button id='marsh_bt' style = "width: 32%;">моніторинг</button>
+    <div id="marsh_list" contenteditable='true'></div>
+    <table id='marsh_avto' class='table'></table>
 
  </div>      
  <div id="option"> 
