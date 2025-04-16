@@ -3160,7 +3160,7 @@ function Naryady(data=[],maska='JD'){
 
        if(newspline==true){
 
-            if(spline.length>3) {
+            if(spline.length>1) {
               if(p_start.length>0)spline.unshift(p_start);
               if(p_end.length>0)spline.push(p_end);
               splines.push(spline);
