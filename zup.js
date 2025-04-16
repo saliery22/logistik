@@ -5501,7 +5501,11 @@ let kx=0;
               kx++;
             }
           }
-          if(kx==0){ tb.rows[tb.rows.length - 1].remove();}
+             if(kx==0){ 
+            tb.rows[tb.rows.length - 1].remove();
+          }else{
+            tb.rows[tb.rows.length - 1-kx].cells[0].innerText = vibor[i]+' ('+kx+')';
+          }
         
     }
     }
