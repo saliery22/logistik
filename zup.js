@@ -1,6 +1,5 @@
 
 
-
 // global variables
 var map, marker,unitslist = [],unitslistID = [],allunits = [],rest_units = [],marshruts = [],zup = [], unitMarkers = [], markerByUnit = {},tile_layer, layers = {},marshrutMarkers = [],unitsID = {},Vibranaya_zona,temp_layer=[],trailers={},drivers={};
 var areUnitsLoaded = false;
@@ -1190,6 +1189,7 @@ let areaSelection = new leafletAreaSelection.DrawAreaSelection({
 L.control.ruler(options).addTo(map);
 
 }
+
 
 //let ps = prompt('');
 //if(ps==55555){
@@ -3155,6 +3155,7 @@ function Naryady(data=[],maska='JD'){
          }else {
            newspline=true;
            p_start=[lon,lat]; 
+           
          }
        }
 
@@ -5501,7 +5502,7 @@ let kx=0;
               kx++;
             }
           }
-             if(kx==0){ 
+          if(kx==0){ 
             tb.rows[tb.rows.length - 1].remove();
           }else{
             tb.rows[tb.rows.length - 1-kx].cells[0].innerText = vibor[i]+' ('+kx+')';
@@ -8874,7 +8875,7 @@ async function logistik_zvit(data){
                 let yp=y;
                 let xp=x;
                 let point = yp+","+xp;
-                let r =  parseInt(adres[0][3]);
+                let r =  300;
                 let c = adres[0][4];
                   if(wialon.util.Geometry.getDistance(y000,x000,yp,xp)<r && km<0.5)continue;
                 kkk++;
@@ -8943,7 +8944,7 @@ async function logistik_zvit(data){
                   let yp=y;
                   let xp=x;
                   let point = yp+","+xp;
-                  let r =  parseInt(adres[0][3]);
+                  let r =  300;
                   let c = adres[0][4];
                   if(wialon.util.Geometry.getDistance(y000,x000,yp,xp)>r  && yp!=0){
                   kkk++;
@@ -8994,7 +8995,7 @@ async function logistik_zvit(data){
                   let yp=y;
                   let xp=x;
                   let point = yp+","+xp;
-                  let r =  parseInt(adres[0][3]);
+                  let r =  300;
                   let c = adres[0][4];
                   if(wialon.util.Geometry.getDistance(y000,x000,yp,xp)>r &&  yp!=0){
                   kkk++;
@@ -9049,7 +9050,7 @@ async function logistik_zvit(data){
                 let yp=y;
                 let xp=x;
                 let point = yp+","+xp;
-                let r =  parseInt(adres[0][3]);
+                let r =  300;
                 let c = adres[0][4];
                   if(wialon.util.Geometry.getDistance(y000,x000,yp,xp)<r)continue;
                   if(yp==0)continue;
@@ -9190,7 +9191,7 @@ async function logistik_zvit(data){
                   let yp=y1;
                   let xp=x1;
                   let point = yp+","+xp;
-                  let r =  parseInt(adres[0][3]);
+                  let r =  300;
                   let c = adres[0][4];
                   if(wialon.util.Geometry.getDistance(y000,x000,yp,xp)<r)continue;
                   if(y1==0)continue;
@@ -9417,7 +9418,14 @@ async function logistik_zvit(data){
   $('button').prop("disabled", false);
   $('#log').empty();
   msg('Завантажено');
+
+  $("#cont_b4").on("click", function (){
+    let cpdata= $('#cont_time').text() + '\t'+logistik_vodiy + '\t' +$('#cont_unit').text() + '\t' +begin_marshrut0+ '\t' +end_marshrut0+ '\t' +odo + '\t' +d0 + ' \t' + d1 + '\t' + d2 + '\t' + sec_to_time(t0) + '\t' + sec_to_time(t1)+ '\t' + sec_to_time(t2)+ '\t' + sec_to_time(r0)+ '\t' + sec_to_time(r1)+ '\t' + sec_to_time(r2)+ '\t' + sec_to_time(s0)+ '\t' + sec_to_time(s1)+ '\t' + sec_to_time(s2)+ '\t'+ $('#marshrut_text').val() + '\t' + mar_text +'\n';
+    navigator.clipboard.writeText(cpdata);
+  });
+
 }
+
 function point_in_marshrut(y,x) {
   for (let j = 0; j<marshrut_point0.length; j++){
     if (marshrut_point0[j][3]=="----") {
@@ -9576,45 +9584,92 @@ function point_in_data(y,x) {
  function update_popUP(){
   let tb_m = document.getElementById('marsh_tb');
   let tb_a = document.getElementById('marsh_avto');
+  let newdiv = newWindow.document.getElementById('mon_online_tb');
+  newdiv.innerHTML = '';
+  
   
   //if(!newWindow)return;
   //if(tb_m.length<2)return;
   //if(tb_a.length<2)return;
 
 
-  let tb = $(newWindow.document).find("#mon_online_tb");
-  tb.empty();
+  //let tb = $(newWindow.document).find("#mon_online_tb");
+  //tb.empty();
   
   for(var i=1; i < tb_m.rows.length; i++){
     if(tb_m.rows[i].cells[8].children[0].checked){
       let name_m = tb_m.rows[i].cells[1].innerText;
       let spisok = [];
-      tb.append("<tr><td>"+name_m+"</td></tr>");
+      
         for(var ii=1; ii < tb_a.rows.length; ii++){
           if(tb_a.rows[ii].cells[4].innerText==name_m){
             spisok.push([tb_a.rows[ii].cells[0].innerText,tb_a.rows[ii].cells[1].innerText,tb_a.rows[ii].cells[2].innerText,tb_a.rows[ii].cells[3].innerText]);
           }
         }
         let res = calculate_mn(spisok,i-1);
+          let zav=[];
+          let rozv =[];
+          let na_zav=[];
+          let na_rozv = [];
+          let nev =[];
         for(var ii=0; ii < res.length; ii++){
-          tb.append("<tr><td>"+res[ii][0]+"</td><td>"+res[ii][1]+"</td><td>"+res[ii][2]+"</td><td>"+res[ii][3]+"</td><td>"+res[ii][4]+"</td><td>"+res[ii][5]+"</td></tr>");
+         if(res[ii][3]=='завантаження'){zav.push(res[ii]);}
+         if(res[ii][3]=='розвантаження'){rozv.push(res[ii]);}
+         if(res[ii][3]=='їде на розвантаження'){na_rozv.push(res[ii]);}
+         if(res[ii][3]=='їде на завантаження'){na_zav.push(res[ii]);}
+         if(res[ii][3]=='невідомо'){nev.push(res[ii]);}
+        }
+
+        var div = document.createElement("div");
+        div.style = 'margin-bottom: 10px;margin-right: 10px;min-width: 700px;';
+        newdiv.appendChild(div);
+
+        tbl = document.createElement('table');
+        tbl.setAttribute("id", name_m);
+        tbl.style = "min-width: 100%; font-size:14px;border: 3px solid black; border-collapse: collapse; font-family: 'Arial';";
+
+
+        div.appendChild(tbl);
+
+        let tb = $(newWindow.document).find("#"+name_m+"");
+
+
+        tb.append("<tr><td><b>"+name_m+"</td><td><b>пробіг</td><td><b>ходки</td><td><b>місце</td><td><b>час</td></tr>");
+         let st = "style = 'font-size:14px;border: 1px solid black; border-collapse: collapse;'";
+         tb.append("<tr style ='background:rgb(219, 255, 198);'><td>---</td><td>---</td><td>---</td><td><b>завантажується "+zav.length +"</td><td>---</td></tr>");
+        zav.sort((a, b) => a[4] - b[4]);
+        for(var ii=0; ii < zav.length; ii++){
+          tb.append("<tr style ='background:rgb(219, 255, 198);'><td "+st+">"+zav[ii][0]+"</td><td "+st+">"+zav[ii][1]+"</td><td "+st+">"+zav[ii][2]+"</td><td "+st+">"+zav[ii][3]+"</td><td "+st+">"+sec_to_time(zav[ii][4])+"</td></tr>");
+        }
+        tb.append("<tr style ='background:rgb(177, 255, 132);'><td>---</td><td>---</td><td>---</td><td><b>їде завантаженим "+na_rozv.length +"</td><td>---</td></tr>");
+        na_rozv.sort((a, b) => a[4] - b[4]);
+        for(var ii=0; ii < na_rozv.length; ii++){
+          tb.append("<tr style ='background:rgb(177, 255, 132);'><td "+st+">"+na_rozv[ii][0]+"</td><td "+st+">"+na_rozv[ii][1]+"</td><td "+st+">"+na_rozv[ii][2]+"</td><td "+st+">"+na_rozv[ii][3]+"</td><td "+st+">"+sec_to_time(na_rozv[ii][4])+"</td></tr>");
+        }
+        tb.append("<tr style ='background:rgb(136, 178, 255);'><td>---</td><td>---</td><td>---</td><td><b>їде пустий "+na_zav.length +"</td><td>---</td></tr>");
+        na_zav.sort((a, b) => b[4] - a[4]);
+        for(var ii=0; ii < na_zav.length; ii++){
+          tb.append("<tr style ='background:rgb(136, 178, 255);'><td "+st+">"+na_zav[ii][0]+"</td><td "+st+">"+na_zav[ii][1]+"</td><td "+st+">"+na_zav[ii][2]+"</td><td "+st+">"+na_zav[ii][3]+"</td><td "+st+">"+sec_to_time(na_zav[ii][4])+"</td></tr>");
+        }
+        tb.append("<tr style ='background:rgb(179, 204, 250);'><td>---</td><td>---</td><td>---</td><td><b>розвантажується "+rozv.length +"</td><td>---</td></tr>");
+        rozv.sort((a, b) => b[4] - a[4]);
+        for(var ii=0; ii < rozv.length; ii++){
+          tb.append("<tr style ='background:rgb(179, 204, 250);'><td "+st+">"+rozv[ii][0]+"</td><td "+st+">"+rozv[ii][1]+"</td><td "+st+">"+rozv[ii][2]+"</td><td "+st+">"+rozv[ii][3]+"</td><td "+st+">"+sec_to_time(rozv[ii][4])+"</td></tr>");
         }
         
     }
   }
   //tb.append("<tr onclick='window.opener.popUP(this);'><td><input type='checkbox' checked></td><td>"+nam+"</td><td>"+id+"</td></tr>");
  }
- let porushennya_marshrut=[];
+
 function calculate_mn(data,ind){
   let result=[];
-  let zone1 = marshrut_gruzoperevozky[ind][0];
-  let zone2 = marshrut_gruzoperevozky[ind][1];
   let buferpoly1 =[];
-  zone1._latlngs[0].forEach(function(item){ buferpoly1.push({x:item.lat, y:item.lng}); });
+  marshrut_gruzoperevozky[ind][0]._latlngs[0].forEach(function(item){ buferpoly1.push({x:item.lat, y:item.lng}); });
   let buferpoly2 =[];
-  zone2._latlngs[0].forEach(function(item){ buferpoly2.push({x:item.lat, y:item.lng}); });
+  marshrut_gruzoperevozky[ind][1]._latlngs[0].forEach(function(item){ buferpoly2.push({x:item.lat, y:item.lng}); });
   //wialon.util.Geometry.pointInShape(buferpoly1, 0, y, x)
-
+  let porushennya_marshrut=[];
   for(var i=0; i < data.length; i++){
      let nomer = data[i][1].split(' ')[0];
      for(let ii = 0; ii<Global_DATA.length; ii++){ 
@@ -9622,6 +9677,7 @@ function calculate_mn(data,ind){
       let stop=0;
       let stop_y =0;
       let stop_x =0;
+      let stop_t =0;
 
       let zagr_t=0;
       let vigr_t=0;
@@ -9660,22 +9716,42 @@ function calculate_mn(data,ind){
                     vigr_t+=stop;
                     dor_t=0;
                   }else{
-
+                    dor_t+=stop;
+                    if(stop>300){
+                      let porushennya ='зупинка в дорозі';
+                      for(let j = 0; j<marshrut_gruzoperevozky.length; j++){
+                       if(j==ind)continue;
+                       let buferpoly11 =[];
+                       marshrut_gruzoperevozky[j][0]._latlngs[0].forEach(function(item){ buferpoly11.push({x:item.lat, y:item.lng}); });
+                       let buferpoly22 =[];
+                       marshrut_gruzoperevozky[j][1]._latlngs[0].forEach(function(item){ buferpoly22.push({x:item.lat, y:item.lng}); });
+                         if(wialon.util.Geometry.pointInShape(buferpoly11, 0,  stop_y, stop_x)){
+                           porushennya='зупинка в іншій зоні завантаження';
+                           break;
+                         }else{
+                           if(wialon.util.Geometry.pointInShape(buferpoly22, 0,  stop_y, stop_x)){
+                             porushennya='зупинка в іншій зоні розвантаження';
+                             break;
+                           }
+                         }
+                       
+                      }
+                      porushennya_marshrut.push([nametr,stop_t,porushennya,stop,stop_y,stop_x]);
+                    }
                   }
                  }
-          
 
-
-               
               }
              
             dor_t+=t;
             km+=(wialon.util.Geometry.getDistance(y,x,yy,xx))/1000;
             stop=0;
+            stop_t=0;
             }else{
               stop+=t;
               stop_y  = parseFloat(Global_DATA[ii][iii][0].split(',')[0]);
               stop_x  = parseFloat(Global_DATA[ii][iii][0].split(',')[1]);
+              if(stop_t==0)stop_t=Global_DATA[ii][iii][1];
             }
           }  
           if(stop>30){
@@ -9691,15 +9767,61 @@ function calculate_mn(data,ind){
                   vigr_t+=stop;
                   dor_t=0;
               }else{
-
+                dor_t+=stop;
+                if(stop>300){
+                let porushennya ='зупинка в дорозі';
+                for(let j = 0; j<marshrut_gruzoperevozky.length-1; j++){
+                 if(j==ind)continue;
+                 let buferpoly11 =[];
+                 marshrut_gruzoperevozky[j][0]._latlngs[0].forEach(function(item){ buferpoly11.push({x:item.lat, y:item.lng}); });
+                 let buferpoly22 =[];
+                 marshrut_gruzoperevozky[j][1]._latlngs[0].forEach(function(item){ buferpoly22.push({x:item.lat, y:item.lng}); });
+                   if(wialon.util.Geometry.pointInShape(buferpoly11, 0,  stop_y, stop_x)){
+                     porushennya='зупинка іншій зоні завантаження';
+                     break;
+                   }else{
+                     if(wialon.util.Geometry.pointInShape(buferpoly22, 0,  stop_y, stop_x)){
+                       porushennya='зупинка іншій зоні розвантаження';
+                       break;
+                     }
+                   }
+                 
+                }
+                porushennya_marshrut.push([nametr,stop_t,porushennya,stop,stop_y,stop_x]);
+              }
               }
              }
-      
-
-
-           
           }
-          result.push([nametr,km,marsh,zagr_t,vigr_t,dor_t]); 
+          let direktion = 'S';
+          let hodki = 0;
+          if(marsh.length>0){
+            hodki = (marsh.length/2).toFixed();
+            if(marsh[marsh.length-1]=='Z'){
+              direktion='Z';
+              hodki-=1;
+            }
+            if(marsh[0]=='V') hodki-=1;
+            if(marsh[marsh.length-1]=='V')direktion='V';
+          }
+          let position='невідомо';
+          let time = 0;
+          if(dor_t>500){
+            if(direktion=='Z')position ="їде на розвантаження";
+            if(direktion=='V')position ="їде на завантаження";
+            time = dor_t;
+
+          }else{
+            if(zagr_t>0){
+              position = "завантаження";
+              time = zagr_t;
+            }
+            if(vigr_t>0){
+              position = "розвантаження";
+              time = vigr_t;
+            }
+          }
+          result.push([nametr,km.toFixed(),hodki,position,time]); 
+          console.log(porushennya_marshrut);
           km=0;
          }
       }
@@ -9714,7 +9836,7 @@ function calculate_mn(data,ind){
  $('#marsh_bt').click(function() {
   if(newWindow)newWindow.close();
     newWindow = window.open("", '', " width=1000,height=1000, status=no,toolbar=no,menubar=no,location=no");
-    newWindow.document.write("<table id='mon_online_tb'></table><button onclick='window.opener.popUP();'>тест</button>");
+    newWindow.document.write("<div id='mon_online_tb' style = 'display: flex; flex-wrap: wrap;' ></div>");
     update_popUP();
  });
 
@@ -9796,7 +9918,7 @@ function calculate_mn(data,ind){
             for(let v = 1; v<table2.rows.length; v++){
               if( table2.rows[v].cells[4].innerText==data[i][3]){
                 kol++;
-                table2.rows[v].style = "background: "+data[i][2]+";";
+                table2.rows[v].cells[0].style = "background: "+data[i][2]+";";
               }
             }
             if(kol>0)table.rows[i+1].cells[7].innerText=kol;
