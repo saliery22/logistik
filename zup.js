@@ -1,5 +1,4 @@
 
-var TOKEN = '0999946a10477f4854a9e6f27fcbe8424E7222985DA6B8C3366AABB4B94147D6C5BAE69F';
 
 // global variables
 var map, marker,unitslist = [],unitslistID = [],allunits = [],rest_units = [],marshruts = [],zup = [], unitMarkers = [], markerByUnit = {},tile_layer, layers = {},marshrutMarkers = [],unitsID = {},Vibranaya_zona,temp_layer=[],trailers={},drivers={};
