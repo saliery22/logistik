@@ -1,4 +1,5 @@
 
+var TOKEN = '0999946a10477f4854a9e6f27fcbe8424E7222985DA6B8C3366AABB4B94147D6C5BAE69F';
 
 // global variables
 var map, marker,unitslist = [],unitslistID = [],allunits = [],rest_units = [],marshruts = [],zup = [], unitMarkers = [], markerByUnit = {},tile_layer, layers = {},marshrutMarkers = [],unitsID = {},Vibranaya_zona,temp_layer=[],trailers={},drivers={};
@@ -205,8 +206,7 @@ function initUIData() {
 
            }
            IDzonacord[zone.id]=cord;
-           
-           var geozona =  L.polygon([cord], {color: '#FF00FF', stroke: true,weight: 1, opacity: 0.5, fillOpacity: 0.3, fillColor: color});
+           var geozona =  L.polygon([cord], {color: '#FF00FF', stroke: true,weight: 1, opacity: 0.2, fillOpacity: 0.5, fillColor: color});
           // geozona.bindPopup(zone.n);
            geozona.bindTooltip(zone.n +'<br />'+(zone.ar/10000).toFixed(1)+'га <br />'+zonegr,{opacity:0.8,sticky:true});
            geozona.zone = zone;
@@ -1189,7 +1189,6 @@ let areaSelection = new leafletAreaSelection.DrawAreaSelection({
 L.control.ruler(options).addTo(map);
 
 }
-
 
 //let ps = prompt('');
 //if(ps==55555){
@@ -3417,7 +3416,8 @@ function myroutine(){
           }else{
             for ( j = 0; j < union.geometry.coordinates.length; j++){
               let unpol=turf.polygon(union.geometry.coordinates[j]);
-              UnionPolis.push(unpol);  
+              let unpol_tr = turf.truncate(unpol,{precision: 8, coordinates: 2});
+              UnionPolis.push(unpol_tr);  
             }
           }
         }
@@ -3437,8 +3437,25 @@ function myroutine(){
           let Aarea = GetPoligonsArea(UnionPolis);
           let AareaU = Aarea;
           if(UnionPolis.length>1){
-            let Aunion =turf.union(turf.featureCollection(UnionPolis));
-            AareaU = (turf.area(Aunion)*kof/10000).toFixed(2);
+            try {
+              let Aunion =turf.union(turf.featureCollection(UnionPolis));
+              AareaU = (turf.area(Aunion)*kof/10000).toFixed(2);
+            } catch {
+              for (let i = 0; i < UnionPolis.length; i++) {
+                UnionPolis[i] = turf.truncate(UnionPolis[i],{precision: 7, coordinates: 2});
+              }
+              try {
+                let Aunion =turf.union(turf.featureCollection(UnionPolis));
+                AareaU = (turf.area(Aunion)*kof/10000).toFixed(2);
+              } catch {
+                for (let i = 0; i < UnionPolis.length; i++) {
+                  UnionPolis[i] = turf.truncate(UnionPolis[i],{precision: 8, coordinates: 2});
+                }
+                let Aunion =turf.union(turf.featureCollection(UnionPolis));
+                AareaU = (turf.area(Aunion)*kof/10000).toFixed(2);
+              }
+            }
+            
           }
 
           $('#obrobkatehnika').append("<tr><td><input type='checkbox'></td><td></td><td></td><td></td><td>ВСЬОГО</td><td>"+ Aarea +"</td><td>"+ (Aarea-AareaU).toFixed(2) +"</td><td>"+ AareaU +"</td></tr>");
@@ -3585,7 +3602,7 @@ $('#robota_polya_BT').click(function (){
   }
   srt_arr.sort();
   for (let i = 0; i < srt_arr.length; i++) {
-    $("#robota_polya_tb").append("<tr><td>-</td><td>+</td><td contenteditable='true'>----</td contenteditable='true'><td contenteditable='true'>----</td contenteditable='true'><td contenteditable='true'>----</td><td contenteditable='true'>----</td><td>"+srt_arr[i][0]+"</td><td contenteditable='true'>----</td><td contenteditable='true'>----</td><td>"+srt_arr[i][1]+"</td><td contenteditable='true'>----</td><td contenteditable='true'>----</td><td contenteditable='true'>----</td><td contenteditable='true'>----</td></tr>");  
+    $("#robota_polya_tb").append("<tr><td>-</td><td>+</td><td contenteditable='true'>----</td contenteditable='true'><td contenteditable='true'>----</td contenteditable='true'><td contenteditable='true'>----</td><td contenteditable='true'>----</td><td contenteditable='true'>"+srt_arr[i][0]+"</td><td contenteditable='true'>----</td><td contenteditable='true'>----</td><td contenteditable='true'>"+srt_arr[i][1]+"</td><td contenteditable='true'>----</td><td contenteditable='true'>----</td><td contenteditable='true'>----</td><td contenteditable='true'>----</td></tr>");  
  }
 });
 
@@ -3617,7 +3634,7 @@ $("#robota_polya_tb").on("click", function (evt){
      if (evt.target.cellIndex==1){
       let ind =  row.rowIndex;
       let newRow = row.parentNode.insertRow(ind+1);
-      newRow.innerHTML = "<tr><td>-</td><td>+</td><td contenteditable='true'>----</td contenteditable='true'><td contenteditable='true'>----</td contenteditable='true'><td contenteditable='true'>----</td><td contenteditable='true'>----</td><td>"+row.cells[6].textContent+"</td><td contenteditable='true'>----</td><td contenteditable='true'>----</td><td>"+row.cells[9].textContent+"</td><td contenteditable='true'>----</td><td contenteditable='true'>----</td><td contenteditable='true'>----</td><td contenteditable='true'>----</td></tr>";
+      newRow.innerHTML = "<tr><td>-</td><td>+</td><td contenteditable='true'>----</td contenteditable='true'><td contenteditable='true'>----</td contenteditable='true'><td contenteditable='true'>----</td><td contenteditable='true'>----</td><td  contenteditable='true'>"+row.cells[6].textContent+"</td><td contenteditable='true'>----</td><td contenteditable='true'>----</td><td  contenteditable='true'>"+row.cells[9].textContent+"</td><td contenteditable='true'>----</td><td contenteditable='true'>----</td><td contenteditable='true'>----</td><td contenteditable='true'>----</td></tr>";
       return;
      }
 
@@ -6306,9 +6323,9 @@ $("#unit_table").on("click", function (evt){
       if(!garbagepoly[v].nam)continue;
       if(garbagepoly[v].nam==ind){
         garbagepoly[v].bringToFront();
-        garbagepoly[v].setStyle({color: 'green'});
-      }else{
         garbagepoly[v].setStyle({color: 'red'});
+      }else{
+        garbagepoly[v].setStyle({color: 'blue'});
       }
     }
     
@@ -6316,7 +6333,7 @@ $("#unit_table").on("click", function (evt){
     for (let i = 0; i<geozones.length; i++){
     if(name==geozones[i].zone.n){
      let y=((geozones[i]._bounds._northEast.lat+geozones[i]._bounds._southWest.lat)/2).toFixed(5);
-     let x=((geozones[i]._bounds._northEast.lng+geozones[i]._bounds._southWest.lng)/2).toFixed(5);
+     let x=((geozones[i]._bounds._northEast.lng+geozones[i]._bounds._southWest.lng)/2+0.04).toFixed(5);
      map.setView([y,x],14,{animate: false});
           clearGEO();
        let point = geozones[i]._latlngs[0];
@@ -6338,6 +6355,24 @@ $("#unit_table").on("click", function (evt){
        break;
     }
     }
+    let nomer = row.cells[3].textContent.split(' ')[0];
+    for (let i = 0; i<unitslist.length; i++){
+      let nm=unitslist[i].getName();
+      if(nm.indexOf(nomer)>=0){
+        let id=unitslist[i].getId();
+        let from = row.cells[1].textContent+' 00:00:00';
+        let to = row.cells[1].textContent+' 23:59:00';
+        $("#lis0").chosen().val(id);
+        $("#lis0").trigger("chosen:updated");
+        layers[0]=0;
+        show_track(from,to);
+        break;
+     }
+     }
+    
+    
+
+
   }
   if (evt.target.type=='checkbox'){
     let ind = evt.target.parentNode.parentNode.cells[1].textContent+evt.target.parentNode.parentNode.cells[2].textContent+evt.target.parentNode.parentNode.cells[5].textContent+evt.target.parentNode.parentNode.cells[7].textContent;
@@ -6565,17 +6600,16 @@ $('#geomodul_bt').click(function() {
         if(!r)continue;
         if(r.indexOf(vibor[ii])>=0 || vibor[ii]=="Всі"){
         if(t>=fr && t<=to){
-          poly_color += 60+Math.floor(Math.random() * 30);
           let poly = JSON.parse(data[i+1]);
           if(poly.type == 'Polygon'){
             let coords = L.GeoJSON.coordsToLatLngs(poly.coordinates,1);
-            let G=L.polygon(coords, {color: `hsl(${0}, ${100}%, ${45}%)`, stroke: false,  fillOpacity: 0.5}).bindTooltip(n ,{opacity:0.8,sticky:true}).addTo(map);
+            let G=L.polygon(coords, {color: 'blue', stroke: false,  fillOpacity: 0.5}).bindTooltip(n ,{opacity:0.8,sticky:true}).addTo(map);
             G.nam =m[0]+m[1]+m[4]+m[9];
             garbagepoly.push(G);
           }else{
                 for(let iii = 0; iii<poly.coordinates.length; iii++){
                   let coords = L.GeoJSON.coordsToLatLngs(poly.coordinates[iii],1);
-                  let G=L.polygon(coords, {color: `hsl(${0}, ${100}%, ${45}%)`, stroke: false,  fillOpacity: 0.5}).bindTooltip(n ,{opacity:0.8,sticky:true}).addTo(map);
+                  let G=L.polygon(coords, {color: 'blue', stroke: false,  fillOpacity: 0.5}).bindTooltip(n ,{opacity:0.8,sticky:true}).addTo(map);
                   G.nam =m[0]+m[1]+m[4]+m[9];
                   garbagepoly.push(G);
                 }
@@ -6689,7 +6723,7 @@ function jurnal_update(){
           dataLoop:for(let i = 1; i<jurnal_data.length; i++){
             for (v = 1; v < data.length; v++) {if (parseInt(data[v]) == i) continue dataLoop; } 
             let m=jurnal_data[i].split('|');
-              if(m[1]==nam_js) unit_jr_data.push(m); 
+              if(m[1].split(' ')[0]==nam_js.split(' ')[0]) unit_jr_data.push(m); 
           }
           unit_jr_data.sort(function(a,b){return a[0] - a[0]})
           let index=unit_jr_data.length-10;
@@ -9578,16 +9612,38 @@ function point_in_data(y,x) {
 //================================================MARSHRUTY-GRUZOVI=====================================================================================================
 //======================================================================================================================================================================
 
+function find_avto(e){
+for(var i=0; i < allunits.length; i++){
+  let name =allunits[i].getName();
+  if(name.indexOf(e)>=0){
+  let id =allunits[i].getId();
+  let mar =  markerByUnit[id];
+  let y=mar.getLatLng().lat;
+  let x=mar.getLatLng().lng;
+  map.setView([y,x+0.5], map.getZoom(),{animate: false});
+  $("#lis0").chosen().val(id);
+  $("#lis0").trigger("chosen:updated");
+  mar.openPopup();
+  layers[0]=0;
+  show_track();
+  return;
+  }
+}
+}
 
+function table_popup(e){
+e.style ='background:""';
+marshrut_problem_his.push([e.cells[1].innerText,e.cells[2].innerText,e.cells[3].innerText,e.cells[4].innerText]);
+  }
 
-
+  let marshrut_problem_his =[];
  function update_popUP(){
   let tb_m = document.getElementById('marsh_tb');
   let tb_a = document.getElementById('marsh_avto');
   let newdiv = newWindow.document.getElementById('mon_online_tb');
   newdiv.innerHTML = '';
   
-  
+  //onclick='window.opener.find_avto()'
   //if(!newWindow)return;
   //if(tb_m.length<2)return;
   //if(tb_a.length<2)return;
@@ -9595,15 +9651,15 @@ function point_in_data(y,x) {
 
   //let tb = $(newWindow.document).find("#mon_online_tb");
   //tb.empty();
-  
+  let problem =[];
   for(var i=1; i < tb_m.rows.length; i++){
     if(tb_m.rows[i].cells[8].children[0].checked){
       let name_m = tb_m.rows[i].cells[1].innerText;
       let spisok = [];
       
         for(var ii=1; ii < tb_a.rows.length; ii++){
-          if(tb_a.rows[ii].cells[4].innerText==name_m){
-            spisok.push([tb_a.rows[ii].cells[0].innerText,tb_a.rows[ii].cells[1].innerText,tb_a.rows[ii].cells[2].innerText,tb_a.rows[ii].cells[3].innerText]);
+          if(tb_a.rows[ii].cells[5].innerText==name_m){
+            spisok.push([tb_a.rows[ii].cells[1].innerText,tb_a.rows[ii].cells[2].innerText,tb_a.rows[ii].cells[3].innerText,tb_a.rows[ii].cells[4].innerText,tb_a.rows[ii].cells[5].innerText]);
           }
         }
         let res = calculate_mn(spisok,i-1);
@@ -9611,53 +9667,70 @@ function point_in_data(y,x) {
           let rozv =[];
           let na_zav=[];
           let na_rozv = [];
-          let nev =[];
-        for(var ii=0; ii < res.length; ii++){
-         if(res[ii][3]=='завантаження'){zav.push(res[ii]);}
-         if(res[ii][3]=='розвантаження'){rozv.push(res[ii]);}
-         if(res[ii][3]=='їде на розвантаження'){na_rozv.push(res[ii]);}
-         if(res[ii][3]=='їде на завантаження'){na_zav.push(res[ii]);}
-         if(res[ii][3]=='невідомо'){nev.push(res[ii]);}
+        for(var ii=0; ii < res.length-1; ii++){
+         if(res[ii][6]=='завантаження'){zav.push(res[ii]);}
+         if(res[ii][6]=='розвантаження'){rozv.push(res[ii]);}
+         if(res[ii][6]=='їде на розвантаження'){na_rozv.push(res[ii]);}
+         if(res[ii][6]=='їде на завантаження'){na_zav.push(res[ii]);}
         }
-
+      
         var div = document.createElement("div");
-        div.style = 'margin-bottom: 10px;margin-right: 10px;min-width: 700px;';
+        div.style = 'margin-bottom: 10px;margin-right: 10px;min-width: 900px;';
         newdiv.appendChild(div);
-
         tbl = document.createElement('table');
         tbl.setAttribute("id", name_m);
         tbl.style = "min-width: 100%; font-size:14px;border: 3px solid black; border-collapse: collapse; font-family: 'Arial';";
-
-
         div.appendChild(tbl);
-
         let tb = $(newWindow.document).find("#"+name_m+"");
 
-
-        tb.append("<tr><td><b>"+name_m+"</td><td><b>пробіг</td><td><b>ходки</td><td><b>місце</td><td><b>час</td></tr>");
+        tb.append("<tr><td></td><td></td><td><b>"+name_m+"</td><td></td><td></td><td><b>пробіг</td><td><b>ходки</td><td><b>місце</td><td><b>час</td></tr>");
          let st = "style = 'font-size:14px;border: 1px solid black; border-collapse: collapse;'";
-         tb.append("<tr style ='background:rgb(219, 255, 198);'><td>---</td><td>---</td><td>---</td><td><b>завантажується "+zav.length +"</td><td>---</td></tr>");
-        zav.sort((a, b) => a[4] - b[4]);
+         tb.append("<tr style ='background:rgb(219, 255, 198);'><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td><b>завантажується "+zav.length +"</td><td></td></tr>");
+        zav.sort((a, b) => a[7] - b[7]);
         for(var ii=0; ii < zav.length; ii++){
-          tb.append("<tr style ='background:rgb(219, 255, 198);'><td "+st+">"+zav[ii][0]+"</td><td "+st+">"+zav[ii][1]+"</td><td "+st+">"+zav[ii][2]+"</td><td "+st+">"+zav[ii][3]+"</td><td "+st+">"+sec_to_time(zav[ii][4])+"</td></tr>");
+          tb.append("<tr style ='background:rgb(219, 255, 198);'><td><button id = '"+zav[ii][1]+"'onclick='window.opener.find_avto(this.id)'>"+(ii+1)+"</button></td><td "+st+">"+zav[ii][0]+"</td><td "+st+">"+zav[ii][1]+"</td><td "+st+">"+zav[ii][2]+"</td><td "+st+">"+zav[ii][3]+"</td><td "+st+">"+zav[ii][4]+"</td><td "+st+">"+zav[ii][5]+"</td><td "+st+">"+zav[ii][6]+"</td><td "+st+">"+sec_to_time(zav[ii][7])+"</td></tr>");
         }
-        tb.append("<tr style ='background:rgb(177, 255, 132);'><td>---</td><td>---</td><td>---</td><td><b>їде завантаженим "+na_rozv.length +"</td><td>---</td></tr>");
-        na_rozv.sort((a, b) => a[4] - b[4]);
+        tb.append("<tr style ='background:rgb(252, 250, 171);'><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td><b>їде завантаженим "+na_rozv.length +"</td><td></td></tr>");
+        na_rozv.sort((a, b) => a[7] - b[7]);
         for(var ii=0; ii < na_rozv.length; ii++){
-          tb.append("<tr style ='background:rgb(177, 255, 132);'><td "+st+">"+na_rozv[ii][0]+"</td><td "+st+">"+na_rozv[ii][1]+"</td><td "+st+">"+na_rozv[ii][2]+"</td><td "+st+">"+na_rozv[ii][3]+"</td><td "+st+">"+sec_to_time(na_rozv[ii][4])+"</td></tr>");
+          tb.append("<tr style ='background:rgb(252, 250, 171);'><td><button id = '"+na_rozv[ii][1]+"'onclick='window.opener.find_avto(this.id)'>"+(ii+1)+"</button></td><td "+st+">"+na_rozv[ii][0]+"</td><td "+st+">"+na_rozv[ii][1]+"</td><td "+st+">"+na_rozv[ii][2]+"</td><td "+st+">"+na_rozv[ii][3]+"</td><td "+st+">"+na_rozv[ii][4]+"</td><td "+st+">"+na_rozv[ii][5]+"</td><td "+st+">"+na_rozv[ii][6]+"</td><td "+st+">"+sec_to_time(na_rozv[ii][7])+"</td></tr>");
         }
-        tb.append("<tr style ='background:rgb(136, 178, 255);'><td>---</td><td>---</td><td>---</td><td><b>їде пустий "+na_zav.length +"</td><td>---</td></tr>");
-        na_zav.sort((a, b) => b[4] - a[4]);
+        tb.append("<tr style ='background:rgb(250, 190, 179);'><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td><b>їде пустий "+na_zav.length +"</td><td></td></tr>");
+        na_zav.sort((a, b) => b[7] - a[7]);
         for(var ii=0; ii < na_zav.length; ii++){
-          tb.append("<tr style ='background:rgb(136, 178, 255);'><td "+st+">"+na_zav[ii][0]+"</td><td "+st+">"+na_zav[ii][1]+"</td><td "+st+">"+na_zav[ii][2]+"</td><td "+st+">"+na_zav[ii][3]+"</td><td "+st+">"+sec_to_time(na_zav[ii][4])+"</td></tr>");
+          tb.append("<tr style ='background:rgb(250, 190, 179);'><td><button id = '"+na_zav[ii][1]+"'onclick='window.opener.find_avto(this.id)'>"+(ii+1)+"</button></td><td "+st+">"+na_zav[ii][0]+"</td><td "+st+">"+na_zav[ii][1]+"</td><td "+st+">"+na_zav[ii][2]+"</td><td "+st+">"+na_zav[ii][3]+"</td><td "+st+">"+na_zav[ii][4]+"</td><td "+st+">"+na_zav[ii][5]+"</td><td "+st+">"+na_zav[ii][6]+"</td><td "+st+">"+sec_to_time(na_zav[ii][7])+"</td></tr>");
         }
-        tb.append("<tr style ='background:rgb(179, 204, 250);'><td>---</td><td>---</td><td>---</td><td><b>розвантажується "+rozv.length +"</td><td>---</td></tr>");
-        rozv.sort((a, b) => b[4] - a[4]);
+        tb.append("<tr style ='background:rgb(179, 204, 250);'><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td><b>розвантажується "+rozv.length +"</td><td></td></tr>");
+        rozv.sort((a, b) => b[7] - a[7]);
         for(var ii=0; ii < rozv.length; ii++){
-          tb.append("<tr style ='background:rgb(179, 204, 250);'><td "+st+">"+rozv[ii][0]+"</td><td "+st+">"+rozv[ii][1]+"</td><td "+st+">"+rozv[ii][2]+"</td><td "+st+">"+rozv[ii][3]+"</td><td "+st+">"+sec_to_time(rozv[ii][4])+"</td></tr>");
+          tb.append("<tr style ='background:rgb(179, 204, 250);'><td><button id = '"+rozv[ii][1]+"'onclick='window.opener.find_avto(this.id)'>"+(ii+1)+"</button></td><td "+st+">"+rozv[ii][0]+"</td><td "+st+">"+rozv[ii][1]+"</td><td "+st+">"+rozv[ii][2]+"</td><td "+st+">"+rozv[ii][3]+"</td><td "+st+">"+rozv[ii][4]+"</td><td "+st+">"+rozv[ii][5]+"</td><td "+st+">"+rozv[ii][6]+"</td><td "+st+">"+sec_to_time(rozv[ii][7])+"</td></tr>");
         }
+
         
+        for(var ii=0; ii < res[res.length-1].length; ii++){
+          problem.push(res[res.length-1][ii]);
+        }
     }
+  }
+  var div = document.createElement("div");
+  div.style = 'margin-bottom: 10px;margin-right: 10px;min-width: 900px;';
+  newdiv.appendChild(div);
+  tbl = document.createElement('table');
+  tbl.setAttribute("id", "problem_marsh");
+  tbl.style = "min-width: 100%; font-size:14px;border: 3px solid black; border-collapse: collapse; font-family: 'Arial';";
+  div.appendChild(tbl);
+  let tb = $(newWindow.document).find("#problem_marsh");
+  let st = "style = 'font-size:14px;border: 1px solid black; border-collapse: collapse;'";
+  tb.append("<tr><td></td><td>авто</td><td>маршрут</td><td>порушення</td><td></td><td></td></tr>");
+  for(var ii=0; ii < problem.length; ii++){
+    let color = 'rgb(250, 190, 179)';
+    for(var iii=0; iii < marshrut_problem_his.length; iii++){
+       if(marshrut_problem_his[iii][0].split(' ')[0]==problem[ii][0].split(' ')[0] && marshrut_problem_his[iii][1]==problem[ii][1] && marshrut_problem_his[iii][2]==problem[ii][3] && marshrut_problem_his[iii][3]==problem[ii][2]){
+        color = ''; 
+        break;
+       }
+    }
+    tb.append("<tr onclick='window.opener.table_popup(this)' style ='background:"+color+";'><td><button id = '"+problem[ii][0].split(' ')[0]+"'onclick='window.opener.find_avto(this.id)'>"+(ii+1)+"</button></td><td "+st+">"+problem[ii][0]+"</td><td "+st+">"+problem[ii][1]+"</td><td "+st+">"+problem[ii][3]+"</td><td "+st+">"+problem[ii][2]+"</td><td "+st+">"+sec_to_time(problem[ii][4])+"</td></tr>");
   }
   //tb.append("<tr onclick='window.opener.popUP(this);'><td><input type='checkbox' checked></td><td>"+nam+"</td><td>"+id+"</td></tr>");
  }
@@ -9674,6 +9747,10 @@ function calculate_mn(data,ind){
      let nomer = data[i][1].split(' ')[0];
      for(let ii = 0; ii<Global_DATA.length; ii++){ 
       let nametr = Global_DATA[ii][0][1];
+      let vodiy = data[i][2];
+      let prich = data[i][3];
+      let avto = data[i][0];
+      let marshrut = data[i][4];
       let stop=0;
       let stop_y =0;
       let stop_x =0;
@@ -9685,22 +9762,26 @@ function calculate_mn(data,ind){
 
       let km=0;
 
+      let vodiy_tr = "";
+
       marsh=[];
 
          if(nametr.indexOf(nomer)>=0){
           for (let iii = 1; iii<Global_DATA[ii].length-1; iii++){
-            if(!Global_DATA[ii][iii][0])continue;
-            if(!Global_DATA[ii][iii+1][0])continue;
+            if(!Global_DATA[ii][iii][0] && !Global_DATA[ii][iii+1][0])continue
             if(!Global_DATA[ii][iii][4])continue;
             if(!Global_DATA[ii][iii+1][4])continue;
             if(!Global_DATA[ii][iii][3])continue;
 
-            let y = parseFloat(Global_DATA[ii][iii][0].split(',')[0]);
-            let x = parseFloat(Global_DATA[ii][iii][0].split(',')[1]);
-            let yy = parseFloat(Global_DATA[ii][iii+1][0].split(',')[0]);
-            let xx = parseFloat(Global_DATA[ii][iii+1][0].split(',')[1]);
+            if(Global_DATA[ii][iii][6]!=''){vodiy_tr=Global_DATA[ii][iii][6];}
+
             let t =(Global_DATA[ii][iii+1][4]-Global_DATA[ii][iii][4])/1000;
 
+            if(Global_DATA[ii][iii][0] && Global_DATA[ii][iii+1][0]){
+              let y = parseFloat(Global_DATA[ii][iii][0].split(',')[0]);
+              let x = parseFloat(Global_DATA[ii][iii][0].split(',')[1]);
+              let yy = parseFloat(Global_DATA[ii][iii+1][0].split(',')[0]);
+              let xx = parseFloat(Global_DATA[ii][iii+1][0].split(',')[1]);
 
             if(parseInt(Global_DATA[ii][iii][3])>0){ 
               if(stop>30){
@@ -9736,7 +9817,9 @@ function calculate_mn(data,ind){
                          }
                        
                       }
-                      porushennya_marshrut.push([nametr,stop_t,porushennya,stop,stop_y,stop_x]);
+                      if(marsh.length>0 || porushennya!='зупинка в дорозі'){
+                        porushennya_marshrut.push([nametr,marshrut,stop_t,porushennya,stop,stop_y,stop_x]);
+                      }
                     }
                   }
                  }
@@ -9753,6 +9836,55 @@ function calculate_mn(data,ind){
               stop_x  = parseFloat(Global_DATA[ii][iii][0].split(',')[1]);
               if(stop_t==0)stop_t=Global_DATA[ii][iii][1];
             }
+
+
+            }else{
+              if(Global_DATA[ii][iii][0] && !Global_DATA[ii][iii+1][0]){
+                let stop_yy = parseFloat(Global_DATA[ii][iii][0].split(',')[0]);
+                let stop_xx = parseFloat(Global_DATA[ii][iii][0].split(',')[1]);
+                stop=60;
+                if(wialon.util.Geometry.pointInShape(buferpoly1, 0,  stop_yy, stop_xx)){
+                  if(marsh.length==0 || marsh[marsh.length-1]!='Z')  marsh.push('Z');
+                   zagr_t=stop;
+                   vigr_t=0;
+                   dor_t=0;
+                   stop=0;
+                  }else{
+                    if(wialon.util.Geometry.pointInShape(buferpoly2, 0,  stop_yy, stop_xx)){
+                      if(marsh.length==0 || marsh[marsh.length-1]!='V') marsh.push('V');
+                      zagr_t=0;
+                      vigr_t=stop;
+                      dor_t=0;
+                      stop=0;
+                    }
+                  }
+              }
+              if(!Global_DATA[ii][iii][0] && Global_DATA[ii][iii+1][0]){
+                let stop_yy = parseFloat(Global_DATA[ii][iii+1][0].split(',')[0]);
+                let stop_xx = parseFloat(Global_DATA[ii][iii+1][0].split(',')[1]);
+                stop=60;
+                if(wialon.util.Geometry.pointInShape(buferpoly1, 0,  stop_yy, stop_xx)){
+                  if(marsh.length==0 || marsh[marsh.length-1]!='Z')  marsh.push('Z');
+                   zagr_t=stop;
+                   vigr_t=0;
+                   dor_t=0;
+                   stop=0;
+                  }else{
+                    if(wialon.util.Geometry.pointInShape(buferpoly2, 0,  stop_yy, stop_xx)){
+                      if(marsh.length==0 || marsh[marsh.length-1]!='V') marsh.push('V');
+                      zagr_t=0;
+                      vigr_t=stop;
+                      dor_t=0;
+                      stop=0;
+                    }
+                  }
+              }
+            }
+
+            
+
+
+            
           }  
           if(stop>30){
             if(wialon.util.Geometry.pointInShape(buferpoly1, 0, stop_y, stop_x)){
@@ -9777,17 +9909,20 @@ function calculate_mn(data,ind){
                  let buferpoly22 =[];
                  marshrut_gruzoperevozky[j][1]._latlngs[0].forEach(function(item){ buferpoly22.push({x:item.lat, y:item.lng}); });
                    if(wialon.util.Geometry.pointInShape(buferpoly11, 0,  stop_y, stop_x)){
-                     porushennya='зупинка іншій зоні завантаження';
+                     porushennya='зупинка в іншій зоні завантаження';
                      break;
                    }else{
                      if(wialon.util.Geometry.pointInShape(buferpoly22, 0,  stop_y, stop_x)){
-                       porushennya='зупинка іншій зоні розвантаження';
+                       porushennya='зупинка в іншій зоні розвантаження';
                        break;
                      }
                    }
                  
                 }
-                porushennya_marshrut.push([nametr,stop_t,porushennya,stop,stop_y,stop_x]);
+                if(marsh.length>0 || porushennya!='зупинка в дорозі'){
+                  porushennya_marshrut.push([nametr,marshrut,stop_t,porushennya,stop,stop_y,stop_x]);
+                }
+                
               }
               }
              }
@@ -9820,23 +9955,26 @@ function calculate_mn(data,ind){
               time = vigr_t;
             }
           }
-          result.push([nametr,km.toFixed(),hodki,position,time]); 
-          console.log(porushennya_marshrut);
+          if(position=='невідомо')porushennya_marshrut.push([nametr,marshrut,0,'не на маршруті',0,0,0]);
+          if(vodiy_tr!='' && vodiy_tr!=vodiy)porushennya_marshrut.push([nametr,marshrut,0,'інша картка водія',0,0,0]);
+          result.push([avto,nomer,vodiy,prich,km.toFixed(),hodki,position,time]); 
           km=0;
          }
       }
   }
+  result.push(porushennya_marshrut); 
   return result;
 }
 
- function popUP(e){
-  console.log(e);
- }
 
- $('#marsh_bt').click(function() {
-  if(newWindow)newWindow.close();
+
+ $('#marsh_bt0').click(function() {
+  //if(newWindow)newWindow.close();
+  if(!newWindow || newWindow.closed){
     newWindow = window.open("", '', " width=1000,height=1000, status=no,toolbar=no,menubar=no,location=no");
     newWindow.document.write("<div id='mon_online_tb' style = 'display: flex; flex-wrap: wrap;' ></div>");
+  }
+    
     update_popUP();
  });
 
@@ -9845,7 +9983,7 @@ function calculate_mn(data,ind){
   .then(text => {
     let rows = text.split('\r\n');
     $('#marsh_avto').empty();
-    $('#marsh_avto').append("<tr><td>ГРУПА</td><td>ТЗ</td><td>ВОДІЙ</td><td>ПРИЧЕП</td><td>НАРЯД</td></tr>");
+    $('#marsh_avto').append("<tr><td></td><td>ГРУПА</td><td>ТЗ</td><td>ВОДІЙ</td><td>ПРИЧЕП</td><td>НАРЯД</td></tr>");
     for(var i=0; i < rows.length-1; i++){
       let td = rows[i].split('\t');
       let g=td[0];
@@ -9854,7 +9992,7 @@ function calculate_mn(data,ind){
       let p=td[4];
       let r=td[5];
   
-      $('#marsh_avto').append("<tr><td>"+g+"</td><td contenteditable='true'>"+n+"</td><td contenteditable='true'>"+v+"</td><td contenteditable='true'>"+p+"</td><td contenteditable='true'>"+r+"</td></tr>");
+      $('#marsh_avto').append("<tr><td><button id = '"+n.split(' ')[0]+"'onclick='find_avto(this.id)'>"+(i+1)+"</button></td><td>"+g+"</td><td contenteditable='true'>"+n+"</td><td contenteditable='true'>"+v+"</td><td contenteditable='true'>"+p+"</td><td contenteditable='true'>"+r+"</td></tr>");
      }
   })
   .catch(err => {
@@ -9916,8 +10054,9 @@ function calculate_mn(data,ind){
           if(table2.rows.length>1){
             let kol =0;
             for(let v = 1; v<table2.rows.length; v++){
-              if( table2.rows[v].cells[4].innerText==data[i][3]){
+              if( table2.rows[v].cells[5].innerText==data[i][3]){
                 kol++;
+                table2.rows[v].cells[5].style = "background: "+data[i][2]+";";
                 table2.rows[v].cells[0].style = "background: "+data[i][2]+";";
               }
             }
