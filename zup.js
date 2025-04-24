@@ -2201,7 +2201,7 @@ if($("#gif").is(":checked")) {
     UpdateGlobalData(0,zvit2,0);
     }
     if (sec == 2000 && $("#monitoring_gif").is(":checked")) {Monitoring2();}
-    
+    if (sec == 1500 && newWindow && newWindow.closed==false) {update_popUP();}
     
     if(t>Date.parse($('#fromtime2').val()))t=Date.parse($('#fromtime2').val());
     slider.value=(t-Date.parse($('#fromtime1').val()))/(Date.parse($('#fromtime2').val())-Date.parse($('#fromtime1').val()))*2000;
@@ -8662,6 +8662,8 @@ if(row.rowIndex>0 && evt.target.innerText !='ремонт-зняти' &&  evt.ta
       if(m[2]=='ремонт')continue;
       if(m[2]=='готовий')continue;
       if(m[2]=='видалено')continue;
+      if(m.length==2)continue;
+
      $('#marshrut_text').val(m[6]);
    let text =m[2].split('//');
    let point =m[3].split('//');
@@ -9610,6 +9612,56 @@ function point_in_data(y,x) {
 //======================================================================================================================================================================
 //================================================MARSHRUTY-GRUZOVI=====================================================================================================
 //======================================================================================================================================================================
+$('#marsh_bt3').click(function() {
+  let tb_a = document.getElementById('marsh_avto');
+  let data_av = [];
+  for(var ii=1; ii < tb_a.rows.length; ii++){
+   data_av.push([tb_a.rows[ii].cells[1].textContent,tb_a.rows[ii].cells[2].textContent,tb_a.rows[ii].cells[3].textContent,tb_a.rows[ii].cells[4].textContent,tb_a.rows[ii].cells[5].textContent]);
+  }
+  let data = [];
+  for(var i=0; i < marshrut_gruzoperevozky.length; i++){
+    data.push([marshrut_gruzoperevozky[i][0]._latlngs,marshrut_gruzoperevozky[i][1]._latlngs,marshrut_gruzoperevozky[i][2],marshrut_gruzoperevozky[i][3],marshrut_gruzoperevozky[i][4],marshrut_gruzoperevozky[i][5],marshrut_gruzoperevozky[i][6]]);
+  }
+  if(data.length==0)data.push([]);
+  data.push(data_av);
+     let save_data = JSON.stringify(data);
+  rewrite_jurnal(20233,'gruzmarsh.txt',save_data,function () {audio.play();});
+ });
+
+ $('#marsh_bt4').click(function() {
+  let remotee= wialon.core.Remote.getInstance(); 
+  remotee.remoteCall('file/read',{'itemId':20233,'storageType':1,'path':'//'+'gruzmarsh.txt','contentType':0},function (error,data) {
+    if (error) {msg(wialon.core.Errors.getErrorText(error));
+     return;
+    }else{
+     data = JSON.parse(data.content);
+     marshrut_gruzoperevozky=[];
+     if(data[0].length!=0){
+      for(var i=0; i < data.length-1; i++){
+        let p1 = L.polygon(data[i][0][0], {color: 'red'}).bindTooltip('');
+        let p2 = L.polygon(data[i][1][0], {color: 'red'}).bindTooltip('');
+        marshrut_gruzoperevozky.push([p1,p2,data[i][2],data[i][3],data[i][4],data[i][5],data[i][6]]);
+       }
+     }
+    
+     let data_av = data[ data.length-1];
+     $('#marsh_avto').empty();
+     $('#marsh_avto').append("<tr><td></td><td>ГРУПА</td><td>ТЗ</td><td>ВОДІЙ</td><td>ПРИЧЕП</td><td>НАРЯД</td></tr>");
+     for(var i=0; i < data_av.length; i++){
+
+       let g=data_av[i][0];
+       let n=data_av[i][1];
+       let v=data_av[i][2];
+       let p=data_av[i][3];
+       let r=data_av[i][4];
+   
+       $('#marsh_avto').append("<tr><td><button id = '"+n.split(' ')[0]+"'onclick='find_avto(this.id)'>"+(i+1)+"</button></td><td>"+g+"</td><td contenteditable='true'>"+n+"</td><td contenteditable='true'>"+v+"</td><td contenteditable='true'>"+p+"</td><td contenteditable='true'>"+r+"</td></tr>");
+      }
+     update_marshrut(marshrut_gruzoperevozky);
+     return;
+   }
+}); 
+ });
 
 function find_avto(e){
 for(var i=0; i < allunits.length; i++){
@@ -9657,7 +9709,8 @@ marshrut_problem_his.push([e.cells[1].innerText,e.cells[2].innerText,e.cells[3].
       let spisok = [];
       
         for(var ii=1; ii < tb_a.rows.length; ii++){
-          if(tb_a.rows[ii].cells[5].innerText==name_m){
+          let name = tb_a.rows[ii].cells[5].innerText.split('+');
+          if(name[name.length-1]==name_m){
             spisok.push([tb_a.rows[ii].cells[1].innerText,tb_a.rows[ii].cells[2].innerText,tb_a.rows[ii].cells[3].innerText,tb_a.rows[ii].cells[4].innerText,tb_a.rows[ii].cells[5].innerText]);
           }
         }
@@ -9707,10 +9760,31 @@ marshrut_problem_his.push([e.cells[1].innerText,e.cells[2].innerText,e.cells[3].
 
         
         for(var ii=0; ii < res[res.length-1].length; ii++){
-          problem.push(res[res.length-1][ii]);
+          let povtor = false;
+          for(var iii=0; iii < problem.length; iii++){
+               if(problem[iii][0] == res[res.length-1][ii][0] && problem[iii][1] == res[res.length-1][ii][1] && problem[iii][2] == res[res.length-1][ii][2] && problem[iii][3] == res[res.length-1][ii][3]){
+                povtor=true;
+                break;
+               }
+          }
+          if(!povtor)problem.push(res[res.length-1][ii]);
         }
     }
   }
+
+   let no_work = [];
+  for(var ii=1; ii < tb_a.rows.length; ii++){
+    let name = tb_a.rows[ii].cells[5].innerText.split('+');
+    if(name[name.length-1]=="вихідний" || name[name.length-1]=="захворів" || name[name.length-1]=="ремонт" || name[name.length-1]=="відсутній"|| name[name.length-1]=="резерв"|| name[name.length-1]==""){
+      no_work.push([tb_a.rows[ii].cells[1].innerText,tb_a.rows[ii].cells[2].innerText,tb_a.rows[ii].cells[3].innerText,tb_a.rows[ii].cells[4].innerText,tb_a.rows[ii].cells[5].innerText]);
+    }
+  }
+  let ress = calculate_nowork(no_work);
+  for(var ii=0; ii <ress.length; ii++){
+    problem.push(ress[ii]);
+  }
+
+
   var div = document.createElement("div");
   div.style = 'margin-bottom: 10px;margin-right: 10px;min-width: 900px;';
   newdiv.appendChild(div);
@@ -9733,7 +9807,43 @@ marshrut_problem_his.push([e.cells[1].innerText,e.cells[2].innerText,e.cells[3].
   }
   //tb.append("<tr onclick='window.opener.popUP(this);'><td><input type='checkbox' checked></td><td>"+nam+"</td><td>"+id+"</td></tr>");
  }
+ function calculate_nowork(data){
+  let result=[];
+  for(var i=0; i < data.length; i++){
+    let nomer = data[i][1].split(' ')[0];
+    let marshrut = data[i][4];
+    for(let ii = 0; ii<Global_DATA.length; ii++){ 
+     let nametr = Global_DATA[ii][0][1];
+     let km =0;
+     if(nametr.indexOf(nomer)>=0){
+      for (let iii = 1; iii<Global_DATA[ii].length-1; iii++){
+        if(!Global_DATA[ii][iii][0])continue
+        if(!Global_DATA[ii][iii+1][0])continue;
+        if(!Global_DATA[ii][iii][3])continue;
 
+
+
+        if(parseInt(Global_DATA[ii][iii][3])>0){ 
+          let y = parseFloat(Global_DATA[ii][iii][0].split(',')[0]);
+          let x = parseFloat(Global_DATA[ii][iii][0].split(',')[1]);
+          let yy = parseFloat(Global_DATA[ii][iii+1][0].split(',')[0]);
+          let xx = parseFloat(Global_DATA[ii][iii+1][0].split(',')[1]);
+
+          km+=(wialon.util.Geometry.getDistance(y,x,yy,xx))/1000;
+
+        }
+
+  
+          
+          
+
+      }
+      if(km>2)result.push([nametr,marshrut,0,"пробіг "+km.toFixed()+" км без маршруту",0,0,0]);
+    }
+    }
+  }
+  return result;
+ }
 function calculate_mn(data,ind){
   let result=[];
   let buferpoly1 =[];
@@ -9750,6 +9860,11 @@ function calculate_mn(data,ind){
       let prich = data[i][3];
       let avto = data[i][0];
       let marshrut = data[i][4];
+
+      let multy =false;
+      if(marshrut.split('+').length>1)multy=true;
+   
+    
       let stop=0;
       let stop_y =0;
       let stop_x =0;
@@ -9817,7 +9932,11 @@ function calculate_mn(data,ind){
                        
                       }
                       if(marsh.length>0 || porushennya!='зупинка в дорозі'){
-                        porushennya_marshrut.push([nametr,marshrut,stop_t,porushennya,stop,stop_y,stop_x]);
+                        if(multy ==false){
+                          porushennya_marshrut.push([nametr,marshrut,stop_t,porushennya,stop,stop_y,stop_x]);
+                        }else{
+                          if(porushennya =='зупинка в дорозі')porushennya_marshrut.push([nametr,marshrut,stop_t,porushennya,stop,stop_y,stop_x]);
+                        }
                       }
                     }
                   }
@@ -9919,7 +10038,11 @@ function calculate_mn(data,ind){
                  
                 }
                 if(marsh.length>0 || porushennya!='зупинка в дорозі'){
-                  porushennya_marshrut.push([nametr,marshrut,stop_t,porushennya,stop,stop_y,stop_x]);
+                  if(multy ==false){
+                    porushennya_marshrut.push([nametr,marshrut,stop_t,porushennya,stop,stop_y,stop_x]);
+                  }else{
+                    if(porushennya =='зупинка в дорозі')porushennya_marshrut.push([nametr,marshrut,stop_t,porushennya,stop,stop_y,stop_x]);
+                  }
                 }
                 
               }
@@ -9973,7 +10096,6 @@ function calculate_mn(data,ind){
     newWindow = window.open("", '', " width=1000,height=1000, status=no,toolbar=no,menubar=no,location=no");
     newWindow.document.write("<div id='mon_online_tb' style = 'display: flex; flex-wrap: wrap;' ></div>");
   }
-    
     update_popUP();
  });
 
@@ -10025,7 +10147,12 @@ function calculate_mn(data,ind){
      $('#marsh_tb').append("<tr><td>№</td><td>НАЗВА</td><td>КМ</td><td>ХВ</td><td>ВАНТАЖ</td><td>КОМБАЙНИ</td><td>РОЗРАХУНОК</td><td>ФАКТ</td><td>МОНІТОРИНГ</td><td>ВИДАЛИТИ</td></tr>");
      clearGarbage(marshrut_zony_temp);
      marshrut_zony_temp=[];
-     [...document.querySelectorAll("#marsh_avto tr")].forEach(e => e.style.backgroundColor = '');
+     let table2 = document.getElementById('marsh_avto');
+       for(let v = 1; v<table2.rows.length; v++){  
+           table2.rows[v].cells[5].style = "background: ' ';";
+           table2.rows[v].cells[0].style = "background: ' ';";
+       }
+    
      for(let i=0; i < data.length; i++){
       if(data[i][3]=='-----')data[i][3] = 'маршрут'+(i+1);
       let row = "<tr>";   
@@ -10053,7 +10180,8 @@ function calculate_mn(data,ind){
           if(table2.rows.length>1){
             let kol =0;
             for(let v = 1; v<table2.rows.length; v++){
-              if( table2.rows[v].cells[5].innerText==data[i][3]){
+              let mars_name =table2.rows[v].cells[5].innerText.split('+');
+              if( mars_name[mars_name.length-1]==data[i][3]){
                 kol++;
                 table2.rows[v].cells[5].style = "background: "+data[i][2]+";";
                 table2.rows[v].cells[0].style = "background: "+data[i][2]+";";
