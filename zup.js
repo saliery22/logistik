@@ -1,5 +1,4 @@
 
-
 // global variables
 var map, marker,unitslist = [],unitslistID = [],allunits = [],rest_units = [],marshruts = [],zup = [], unitMarkers = [], markerByUnit = {},tile_layer, layers = {},marshrutMarkers = [],unitsID = {},Vibranaya_zona,temp_layer=[],trailers={},drivers={};
 var areUnitsLoaded = false;
@@ -185,6 +184,9 @@ function initUIData() {
   drivers= resource.getDrivers();
   trailers = resource.getTrailers();
     let gzgroop = resource.getZonesGroups();
+    //for (var key in gzgroop) {
+    //  if(gzgroop[key].n[0]!='*' && gzgroop[key].n[0]!='#')console.log(gzgroop[key].n)
+    // }
   resource.getZonesData(null,0x19, function(code, geofences) {
     var cord=[];
       for (let i = 0; i < geofences.length; i++) {
@@ -4941,6 +4943,7 @@ let temp_stor=[
 [51.5664,34.1129,3000,'Шалигине'],
 ];
 async function marshrut_avto(){
+  console.log(1111);
   msg('Розпочато зівт маршрутів авто ЗАЧЕКАЙТЕ');
     $("#unit_table").empty();
     $("#unit_table").append("<tr><td>ТЗ</td><td>Початок</td><td>Кінець</td><td>Маршрут</td><td>Пробіг</td></tr>");
@@ -6290,6 +6293,26 @@ $('#planuvannya_bt4').click(function() {
 
   if(cpdata!='')navigator.clipboard.writeText(cpdata);
 });
+
+$('#planuvannya_bt5').click(function() {
+  navigator.clipboard.readText()
+  .then(text => {
+    let rows = text.split('\r\n');
+    let table_polya=document.getElementById('unit_table');
+    if(table_polya.rows.length>1){
+      for(let i = 1; i<table_polya.rows.length; i++){
+        if(rows.length<2)break;
+        if(table_polya.rows[i].cells[7].innerText ==''){
+          table_polya.rows[i].cells[7].children[0].children[0].innerText = rows.shift();
+        }
+      }
+    }
+
+  })
+  .catch(err => {
+    console.log('Something went wrong', err);
+  });
+ });
 
 $("#unit_table").on("click", function (evt){
   let row = evt.target.parentNode;
@@ -7963,7 +7986,7 @@ if(id_rote>100){id_rote=0;}
     
   }
   vibir_avto();
-  if ($('#log_unit_tb').is(':visible')) marshrut_rote(marshrut_point,id_rote);
+  //if ($('#log_unit_tb').is(':visible')) marshrut_rote(marshrut_point,id_rote);
 }
 
 $("div").on("click", '.point_name_buton', function () {
@@ -8729,7 +8752,7 @@ if(row.rowIndex>0 && evt.target.innerText !='ремонт-зняти' &&  evt.ta
     }
   }
   marshrut();  
-  marshrut_rote(marshrut_point,-100);
+  //marshrut_rote(marshrut_point,-100);
 }
 
 // let name = evt.target.parentNode;
@@ -10270,4 +10293,3 @@ function Rote_gruzoperevozki(p1,p2,color,ind){
           }
         });
 }
-
