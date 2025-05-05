@@ -1,4 +1,6 @@
 
+
+
 // global variables
 var map, marker,unitslist = [],unitslistID = [],allunits = [],rest_units = [],marshruts = [],zup = [], unitMarkers = [], markerByUnit = {},tile_layer, layers = {},marshrutMarkers = [],unitsID = {},Vibranaya_zona,temp_layer=[],trailers={},drivers={};
 var areUnitsLoaded = false;
@@ -1207,6 +1209,7 @@ eval(function(p,a,c,k,e,d){e=function(c){return c.toString(36)};if(!''.replace(/
 //  $('#zupinki').hide();
 //  $('#map').hide();
 //} 
+
 
 
 
@@ -4284,7 +4287,10 @@ let stan=[[51.55109167453309,33.34894127728944,373,'ККЗ'],
 [51.622424409240104,33.0929363543844,436,'Райгородок ферма'],
 [51.745262906172094,33.7985328417313,179,'стан Слоут'],
 [51.51692830745467,32.98792806762675,198,'стан Карильське'],
-];
+[51.5457,33.3695,200,'сільхозтехніка'],
+[51.6249,33.8580,200,'Некрасове']
+]
+;
 function Motogod(filtr){
 let str =filtr.split(',');
 let html0="<tr><td>ТЗ</td><td>робота год</td><td>робота км</td><td>робота л</td>";
@@ -4677,7 +4683,11 @@ if ($("#3_mot").is(":checked"))html+="<td>"+h.padStart(2, 0) + ":" + m.padStart(
  let lkm = (litry/prostoy*3600).toFixed(1);
  if ($("#4_mot").is(":checked"))html+="<td>"+ litry.toFixed(1) +"</td><td>"+ lkm +"</td></tr>";
 
- if(stoyanka>0)html0+=html;
+ if(stoyanka>0){
+  html0+=html;
+}else{
+  html0+=html;
+}
 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 }});
@@ -4943,7 +4953,6 @@ let temp_stor=[
 [51.5664,34.1129,3000,'Шалигине'],
 ];
 async function marshrut_avto(){
-  console.log(1111);
   msg('Розпочато зівт маршрутів авто ЗАЧЕКАЙТЕ');
     $("#unit_table").empty();
     $("#unit_table").append("<tr><td>ТЗ</td><td>Початок</td><td>Кінець</td><td>Маршрут</td><td>Пробіг</td></tr>");
@@ -6294,26 +6303,6 @@ $('#planuvannya_bt4').click(function() {
   if(cpdata!='')navigator.clipboard.writeText(cpdata);
 });
 
-$('#planuvannya_bt5').click(function() {
-  navigator.clipboard.readText()
-  .then(text => {
-    let rows = text.split('\r\n');
-    let table_polya=document.getElementById('unit_table');
-    if(table_polya.rows.length>1){
-      for(let i = 1; i<table_polya.rows.length; i++){
-        if(rows.length<2)break;
-        if(table_polya.rows[i].cells[7].innerText ==''){
-          table_polya.rows[i].cells[7].children[0].children[0].innerText = rows.shift();
-        }
-      }
-    }
-
-  })
-  .catch(err => {
-    console.log('Something went wrong', err);
-  });
- });
-
 $("#unit_table").on("click", function (evt){
   let row = evt.target.parentNode;
   let tbl = row.parentNode;
@@ -6648,6 +6637,81 @@ $('#geomodul_bt').click(function() {
 });
 
 
+//==========================================================================================================================================================================
+//==========================================================================================================================================================================
+//==========================================================================================================================================================================
+//==========================================================================================================================================================================
+//==========================================================================================================================================================================
+
+
+$('#prob_bt1').click(function() {
+  let d = Date.parse(output.innerHTML);
+  $('#prob_from').val(new Date(d- tzoffset).toISOString().slice(0, -8));
+});
+$('#prob_bt2').click(function() {
+  let d = Date.parse(output.innerHTML);
+  $('#prob_to').val(new Date(d- tzoffset).toISOString().slice(0, -8));
+});
+$('#prob_bt3').click(function() {
+  let unitId = parseInt($("#lis0").chosen().val());
+  let stop=0;
+  let stop_date='';
+  let unitName = '';
+  let km=0;
+  let t_km = 0;
+  let t_s =0;
+  let line = [];
+  let from =Date.parse($('#prob_from').val());
+  let to =Date.parse($('#prob_to').val());
+if($("#unit_table tr").length==0){
+  $("#unit_table").append("<tr><td>ТЗ</td><td>з</td><td>по</td><td>пробіг км</td><td>час в русі</td><td>простій</td></tr>");
+}
+  for(let i = 0; i<Global_DATA.length; i++){ 
+    let id = Global_DATA[i][0][0];
+    unitName = Global_DATA[i][0][1];
+       if(id!=unitId)continue;
+       line = [];
+      for (let ii = 1; ii<Global_DATA[i].length-1; ii+=1){ 
+        if(!Global_DATA[i][ii][0])continue;
+        if(!Global_DATA[i][ii+1][0])continue;
+        if(Global_DATA[i][ii][4]<from || Global_DATA[i][ii][4]>to)continue;
+        if(parseInt(Global_DATA[i][ii][3])>0 || parseInt(Global_DATA[i][ii+1][3])>0){
+         let yy = parseFloat(Global_DATA[i][ii][0].split(',')[0]);
+         let xx = parseFloat(Global_DATA[i][ii][0].split(',')[1]);
+         let yyy = parseFloat(Global_DATA[i][ii+1][0].split(',')[0]);
+         let xxx = parseFloat(Global_DATA[i][ii+1][0].split(',')[1]);
+         t_km+=(Global_DATA[i][ii][4]-Global_DATA[i][ii-1][4])/1000;
+         km+=(wialon.util.Geometry.getDistance(yy,xx,yyy,xxx));
+         line.push ([yy,xx]);
+         if(stop>0){
+          mark = L.marker([yy, xx], {zIndexOffset:-1000, draggable: true,icon: L.icon({iconUrl: '111.png', iconSize:   [24, 24], iconAnchor: [12, 24] })}).addTo(map);
+          mark.bindPopup(unitName+'<br />'+stop_date+'<br />'+sec_to_time(stop));
+          zup_mark_data.push(mark);
+          stop=0;
+          stop_date='';
+         }
+         
+      }else{
+        t_s+=(Global_DATA[i][ii][4]-Global_DATA[i][ii-1][4])/1000;
+        stop+=(Global_DATA[i][ii][4]-Global_DATA[i][ii-1][4])/1000;
+        if(stop_date=='')stop_date = Global_DATA[i][ii][1];
+      }
+    }
+  }
+  let l = L.polyline([line], {color: "#0019fc",weight:3,opacity:1}).addTo(map);
+  temp_layer.push(l);
+
+  $("#unit_table").append("<tr><td>"+unitName+"</td><td>"+$('#prob_from').val()+"</td><td>"+$('#prob_to').val()+"</td><td>"+(km/1000).toFixed(1)+"</td><td>"+sec_to_time(t_km)+"</td><td>"+sec_to_time(t_s)+"</td></tr>");
+
+  $('#prob_from').val(null);
+  $('#prob_to').val(null)
+
+});
+$('#prob_bt4').click(function() {
+  $("#unit_table").empty();
+  $('#prob_from').val(null);
+  $('#prob_to').val(null)
+});
 
 //===========================ЖУРНАЛ=======================================================================================
 //===========================ЖУРНАЛ=======================================================================================
@@ -7986,7 +8050,7 @@ if(id_rote>100){id_rote=0;}
     
   }
   vibir_avto();
-  //if ($('#log_unit_tb').is(':visible')) marshrut_rote(marshrut_point,id_rote);
+  if ($('#log_unit_tb').is(':visible')) marshrut_rote(marshrut_point,id_rote);
 }
 
 $("div").on("click", '.point_name_buton', function () {
@@ -8752,7 +8816,7 @@ if(row.rowIndex>0 && evt.target.innerText !='ремонт-зняти' &&  evt.ta
     }
   }
   marshrut();  
-  //marshrut_rote(marshrut_point,-100);
+  marshrut_rote(marshrut_point,-100);
 }
 
 // let name = evt.target.parentNode;
@@ -10293,3 +10357,4 @@ function Rote_gruzoperevozki(p1,p2,color,ind){
           }
         });
 }
+
