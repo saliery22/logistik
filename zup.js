@@ -6668,8 +6668,8 @@ if($("#unit_table tr").length==0){
 }
   for(let i = 0; i<Global_DATA.length; i++){ 
     let id = Global_DATA[i][0][0];
-    unitName = Global_DATA[i][0][1];
        if(id!=unitId)continue;
+	  unitName = Global_DATA[i][0][1];
        line = [];
       for (let ii = 1; ii<Global_DATA[i].length-1; ii+=1){ 
         if(!Global_DATA[i][ii][0])continue;
