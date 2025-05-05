@@ -437,6 +437,7 @@ button, input, span, select,textarea {margin: 2px 2px 0px 0px;   font-family: "A
         <option value="z15">планування маршрутів</option>
         <option value="z16">історія обробки полів</option>
         <option value="z17">перевезення вантажів</option>
+        <option value="z18">пробіг індивідуальний</option>
       </select>  
       <br>
       <hr>
@@ -622,6 +623,18 @@ button, input, span, select,textarea {margin: 2px 2px 0px 0px;   font-family: "A
           <tbody id='zvitt'></tbody>
           </table>
             </div> 
+    <div id="zz18" class='zvit'>
+        завантажте данні, оберіть транспорт на мапі чи в списку, оберіть "час з" на шкалі часу (перемістіть повзунок на потрібний час і натисніть кнопку час з), оберіть "час по" на шкалі часу, виконайте "звіт"
+        <br>
+        <button id='prob_bt1'>  час з </button>   
+        <input id="prob_from" type="datetime-local"/>
+
+        <button id='prob_bt2'>  час по </button> 
+        <input id="prob_to" type="datetime-local"/>  
+       
+        <button id='prob_bt3'>  звіт </button> 
+        <button id='prob_bt4'>  очистити </button>
+    </div> 
 
  <table id="unit_table"class='table'></table>
  </div>
