@@ -8050,7 +8050,7 @@ if(id_rote>100){id_rote=0;}
     
   }
   vibir_avto();
-  if ($('#log_unit_tb').is(':visible')) marshrut_rote(marshrut_point,id_rote);
+  //if ($('#log_unit_tb').is(':visible')) marshrut_rote(marshrut_point,id_rote);
 }
 
 $("div").on("click", '.point_name_buton', function () {
@@ -8816,7 +8816,7 @@ if(row.rowIndex>0 && evt.target.innerText !='ремонт-зняти' &&  evt.ta
     }
   }
   marshrut();  
-  marshrut_rote(marshrut_point,-100);
+  //marshrut_rote(marshrut_point,-100);
 }
 
 // let name = evt.target.parentNode;
