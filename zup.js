@@ -2024,7 +2024,7 @@ function UpdateGlobalData(t2=0,idrep=zvit2,i=0){
        from222=$('#fromtime2').val();
        t2=Date.parse($('#fromtime2').val())/1000;
       }else{ 
-       from222 =(new Date(Date.now() - tzoffset)).toISOString().slice(0, -8);
+       //from222 =(new Date(Date.now() - tzoffset)).toISOString().slice(0, -8);
        $('#fromtime2').val(from222);
        t2=Date.parse($('#fromtime2').val())/1000;
       }
