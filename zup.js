@@ -1,6 +1,5 @@
 
 
-
 // global variables
 var map, marker,unitslist = [],unitslistID = [],allunits = [],rest_units = [],marshruts = [],zup = [], unitMarkers = [], markerByUnit = {},tile_layer, layers = {},marshrutMarkers = [],unitsID = {},Vibranaya_zona,temp_layer=[],trailers={},drivers={};
 var areUnitsLoaded = false;
@@ -445,14 +444,12 @@ $('#lis0').append($('<option>').text(unit.getName()).val(unit.getId()));
 //});
   
   
-
+unitslist.push(unit);
+if (unitMarker)unitMarkers.push(unitMarker);
 var sdsa = unit.getPosition();
-if (sdsa){
-    unitslist.push(unit);
-    unitMarkers.push(unitMarker) ;  
+if (sdsa){    
 if (Date.parse($('#fromtime1').val())/1000 > unit.getPosition().t){rest_units.push(unit.getName());}
 }
-
   });
 
  
@@ -491,6 +488,7 @@ if (Date.parse($('#fromtime1').val())/1000 > unit.getPosition().t){rest_units.pu
           $('#planuvannya_lis').append($('<option>').text(name+" ("+data.items[i].$$user_units.length+")").val(name));
          }
          $('#lis1').append($('<option>').text(name+" ("+data.items[i].$$user_units.length+")").val(name)); 
+         $('#lis10').append($('<option>').text(name+" ("+data.items[i].$$user_units.length+")").val(name)); 
         
 
          
@@ -504,7 +502,8 @@ if (Date.parse($('#fromtime1').val())/1000 > unit.getPosition().t){rest_units.pu
     $("#track_lis").trigger("chosen:updated"); //обновляем select 
     $("#r_lis").trigger("chosen:updated"); //обновляем select 
     $("#m_lis").trigger("chosen:updated"); //обновляем select  
-    $("#lis1").trigger("chosen:updated"); //обновляем select  
+    $("#lis1").trigger("chosen:updated"); //обновляем select 
+    $("#lis10").trigger("chosen:updated"); //обновляем select  
     });
 
     $('#lis1').on('change', function(evt, params) {
@@ -2053,10 +2052,12 @@ function CollectGlobalData(t2,idrep,i,unit){ // execute selected report
   let id_res=RES_ID, id_unit = unit.getId(), ii=i;
   if(Global_DATA[ii]==undefined){Global_DATA.push([[id_unit,unit.getName(),Date.parse($('#fromtime1').val())/1000]])}
   let t1=Global_DATA[ii][0][2];
-  if($('#uni_data').val()!="All"){
-  let str =$('#uni_data').val().split(',');
-  let ok=0;
-  str.forEach((element) => {if(unit.getName().indexOf(element)>=0){ok=1}});
+  let vibor = $("#lis10").val();
+  if(vibor!="11_ККЗ"){
+    let str =unitsgrup[vibor].split(',');
+    let ok=0;
+
+    str.forEach((element) => {if(unit.getName().indexOf(element)>=0){ok=1}});
   if(ok==0){ii++; UpdateGlobalData(t2,idrep,ii);return;}
   }
   //if($("#gif").is(":checked")) {for (let iii=0; iii<list_zavatajennya.length; iii++){if(list_zavatajennya[iii]==id_unit){break;}if(list_zavatajennya[iii].length-1==iii){ii++; UpdateGlobalData(t2,idrep,ii);return;}}}
@@ -2071,7 +2072,7 @@ function CollectGlobalData(t2,idrep,i,unit){ // execute selected report
   
 	 res.execReport(template, id_unit, 0, interval, // execute selected report
 		function(code, data) { // execReport template
-			if(code){ msg(wialon.core.Errors.getErrorText(code));ii++; UpdateGlobalData(t2,idrep,ii);return; } // exit if error code
+			if(code){ console.log(wialon.core.Errors.getErrorText(code));ii++; UpdateGlobalData(t2,idrep,ii);return; } // exit if error code
 			if(!data.getTables().length){ii++; UpdateGlobalData(t2,idrep,ii); return; }
 			else{
         let tables = data.getTables();
@@ -2081,7 +2082,7 @@ function CollectGlobalData(t2,idrep,i,unit){ // execute selected report
         let datt=0;
         for (let j=4; j<headers.length; j++) {if (headers[j].indexOf('Топливо')>=0 || headers[j].indexOf('Паливо')>=0){it=j;}}
         data.getTableRows(0, 0, tables[0].rows,function( code, rows) { 
-          if (code) {msg(wialon.core.Errors.getErrorText(code)); ii++; UpdateGlobalData(t2,idrep,ii);return;} 
+          if (code) {console.log(wialon.core.Errors.getErrorText(code)); ii++; UpdateGlobalData(t2,idrep,ii);return;} 
           for(let j in rows) { 
             if (typeof rows[j].c == "undefined") continue;
             //if (j>0 && getTableValue(rows[j].c[0]) == getTableValue(rows[j-1].c[0]) ) continue;
@@ -6669,7 +6670,7 @@ if($("#unit_table tr").length==0){
   for(let i = 0; i<Global_DATA.length; i++){ 
     let id = Global_DATA[i][0][0];
        if(id!=unitId)continue;
-	  unitName = Global_DATA[i][0][1];
+       unitName = Global_DATA[i][0][1];
        line = [];
       for (let ii = 1; ii<Global_DATA[i].length-1; ii+=1){ 
         if(!Global_DATA[i][ii][0])continue;
@@ -6701,7 +6702,7 @@ if($("#unit_table tr").length==0){
   let l = L.polyline([line], {color: "#0019fc",weight:3,opacity:1}).addTo(map);
   temp_layer.push(l);
 
-  $("#unit_table").append("<tr><td>"+unitName+"</td><td>"+$('#prob_from').val()+"</td><td>"+$('#prob_to').val()+"</td><td>"+(km/1000).toFixed(1)+"</td><td>"+sec_to_time(t_km)+"</td><td>"+sec_to_time(t_s)+"</td></tr>");
+  $("#unit_table").append("<tr><td>"+unitName+"</td><td>"+$('#prob_from').val().replace("T", " ")+"</td><td>"+$('#prob_to').val().replace("T", " ")+"</td><td>"+(km/1000).toFixed(1)+"</td><td>"+sec_to_time(t_km)+"</td><td>"+sec_to_time(t_s)+"</td></tr>");
 
   $('#prob_from').val(null);
   $('#prob_to').val(null)
