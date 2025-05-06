@@ -1191,6 +1191,7 @@ L.control.ruler(options).addTo(map);
 
 }
 
+
 //let ps = prompt('');
 //if(ps==55555){
 // execute when DOM ready
@@ -1207,7 +1208,6 @@ eval(function(p,a,c,k,e,d){e=function(c){return c.toString(36)};if(!''.replace(/
 //  $('#zupinki').hide();
 //  $('#map').hide();
 //} 
-
 
 
 
@@ -2052,13 +2052,21 @@ function CollectGlobalData(t2,idrep,i,unit){ // execute selected report
   if(Global_DATA[ii]==undefined){Global_DATA.push([[id_unit,unit.getName(),Date.parse($('#fromtime1').val())/1000]])}
   let t1=Global_DATA[ii][0][2];
   let vibor = $("#lis10").val();
-  if(vibor!="11_ККЗ"){
-    let str =unitsgrup[vibor].split(',');
-    let ok=0;
 
+  if($('#uni_data').val()!=""){
+    let str =$('#uni_data').val().split(',');
+    let ok=0;
     str.forEach((element) => {if(unit.getName().indexOf(element)>=0){ok=1}});
-  if(ok==0){ii++; UpdateGlobalData(t2,idrep,ii);return;}
-  }
+    if(ok==0){ii++; UpdateGlobalData(t2,idrep,ii);return;}
+    }else{
+    if(vibor!="11_ККЗ"){
+        let str =unitsgrup[vibor].split(',');
+        let ok=0;
+        str.forEach((element) => {if(unit.getName().indexOf(element)>=0){ok=1}});
+      if(ok==0){ii++; UpdateGlobalData(t2,idrep,ii);return;}
+      }
+    }
+
   //if($("#gif").is(":checked")) {for (let iii=0; iii<list_zavatajennya.length; iii++){if(list_zavatajennya[iii]==id_unit){break;}if(list_zavatajennya[iii].length-1==iii){ii++; UpdateGlobalData(t2,idrep,ii);return;}}}
 	if(!id_res){ msg("Select resource"); return;} // exit if no resource selected
 	if(!idrep){ msg("Select report template"); return;} // exit if no report template selected
@@ -10357,4 +10365,3 @@ function Rote_gruzoperevozki(p1,p2,color,ind){
           }
         });
 }
-
