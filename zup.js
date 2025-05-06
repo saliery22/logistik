@@ -503,7 +503,6 @@ if (Date.parse($('#fromtime1').val())/1000 > unit.getPosition().t){rest_units.pu
     $("#r_lis").trigger("chosen:updated"); //обновляем select 
     $("#m_lis").trigger("chosen:updated"); //обновляем select  
     $("#lis1").trigger("chosen:updated"); //обновляем select 
-    $("#lis10").trigger("chosen:updated"); //обновляем select  
     });
 
     $('#lis1').on('change', function(evt, params) {
