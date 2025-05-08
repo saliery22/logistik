@@ -1,5 +1,6 @@
 
 
+
 // global variables
 var map, marker,unitslist = [],unitslistID = [],allunits = [],rest_units = [],marshruts = [],zup = [], unitMarkers = [], markerByUnit = {},tile_layer, layers = {},marshrutMarkers = [],unitsID = {},Vibranaya_zona,temp_layer=[],trailers={},drivers={};
 var areUnitsLoaded = false;
@@ -181,7 +182,7 @@ let marshrut_leyer_0;
 let polya_lablse = [];
 function initUIData() {
   var session = wialon.core.Session.getInstance();
-  var resource = wialon.core.Session.getInstance().getItem(20030); //26227 - Gluhiv 20030 "11_ККЗ"
+  var resource = wialon.core.Session.getInstance().getItem(26227); //26227 - Gluhiv 20030 "11_ККЗ"
   drivers= resource.getDrivers();
   trailers = resource.getTrailers();
     let gzgroop = resource.getZonesGroups();
@@ -1191,7 +1192,6 @@ L.control.ruler(options).addTo(map);
 
 }
 
-
 //let ps = prompt('');
 //if(ps==55555){
 // execute when DOM ready
@@ -1208,6 +1208,7 @@ eval(function(p,a,c,k,e,d){e=function(c){return c.toString(36)};if(!''.replace(/
 //  $('#zupinki').hide();
 //  $('#map').hide();
 //} 
+
 
 
 
@@ -2024,7 +2025,7 @@ function UpdateGlobalData(t2=0,idrep=zvit2,i=0){
        from222=$('#fromtime2').val();
        t2=Date.parse($('#fromtime2').val())/1000;
       }else{ 
-       //from222 =(new Date(Date.now() - tzoffset)).toISOString().slice(0, -8);
+        if($("#gif").is(":checked"))from222 =(new Date(Date.now() - tzoffset)).toISOString().slice(0, -8);
        $('#fromtime2').val(from222);
        t2=Date.parse($('#fromtime2').val())/1000;
       }
@@ -6692,9 +6693,11 @@ if($("#unit_table tr").length==0){
          km+=(wialon.util.Geometry.getDistance(yy,xx,yyy,xxx));
          line.push ([yy,xx]);
          if(stop>0){
+          if(stop>300){
           mark = L.marker([yy, xx], {zIndexOffset:-1000, draggable: true,icon: L.icon({iconUrl: '111.png', iconSize:   [24, 24], iconAnchor: [12, 24] })}).addTo(map);
           mark.bindPopup(unitName+'<br />'+stop_date+'<br />'+sec_to_time(stop));
           zup_mark_data.push(mark);
+          }
           stop=0;
           stop_date='';
          }
@@ -6709,7 +6712,7 @@ if($("#unit_table tr").length==0){
   let l = L.polyline([line], {color: "#0019fc",weight:3,opacity:1}).addTo(map);
   temp_layer.push(l);
 
-  $("#unit_table").append("<tr><td>"+unitName+"</td><td>"+$('#prob_from').val().replace("T", " ")+"</td><td>"+$('#prob_to').val().replace("T", " ")+"</td><td>"+(km/1000).toFixed(1)+"</td><td>"+sec_to_time(t_km)+"</td><td>"+sec_to_time(t_s)+"</td></tr>");
+  $("#unit_table").append("<tr><td>"+unitName+"</td><td>"+$('#prob_from').val().replace("T", " ")+"</td><td>"+$('#prob_to').val().replace("T", " ")+"</td><td>"+(km/1000).toFixed(1).replace(/\./g, ",")+"</td><td>"+sec_to_time(t_km)+"</td><td>"+sec_to_time(t_s)+"</td></tr>");
 
   $('#prob_from').val(null);
   $('#prob_to').val(null)
@@ -9535,6 +9538,22 @@ async function logistik_zvit(data){
      let s1 = t1-r1;
      let s2 = s0-s1;
 
+  SendDataReportInCallback(Date.parse(begin_marshrut0)/1000,Date.parse(end_marshrut0)/1000,nametr,zvit4,[],0,svod22);
+   function svod22(data){ 
+
+    let time = data[0][1][0].split(':').reverse().reduce((acc, n, i) => acc + n * (60 ** i), 0);
+    let kmm = parseFloat(data[0][1][1]);
+
+     d0 = kmm;
+     d1 = ((probeg1/1000)+probeg2).toFixed();
+     d2 = d0-d1;
+
+      r0 = time;
+      r1 = vrusi1+motogod2;
+     if(r1>t1)r1=t1;
+      r2 = r0-r1;
+
+
      
      $('#marh_zvit_tb').empty();
      $('#marh_zvit_tb').show();
@@ -9542,8 +9561,11 @@ async function logistik_zvit(data){
      $('#marh_zvit_tb').append("<tr><td>"+$('#cont_time').text()+"</td><td>"+logistik_vodiy+"</td><td>"+$('#cont_unit').text()+"</td><td>"+begin_marshrut0+"</td><td>"+end_marshrut0+"</td><td>"+odo+"</td><td>"+d0+"</td><td>"+d1+"</td><td>"+d2+"</td><td>"+sec_to_time(t0)+"</td><td>"+sec_to_time(t1)+"</td><td>"+sec_to_time(t2)+"</td><td>"+sec_to_time(r0)+"</td><td>"+sec_to_time(r1)+"</td><td>"+sec_to_time(r2)+"</td><td>"+sec_to_time(s0)+"</td><td>"+sec_to_time(s1)+"</td><td>"+sec_to_time(s2)+"</td><td>"+ $('#marshrut_text').val()+"</td><td>"+mar_text+"</td></tr>");
  
 
+
   let cpdata= $('#cont_time').text() + '\t'+logistik_vodiy + '\t' +$('#cont_unit').text() + '\t' +begin_marshrut0+ '\t' +end_marshrut0+ '\t' +odo + '\t' +d0 + ' \t' + d1 + '\t' + d2 + '\t' + sec_to_time(t0) + '\t' + sec_to_time(t1)+ '\t' + sec_to_time(t2)+ '\t' + sec_to_time(r0)+ '\t' + sec_to_time(r1)+ '\t' + sec_to_time(r2)+ '\t' + sec_to_time(s0)+ '\t' + sec_to_time(s1)+ '\t' + sec_to_time(s2)+ '\t'+ $('#marshrut_text').val() + '\t' + mar_text +'\n';
   navigator.clipboard.writeText(cpdata);
+
+}
 
   $('button').prop("disabled", false);
   $('#log').empty();
@@ -10365,3 +10387,4 @@ function Rote_gruzoperevozki(p1,p2,color,ind){
           }
         });
 }
+
