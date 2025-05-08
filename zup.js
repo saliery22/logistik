@@ -182,7 +182,7 @@ let marshrut_leyer_0;
 let polya_lablse = [];
 function initUIData() {
   var session = wialon.core.Session.getInstance();
-  var resource = wialon.core.Session.getInstance().getItem(26227); //26227 - Gluhiv 20030 "11_ККЗ"
+  var resource = wialon.core.Session.getInstance().getItem(20030); //26227 - Gluhiv 20030 "11_ККЗ"
   drivers= resource.getDrivers();
   trailers = resource.getTrailers();
     let gzgroop = resource.getZonesGroups();
