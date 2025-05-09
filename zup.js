@@ -9546,13 +9546,13 @@ async function logistik_zvit(data){
     let kmm = parseFloat(data[0][1][1]);
 
      d0 = kmm;
-     d1 = ((probeg1/1000)+probeg2).toFixed();
-     d2 = d0-d1;
+     d1 = d0-d2;
 
       r0 = time;
-      r1 = vrusi1+motogod2;
-     if(r1>t1)r1=t1;
-      r2 = r0-r1;
+      r1 = r0-r2
+      s0 = t0-r0;
+      s1 = t1-r1;
+      s2 = s0-s1;
 
 
      
