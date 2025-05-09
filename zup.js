@@ -9543,7 +9543,7 @@ async function logistik_zvit(data){
    function svod22(data){ 
 
     let time = data[0][1][0].split(':').reverse().reduce((acc, n, i) => acc + n * (60 ** i), 0);
-    let kmm = parseFloat(data[0][1][1]);
+    let kmm = parseFloat(data[0][1][1]).toFixed();
 
      d0 = kmm;
      d1 = d0-d2;
