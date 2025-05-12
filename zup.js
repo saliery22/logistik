@@ -220,7 +220,7 @@ function initUIData() {
            
            geozona.on('click', function(e) {
           
-
+           
            geozonepoint.length =0;
            geozonepointTurf.length =0;
            Vibranaya_zona = this.zone;
@@ -412,8 +412,11 @@ function initUIData() {
     }
 });
 
+
 let zonnnnna = L.polygon([[51.6265015168, 33.8280764899],[51.6109403814, 33.8177768073],[51.5588234304, 33.8444059716],[51.5161138974, 33.9116972314],[51.4874760858, 33.9508360253],[51.4185862552, 33.9391630517],[51.3228470784, 33.9722732997],[51.3225665255, 34.3552714825],[51.581016535, 34.2921000958],[51.6696807033, 34.1712504865],[51.6977783207, 34.4761210919],[51.8295187788, 34.4692546368],[52.0259867018, 34.1575175763],[52.1786687536, 34.134171629],[52.3794764441, 33.8457805158],[52.4021046507, 33.1563884261],[52.2560748335, 32.9270488265],[52.0943786465, 33.063004637],[52.1357007283, 33.2332927229],[52.161823491, 33.3101970198],[52.1247414599, 33.4708720686],[52.1238983276, 33.6370402815],[52.056184899, 33.6998721049],[52.0095062864, 33.7843295023],[51.9264839954, 33.8270781978],[51.8726755166, 33.8813231929],[51.828841569, 33.9470277989],[51.8143511896, 34.0545854123],[51.7714570826, 34.0460023435],[51.7165658566, 34.0629067472],[51.671064582, 34.0080105422],[51.6712775018, 33.9599453567],[51.6712775018, 33.9451824782],[51.6461460579, 33.948272383],[51.6409920212, 33.882321485],[51.6354520809, 33.840436109],[51.6265015168, 33.8280764899]], {color: 'blue', stroke: true,weight: 2, opacity: 0.5, fillOpacity: 0.1, fillColor: '#FF00FF'});
 layerControl.addOverlay(zonnnnna, "20км зона");
+
+
 
 load_jurnal(20233,'Pasajiry.txt',function (data) { 
   for(let i = 1; i<data.length; i++){
@@ -1193,6 +1196,8 @@ L.control.ruler(options).addTo(map);
 
 }
 
+
+
 //let ps = prompt('');
 //if(ps==55555){
 // execute when DOM ready
@@ -1209,7 +1214,6 @@ eval(function(p,a,c,k,e,d){e=function(c){return c.toString(36)};if(!''.replace(/
 //  $('#zupinki').hide();
 //  $('#map').hide();
 //} 
-
 
 
 
@@ -3781,7 +3785,8 @@ function TestNavigation(data){
   let no_aktiv = [];
   let mark;
   for(var ii=0; ii < unitslist.length; ii++){
-     if (Date.parse($('#fromtime1').val())/1000 > unitslist[ii].getPosition().t){ no_aktiv.push(unitslist[ii]); }
+if(!unitslist[ii].getPosition())continue;
+    if (Date.parse($('#fromtime1').val())/1000 > unitslist[ii].getPosition().t){ no_aktiv.push(unitslist[ii]); }
     if ($("#no_activ").is(":checked")) {
     if (Date.parse($('#fromtime2').val())/1000-432000> unitslist[ii].getPosition().t) continue;
     }
@@ -6674,7 +6679,7 @@ $('#prob_bt3').click(function() {
   let from =Date.parse($('#prob_from').val());
   let to =Date.parse($('#prob_to').val());
 if($("#unit_table tr").length==0){
-  $("#unit_table").append("<tr><td>ТЗ</td><td>з</td><td>по</td><td>пробіг км</td><td>час в русі</td><td>простій</td></tr>");
+  $("#unit_table").append("<tr><td>ТЗ</td><td>з</td><td>по</td><td>пробіг км</td><td>час</td><td>час в русі</td><td>простій</td></tr>");
 }
   for(let i = 0; i<Global_DATA.length; i++){ 
     let id = Global_DATA[i][0][0];
@@ -6713,7 +6718,7 @@ if($("#unit_table tr").length==0){
   let l = L.polyline([line], {color: "#0019fc",weight:3,opacity:1}).addTo(map);
   temp_layer.push(l);
 
-  $("#unit_table").append("<tr><td>"+unitName+"</td><td>"+$('#prob_from').val().replace("T", " ")+"</td><td>"+$('#prob_to').val().replace("T", " ")+"</td><td>"+(km/1000).toFixed(1).replace(/\./g, ",")+"</td><td>"+sec_to_time(t_km)+"</td><td>"+sec_to_time(t_s)+"</td></tr>");
+  $("#unit_table").append("<tr><td>"+unitName+"</td><td>"+$('#prob_from').val().replace("T", " ")+"</td><td>"+$('#prob_to').val().replace("T", " ")+"</td><td>"+(km/1000).toFixed(1).replace(/\./g, ",")+"</td><td>"+sec_to_time(t_km+t_s)+"</td><td>"+sec_to_time(t_km)+"</td><td>"+sec_to_time(t_s)+"</td></tr>");
 
   $('#prob_from').val(null);
   $('#prob_to').val(null)
@@ -9553,9 +9558,7 @@ async function logistik_zvit(data){
       s0 = t0-r0;
       s1 = t1-r1;
       s2 = s0-s1;
-
-
-     
+   
      $('#marh_zvit_tb').empty();
      $('#marh_zvit_tb').show();
      $('#marh_zvit_tb').append("<thead><td>дата</td><td>водій</td><td>ТЗ</td><td>початок маршруту</td><td>кінкць маршруту</td><td>одометр</td><td>пробіг</td><td>розрахунок</td><td>відхилення</td><td>час</td><td>розрахунок</td><td>відхилення</td><td>в русі</td><td>розрахунок</td><td>відхилення</td></td><td>простій</td><td>розрахунок</td><td>відхилення</td><td>назва</td><td>маршрут</td></thead>");
@@ -10388,4 +10391,3 @@ function Rote_gruzoperevozki(p1,p2,color,ind){
           }
         });
 }
-
