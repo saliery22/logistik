@@ -9550,8 +9550,8 @@ async function logistik_zvit(data){
     let time = data[0][1][0].split(':').reverse().reduce((acc, n, i) => acc + n * (60 ** i), 0);
     let kmm = parseFloat(data[0][1][1]).toFixed();
 
-     d0 = kmm;
-     d1 = d0-d2;
+      d0 = kmm;
+     if(d2==0){d1 = d0;}else{d2 = d0-d1;}
 
       r0 = time;
       r1 = r0-r2
