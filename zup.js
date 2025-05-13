@@ -6615,7 +6615,7 @@ $('#geomodul_bt').click(function() {
       let p = m[4];
       let r = m[6];
       let n = m[0]+'<br>'+m[1]+'<br>'+m[2]+'<br>'+m[3]+'<br>'+m[4]+'<br>'+m[5]+'<br>'+m[6]+'<br>'+m[9];
-      console.log(m)
+      //console.log(m)
       if(vibor2.join().indexOf('Всі')<0){
         if(p)p=p.split(' ')[0];
         if(vibor2.join().indexOf(p)<0)continue;
