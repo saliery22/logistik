@@ -1,6 +1,5 @@
 
 
-
 // global variables
 var map, marker,unitslist = [],unitslistID = [],allunits = [],rest_units = [],marshruts = [],zup = [], unitMarkers = [], markerByUnit = {},tile_layer, layers = {},marshrutMarkers = [],unitsID = {},Vibranaya_zona,temp_layer=[],trailers={},drivers={};
 var areUnitsLoaded = false;
@@ -1195,8 +1194,6 @@ let areaSelection = new leafletAreaSelection.DrawAreaSelection({
 L.control.ruler(options).addTo(map);
 
 }
-
-
 
 //let ps = prompt('');
 //if(ps==55555){
@@ -3703,7 +3700,6 @@ $("#reestr_save_BT").on("click", function (evt){
   let cpdata='';
   let save_data='';
   let save_data_jurnal='';
-  let seve
   let table_polya=document.getElementById('robota_polya_tb');
   if(table_polya.rows.length>1){
     for(let i = 1; i<table_polya.rows.length; i++){
@@ -3711,19 +3707,20 @@ $("#reestr_save_BT").on("click", function (evt){
          cpdata += table_polya.rows[i].cells[2].innerText + '\t' +table_polya.rows[i].cells[3].innerText + '\t' +table_polya.rows[i].cells[4].innerText + ' \t' + table_polya.rows[i].cells[5].innerText + '\t' + table_polya.rows[i].cells[6].innerText.split(' ')[0] + '\t' + table_polya.rows[i].cells[7].innerText +'\t'+ table_polya.rows[i].cells[8].innerText +'\t' + table_polya.rows[i].cells[9].innerText.replace(/\./g, ",") + '\t' + table_polya.rows[i].cells[10].innerText.replace(/\./g, ",") + '\t' + table_polya.rows[i].cells[11].innerText.replace(/\./g, ",") +'\t'+''+'\t'+table_polya.rows[i].cells[12].innerText +'\t'+''+'\t'+''+'\t'+''+'\t'+''+'\t'+''+'\t'+table_polya.rows[i].cells[13].innerText+ '\n';
 
          let a2 ='-----', a3 = '-----',a4 = '-----',a5 = '-----',a6 = '-----',a7 = '-----',a8 = '-----',a9 = '-----',a10 = '-----',a11 = '-----',a12 = '-----',a13 = '-----',a14 = '-----';
-         a2= table_polya.rows[i].cells[2].innerText;
-         a3= table_polya.rows[i].cells[3].innerText;
-         a4= table_polya.rows[i].cells[4].innerText;
-         a5= table_polya.rows[i].cells[5].innerText;
-         a6= table_polya.rows[i].cells[6].innerText;
-         a7= table_polya.rows[i].cells[7].innerText;
-         a8= table_polya.rows[i].cells[8].innerText;
-         a9= table_polya.rows[i].cells[9].innerText;
-         a10= table_polya.rows[i].cells[10].innerText;
-         a11= table_polya.rows[i].cells[11].innerText;
-         a12= table_polya.rows[i].cells[12].innerText;
-         a13= table_polya.rows[i].cells[13].innerText;
-         a14= table_polya.rows[i].cells[14].innerText;
+        if(table_polya.rows[i].cells[2].innerText!="") a2= table_polya.rows[i].cells[2].innerText;
+        if(table_polya.rows[i].cells[3].innerText!="") a3= table_polya.rows[i].cells[3].innerText;
+        if(table_polya.rows[i].cells[4].innerText!="") a4= table_polya.rows[i].cells[4].innerText;
+        if(table_polya.rows[i].cells[5].innerText!="") a5= table_polya.rows[i].cells[5].innerText;
+        if(table_polya.rows[i].cells[6].innerText!="") a6= table_polya.rows[i].cells[6].innerText;
+        if(table_polya.rows[i].cells[7].innerText!="") a7= table_polya.rows[i].cells[7].innerText;
+        if(table_polya.rows[i].cells[8].innerText!="") a8= table_polya.rows[i].cells[8].innerText;
+        if(table_polya.rows[i].cells[9].innerText!="") a9= table_polya.rows[i].cells[9].innerText;
+        if(table_polya.rows[i].cells[10].innerText!="") a10= table_polya.rows[i].cells[10].innerText;
+        if(table_polya.rows[i].cells[11].innerText!="") a11= table_polya.rows[i].cells[11].innerText;
+        if(table_polya.rows[i].cells[12].innerText!="") a12= table_polya.rows[i].cells[12].innerText;
+        if(table_polya.rows[i].cells[13].innerText!="") a13= table_polya.rows[i].cells[13].innerText;
+        if(table_polya.rows[i].cells[14].innerText!="") a14= table_polya.rows[i].cells[14].innerText;
+
 
         save_data += '||'+a2 + '|' +a3 + '|' +a4 + '|' + a5 + '|' + a6 + '|' + a7 +'|'+ a8 +'|' + a9 + '|' + a10 + '|' + a11 +'|'+a12 +'|'+a13+'\n'+'||'+a14 +'\n';
 
@@ -6607,9 +6604,9 @@ $('#geomodul_bt').click(function() {
    let vibor = $("#geomodul_lis").chosen().val();
    let vibor2 = $("#geomodul_field_lis").chosen().val();
    let poly_color = Math.floor(Math.random() * 360);
-
+ $('#geomodul_bt').prop("disabled", true);
    $("#unit_table").empty();
-
+ clearGarbage(garbagepoly);
   load_jurnal(20233,'geomodul.txt',function (data) { 
     
     for(let i = 1; i<data.length; i+=2){
@@ -6618,6 +6615,7 @@ $('#geomodul_bt').click(function() {
       let p = m[4];
       let r = m[6];
       let n = m[0]+'<br>'+m[1]+'<br>'+m[2]+'<br>'+m[3]+'<br>'+m[4]+'<br>'+m[5]+'<br>'+m[6]+'<br>'+m[9];
+      console.log(m)
       if(vibor2.join().indexOf('Всі')<0){
         if(p)p=p.split(' ')[0];
         if(vibor2.join().indexOf(p)<0)continue;
@@ -6648,6 +6646,7 @@ $('#geomodul_bt').click(function() {
       }
       }
     }
+    $('#geomodul_bt').prop("disabled", false);
   });
 });
 
@@ -9550,7 +9549,7 @@ async function logistik_zvit(data){
     let time = data[0][1][0].split(':').reverse().reduce((acc, n, i) => acc + n * (60 ** i), 0);
     let kmm = parseFloat(data[0][1][1]).toFixed();
 
-      d0 = kmm;
+     d0 = kmm;
      if(d2==0){d1 = d0;}else{d2 = d0-d1;}
 
       r0 = time;
@@ -10391,3 +10390,4 @@ function Rote_gruzoperevozki(p1,p2,color,ind){
           }
         });
 }
+
