@@ -7191,6 +7191,7 @@ $('#log_help').hide();
 $('#adresy').hide();
 $('#marshrut_text').hide();
 $('#upd_marsh_bt').hide();
+$('#clear_marsh_bt').hide();
 
 $("#log_b3").on("click", function (){
   $('#log_b1').css({'background':'#e9e9e9'});
@@ -7208,6 +7209,7 @@ $("#log_b3").on("click", function (){
   $('#adresy').show();
   $('#marshrut_text').hide();
   $('#upd_marsh_bt').hide();
+  $('#clear_marsh_bt').hide();
   clearGEO();
   clearGarbage(marshrut_garbage);
   clearGarbage(marshrut_treck);
@@ -7281,6 +7283,7 @@ $("#log_b4").on("click", function (){
   $('#transport_logistik').show();
   $('#marshrut_text').hide();
   $('#upd_marsh_bt').hide();
+  $('#clear_marsh_bt').hide();
   clearGEO();
   clearGarbage(marshrut_garbage);
   clearGarbage(marshrut_treck);
@@ -7300,13 +7303,17 @@ $("#transport_logistik_bt").on("click", function (){
  
  
 });
+$("#clear_marsh_bt").on("click", function (){
+$('#log_marh_tb').empty();
+$('#log_marh_tb').append("<tr>  <td>1</td>  <td></td>  <td></td> </tr> <tr><td style = ' border: 1px solid black; '><div class='autocomplete'  ><div class ='inp' id='myInput-1' type='text'   contenteditable='true' ></div></div></td>  <td style = 'font-size:14px;min-width: 15px; cursor: pointer;border: 1px solid black; background:rgb(247, 161, 161);'>-</td><td style = 'font-size:14px;min-width: 15px; cursor: pointer; background:rgb(170, 248, 170);'>+</td> </tr> <tr><td></td> <td></td> <td></td> </tr> <tr> <td></td> <td></td> <td></td> </tr> <tr> <td><input type='checkbox' checked></td>   <td></td> <td></td> </tr>");
+});
 
 $("#log_b1").on("click", function (){
   $('#log_b1').css({'background':'#b2f5b4'});
   $('#log_b2').css({'background':'#e9e9e9'});
   $('#log_b3').css({'background':'#e9e9e9'});
   $('#log_b4').css({'background':'#e9e9e9'});
-  $("#log_unit_tb").empty();
+  //$("#log_unit_tb").empty();
   $('#log_unit_tb').show();
   $('#log_marh_tb').show();
   $('#marh_zvit_tb').hide();
@@ -7318,6 +7325,7 @@ $("#log_b1").on("click", function (){
   $('#log_help').show();
   $('#marshrut_text').show();
   $('#upd_marsh_bt').show();
+  $('#clear_marsh_bt').show();
   //$('#log_marh_tb').empty();
   //$('#log_marh_tb').append("<tr>  <td>1</td>  <td></td>  <td></td> </tr> <tr><td style = ' border: 1px solid black; '><div class='autocomplete'  ><div class ='inp' id='myInput-1' type='text'   contenteditable='true' ></div></div></td>  <td style = 'font-size:14px;min-width: 15px; cursor: pointer;border: 1px solid black; background:rgb(247, 161, 161);'>-</td><td style = 'font-size:14px;min-width: 15px; cursor: pointer; background:rgb(170, 248, 170);'>+</td> </tr> <tr><td></td> <td></td> <td></td> </tr> <tr> <td></td> <td></td> <td></td> </tr> <tr> <td><input type='checkbox' checked></td>   <td></td> <td></td> </tr>");
   clearGEO();
@@ -7340,7 +7348,7 @@ $("#log_b2").on("click", function (){
   $('#log_help').hide();
   $('#marshrut_text').hide();
   $('#upd_marsh_bt').hide();
- 
+  $('#clear_marsh_bt').hide();
   clearGEO();
   update_logistik_data(control_avto);
   clearGarbage(marshrut_garbage);
@@ -8249,7 +8257,7 @@ function update_logistik_data(calbek){
 
 let probeg_nedelya=true;
 function vibir_avto(){
-  if (marshrut_point.length==0)return;
+  //if (marshrut_point.length==0)return;
   if ($('#log_control_tb').is(':visible'))return;
   let d = (marshrut_probeg/1000).toFixed(1);
   let t = (marshrut_vremya/60).toFixed();
@@ -8327,8 +8335,8 @@ function vibir_avto(){
 let bb1 ="<button style = 'width: 100%;'>додати</button>";
 let bb2 ="<button style = 'width: 100%;'>додати</button>";
 //if(status0==3){bb0 ="<button style = 'background: rgb(170, 248, 170);width: 100%;' >маршрут</button>";}
-if(status1==3){bb1 ="<button style = 'background: rgb(170, 248, 170);width: 100%;' >"+name_buton1+"</button>";}
-if(status2==3){bb2 ="<button style = 'background: rgb(170, 248, 170);width: 100%;' >"+name_buton2+"</button>";}
+if(status1==3){bb1 ="<button style = 'background: rgb(170, 248, 170);width: 100%;' >маршрут</button>";}
+if(status2==3){bb2 ="<button style = 'background: rgb(170, 248, 170);width: 100%;' >маршрут</button>";}
 //if(status0==2){bb0 ="<button style = 'background: rgb(247, 161, 161);width: 100%;' >ремонт</button>";}
 if(status1==2){bb1 ="<button style = 'background: rgb(247, 161, 161);width: 100%;' >ремонт</button>";}
 if(status2==2){bb2 ="<button style = 'background: rgb(247, 161, 161);width: 100%;' >ремонт</button>";}
@@ -8337,7 +8345,7 @@ if(status2==2){bb2 ="<button style = 'background: rgb(247, 161, 161);width: 100%
     let last_position = unit_position(avto[j][0].split(' ')[0]);
     let id =unitsID[avto[j][0].split(' ')[0]];
     //point_to_point_rote(marshrut_point[0][0],marshrut_point[0][1],avto[j][2],avto[j][3],j,6);
-    if (marshrut_point[0][4]!='----'){
+    if (marshrut_point.length>0 && marshrut_point[0][4]!='----'){
       if (last_position) point_to_point(marshrut_point[0][2],marshrut_point[0][3],last_position.y,last_position.x,j,4);
       point_to_point(marshrut_point[0][2],marshrut_point[0][3],avto[j][2],avto[j][3],j,6);
     }
@@ -8348,13 +8356,13 @@ if(status2==2){bb2 ="<button style = 'background: rgb(247, 161, 161);width: 100%
   sort_table(document.getElementById("log_unit_tb"),4);
   sort_table(document.getElementById("log_unit_tb"),6);
 
-if (probeg_nedelya) {
-  spisok =spisok.slice(0, -1);
-  SendDataReportInCallback(nedelya/1000,d2/1000,spisok,zvit4,[],0,svod);
-  probeg_nedelya=false;
-}else{
-  svod(marshrut_probeg_nedelya);
-}
+// if (probeg_nedelya) {
+//   spisok =spisok.slice(0, -1);
+//   SendDataReportInCallback(nedelya/1000,d2/1000,spisok,zvit4,[],0,svod);
+//   probeg_nedelya=false;
+// }else{
+//   svod(marshrut_probeg_nedelya);
+// }
 
 }
 let marshrut_probeg_nedelya=[];
@@ -8536,8 +8544,108 @@ if(evt.target.parentNode.cellIndex==3){
 
 }
 
+}else{
+  if(row.rowIndex>0 && evt.target.innerText =='маршрут'){
+     $('#log_marh_tb').show();
+  $('#log_cont').show();
+  $('#marh_zvit_tb').hide();
+  $('#marshrut_text').show();
+  $('#upd_marsh_bt').show();
+  $('#clear_marsh_bt').show();
+  let t=0;
+  let d0=new Date();
+  d0.setHours(0, 0, 0, 0);
+  if(evt.target.parentNode.cellIndex==3){
+   d0.setDate(d0.getDate());
+  }else{
+   d0.setDate(d0.getDate()+1);
+  }
+
+  t =Date.parse(d0);
+  let n=row.cells[0].innerText;
+  $('#cont_unit').text(n);
+  $('#marshrut_text').val('');
+
+  $('#log_marh_tb').empty();
+  $('#log_marh_tb').append("<tr>  <td>1</td>  <td></td>  <td></td> </tr> <tr><td style = ' border: 1px solid black; '><div class='autocomplete'  ><div class ='inp' id='myInput-1' type='text'   contenteditable='true' ></div></div></td>  <td style = 'font-size:14px;min-width: 15px; cursor: pointer;border: 1px solid black; background:rgb(247, 161, 161);'>-</td><td style = 'font-size:14px;min-width: 15px; cursor: pointer; background:rgb(170, 248, 170);'>+</td> </tr> <tr><td></td> <td></td> <td></td> </tr> <tr> <td></td> <td></td> <td></td> </tr> <tr> <td><input type='checkbox' checked></td>   <td></td> <td></td> </tr>");
+  
+   for (let v = 1; v<logistik_data.length; v++){
+    let m=logistik_data[v].split('|');
+    if(!m[1])continue;
+    if(m[1].indexOf(n.split(' ')[0])>=0 && m[0]>=t && m[0]<t+86400000){
+      if(m[2]=='ремонт')continue;
+      if(m[2]=='готовий')continue;
+      if(m[2]=='видалено')continue;
+      if(m.length==2)continue;
+
+     $('#marshrut_text').val(m[6]);
+   let text =m[2].split('//');
+   let point =m[3].split('//');
+   let radius =m[4].split('//');
+   let chek =m[5].split('//');
+   let kkkk=0;
+   $('#cont_unit').text(m[1]);
+   $('#log_marh_tb').empty();
+   $('#log_marh_tb').append("<tr></tr><tr></tr><tr></tr><tr></tr><tr></tr>");
+   let tb=document.getElementById("log_marh_tb");
+   let row = document.getElementById("log_marh_tb").rows[1];
+          for (let i = 0; i<text.length; i++){
+            kkkk++;
+            let ind = row.cells.length-1;
+            var td = row.insertCell(ind+1);
+                td.style.border = '1px solid black';
+            var el = document.createElement('div');
+                el.setAttribute('class', 'autocomplete');
+            var el2 = document.createElement('div');
+                el2.setAttribute('class', 'inp');
+                el2.setAttribute('id', 'myInput'+ind+'');
+                el2.setAttribute('type', 'text');
+                el2.setAttribute('contenteditable', 'true');
+                el2.textContent = text[i];
+                autocomplete(el2, adresa);
+                el.appendChild(el2);
+                td.appendChild(el);
+                td = row.insertCell(ind+2);
+                td.innerText=" - "
+                td.style = 'font-size:14px; min-width: 15px; background: rgb(247, 161, 161); cursor:pointer; border: 1px solid black;';
+                td = row.insertCell(ind+3);
+                td.innerText=" + "
+                td.style = 'font-size:14px; min-width: 15px; background: rgb(170, 248, 170);cursor:pointer';
+                tb.rows[0].insertCell(ind+1);
+                tb.rows[0].insertCell(ind+2);
+                tb.rows[0].insertCell(ind+3);
+                tb.rows[2].insertCell(ind+1);
+                tb.rows[2].insertCell(ind+2);
+                tb.rows[2].insertCell(ind+3); 
+                tb.rows[3].insertCell(ind+1);
+                tb.rows[3].insertCell(ind+2);
+                tb.rows[3].insertCell(ind+3);  
+                tb.rows[4].insertCell(ind+1);
+                tb.rows[4].insertCell(ind+2);
+                tb.rows[4].insertCell(ind+3);
+
+
+                    tb.rows[0].cells[ind+1].textContent=kkkk;
+                    tb.rows[0].cells[ind+1].style='cursor:pointer';
+                    tb.rows[3].cells[ind+1].textContent=radius[i];
+                    tb.rows[3].cells[ind+1].setAttribute('contenteditable', 'true');
+                    tb.rows[2].cells[ind+1].textContent=point[i];
+                    tb.rows[2].cells[ind+1].style = ' display: none; overflow: hidden;';
+                    if (chek[i]=='true') {
+                      tb.rows[4].cells[ind+1].innerHTML = "<input type='checkbox' checked>";
+                    }else{
+                      tb.rows[4].cells[ind+1].innerHTML = "<input type='checkbox'>";
+                    }
+             
+
+                       
+          }
+    }
+  }
+  marshrut();  
+  }
 }
-let name = evt.target.parentNode.cells[0].innerText.split(' ')[0];
+let name = evt.target.innerText.split(' ')[0];
 
      for (let i = 0; i<unitslist.length; i++){
       let nm=unitslist[i].getName();
@@ -8640,10 +8748,25 @@ async function control_avto(){
         }
       }
     }
-   if (name_buton0==undefined)name_buton0='маршрут';
-   if (name_buton1==undefined)name_buton1='маршрут';
-   if (name_buton2==undefined)name_buton2='маршрут';
-   if (name_buton3==undefined)name_buton3='маршрут';
+
+    let but_kol0 = "rgb(255, 251, 0);"
+    let but_kol1 = "rgb(255, 251, 0);"
+    let but_kol2 = "rgb(255, 251, 0);"
+    let but_kol3 = "rgb(255, 251, 0);"
+
+   if (name_buton0==undefined){
+     name_buton0='невідомо'; }else{ if(name_buton0.slice(-1)=="+"){ name_buton0='перевірено';  but_kol0 = "rgb(0, 255, 200)";}else{ name_buton0='маршрут'; but_kol0 = "rgb(170, 248, 170)";} 
+   }
+   if (name_buton1==undefined){
+     name_buton1='невідомо'; }else{ if(name_buton1.slice(-1)=="+"){ name_buton1='перевірено';  but_kol1 = "rgb(0, 255, 200)";}else{ name_buton1='маршрут'; but_kol1 = "rgb(170, 248, 170)";} 
+   }
+   if (name_buton2==undefined){
+     name_buton2='невідомо'; }else{ if(name_buton2.slice(-1)=="+"){ name_buton2='перевірено';  but_kol2 = "rgb(0, 255, 200)";}else{ name_buton2='маршрут'; but_kol2 = "rgb(170, 248, 170)";} 
+   }
+   if (name_buton3==undefined){
+     name_buton3='невідомо'; }else{ if(name_buton3.slice(-1)=="+"){ name_buton3='перевірено';  but_kol3 = "rgb(0, 255, 200)";}else{ name_buton3='маршрут'; but_kol3 = "rgb(170, 248, 170)";} 
+   }
+
 let bb0 ="<button style = 'width: 100%;' >на ремонт</button>";
 if(now_date>d2)bb0 ="";
 let bb1 ="<button style = 'width: 100%;' >на ремонт</button>";
@@ -8652,10 +8775,10 @@ let bb2 ="<button style = 'width: 100%;' >на ремонт</button>";
 if(now_date>d0)bb2 ="";
 let bb3 ="<button style = 'width: 100%;' >на ремонт</button>";
 if(now_date>d_1)bb3 ="";
-if(status0==3){bb0 ="<button style = 'background: rgb(170, 248, 170);width: 100%;' >"+name_buton0+"</button>";}
-if(status1==3){bb1 ="<button style = 'background: rgb(170, 248, 170);width: 100%;' >"+name_buton1+"</button>";}
-if(status2==3){bb2 ="<button style = 'background: rgb(170, 248, 170);width: 100%;' >"+name_buton2+"</button>";}
-if(status3==3){bb3 ="<button style = 'background: rgb(170, 248, 170);width: 100%;' >"+name_buton3+"</button>";}
+if(status0==3){bb0 ="<button style = 'background: "+but_kol0+";width: 100%;' >"+name_buton0+"</button>";}
+if(status1==3){bb1 ="<button style = 'background: "+but_kol1+";width: 100%;' >"+name_buton1+"</button>";}
+if(status2==3){bb2 ="<button style = 'background: "+but_kol2+";width: 100%;' >"+name_buton2+"</button>";}
+if(status3==3){bb3 ="<button style = 'background: "+but_kol3+";width: 100%;' >"+name_buton3+"</button>";}
 if(status0==2){
   bb0 ="<button style = 'background: rgb(247, 161, 161);width: 100%;' >ремонт-зняти</button>";
   if(now_date>d2) bb0 ="<button style = 'background: rgb(247, 161, 161);width: 100%;' >ремонт</button>";
@@ -8747,6 +8870,7 @@ if(row.rowIndex>0 && evt.target.innerText !='ремонт-зняти' &&  evt.ta
   $('#marh_zvit_tb').hide();
   $('#marshrut_text').show();
   $('#upd_marsh_bt').show();
+  $('#clear_marsh_bt').show();
   let t=Date.parse(tb.rows[0].cells[evt.target.parentNode.cellIndex].innerText);
   let d0=new Date(t);
   d0.setHours(0, 0, 0, 0);
@@ -8836,29 +8960,23 @@ if(row.rowIndex>0 && evt.target.innerText !='ремонт-зняти' &&  evt.ta
   //marshrut_rote(marshrut_point,-100);
 }
 
-// let name = evt.target.parentNode;
-// if(name.cells){
-//   name = evt.target.parentNode.cells[0].innerText;
-// }else{
-//   name = evt.target.parentNode.parentNode.cells[0].innerText;
-// }
+let name = evt.target.innerText.split(' ')[0];
 
-
-//      for (let i = 0; i<unitslist.length; i++){
-//       let nm=unitslist[i].getName();
-//       let id=unitslist[i].getId();
-//      if(nm == name){
-//       let y=unitslist[i].getPosition().y;
-//       let x=unitslist[i].getPosition().x;
-//       map.setView([y,x+0.5],10,{animate: false});
-//       $("#lis0").chosen().val(id);
-//       $("#lis0").trigger("chosen:updated");
-//       markerByUnit[id].openPopup();
-//       layers[0]=0;
-//       show_track();
-//         break;
-//      }
-//      }
+     for (let i = 0; i<unitslist.length; i++){
+      let nm=unitslist[i].getName();
+      let id=unitslist[i].getId();
+      if(nm.indexOf(name)>=0){
+      let y=unitslist[i].getPosition().y;
+      let x=unitslist[i].getPosition().x;
+      map.setView([y,x+0.5],10,{animate: false});
+      $("#lis0").chosen().val(id);
+      $("#lis0").trigger("chosen:updated");
+      markerByUnit[id].openPopup();
+      layers[0]=0;
+      show_track();
+        break;
+     }
+     }
 });
 
 $("#cont_b1").on("click", function (){
@@ -9680,7 +9798,7 @@ function point_in_data(y,x) {
             for (v = 0; v < data.points.length; v+=3) {
             line.push ([data.points[v].lat,data.points[v].lon]);
             } 
-            let l = L.polyline([line], {color: 'rgb(255, 230, 4)',weight:2,opacity:1}).addTo(map);
+            let l = L.polyline([line], {color: 'rgb(1, 26, 255)',weight:2,opacity:1}).addTo(map);
             marshrut_treck.push(l);
           }
         });
