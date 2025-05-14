@@ -2091,7 +2091,7 @@ function CollectGlobalData(t2,idrep,i,unit){ // execute selected report
         let it=0;
         let litry=0;
         let datt=0;
-        for (let j=4; j<headers.length; j++) {if (headers[j].indexOf('Топливо')>=0 || headers[j].indexOf('Паливо')>=0){it=j;}}
+        for (let j=4; j<headers.length; j++) {if (headers[j].indexOf('Топливо')>=0 || headers[j].indexOf('Паливо')>=0 || headers[j].indexOf('ДУТ')>=0){it=j;}}
         data.getTableRows(0, 0, tables[0].rows,function( code, rows) { 
           if (code) {console.log(wialon.core.Errors.getErrorText(code)); ii++; UpdateGlobalData(t2,idrep,ii);return;} 
           for(let j in rows) { 
@@ -3806,7 +3806,7 @@ if(!unitslist[ii].getPosition())continue;
     let zapcarta=0;
     let namee = data[i][0][1];
     let iddd = data[i][0][0];
-    if(data[i][0][2].indexOf('Топливо')>=0 || data[i][0][2].indexOf('Паливо')>=0 || data[i][0][2].indexOf('ДРТ')>=0){}else continue;
+    if(data[i][0][2].indexOf('Топливо')>=0 || data[i][0][2].indexOf('Паливо')>=0 || data[i][0][2].indexOf('ДРТ')>=0 || data[i][0][2].indexOf('ДУТ')>=0){}else continue;
     for (let ii = 1; ii < data[i].length; ii++) {
       if(namee.indexOf('Шкурат')>=0 || namee.indexOf('Білоус')>=0|| namee.indexOf('Колотуша')>=0|| namee.indexOf('Дробниця')>=0|| namee.indexOf('Писаренко')>=0|| namee.indexOf('Штацький')>=0|| namee.indexOf('ВМ4156ВС')>=0|| namee.indexOf('аправка')>=0){
          if(data[i][ii][4]  && zapcarta != data[i][ii][4]){
@@ -10528,4 +10528,3 @@ function Rote_gruzoperevozki(p1,p2,color,ind){
           }
         });
 }
-
