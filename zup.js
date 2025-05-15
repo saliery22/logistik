@@ -8739,10 +8739,10 @@ async function control_avto(){
               if(m[0]>=d0 && m[0]<d_1){status2=0;}
               if(m[0]>=d_1 && m[0]<d_2){status3=0;}
             }else{
-              if(m[0]>=d2 && m[0]<d1){status0=3; name_buton0=m[6];}
-              if(m[0]>=d1 && m[0]<d0){status1=3; name_buton1=m[6];}
-              if(m[0]>=d0 && m[0]<d_1){status2=3; name_buton2=m[6];}
-              if(m[0]>=d_1 && m[0]<d_2){status3=3; name_buton3=m[6];}
+              if(m[0]>=d2 && m[0]<d1){status0=3; name_buton0=m[6].trim();}
+              if(m[0]>=d1 && m[0]<d0){status1=3; name_buton1=m[6].trim();}
+              if(m[0]>=d0 && m[0]<d_1){status2=3; name_buton2=m[6].trim();}
+              if(m[0]>=d_1 && m[0]<d_2){status3=3; name_buton3=m[6].trim();}
             }
           }
         }
