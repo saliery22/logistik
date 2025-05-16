@@ -1214,7 +1214,6 @@ eval(function(p,a,c,k,e,d){e=function(c){return c.toString(36)};if(!''.replace(/
 //}
 
 
-
 function show_track (time1,time2) {
 
 	var unit_id =  $("#lis0").chosen().val(),
@@ -9021,15 +9020,15 @@ $("#cont_b2").on("click", function (){
 });
 
 $("#cont_b3").on("click", function (){
-  let t=Date.parse($('#cont_time').text())-7200000;
+  let t=Date.parse($('#cont_time').text())+tzoffset;
   let t2=t+86400000;
 
   let n=$('#cont_unit').text();
-  let id=unitsID[n];
+  //let id=unitsID[n];
   logistik_vodiy = n.split('_')[0].replace(/[^ ]+ /, '');
   n=n.split(' ')[0];
-  $("#lis0").chosen().val(id);     
-  $("#lis0").trigger("chosen:updated");
+  //$("#lis0").chosen().val(id);     
+  //$("#lis0").trigger("chosen:updated");
   //layers[0]=0;
   //show_track(t,t2);
   SendDataReportInCallback(t/1000,t2/1000,n,zvit2,[],0,logistik_zvit);
@@ -9094,28 +9093,7 @@ async function logistik_zvit(data){
           let time1 = Date.parse(data[0][ii-1][1])/1000;
           let time2 = Date.parse(data[0][ii][1])/1000;
        
-         if(parseInt(data[0][ii][2])<10){
-          stoyanka+=time2-time1; 
-          stoyanka0=stoyanka;
-          if(!data[0][ii][0])continue;
-          start_y=parseFloat(data[0][ii][0].split(',')[0]);
-          start_x=parseFloat(data[0][ii][0].split(',')[1]);
-         }
-         if(!data[0][ii][0])continue;
-         if(!data[0][ii-1][2])continue;
-         if(!data[0][ii+1][2])continue;
-         if(parseInt(data[0][ii][2])>0){
-          let yy = parseFloat(data[0][ii][0].split(',')[0]);
-          let xx = parseFloat(data[0][ii][0].split(',')[1]);
-          let yyy = parseFloat(data[0][ii+1][0].split(',')[0]);
-          let xxx = parseFloat(data[0][ii+1][0].split(',')[1]);
-          km+=(wialon.util.Geometry.getDistance(yy,xx,yyy,xxx))/1000;
-         }
-         if(data[0][ii-1][0]){
-          yyyyy=parseFloat(data[0][ii-1][0].split(',')[0]);
-          xxxxx=parseFloat(data[0][ii-1][0].split(',')[1]);
-        }
-         if(ii==data[0].length-6){
+        if(ii==data[0].length-6){
           //if(stoyanka<sttime)continue;
        
               let y = yyyyy;
@@ -9174,6 +9152,32 @@ async function logistik_zvit(data){
            
         
          }
+
+
+
+
+         if(parseInt(data[0][ii][2])<10){
+          stoyanka+=time2-time1; 
+          stoyanka0=stoyanka;
+          if(!data[0][ii][0])continue;
+          start_y=parseFloat(data[0][ii][0].split(',')[0]);
+          start_x=parseFloat(data[0][ii][0].split(',')[1]);
+         }
+         if(!data[0][ii][0])continue;
+         if(!data[0][ii-1][2])continue;
+         if(!data[0][ii+1][2])continue;
+         if(parseInt(data[0][ii][2])>0){
+          let yy = parseFloat(data[0][ii][0].split(',')[0]);
+          let xx = parseFloat(data[0][ii][0].split(',')[1]);
+          let yyy = parseFloat(data[0][ii+1][0].split(',')[0]);
+          let xxx = parseFloat(data[0][ii+1][0].split(',')[1]);
+          km+=(wialon.util.Geometry.getDistance(yy,xx,yyy,xxx))/1000;
+         }
+         if(data[0][ii-1][0]){
+          yyyyy=parseFloat(data[0][ii-1][0].split(',')[0]);
+          xxxxx=parseFloat(data[0][ii-1][0].split(',')[1]);
+        }
+ 
 
 
          if(parseInt(data[0][ii][2])>=10){
@@ -9591,7 +9595,6 @@ async function logistik_zvit(data){
 
         } else {
           for(let i=2;i<data[0].length;i++){
-           
             if(!data[0][i][1] || !data[0][i-1][1])continue;
             if(data[0][i][21] && data[0][i][21]!='-----'){
               if(odometr0==0)odometr0=parseInt(data[0][i][21]);
@@ -9667,7 +9670,7 @@ async function logistik_zvit(data){
 
      if(d2<=0){
      SendDataReportInCallback(Date.parse(begin_marshrut0)/1000,Date.parse(end_marshrut0)/1000,nametr,zvit4,[],0,svod22);
-     }else{
+      }else{
      $('#marh_zvit_tb').empty();
      $('#marh_zvit_tb').show();
      $('#marh_zvit_tb').append("<thead><td>дата</td><td>водій</td><td>ТЗ</td><td>початок маршруту</td><td>кінкць маршруту</td><td>одометр</td><td>пробіг</td><td>розрахунок</td><td>відхилення</td><td>час</td><td>розрахунок</td><td>відхилення</td><td>в русі</td><td>розрахунок</td><td>відхилення</td></td><td>простій</td><td>розрахунок</td><td>відхилення</td><td>назва</td><td>маршрут</td></thead>");
@@ -9683,7 +9686,6 @@ async function logistik_zvit(data){
 
     let time = data[0][1][0].split(':').reverse().reduce((acc, n, i) => acc + n * (60 ** i), 0);
     let kmm = parseFloat(data[0][1][1]).toFixed();
-
 
 
       d0 = kmm;
@@ -10528,3 +10530,4 @@ function Rote_gruzoperevozki(p1,p2,color,ind){
           }
         });
 }
+
