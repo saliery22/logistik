@@ -6614,7 +6614,7 @@ $('#geomodul_bt').click(function() {
       let t=Date.parse(m[0]);
       let p = m[4];
       let r = m[6];
-      let n = m[0]+'<br>'+m[1]+'<br>'+m[2]+'<br>'+m[3]+'<br>'+m[4]+'<br>'+m[5]+'<br>'+m[6]+'<br>'+m[9];
+      let n = m[0]+'<br>'+m[1]+'<br>'+m[2]+'<br>'+m[3]+'<br>'+m[4]+'<br>'+m[5]+'<br>'+m[6]+'<br>'+m[9]+'<br>'+m[11];
       //console.log(m)
       if(vibor2.join().indexOf('Всі')<0){
         if(p)p=p.split(' ')[0];
@@ -6639,7 +6639,7 @@ $('#geomodul_bt').click(function() {
                 }
           }
 
-          $("#unit_table").append("<tr><td><input type='checkbox' checked></td><td>"+m[0]+"</td><td>"+m[1]+"</td><td>"+m[2]+"</td><td>"+m[3]+"</td><td>"+m[4]+"</td><td>"+m[6]+"</td><td>"+m[9]+"</td></tr>");
+          $("#unit_table").append("<tr><td><input type='checkbox' checked></td><td>"+m[0]+"</td><td>"+m[1]+"</td><td>"+m[2]+"</td><td>"+m[3]+"</td><td>"+m[4]+"</td><td>"+m[5]+"</td><td>"+m[6]+"</td><td>"+m[7]+"</td><td>"+m[8]+"</td><td>"+m[9]+"</td><td>"+m[10]+"</td><td>"+m[11]+"</td></tr>");
 
           continue;
         }
@@ -6649,7 +6649,6 @@ $('#geomodul_bt').click(function() {
     $('#geomodul_bt').prop("disabled", false);
   });
 });
-
 
 //==========================================================================================================================================================================
 //==========================================================================================================================================================================
