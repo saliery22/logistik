@@ -9345,7 +9345,7 @@ async function logistik_zvit(data){
                 let yp=y;
                 let xp=x;
                 let point = yp+","+xp;
-                let r =  300;
+                let r =  100;
                 let c = adres[0][4];
                   if(wialon.util.Geometry.getDistance(y000,x000,yp,xp)<r && km<0.5)continue;
                 kkk++;
@@ -9440,7 +9440,7 @@ async function logistik_zvit(data){
                   let yp=y;
                   let xp=x;
                   let point = yp+","+xp;
-                  let r =  300;
+                  let r =  100;
                   let c = adres[0][4];
                   if(wialon.util.Geometry.getDistance(y000,x000,yp,xp)>r  && yp!=0){
                   kkk++;
@@ -9491,7 +9491,7 @@ async function logistik_zvit(data){
                   let yp=y;
                   let xp=x;
                   let point = yp+","+xp;
-                  let r =  300;
+                  let r =  100;
                   let c = adres[0][4];
                   if(wialon.util.Geometry.getDistance(y000,x000,yp,xp)>r &&  yp!=0){
                   kkk++;
@@ -9546,7 +9546,7 @@ async function logistik_zvit(data){
                 let yp=y;
                 let xp=x;
                 let point = yp+","+xp;
-                let r =  300;
+                let r =  100;
                 let c = adres[0][4];
                   if(wialon.util.Geometry.getDistance(y000,x000,yp,xp)<r)continue;
                   if(yp==0)continue;
