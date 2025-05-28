@@ -1286,6 +1286,7 @@ eval(function(p,a,c,k,e,d){e=function(c){return c.toString(36)};if(!''.replace(/
 //}
 
 
+
 function show_track (time1,time2) {
 
 	var unit_id =  $("#lis0").chosen().val(),
@@ -9687,7 +9688,7 @@ async function logistik_zvit(data){
                   let yp=y1;
                   let xp=x1;
                   let point = yp+","+xp;
-                  let r =  300;
+                  let r =  100;
                   let c = adres[0][4];
                   if(wialon.util.Geometry.getDistance(y000,x000,yp,xp)<r)continue;
                   if(y1==0)continue;
@@ -9877,13 +9878,21 @@ async function logistik_zvit(data){
         c1=c2;
         from =  to;
       }
-
-
      }
-    
+
+     //=============================================================
+      begin_marshrut0 =tb.rows[2].cells[2].textContent;
+      begin_marshrut = Date.parse(begin_marshrut0)/1000;
+     
+      let endms = parseInt(tb.rows[2].cells[tb.rows[2].cells.length-2].textContent.split(',')[1]);
+      end_marshrut = Date.parse(tb.rows[2].cells[tb.rows[2].cells.length-1].textContent);
+      end_marshrut0 = new Date(end_marshrut-tzoffset-(endms*1000)).toISOString().slice(0, -5).replace("T", " ");
+      end_marshrut = end_marshrut/1000 -endms;
+
      //err_stops =0;
      let home_stops_0 = home_stops;
      home_stops=0;
+     //===========================================================
 
      let odo = odometr1 - odometr0;
 
