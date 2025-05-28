@@ -8314,7 +8314,7 @@ $("div").on("click", '.point_ferma_buton', function () {
   for (let j = 0; j<tb.rows[0].cells.length; j+=3){
   if (tb.rows[0].cells[j].textContent==ind) {
   tb.rows[4].cells[j].getElementsByTagName('input')[0].checked=true;
-  tb.rows[1].cells[j].children[0].children[0].textContent="працівник Райгородок";
+  tb.rows[1].cells[j].children[0].children[0].textContent="працівник";
     break;
   }
   }
