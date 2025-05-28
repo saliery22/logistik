@@ -9943,6 +9943,8 @@ async function logistik_zvit(data){
       d2 = 0;
       d1 = d0;
 
+       t1=t0;
+       t2=0;
        r0 = time+err_stops;
        r1 = r0;
        r2 = 0;
