@@ -9944,10 +9944,11 @@ async function logistik_zvit(data){
       d1 = d0;
 
        r0 = time+err_stops;
-       r1 = r0-r2;
+       r1 = r0;
+       r2 = 0;
        s0 = t0-r0;
-       s1 = t1-r1;
-       s2 = s0-s1;
+       s1 = s0;
+       s2 = 0;
    
      $('#marh_zvit_tb').empty();
      $('#marh_zvit_tb').show();
