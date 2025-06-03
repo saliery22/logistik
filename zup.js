@@ -9302,6 +9302,8 @@ async function logistik_zvit(data){
   $('#log_marh_tb').empty();
   $('#log_marh_tb').append("<tr></tr><tr></tr><tr></tr><tr></tr><tr></tr>");
 
+  
+
 
       let sttime = 150;
 
@@ -9348,7 +9350,7 @@ async function logistik_zvit(data){
                 let point = yp+","+xp;
                 let r =  100;
                 let c = adres[0][4];
-                  if(wialon.util.Geometry.getDistance(y000,x000,yp,xp)<r && km<0.5)continue;
+                  if(wialon.util.Geometry.getDistance(y000,x000,yp,xp)<300 && km<0.5)continue;
                 kkk++;
                 marshrut_point0.splice(adres[1], 1);
                 add_point_to_table(kkk,name,point,r,c,id,time0,stoyanka0);
@@ -9364,7 +9366,7 @@ async function logistik_zvit(data){
                   let point = yp+","+xp;
                   let r =  parseInt(adres[2]);
                   let c = false;
-                  if(wialon.util.Geometry.getDistance(y000,x000,yp,xp)<r && km<0.5)continue;
+                  if(wialon.util.Geometry.getDistance(y000,x000,yp,xp)<300 && km<0.5)continue;
                     kkk++;
                   //let mar = L.marker([y1,x1], {icon: L.divIcon({ className: 'div-icon',iconSize: "auto", html: "<center style = 'background:rgb(170, 248, 170);'>"+kkk+": "+name+"</center>" }),draggable: true,opacity:0.9,zIndexOffset:1000}).addTo(map);
                   //zup_mark_data.push(mar);
@@ -9443,7 +9445,7 @@ async function logistik_zvit(data){
                   let point = yp+","+xp;
                   let r =  100;
                   let c = adres[0][4];
-                  if(wialon.util.Geometry.getDistance(y000,x000,yp,xp)>r  && yp!=0){
+                  if(wialon.util.Geometry.getDistance(y000,x000,yp,xp)>300  && yp!=0){
                   kkk++;
                   marshrut_point0.splice(adres[1], 1);
                   add_point_to_table(kkk,name,point,r,c,id,time0,stoyanka0);
@@ -9451,6 +9453,14 @@ async function logistik_zvit(data){
                   km=0;
                   y000=y;
                   x000=x;
+                  }else{
+                    if(yp!=0){
+                    let interval = parseInt(tb.rows[2].cells[(kkk*3)-2].textContent.split(',')[1]);
+                    interval+=stoyanka0;
+                    tb.rows[2].cells[(kkk*3)-2].textContent=id+','+interval;
+                    tb.rows[2].cells[(kkk*3)-1].textContent=time0;
+                    continue;
+                    }
                   }
                 }else{
                 adres=point_in_data(y,x);
@@ -9461,13 +9471,21 @@ async function logistik_zvit(data){
                   let point = yp+","+xp;
                   let r =  parseInt(adres[2]);
                   let c = false;
-                  if(wialon.util.Geometry.getDistance(y000,x000,yp,xp)>r &&  yp!=0){
+                  if(wialon.util.Geometry.getDistance(y000,x000,yp,xp)>300 &&  yp!=0){
                     kkk++;
                   add_point_to_table(kkk,name,point,r,c,id,time0,stoyanka0);
                   adres0 =name;
                   km=0;
                   y000=y;
                   x000=x;
+                  }else{
+                    if(yp!=0){
+                    let interval = parseInt(tb.rows[2].cells[(kkk*3)-2].textContent.split(',')[1]);
+                    interval+=stoyanka0;
+                    tb.rows[2].cells[(kkk*3)-2].textContent=id+','+interval;
+                    tb.rows[2].cells[(kkk*3)-1].textContent=time0;
+                    continue;
+                    }
                   }
                 }else{
                   adres=await point_in_global(y,x); 
@@ -9479,7 +9497,15 @@ async function logistik_zvit(data){
                     km=0;
                     y000=y;
                     x000=x;
-                  }  
+                  }else{
+                    if(y!=0){
+                    let interval = parseInt(tb.rows[2].cells[(kkk*3)-2].textContent.split(',')[1]);
+                    interval+=stoyanka0;
+                    tb.rows[2].cells[(kkk*3)-2].textContent=id+','+interval;
+                    tb.rows[2].cells[(kkk*3)-1].textContent=time0;
+                    continue;
+                    }
+                  }
                 }
               }
             }else{
@@ -9494,7 +9520,7 @@ async function logistik_zvit(data){
                   let point = yp+","+xp;
                   let r =  100;
                   let c = adres[0][4];
-                  if(wialon.util.Geometry.getDistance(y000,x000,yp,xp)>r &&  yp!=0){
+                  if(wialon.util.Geometry.getDistance(y000,x000,yp,xp)>300 &&  yp!=0){
                   kkk++;
                   marshrut_point0.splice(adres[1], 1);
                   add_point_to_table(kkk,name,point,r,c,id,time0,stoyanka0);
@@ -9502,6 +9528,14 @@ async function logistik_zvit(data){
                   km=0;
                   y000=y;
                   x000=x;
+                  }else{
+                    if(yp!=0){
+                    let interval = parseInt(tb.rows[2].cells[(kkk*3)-2].textContent.split(',')[1]);
+                    interval+=stoyanka0;
+                    tb.rows[2].cells[(kkk*3)-2].textContent=id+','+interval;
+                    tb.rows[2].cells[(kkk*3)-1].textContent=time0;
+                    continue;
+                    }
                   }
                 }else{
                 adres=point_in_data(y,x);
@@ -9512,13 +9546,21 @@ async function logistik_zvit(data){
                   let point = yp+","+xp;
                   let r =  parseInt(adres[2]);
                   let c = false;
-                  if( wialon.util.Geometry.getDistance(y000,x000,yp,xp)>r &&  yp!=0){
+                  if( wialon.util.Geometry.getDistance(y000,x000,yp,xp)>300 &&  yp!=0){
                     kkk++;
                   add_point_to_table(kkk,name,point,r,c,id,time0,stoyanka0);
                   adres0 =name;
                   km=0;
                   y000=y;
                   x000=x;
+                  }else{
+                    if(yp!=0){
+                    let interval = parseInt(tb.rows[2].cells[(kkk*3)-2].textContent.split(',')[1]);
+                    interval+=stoyanka0;
+                    tb.rows[2].cells[(kkk*3)-2].textContent=id+','+interval;
+                    tb.rows[2].cells[(kkk*3)-1].textContent=time0;
+                    continue;
+                    }
                   }
                 }else{
                   adres=await point_in_global(y,x); 
@@ -9530,7 +9572,15 @@ async function logistik_zvit(data){
                     km=0;
                     y000=y;
                     x000=x;
-                  }  
+                  }else{
+                    if(y!=0){
+                    let interval = parseInt(tb.rows[2].cells[(kkk*3)-2].textContent.split(',')[1]);
+                    interval+=stoyanka0;
+                    tb.rows[2].cells[(kkk*3)-2].textContent=id+','+interval;
+                    tb.rows[2].cells[(kkk*3)-1].textContent=time0;
+                    continue;
+                    }
+                  }
                 }
               }
             }
@@ -9549,7 +9599,13 @@ async function logistik_zvit(data){
                 let point = yp+","+xp;
                 let r =  100;
                 let c = adres[0][4];
-                  if(wialon.util.Geometry.getDistance(y000,x000,yp,xp)<r)continue;
+                  if(wialon.util.Geometry.getDistance(y000,x000,yp,xp)<300){
+                    let interval = parseInt(tb.rows[2].cells[(kkk*3)-2].textContent.split(',')[1]);
+                    interval+=stoyanka0;
+                    tb.rows[2].cells[(kkk*3)-2].textContent=id+','+interval;
+                    tb.rows[2].cells[(kkk*3)-1].textContent=time0;
+                    continue;
+                  }
                   if(yp==0)continue;
                 kkk++;
                 marshrut_point0.splice(adres[1], 1);
@@ -9567,7 +9623,13 @@ async function logistik_zvit(data){
                     let point = yp+","+xp;
                     let r =  parseInt(adres[2]);
                     let c = false;
-                    if(wialon.util.Geometry.getDistance(y000,x000,yp,xp)<r)continue;
+                    if(wialon.util.Geometry.getDistance(y000,x000,yp,xp)<300){
+                    let interval = parseInt(tb.rows[2].cells[(kkk*3)-2].textContent.split(',')[1]);
+                    interval+=stoyanka0;
+                    tb.rows[2].cells[(kkk*3)-2].textContent=id+','+interval;
+                    tb.rows[2].cells[(kkk*3)-1].textContent=time0;
+                    continue;
+                  }
                     if(yp==0)continue;
                       kkk++;
                     add_point_to_table(kkk,name,point,r,c,id,time0,stoyanka0);
@@ -9578,7 +9640,13 @@ async function logistik_zvit(data){
                     x000=x;
                 }else{
                   adres=await point_in_global(y,x); 
-                  if(wialon.util.Geometry.getDistance(y000,x000,y,x)<300)continue;
+                  if(wialon.util.Geometry.getDistance(y000,x000,y,x)<300){
+                    let interval = parseInt(tb.rows[2].cells[(kkk*3)-2].textContent.split(',')[1]);
+                    interval+=stoyanka0;
+                    tb.rows[2].cells[(kkk*3)-2].textContent=id+','+interval;
+                    tb.rows[2].cells[(kkk*3)-1].textContent=time0;
+                    continue;
+                  }
                   if(y==0)continue;
                   kkk++;
                   let point=y+","+x;
@@ -9690,7 +9758,13 @@ async function logistik_zvit(data){
                   let point = yp+","+xp;
                   let r =  100;
                   let c = adres[0][4];
-                  if(wialon.util.Geometry.getDistance(y000,x000,yp,xp)<r)continue;
+                  if(wialon.util.Geometry.getDistance(y000,x000,yp,xp)<300){
+                    let interval = parseInt(tb.rows[2].cells[(kkk*3)-2].textContent.split(',')[1]);
+                    interval+=stoyanka0;
+                    tb.rows[2].cells[(kkk*3)-2].textContent=id+','+interval;
+                    tb.rows[2].cells[(kkk*3)-1].textContent=time0;
+                    continue;
+                  }
                   if(y1==0)continue;
                 kkk++;
                 marshrut_point0.splice(adres[1], 1);
@@ -9708,7 +9782,13 @@ async function logistik_zvit(data){
                     let point = yp+","+xp;
                     let r =  parseInt(adres[2]);
                     let c = false;
-                    if(wialon.util.Geometry.getDistance(y000,x000,yp,xp)<r)continue;
+                    if(wialon.util.Geometry.getDistance(y000,x000,yp,xp)<300){
+                    let interval = parseInt(tb.rows[2].cells[(kkk*3)-2].textContent.split(',')[1]);
+                    interval+=stoyanka0;
+                    tb.rows[2].cells[(kkk*3)-2].textContent=id+','+interval;
+                    tb.rows[2].cells[(kkk*3)-1].textContent=time0;
+                    continue;
+                  }
                     if(y1==0)continue;
                       kkk++;
                     //let mar = L.marker([y1,x1], {icon: L.divIcon({ className: 'div-icon',iconSize: "auto", html: "<center style = 'background:rgb(170, 248, 170);'>"+kkk+": "+name+"</center>" }),draggable: true,opacity:0.9,zIndexOffset:1000}).addTo(map);
@@ -9720,7 +9800,13 @@ async function logistik_zvit(data){
                     x000=x1;
                   }else{
                     adres=await point_in_global(y1,x1); 
-                    if(wialon.util.Geometry.getDistance(y000,x000,y1,x1)<300)continue;
+                    if(wialon.util.Geometry.getDistance(y000,x000,y1,x1)<300){
+                    let interval = parseInt(tb.rows[2].cells[(kkk*3)-2].textContent.split(',')[1]);
+                    interval+=stoyanka0;
+                    tb.rows[2].cells[(kkk*3)-2].textContent=id+','+interval;
+                    tb.rows[2].cells[(kkk*3)-1].textContent=time0;
+                    continue;
+                  }
                     if(y1==0)continue;
                     kkk++;
                     //let mar = L.marker([y1,x1], {icon: L.divIcon({ className: 'div-icon',iconSize: "auto", html: "<center style = 'background:rgb(247, 161, 161);'>"+kkk+": "+adres+"</center>" }),draggable: true,opacity:0.9,zIndexOffset:1000}).addTo(map);
