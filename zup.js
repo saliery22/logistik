@@ -10055,7 +10055,7 @@ async function logistik_zvit(data){
   msg('Завантажено');
 
   $("#cont_b4").on("click", function (){
-    let cpdata= $('#cont_time').text() + '\t'+logistik_vodiy + '\t' +$('#cont_unit').text() + '\t' +begin_marshrut0+ '\t' +end_marshrut0+ '\t' +odo + '\t' +d0 + ' \t' + d1 + '\t' + d2 + '\t' + sec_to_time(t0) + '\t' + sec_to_time(t1)+ '\t' + sec_to_time(t2)+ '\t' + sec_to_time(r0)+ '\t' + sec_to_time(r1)+ '\t' + sec_to_time(r2)+ '\t' + sec_to_time(s0)+ '\t' + sec_to_time(s1)+ '\t' + sec_to_time(s2)+ '\t' + sec_to_time(home_stops)+ '\t' + sec_to_time(err_stops)+'\t'+ $('#marshrut_text').val() + '\t' + mar_text +'\n';
+    let cpdata= $('#cont_time').text() + '\t'+logistik_vodiy + '\t' +$('#cont_unit').text() + '\t' +begin_marshrut0+ '\t' +end_marshrut0+ '\t' +odo + '\t' +d0 + ' \t' + d1 + '\t' + d2 + '\t' + sec_to_time(t0) + '\t' + sec_to_time(t1)+ '\t' + sec_to_time(t2)+ '\t' + sec_to_time(r0)+ '\t' + sec_to_time(r1)+ '\t' + sec_to_time(r2)+ '\t' + sec_to_time(s0)+ '\t' + sec_to_time(s1)+ '\t' + sec_to_time(s2)+ '\t' + sec_to_time(home_stops_0)+ '\t' + sec_to_time(err_stops)+'\t'+ $('#marshrut_text').val() + '\t' + mar_text +'\n';
   navigator.clipboard.writeText(cpdata);
   });
 }
