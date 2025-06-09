@@ -562,7 +562,7 @@ if(params.selected.split('_')[0]=='поле'){
     if(geozones[i].zone.n == name){
      let y=((geozones[i]._bounds._northEast.lat+geozones[i]._bounds._southWest.lat)/2).toFixed(5);
      let x=((geozones[i]._bounds._northEast.lng+geozones[i]._bounds._southWest.lng)/2).toFixed(5);
-     map.setView([y,x],14,{animate: false});
+     map.setView([y,x],map.getZoom(),{animate: false});
           geozonepoint.length =0;
           geozonepointTurf.length =0;
           clearGEO();
@@ -654,6 +654,7 @@ if(params.selected.split('_')[0]=='поле'){
   clearGarbage(marshrut_zony_temp);
   marshrut_zony_temp=[];
   bufer=[];
+  map.invalidateSize();
   });
  $('#men3').click(function() { 
   if ($('#option').is(':hidden')) {
@@ -704,7 +705,7 @@ $('#men8').css({'background':'#e9e9e9'});
 $('#jurnal').hide();
 $('#jurnal_upd').hide();
 bufer=[];
-
+map.invalidateSize();
 });
 
 
@@ -754,6 +755,7 @@ bufer=[];
   clearGarbage(marshrut_zony_temp);
   marshrut_zony_temp=[];
     bufer=[];
+    map.invalidateSize();
  });
 
  $('#men5').click(function() { 
@@ -800,6 +802,7 @@ bufer=[];
   clearGarbage(marshrut_zony_temp);
   marshrut_zony_temp=[];
   bufer=[];
+  map.invalidateSize();
 });
 
  $('#men6').click(function() { 
@@ -848,6 +851,7 @@ bufer=[];
   clearGarbage(marshrut_zony_temp);
   marshrut_zony_temp=[];
   bufer=[];
+  map.invalidateSize();
 });
 
  $('#men7').click(function() { 
@@ -894,6 +898,7 @@ bufer=[];
   marshrut_gruzoperevozky_temp=[];
   clearGarbage(marshrut_zony_temp);
   marshrut_zony_temp=[];
+  map.invalidateSize();
 });
 
 $("#men8").on("click", function (){
@@ -942,6 +947,7 @@ $("#men8").on("click", function (){
   marshrut_zony_temp=[];
 
   let tt = new Date(Date.parse($('#f').text())).toJSON().slice(0,10);
+    map.invalidateSize();
 });
 
  $('#marrr').hide();
@@ -975,7 +981,7 @@ $("#men8").on("click", function (){
       return;
     }
     
-   map.setView(popupp.getLatLng(), 15); 
+  //map.setView(popupp.getLatLng(), map.getZoom()); 
    popupp.openPopup();
      navigator.clipboard.writeText(unit.getName());
      show_track ();     
@@ -1123,6 +1129,9 @@ function initMap() {
     doubleClickZoom: false,
     zoomAnimation: false,
     animate: false,
+    //zoomDelta: 0.1,
+    //zoomSnap: 0,
+    //wheelPxPerZoomLevel: 100
   }).setView([51.62995, 33.64288], 9);
   
  //L.tileLayer('http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}',{ subdomains:['mt0','mt1','mt2','mt3']}).addTo(map);
@@ -1389,10 +1398,7 @@ function show_track (time1,time2) {
 					else 
 						tile_layer.setUrl(sess.getBaseUrl() + "/adfurl" + renderer.getVersion() + "/avl_render/{x}_{y}_{z}/"+ sess.getId() +".png");
 				    // push this layer in global container
-				   
-				   
 				}
-				
 			}
 	});
 	// query params
@@ -1411,20 +1417,17 @@ function show_track (time1,time2) {
         "flags": 32
 	};
 	renderer.createMessagesLayer(params, callback);
+
+ 
 }
 
 
 
 
 function Marshrut(r1,r2){
-
-
-   
-    
+ 
    marshrutID+=1; 
    var idlist=marshrutID+99999;
-   
-
    
    
 	// create row-string with data
@@ -2213,7 +2216,9 @@ function getTableValue(data) { // calculate ceil value
 
 
 var slider = document.getElementById("myRange");
+var slider_sp = document.getElementById("sp_play");
 var output = document.getElementById("f");
+
 output.innerHTML = from222; // Display the default slider value
 
 // Update the current slider value (each time you drag the slider handle)
@@ -2300,7 +2305,8 @@ setInterval(function() {
   if (sec2 <= 0 ) {jurnal_online();sec2=2000;}
 if($("#gif").is(":checked")) {
   //msg(sec/10);
-    let t=Date.parse($('#f').text())+6000;
+  console.log(slider_sp.value)
+    let t=Date.parse($('#f').text())+parseInt(slider_sp.value);
     sec++;
     tik++;
     slider.value=(t-Date.parse($('#fromtime1').val()))/(Date.parse($('#fromtime2').val())-Date.parse($('#fromtime1').val()))*2000;
@@ -2849,6 +2855,7 @@ if ($('#grafik').is(':hidden')) {
   $('#geomodul').css('height', '750px');
   this.style.background = '#e9e9e9';
 }
+    map.invalidateSize();
     }
  
   
@@ -3752,7 +3759,7 @@ $("#robota_polya_tb").on("click", function (evt){
      if(geozones[i].zone.n == name){
       let y=geozones[i]._bounds._northEast.lat;
       let x=geozones[i]._bounds._northEast.lng;
-      map.setView([y,x+0.025],14,{animate: false});
+      map.setView([y,x],map.getZoom(),{animate: false});
            geozonepoint.length =0;
            geozonepointTurf.length =0;
            clearGEO();
@@ -3850,7 +3857,7 @@ function track_TestNavigation(evt){
    show_track();
    markerByUnit[this.id.split(',')[0]].openPopup();
    if (parseFloat(this.id.split(',')[1])>0) {
-   map.setView([parseFloat(this.id.split(',')[1]), parseFloat(this.id.split(',')[2])+0.05],13,{animate: false}); 
+   //map.setView([parseFloat(this.id.split(',')[1]), parseFloat(this.id.split(',')[2])],map.getZoom(),{animate: false}); 
    }
    if ($('#grafik').is(':hidden')) {}else{ show_gr();}
    
@@ -4204,7 +4211,7 @@ function track_Monitoring(evt){
    show_track();
    let mar=markerByUnit[evt.target.parentNode.id];
    mar.openPopup();
-   map.setView([mar.getLatLng().lat,mar.getLatLng().lng+0.02],14,{animate: false});
+   //map.setView([mar.getLatLng().lat,mar.getLatLng().lng],map.getZoom(),{animate: false});
    }
      
  }
@@ -5039,7 +5046,7 @@ if(svdata22)sliv_history=svdata22;
       $('#monitoring').css('height', '470px');
     } 
      show_gr(data,data2);
-     map.setView([parseFloat(this.id.split(',')[1]), parseFloat(this.id.split(',')[2])+0.001],13,{animate: false});
+     //map.setView([parseFloat(this.id.split(',')[1]), parseFloat(this.id.split(',')[2])],map.getZoom(),{animate: false});
     
   }
 
@@ -5405,7 +5412,7 @@ async function marshrut_avto(){
     function Serch_GEO(adres) { 
         wialon.util.Gis.searchByString(adres,0,1, function(code, data) {
         if (code) { msg(wialon.core.Errors.getErrorText(code)); return; } // exit if error code
-        if (data) {if (data[0]){map.setView([data[0].items[0].y, data[0].items[0].x], 13); }}});
+        if (data) {if (data[0]){map.setView([data[0].items[0].y, data[0].items[0].x], map.getZoom()); }}});
     }
  
    let probl="";
@@ -6152,7 +6159,7 @@ for(let i = 0; i<unitslist.length; i++){
           if(unit==false)continue;
           let lat = point_planuvannya_list[i]._latlng.lat;
           let lon = point_planuvannya_list[i]._latlng.lng;
-          map.setView([lat, lon], 10);
+          map.setView([lat, lon], map.getZoom());
           point_planuvannya_list[i].openPopup();
         }
     });
@@ -6189,7 +6196,7 @@ if(kk==0){
           if(unit==false)continue;
           let lat = point_planuvannya_list[i]._latlng.lat;
           let lon = point_planuvannya_list[i]._latlng.lng;
-          map.setView([lat, lon], 10);
+          map.setView([lat, lon], map.getZoom());
           point_planuvannya_list[i].openPopup();
         }
     });
@@ -6457,7 +6464,7 @@ $("#unit_table").on("click", function (evt){
     if(name==geozones[i].zone.n){
      let y=((geozones[i]._bounds._northEast.lat+geozones[i]._bounds._southWest.lat)/2).toFixed(5);
      let x=((geozones[i]._bounds._northEast.lng+geozones[i]._bounds._southWest.lng)/2+0.04).toFixed(5);
-     map.setView([y,x],14,{animate: false});
+     map.setView([y,x],map.getZoom(),{animate: false});
           clearGEO();
        let point = geozones[i]._latlngs[0];
        let ramka=[];
@@ -6551,7 +6558,7 @@ $("#unit_table").on("click", function (evt){
           if(unit==false)continue;
           let lat = point_planuvannya_list[i]._latlng.lat;
           let lon = point_planuvannya_list[i]._latlng.lng;
-          map.setView([lat, lon], 10);
+          map.setView([lat, lon], map.getZoom());
           point_planuvannya_list[i].openPopup();
         }
     });
@@ -6572,7 +6579,7 @@ $("#unit_table").on("click", function (evt){
           if(markerr){
            let lat = markerr.getLatLng().lat;
            let lon = markerr.getLatLng().lng;
-           map.setView([lat, lon], 10);
+           //map.setView([lat, lon], map.getZoom());
            markerr.openPopup();
           }
           }
@@ -6785,28 +6792,30 @@ if($("#unit_table tr").length==0){
 
    let yy = 0;
    let xx = 0;
+   let yy0 = 0;
+   let xx0 = 0;
+
   for(let i = 0; i<Global_DATA.length; i++){ 
     let id = Global_DATA[i][0][0];
        if(id!=unitId)continue;
        unitName = Global_DATA[i][0][1];
-       line = [];
+
       for (let ii = 1; ii<Global_DATA[i].length-1; ii+=1){ 
         if(!Global_DATA[i][ii][0])continue;
-        if(!Global_DATA[i][ii+1][0])continue;
         if(Global_DATA[i][ii][4]<from || Global_DATA[i][ii][4]>to)continue;
         if(parseInt(Global_DATA[i][ii][3])>0 || parseInt(Global_DATA[i][ii+1][3])>0){
+         if(yy0==0){yy0 = parseFloat(Global_DATA[i][ii][0].split(',')[0]);xx0 = parseFloat(Global_DATA[i][ii][0].split(',')[1]);continue;}
+         if(xx0==0){xx0 = parseFloat(Global_DATA[i][ii][0].split(',')[1]);yy0 = parseFloat(Global_DATA[i][ii][0].split(',')[0]);continue;}
           yy = parseFloat(Global_DATA[i][ii][0].split(',')[0]);
           xx = parseFloat(Global_DATA[i][ii][0].split(',')[1]);
-         let yyy = parseFloat(Global_DATA[i][ii+1][0].split(',')[0]);
-         let xxx = parseFloat(Global_DATA[i][ii+1][0].split(',')[1]);
          t_km+=(Global_DATA[i][ii][4]-Global_DATA[i][ii-1][4])/1000;
-         dis = wialon.util.Geometry.getDistance(yy,xx,yyy,xxx);
+         dis = wialon.util.Geometry.getDistance(yy,xx,yy0,xx0);
          if(dis<500000){
           km+=dis;
-          let l = L.polyline([[yy,xx],[yyy,xxx]], {color: "rgb(0, 4, 255)",weight:3,opacity:1}).addTo(map);
+          let l = L.polyline([[yy,xx],[yy0,xx0]], {color: "rgb(0, 4, 255)",weight:3,opacity:1}).addTo(map);
           temp_layer.push(l);
          }else{
-          let l = L.polyline([[yy,xx],[yyy,xxx]], {color: "rgb(234, 0, 255)",weight:3,opacity:1}).addTo(map);
+          let l = L.polyline([[yy,xx],[yy0,xx0]], {color: "rgb(234, 0, 255)",weight:3,opacity:1}).addTo(map);
           temp_layer.push(l);
          }
     
@@ -6827,6 +6836,8 @@ if($("#unit_table tr").length==0){
         stop+=(Global_DATA[i][ii][4]-Global_DATA[i][ii-1][4])/1000;
         if(stop_date=='')stop_date = Global_DATA[i][ii][1];
       }
+      yy0=yy;
+      xx0=xx;
     }
   }
         if(stop>0){
@@ -6842,8 +6853,7 @@ if($("#unit_table tr").length==0){
          stop_date='';
          }
 
-  let l = L.polyline([line], {color: "#0019fc",weight:3,opacity:1}).addTo(map);
-  temp_layer.push(l);
+
 
   $("#unit_table").append("<tr><td>"+$('#prob_from').val().replace("T", " ").split(' ')[0]+"</td><td>"+unitName+"</td><td>"+$('#prob_from').val().replace("T", " ").split(' ')[1]+"</td><td>"+$('#prob_to').val().replace("T", " ").split(' ')[1]+"</td><td>"+(km/1000).toFixed(1).replace(/\./g, ",")+"</td><td>"+sec_to_time(t_km+t_s)+"</td><td>"+sec_to_time(t_km)+"</td><td>"+sec_to_time(t_s)+"</td></tr>");
 
@@ -7118,7 +7128,7 @@ if(evt.target.cellIndex==6){
       if(geozones[i].zone.n == name){
        let y=geozones[i]._bounds._northEast.lat;
        let x=geozones[i]._bounds._northEast.lng;
-       map.setView([y,x+0.02],14);
+       map.setView([y,x],map.getZoom(),{animate: false});
        clearGEO();
        let point = geozones[i]._latlngs[0];
        let ramka=[];
@@ -7139,7 +7149,7 @@ if(evt.target.cellIndex==6){
      if(nm == name){
       let y=unitslist[i].getPosition().y;
       let x=unitslist[i].getPosition().x;
-      map.setView([y,x+0.04],14,{animate: false});
+      //map.setView([y,x],map.getZoom(),{animate: false});
       $("#lis0").chosen().val(id);
       $("#lis0").trigger("chosen:updated");
       markerByUnit[id].openPopup();
@@ -7522,7 +7532,7 @@ $("#log_marh_tb").on("click", function (evt){
       let id = parseFloat(evt.target.innerText)-1; 
       let y =marshrut_point[id][2];
       let x =marshrut_point[id][3];
-      if(y!=0)map.setView([y,x+0.04],14,{animate: false});
+      if(y!=0)map.setView([y,x],map.getZoom(),{animate: false});
 
     
                 let idd = parseInt(tb.rows[2].cells[ind+1].textContent.split(',')[0]);
@@ -8902,7 +8912,7 @@ let name = evt.target.innerText.split(' ')[0];
       if(nm.indexOf(name)>=0){
       let y=unitslist[i].getPosition().y;
       let x=unitslist[i].getPosition().x;
-      map.setView([y,x+0.5],10,{animate: false});
+      //map.setView([y,x],map.getZoom(),{animate: false});
       $("#lis0").chosen().val(id);
       $("#lis0").trigger("chosen:updated");
       markerByUnit[id].openPopup();
@@ -9217,7 +9227,7 @@ let name = evt.target.innerText.split(' ')[0];
       if(nm.indexOf(name)>=0){
       let y=unitslist[i].getPosition().y;
       let x=unitslist[i].getPosition().x;
-      map.setView([y,x+0.5],10,{animate: false});
+      //map.setView([y,x],map.getZoom(),{animate: false});
       $("#lis0").chosen().val(id);
       $("#lis0").trigger("chosen:updated");
       markerByUnit[id].openPopup();
@@ -10290,7 +10300,7 @@ for(var i=0; i < allunits.length; i++){
   let mar =  markerByUnit[id];
   let y=mar.getLatLng().lat;
   let x=mar.getLatLng().lng;
-  map.setView([y,x+0.4], map.getZoom(),{animate: false});
+  //map.setView([y,x], map.getZoom(),{animate: false});
   $("#lis0").chosen().val(id);
   $("#lis0").trigger("chosen:updated");
   mar.openPopup();
