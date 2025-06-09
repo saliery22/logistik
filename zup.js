@@ -343,8 +343,20 @@ function initUIData() {
           let scaledPoly = turf.transformScale(hull, 1.1);
           let poly = L.geoJSON(scaledPoly,{color: `hsl(${poly_color}, ${100}%, ${45}%)`, fillColor: `hsl(${poly_color}, ${100}%, ${45}%)`, fillOpacity: 0.3,weight:2}).bindTooltip(gzgroop[key].n);
           geozonesgrup.push(poly);
-        }
-        
+           poly.on('click', function(e) {
+                let m =L.marker(e.latlng,{
+                  clickable: true,
+                  draggable: true,
+                  icon: L.divIcon({
+                    iconSize: "auto",
+                    iconAnchor: [25, 8],
+                    className: 'my-labels',
+                    html: "<div><nobr>"+e.target._tooltip._content+"</div>",
+                  })
+                }).addTo(map);
+                zup_mark_data.push(m);
+          });
+        } 
         }
       }
 
@@ -1109,7 +1121,8 @@ function initMap() {
   map = L.map('map', {
     // disable zooming, because we will use double-click to set up marker
     doubleClickZoom: false,
-    animate: false
+    zoomAnimation: false,
+    animate: false,
   }).setView([51.62995, 33.64288], 9);
   
  //L.tileLayer('http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}',{ subdomains:['mt0','mt1','mt2','mt3']}).addTo(map);
@@ -1142,12 +1155,19 @@ basemaps.OSM.addTo(map);
     
       var pos = e.latlng;
       var raddddd;
-      //$.get('https://nominatim.openstreetmap.org/reverse?format=jsonv2&accept-language=UA&lat='+pos.lat+'&lon='+pos.lng+'', function(data){ console.log(data); });
+      // $.get('https://nominatim.openstreetmap.org/reverse?format=jsonv2&accept-language=UA&lat='+pos.lat+'&lon='+pos.lng+'', function(data){ 
+      //   console.log(data.display_name); 
+      //   navigator.clipboard.writeText(data.display_name);
+      //   L.marker([pos.lat, pos.lng]).addTo(map);
+      // });
+      
+      
       //console.log(wialon.util.Gis.getLevelFlags(wialon.util.Gis.geocodingFlags.level_houses, wialon.util.Gis.geocodingFlags.level_streets, wialon.util.Gis.geocodingFlags.level_cities, wialon.util.Gis.geocodingFlags.level_cities, wialon.util.Gis.geocodingFlags.level_cities));
      
-     //wialon.util.Gis.getLocations([{lat: pos.lat, lon: pos.lng}], function(code, data) {
-     //   if (code) { msg(wialon.core.Errors.getErrorText(code)); return; } // exit if error code
-     //   if (data) {let adr =data[0].split(', '); console.log(adr); console.log(adr[adr.length-1].replace(/[0-9]| km from |\.|\s/g, '')); }});
+    // wialon.util.Gis.getLocations([{lat: pos.lat, lon: pos.lng}], function(code, data) {
+       // if (code) { msg(wialon.core.Errors.getErrorText(code)); return; } // exit if error code
+       // if (data) {let adr =data[0].split(', '); console.log(data); console.log(adr[adr.length-1].replace(/[0-9]| km from |\.|\s/g, '')); }});
+       // L.marker([pos.lat, pos.lng]).addTo(map);
 
       // wialon.util.Gis.searchByString('Київ Чернігівська обл. Сумська обл.',0,1, function(code, data) {
        // if (code) { msg(wialon.core.Errors.getErrorText(code)); return; } // exit if error code
@@ -10245,7 +10265,7 @@ $('#marsh_bt3').click(function() {
     
      let data_av = data[ data.length-1];
      $('#marsh_avto').empty();
-     $('#marsh_avto').append("<tr><td></td><td>ГРУПА</td><td>ТЗ</td><td>ВОДІЙ</td><td>ПРИЧЕП</td><td>НАРЯД</td></tr>");
+     $('#marsh_avto').append("<tr><td></td><td>ГРУПА</td><td>ТЗ</td><td>ВОДІЙ</td><td>ПРИЧЕП</td><td>НАРЯД</td><td>проб</td><td>ходки</td><td>роб</td><td>час</td></tr>");
      for(var i=0; i < data_av.length; i++){
 
        let g=data_av[i][0];
@@ -10254,7 +10274,7 @@ $('#marsh_bt3').click(function() {
        let p=data_av[i][3];
        let r=data_av[i][4];
    
-       $('#marsh_avto').append("<tr><td><button id = '"+n.split(' ')[0]+"'onclick='find_avto(this.id)'>"+(i+1)+"</button></td><td>"+g+"</td><td contenteditable='true'>"+n+"</td><td contenteditable='true'>"+v+"</td><td contenteditable='true'>"+p+"</td><td contenteditable='true'>"+r+"</td></tr>");
+       $('#marsh_avto').append("<tr><td><button id = '"+n.split(' ')[0]+"'onclick='find_avto(this.id)'>"+(i+1)+"</button></td><td>"+g+"</td><td contenteditable='true'>"+n+"</td><td contenteditable='true'>"+v+"</td><td contenteditable='true'>"+p+"</td><td contenteditable='true'>"+r+"</td><td></td><td></td><td></td><td></td></tr>");
       }
      update_marshrut(marshrut_gruzoperevozky);
      return;
@@ -10270,7 +10290,7 @@ for(var i=0; i < allunits.length; i++){
   let mar =  markerByUnit[id];
   let y=mar.getLatLng().lat;
   let x=mar.getLatLng().lng;
-  map.setView([y,x+0.5], map.getZoom(),{animate: false});
+  map.setView([y,x+0.4], map.getZoom(),{animate: false});
   $("#lis0").chosen().val(id);
   $("#lis0").trigger("chosen:updated");
   mar.openPopup();
@@ -10340,23 +10360,38 @@ marshrut_problem_his.push([e.cells[1].innerText,e.cells[2].innerText,e.cells[3].
         zav.sort((a, b) => a[7] - b[7]);
         for(var ii=0; ii < zav.length; ii++){
           tb.append("<tr style ='background:rgb(219, 255, 198);'><td><button id = '"+zav[ii][1]+"'onclick='window.opener.find_avto(this.id)'>"+(ii+1)+"</button></td><td "+st+">"+zav[ii][0]+"</td><td "+st+">"+zav[ii][1]+"</td><td "+st+">"+zav[ii][2]+"</td><td "+st+">"+zav[ii][3]+"</td><td "+st+">"+zav[ii][4]+"</td><td "+st+">"+zav[ii][5]+"</td><td "+st+">"+zav[ii][6]+"</td><td "+st+">"+sec_to_time(zav[ii][7])+"</td></tr>");
+        mt_add_info(zav[ii][1],zav[ii][4],zav[ii][5],zav[ii][6],sec_to_time(zav[ii][7]));  
         }
         tb.append("<tr style ='background:rgb(252, 250, 171);'><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td><b>їде завантаженим "+na_rozv.length +"</td><td></td></tr>");
         na_rozv.sort((a, b) => a[7] - b[7]);
         for(var ii=0; ii < na_rozv.length; ii++){
           tb.append("<tr style ='background:rgb(252, 250, 171);'><td><button id = '"+na_rozv[ii][1]+"'onclick='window.opener.find_avto(this.id)'>"+(ii+1)+"</button></td><td "+st+">"+na_rozv[ii][0]+"</td><td "+st+">"+na_rozv[ii][1]+"</td><td "+st+">"+na_rozv[ii][2]+"</td><td "+st+">"+na_rozv[ii][3]+"</td><td "+st+">"+na_rozv[ii][4]+"</td><td "+st+">"+na_rozv[ii][5]+"</td><td "+st+">"+na_rozv[ii][6]+"</td><td "+st+">"+sec_to_time(na_rozv[ii][7])+"</td></tr>");
+        mt_add_info(na_rozv[ii][1],na_rozv[ii][4],na_rozv[ii][5],na_rozv[ii][6],sec_to_time(na_rozv[ii][7]));
         }
         tb.append("<tr style ='background:rgb(250, 190, 179);'><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td><b>їде пустий "+na_zav.length +"</td><td></td></tr>");
         na_zav.sort((a, b) => b[7] - a[7]);
         for(var ii=0; ii < na_zav.length; ii++){
           tb.append("<tr style ='background:rgb(250, 190, 179);'><td><button id = '"+na_zav[ii][1]+"'onclick='window.opener.find_avto(this.id)'>"+(ii+1)+"</button></td><td "+st+">"+na_zav[ii][0]+"</td><td "+st+">"+na_zav[ii][1]+"</td><td "+st+">"+na_zav[ii][2]+"</td><td "+st+">"+na_zav[ii][3]+"</td><td "+st+">"+na_zav[ii][4]+"</td><td "+st+">"+na_zav[ii][5]+"</td><td "+st+">"+na_zav[ii][6]+"</td><td "+st+">"+sec_to_time(na_zav[ii][7])+"</td></tr>");
+        mt_add_info(na_zav[ii][1],na_zav[ii][4],na_zav[ii][5],na_zav[ii][6],sec_to_time(na_zav[ii][7]));
         }
         tb.append("<tr style ='background:rgb(179, 204, 250);'><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td><b>розвантажується "+rozv.length +"</td><td></td></tr>");
         rozv.sort((a, b) => b[7] - a[7]);
         for(var ii=0; ii < rozv.length; ii++){
           tb.append("<tr style ='background:rgb(179, 204, 250);'><td><button id = '"+rozv[ii][1]+"'onclick='window.opener.find_avto(this.id)'>"+(ii+1)+"</button></td><td "+st+">"+rozv[ii][0]+"</td><td "+st+">"+rozv[ii][1]+"</td><td "+st+">"+rozv[ii][2]+"</td><td "+st+">"+rozv[ii][3]+"</td><td "+st+">"+rozv[ii][4]+"</td><td "+st+">"+rozv[ii][5]+"</td><td "+st+">"+rozv[ii][6]+"</td><td "+st+">"+sec_to_time(rozv[ii][7])+"</td></tr>");
+        mt_add_info(rozv[ii][1],rozv[ii][4],rozv[ii][5],rozv[ii][6],sec_to_time(rozv[ii][7]));
         }
 
+        function mt_add_info(name,a,b,c,d){
+            for(var i=1; i < tb_a.rows.length; i++){
+              if(tb_a.rows[i].cells[2].textContent.indexOf(name)>=0){
+                 tb_a.rows[i].cells[6].textContent =a;
+                 tb_a.rows[i].cells[7].textContent =b;
+                 tb_a.rows[i].cells[8].textContent =c.slice(0,10);
+                 tb_a.rows[i].cells[9].textContent =d;
+                 return;
+              }
+            }
+        }
         
         for(var ii=0; ii < res[res.length-1].length; ii++){
           let povtor = false;
@@ -10651,7 +10686,7 @@ function calculate_mn(data,ind){
           let direktion = 'S';
           let hodki = 0;
           if(marsh.length>0){
-            hodki = (marsh.length/2).toFixed();
+            hodki = (marsh.length/2+0.5).toFixed();
             if(marsh[marsh.length-1]=='Z'){
               direktion='Z';
               hodki-=1;
@@ -10692,7 +10727,7 @@ function calculate_mn(data,ind){
  $('#marsh_bt0').click(function() {
   //if(newWindow)newWindow.close();
   if(!newWindow || newWindow.closed){
-    newWindow = window.open("", '', " width=1000,height=1000, status=no,toolbar=no,menubar=no,location=no");
+    newWindow = window.open("", '', " width=1000,height=800, status=no,toolbar=no,menubar=no,location=no");
     newWindow.document.write("<div id='mon_online_tb' style = 'display: flex; flex-wrap: wrap;' ></div>");
   }
     update_popUP();
@@ -10703,7 +10738,7 @@ function calculate_mn(data,ind){
   .then(text => {
     let rows = text.split('\r\n');
     $('#marsh_avto').empty();
-    $('#marsh_avto').append("<tr><td></td><td>ГРУПА</td><td>ТЗ</td><td>ВОДІЙ</td><td>ПРИЧЕП</td><td>НАРЯД</td></tr>");
+    $('#marsh_avto').append("<tr><td></td><td>ГРУПА</td><td>ТЗ</td><td>ВОДІЙ</td><td>ПРИЧЕП</td><td>НАРЯД</td><td>проб</td><td>ходки</td><td>роб</td><td>час</td></tr>");
     for(var i=0; i < rows.length-1; i++){
       let td = rows[i].split('\t');
       let g=td[0];
@@ -10712,7 +10747,7 @@ function calculate_mn(data,ind){
       let p=td[4];
       let r=td[5];
   
-      $('#marsh_avto').append("<tr><td><button id = '"+n.split(' ')[0]+"'onclick='find_avto(this.id)'>"+(i+1)+"</button></td><td>"+g+"</td><td contenteditable='true'>"+n+"</td><td contenteditable='true'>"+v+"</td><td contenteditable='true'>"+p+"</td><td contenteditable='true'>"+r+"</td></tr>");
+       $('#marsh_avto').append("<tr><td><button id = '"+n.split(' ')[0]+"'onclick='find_avto(this.id)'>"+(i+1)+"</button></td><td>"+g+"</td><td contenteditable='true'>"+n+"</td><td contenteditable='true'>"+v+"</td><td contenteditable='true'>"+p+"</td><td contenteditable='true'>"+r+"</td><td></td><td></td><td></td><td></td></tr>");
      }
   })
   .catch(err => {
