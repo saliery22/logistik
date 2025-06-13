@@ -1297,6 +1297,7 @@ L.control.ruler(options).addTo(map);
 
 }
 
+
 //let ps = prompt('');
 //if(ps==55555){
 // execute when DOM ready
@@ -2305,7 +2306,6 @@ setInterval(function() {
   if (sec2 <= 0 ) {jurnal_online();sec2=2000;}
 if($("#gif").is(":checked")) {
   //msg(sec/10);
-  console.log(slider_sp.value)
     let t=Date.parse($('#f').text())+parseInt(slider_sp.value);
     sec++;
     tik++;
@@ -6869,6 +6869,70 @@ $('#prob_bt4').click(function() {
   $('#prob_from').val(null);
   $('#prob_to').val(null)
 });
+//========================================================================================================================
+//========================================================================================================================
+$('#dut_ruh').click(function() {
+  $("#unit_table").empty();
+  $("#unit_table").append("<tr><td>ТЗ</td><td>стоянка</td><td>робота</td><td>витрачено л.</td><td>середня витрата л/г</td></tr>");
+if ($('#grafik').is(':hidden')) {
+      $('#grafik').show();
+      $('#map').css('height', '470px');
+      $('#marrr').css('height', '470px');
+      $('#option').css('height', '470px');
+      $('#unit_info').css('height', '470px');
+      $('#zupinki').css('height', '470px');
+      $('#logistika').css('height', '470px');
+      $('#monitoring').css('height', '470px');
+    } 
+
+    var unid =  parseInt($("#lis0").chosen().val());
+        if ($('#grafik').is(':hidden')==false){
+          $('#v11').css({'background':'#b2f5b4'});
+          let data_graf = [];
+          for(let i = 0; i<Global_DATA.length; i++){ 
+            let idd = Global_DATA[i][0][0];
+            let namet = Global_DATA[i][0][1];
+            if(idd==unid){
+              let k=0.1;
+              let filVal=0;
+              let time =0;
+              let rob=0;
+              let stop = 0;
+              let rash=0;
+              for (let ii = 2; ii<Global_DATA[i].length-1; ii+=1){
+                 if(!Global_DATA[i][ii][0])continue;
+                 if(!Global_DATA[i][ii-1][0])continue;
+                 let t = (Global_DATA[i][ii][4] - Global_DATA[i][ii-1][4])/1000;
+                 if(parseInt(Global_DATA[i][ii][3])>0 || parseInt(Global_DATA[i][ii+1][3])>0){
+                    rob+=t;
+                 }else{
+                    stop+=t;
+                 }
+                 if(!Global_DATA[i][ii][2] || Global_DATA[i][ii][2]=="-----")continue;
+                 if(parseFloat(Global_DATA[i][ii][2])<=0)continue;
+             
+              time+=t;
+              if(time<300)continue;
+              time =0;
+              k=0.1;
+              if(parseFloat(Global_DATA[i][ii][2]) - filVal<-10 || parseFloat(Global_DATA[i][ii][2]) - filVal >10) k=0.05;
+                if(filVal==0){
+                  filVal = parseFloat(Global_DATA[i][ii][2]);
+                }else{
+                let f0 = filVal;
+                filVal += (parseFloat(Global_DATA[i][ii][2]) - filVal)*k;
+                if(f0-filVal>0)rash+=f0-filVal;
+                }
+                data_graf.push([Global_DATA[i][ii][0],Global_DATA[i][ii][1],filVal.toFixed(2),Global_DATA[i][ii][3]]);
+              } 
+              $("#unit_table").append("<tr><td>"+namet+"</td><td>"+sec_to_time(stop)+"</td><td>"+sec_to_time(rob)+"</td><td>"+rash.toFixed(2)+"</td><td>"+(rash/(rob/3600)).toFixed(2)+"</td></tr>");
+              break;
+            }   
+          }
+          drawChart(data_graf);
+    }
+
+});
 
 //===========================ЖУРНАЛ=======================================================================================
 //===========================ЖУРНАЛ=======================================================================================
@@ -10341,7 +10405,11 @@ marshrut_problem_his.push([e.cells[1].innerText,e.cells[2].innerText,e.cells[3].
           let name = tb_a.rows[ii].cells[5].innerText.split('+');
           if(name[name.length-1]==name_m){
             spisok.push([tb_a.rows[ii].cells[1].innerText,tb_a.rows[ii].cells[2].innerText,tb_a.rows[ii].cells[3].innerText,tb_a.rows[ii].cells[4].innerText,tb_a.rows[ii].cells[5].innerText]);
+          }else{
+            if(name[0]==name_m){
+            spisok.push([tb_a.rows[ii].cells[1].innerText,tb_a.rows[ii].cells[2].innerText,tb_a.rows[ii].cells[3].innerText,tb_a.rows[ii].cells[4].innerText,tb_a.rows[ii].cells[5].innerText]);
           }
+          } 
         }
         let res = calculate_mn(spisok,i-1);
           let zav=[];
@@ -10753,9 +10821,9 @@ function calculate_mn(data,ind){
       let td = rows[i].split('\t');
       let g=td[0];
       let n=td[2];
-      let v=td[3];
-      let p=td[4];
-      let r=td[5];
+      let v=td[4];
+      let p=td[5];
+      let r=td[6];
   
        $('#marsh_avto').append("<tr><td><button id = '"+n.split(' ')[0]+"'onclick='find_avto(this.id)'>"+(i+1)+"</button></td><td>"+g+"</td><td contenteditable='true'>"+n+"</td><td contenteditable='true'>"+v+"</td><td contenteditable='true'>"+p+"</td><td contenteditable='true'>"+r+"</td><td></td><td></td><td></td><td></td></tr>");
      }
