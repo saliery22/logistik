@@ -492,8 +492,10 @@ if (Date.parse($('#fromtime1').val())/1000 > unit.getPosition().t){rest_units.pu
   
          if (name=='John Deere' || name=='Обприскувачі'|| name=='Навантажувачі'|| name=='Трактори'|| name=='Спецтехніка'){
           $('#m_lis').append($('<option selected>').text(name+" ("+data.items[i].$$user_units.length+")").val(name));
+          $('#track_lis2').append($('<option selected>').text(name+" ("+data.items[i].$$user_units.length+")").val(name));
          }else{
           $('#m_lis').append($('<option>').text(name+" ("+data.items[i].$$user_units.length+")").val(name));
+           $('#track_lis2').append($('<option>').text(name+" ("+data.items[i].$$user_units.length+")").val(name));
          }
          if (name=='John Deere'){
           $('#r_lis').append($('<option selected>').text(name+" ("+data.items[i].$$user_units.length+")").val(name));
@@ -517,6 +519,7 @@ if (Date.parse($('#fromtime1').val())/1000 > unit.getPosition().t){rest_units.pu
     //console.log(unitsgrup);
     $("#planuvannya_lis").trigger("chosen:updated"); //обновляем select 
     $("#track_lis").trigger("chosen:updated"); //обновляем select 
+    $("#track_lis2").trigger("chosen:updated"); //обновляем select 
     $("#r_lis").trigger("chosen:updated"); //обновляем select 
     $("#m_lis").trigger("chosen:updated"); //обновляем select  
     $("#lis1").trigger("chosen:updated"); //обновляем select 
@@ -2987,7 +2990,7 @@ a[3]=parseFloat(data_graf[i][2]);
 a[5]='стоїть\n'+data_graf[i][0]+'\n'+data_graf[i][1]+'\n'+data_graf[i][2];
 if (data_graf[i-1][0]!=data_graf[i][0]){ 
  
-a[5]='рухається\n'+data_graf[i][0]+'\n'+data_graf[i][1]+'\n'+data_graf[i][2];
+a[5]='рухається\n'+data_graf[i][0]+'\n'+data_graf[i][1]+'\n'+data_graf[i][2]+'\n'+data_graf[i][3];
 }
 
 
@@ -6585,6 +6588,7 @@ $("#unit_table").on("click", function (evt){
           }
      }
   }
+
 });
 
 
@@ -6871,9 +6875,84 @@ $('#prob_bt4').click(function() {
 });
 //========================================================================================================================
 //========================================================================================================================
-$('#dut_ruh').click(function() {
-  $("#unit_table").empty();
-  $("#unit_table").append("<tr><td>ТЗ</td><td>стоянка</td><td>робота</td><td>витрачено л.</td><td>середня витрата л/г</td></tr>");
+$('#dut_ruh_zvit').click(function() {
+let str='';
+  let vibor = $("#track_lis2").chosen().val();
+  if(vibor){
+    for(var i=0; i < vibor.length; i++){
+      if(unitsgrup[vibor[i]]){
+        if (i==0){ 
+           str += unitsgrup[vibor[i]];
+           }else{
+           str += ','+unitsgrup[vibor[i]];
+           }
+    }
+    }
+  }else{
+    if($("#lis0 :selected").html()=='—')return;
+    str = $("#lis0 :selected").html();
+  }
+   str = str.split(',');
+
+
+   $("#unit_table").empty();
+   $("#unit_table").append("<tr><td>ТЗ</td><td>стоянка</td><td>робота</td><td>заправка л.</td><td>витрачено л.</td><td>середня витрата л/год</td></tr>");
+  for(let i = 0; i<Global_DATA.length; i++){ 
+            let idd = Global_DATA[i][0][0];
+            let namet = Global_DATA[i][0][1];
+            let unit =false;
+            str.forEach((element) => {if(namet.indexOf(element)>=0){unit = true;}});
+            if(unit==false)continue;
+              let k=0.1;
+              let filVal=0;
+              let rob=0;
+              let stop = 0;
+              let rash=0;
+              let zapravkal0=0;
+              let zapravkal=0;
+              let stops=0;
+              for (let ii = 2; ii<Global_DATA[i].length-1; ii+=1){
+                 if(!Global_DATA[i][ii][0])continue;
+                 if(!Global_DATA[i][ii-1][0])continue;
+                 let t = (Global_DATA[i][ii][4] - Global_DATA[i][ii-1][4])/1000;
+                 if(parseInt(Global_DATA[i][ii][3])>0 || parseInt(Global_DATA[i][ii+1][3])>0){
+                    rob+=t;
+                    if(stops>120 && zapravkal0<-80){zapravkal+=zapravkal0;}
+                    zapravkal0=0;
+                    stops = 0;
+                 }else{
+                    stop+=t;
+                    stops+=t;
+                 }
+                 if(!Global_DATA[i][ii][2] || Global_DATA[i][ii][2]=="-----")continue;
+                 if(parseFloat(Global_DATA[i][ii][2])<=0)continue;
+             
+            
+              k=0.1;
+              k=t/1000;
+              //if(parseFloat(Global_DATA[i][ii][2]) - filVal<-10 || parseFloat(Global_DATA[i][ii][2]) - filVal >10) k=0.05;
+              if(Global_DATA[i][ii][0]==Global_DATA[i][ii-1][0])k=0.5;
+                if(filVal==0){
+                  filVal = parseFloat(Global_DATA[i][ii][2]);
+                }else{
+                let f0 = filVal;
+                filVal += (parseFloat(Global_DATA[i][ii][2]) - filVal)*k;
+               
+                if(parseInt(Global_DATA[i][ii][3])==0){
+                  zapravkal0+=f0-filVal;
+                }else{
+                  rash+=f0-filVal;
+                }
+                }
+              } 
+              if(stops>120 && zapravkal0>80)zapravkal+=zapravkal0;
+              $("#unit_table").append("<tr><td><button id = '"+idd+"'; onclick='dut_ruh(this.id)';>"+namet+"</button></td><td>"+sec_to_time(stop)+"</td><td>"+sec_to_time(rob)+"</td><td>"+zapravkal.toFixed(2)+"</td><td>"+(rash).toFixed(2)+"</td><td>"+((rash)/(rob/3600)).toFixed(2)+"</td></tr>");
+            }               
+          
+});
+
+
+function dut_ruh(id) {
 if ($('#grafik').is(':hidden')) {
       $('#grafik').show();
       $('#map').css('height', '470px');
@@ -6885,7 +6964,7 @@ if ($('#grafik').is(':hidden')) {
       $('#monitoring').css('height', '470px');
     } 
 
-    var unid =  parseInt($("#lis0").chosen().val());
+    var unid =  id;
         if ($('#grafik').is(':hidden')==false){
           $('#v11').css({'background':'#b2f5b4'});
           let data_graf = [];
@@ -6895,44 +6974,31 @@ if ($('#grafik').is(':hidden')) {
             if(idd==unid){
               let k=0.1;
               let filVal=0;
-              let time =0;
-              let rob=0;
-              let stop = 0;
-              let rash=0;
               for (let ii = 2; ii<Global_DATA[i].length-1; ii+=1){
                  if(!Global_DATA[i][ii][0])continue;
                  if(!Global_DATA[i][ii-1][0])continue;
                  let t = (Global_DATA[i][ii][4] - Global_DATA[i][ii-1][4])/1000;
-                 if(parseInt(Global_DATA[i][ii][3])>0 || parseInt(Global_DATA[i][ii+1][3])>0){
-                    rob+=t;
-                 }else{
-                    stop+=t;
-                 }
                  if(!Global_DATA[i][ii][2] || Global_DATA[i][ii][2]=="-----")continue;
                  if(parseFloat(Global_DATA[i][ii][2])<=0)continue;
-             
-              time+=t;
-              if(time<300)continue;
-              time =0;
               k=0.1;
-              if(parseFloat(Global_DATA[i][ii][2]) - filVal<-10 || parseFloat(Global_DATA[i][ii][2]) - filVal >10) k=0.05;
+              k=t/1000;
+              //if(parseFloat(Global_DATA[i][ii][2]) - filVal<-10 || parseFloat(Global_DATA[i][ii][2]) - filVal >10) k=0.05;
+              if(Global_DATA[i][ii][0]==Global_DATA[i][ii-1][0])k=0.5;
                 if(filVal==0){
                   filVal = parseFloat(Global_DATA[i][ii][2]);
                 }else{
                 let f0 = filVal;
                 filVal += (parseFloat(Global_DATA[i][ii][2]) - filVal)*k;
-                if(f0-filVal>0)rash+=f0-filVal;
                 }
                 data_graf.push([Global_DATA[i][ii][0],Global_DATA[i][ii][1],filVal.toFixed(2),Global_DATA[i][ii][3]]);
               } 
-              $("#unit_table").append("<tr><td>"+namet+"</td><td>"+sec_to_time(stop)+"</td><td>"+sec_to_time(rob)+"</td><td>"+rash.toFixed(2)+"</td><td>"+(rash/(rob/3600)).toFixed(2)+"</td></tr>");
               break;
             }   
           }
           drawChart(data_graf);
     }
 
-});
+};
 
 //===========================ЖУРНАЛ=======================================================================================
 //===========================ЖУРНАЛ=======================================================================================
