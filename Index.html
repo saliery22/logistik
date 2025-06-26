@@ -468,6 +468,7 @@ button, input, span, select,textarea {margin: 2px 2px 0px 0px;   font-family: "A
         <option value="z17">перевезення вантажів</option>
         <option value="z18">пробіг індивідуальний</option>
         <option value="z19">витрата пального робота</option>
+        <option value="z20">заправки</option>
       </select>  
       <br>
       <hr>
@@ -673,6 +674,13 @@ button, input, span, select,textarea {margin: 2px 2px 0px 0px;   font-family: "A
         <select class='livesearch' id='track_lis2'style='width:100%;' multiple></select>
         <br>
         <button id='dut_ruh_zvit' style='width:98%;'> звіт </button> 
+    </div>
+    <div id="zz20" class='zvit'>
+    завантажувати дані не потрібно, звіт фіксує заправки по роботі лічильника, мінімальна заправка 1л, мінімальний час між заправками 3с
+    <br>
+    <input id="zapr_time1" type="datetime-local"/>
+    <input id="zapr_time2" type="datetime-local"/>
+    <button id='zapr_zvit'> звіт </button> 
     </div>
 
  <table id="unit_table"class='table'></table>
