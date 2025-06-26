@@ -7023,7 +7023,7 @@ function zapravki(data) {
     let stop = 0;
     let p =0;
 
-    switch (name) {
+       switch (name) {
       case "АЗС Некрасове DIESEL":
       kk=10.24;
       break;
@@ -7043,7 +7043,7 @@ function zapravki(data) {
       kk=1023*0.1;
       break;
       case "ВМ2893ЕН Штацький С.А. Камаз":
-      kk=1016*0.358;
+      kk=1016*0.0358;
       break;
       case "ВМ3861ВО Колотуша О.В. Камаз":
       kk=1023*0.1;
@@ -7061,7 +7061,7 @@ function zapravki(data) {
       kk=1016*0.010498;
       break;
       case "Газова заправка Слоут":
-      kk=1023*0.1;
+      kk=1023*0.01;
       break;
       case "Заправка AdBlue":
       kk=1016*0.0109289;
@@ -7079,7 +7079,7 @@ function zapravki(data) {
       kk=1023*0.0316;
       break;
       case "Заправка ККЗ ДП2 менший Напор":
-      kk=1023*0.1;
+      kk=1023*0.01;
       break;
       case "Заправка Райгородок":
       kk=1023*0.006292;
