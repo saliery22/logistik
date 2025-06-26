@@ -1300,7 +1300,6 @@ L.control.ruler(options).addTo(map);
 
 }
 
-
 //let ps = prompt('');
 //if(ps==55555){
 // execute when DOM ready
@@ -6999,6 +6998,142 @@ if ($('#grafik').is(':hidden')) {
     }
 
 };
+
+
+$('#zapr_zvit').click(function() {
+    let to = Date.parse($('#track_time2').val())/1000; // end of day in seconds
+    let fr = Date.parse($('#track_time1').val())/1000; // get begin time - beginning of day
+    if(!fr){fr=0; to=0;}
+    let n=unitsgrup.Заправки;
+   SendDataReportInCallback(fr,to,n,7,[],0,zapravki);
+});
+function zapravki(data) {
+  $("#unit_table").empty();
+  let tb = [];
+ for(let i = 0; i<data.length; i++){
+  if(data[i][0][2][5]=="ДРТ" || data[i][0][2][6]=="ДРТ"){
+    let name = data[i][0][1];
+    let kk=10.24;
+    let a =-555;
+    let vodiy ='';
+    let avto ='';
+    let zapr =0;
+    let prom = 0;
+    let start =0;
+    let stop = 0;
+    let p =0;
+
+    switch (name) {
+      case "АЗС Некрасове DIESEL":
+      kk=10.24;
+      break;
+      case "ВМ1250ЕМ Iveco Паливозаправник":
+      kk=1023*0.1;
+      break;
+      case "ВМ1251ЕМ Iveco Паливозаправник":
+      kk=1023*0.1;
+      break;
+      case "ВМ1252ЕМ Iveco Паливозаправник":
+      kk=1023*0.1;
+      break;
+      case "ВМ1613СР Писаренко О.М. Камаз":
+      kk=1023*0.099;
+      break;
+      case "ЗВМ1614СР Білоус Ю.М. Камаз":
+      kk=1023*0.1;
+      break;
+      case "ВМ2893ЕН Штацький С.А. Камаз":
+      kk=1016*0.358;
+      break;
+      case "ВМ3861ВО Колотуша О.В. Камаз":
+      kk=1023*0.1;
+      break;
+      case "ВМ3862ВО Дробниця В.В. Камаз":
+      kk=1023*0.1;
+      break;
+      case "ВМ4156ВС Карпінський А.О. Камаз":
+      kk=1016*0.1;
+      break;
+      case "Газова заправка ККЗ":
+      kk=1023*0.01;
+      break;
+      case "Газова заправка Райгородок":
+      kk=1016*0.010498;
+      break;
+      case "Газова заправка Слоут":
+      kk=1023*0.1;
+      break;
+      case "Заправка AdBlue":
+      kk=1016*0.0109289;
+      break;
+      case "Заправка бензин ККЗ":
+      kk=1016*0.010112;
+      break;
+      case "Заправка ДП Буйвалове":
+      kk=1023*0.0296;
+      break;
+      case "Заправка ККЗ ДП":
+      kk=1016*0.03;
+      break;
+      case "Заправка ККЗ ДП1 більший Напор":
+      kk=1023*0.0316;
+      break;
+      case "Заправка ККЗ ДП2 менший Напор":
+      kk=1023*0.1;
+      break;
+      case "Заправка Райгородок":
+      kk=1023*0.006292;
+      break;
+      case "Заправка Слоут ДП":
+      kk=1023*0.0101;
+      break;
+      case "Склад ДП Буйвалове":
+      kk=1016*0.0995;
+      break;
+
+    default:
+    kk=1023*0.1;
+}
+
+    let drt = 5;
+    if( data[i][0][2][6]=="ДРТ")drt = 6;
+    for(let ii = 1; ii<data[i].length; ii++){
+      if(data[i][ii][drt]=='-----')continue;
+      if(a==-555)a = parseFloat(data[i][ii][drt]);
+      if(data[i][ii][drt]!=a){
+        if(vodiy=='' && data[i][ii][3]!='-----')vodiy=data[i][ii][3];
+        if(avto=='' && data[i][ii][4]!='-----')avto=data[i][ii][4];
+        if(start==0)start=data[i][ii-1][1];
+        if(p==0 && data[i][ii-1][0])p=data[i][ii-1][0];
+
+        let l = data[i][ii][drt]-a;
+        if(l<0)l = kk-a+parseFloat(data[i][ii][drt]);
+        zapr+=l;
+        a=parseFloat(data[i][ii][drt]);
+      }else{
+        stop = data[i][ii-1][1];
+        prom+= (Date.parse(data[i][ii][1]) - Date.parse(data[i][ii-1][1]))/1000;
+        if(prom>3){
+         if(zapr>1) tb.push([name,p,start,stop,vodiy,avto,zapr.toFixed(2)]);
+          prom=0;
+          vodiy ='';
+          avto ='';
+          zapr = 0;
+          start = 0;
+          stop = 0;
+          zapr = 0;
+        }
+      }
+    }
+  }
+ }
+ if(tb.length>0){
+  tb.sort();
+  for(let i = 0; i<tb.length; i++){
+  $("#unit_table").append("<tr><td>"+tb[i][0]+"</td><td>"+tb[i][2]+"</td><td>"+tb[i][3]+"</td><td>"+tb[i][4]+"</td><td>"+tb[i][5]+"</td><td>"+tb[i][6]+"</td></tr>");
+  }
+}
+}
 
 //===========================ЖУРНАЛ=======================================================================================
 //===========================ЖУРНАЛ=======================================================================================
