@@ -7001,8 +7001,8 @@ if ($('#grafik').is(':hidden')) {
 
 
 $('#zapr_zvit').click(function() {
-    let to = Date.parse($('#track_time2').val())/1000; // end of day in seconds
-    let fr = Date.parse($('#track_time1').val())/1000; // get begin time - beginning of day
+    let to = Date.parse($('#zapr_time2').val())/1000; // end of day in seconds
+    let fr = Date.parse($('#zapr_time1').val())/1000; // get begin time - beginning of day
     if(!fr){fr=0; to=0;}
     let n=unitsgrup.Заправки;
    SendDataReportInCallback(fr,to,n,7,[],0,zapravki);
