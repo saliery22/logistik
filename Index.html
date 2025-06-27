@@ -675,12 +675,15 @@ button, input, span, select,textarea {margin: 2px 2px 0px 0px;   font-family: "A
         <br>
         <button id='dut_ruh_zvit' style='width:98%;'> звіт </button> 
     </div>
-    <div id="zz20" class='zvit'>
-    завантажувати дані не потрібно, звіт фіксує заправки по роботі лічильника, мінімальна заправка 1л, мінімальний час між заправками 3с
+   <div id="zz20" class='zvit'>
+    завантажувати дані не потрібно, звіт фіксує заправки по роботі лічильника, мінімальна заправка 0.1л, мінімальний час між заправками 3с
+    <br>
+    для групування заправок встановіт відповідну галочку (якщо завантажити дані відобразиться рівень заправки в баці техніки)
     <br>
     <input id="zapr_time1" type="datetime-local"/>
     <input id="zapr_time2" type="datetime-local"/>
     <button id='zapr_zvit'> звіт </button> 
+     групувати заправки <input id='zapr_chek' type="checkbox"> 
     </div>
 
  <table id="unit_table"class='table'></table>
