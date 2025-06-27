@@ -7022,8 +7022,9 @@ function zapravki(data) {
     let start =0;
     let stop = 0;
     let p =0;
+    let sped =0;
 
-       switch (name) {
+    switch (name) {
       case "АЗС Некрасове DIESEL":
       kk=10.24;
       break;
@@ -7109,12 +7110,14 @@ function zapravki(data) {
         let l = data[i][ii][drt]-a;
         if(l<0)l = kk-a+parseFloat(data[i][ii][drt]);
         zapr+=l;
+        sped+=parseInt(data[i][ii][2]);
         a=parseFloat(data[i][ii][drt]);
       }else{
         stop = data[i][ii-1][1];
         prom+= (Date.parse(data[i][ii][1]) - Date.parse(data[i][ii-1][1]))/1000;
         if(prom>3){
-         if(zapr>1) tb.push([name,p,start,stop,vodiy,avto,zapr.toFixed(2)]);
+          if(sped>0){sped='в русі';}else{sped='стоїть';}
+         if(zapr>0.1) tb.push([name,p,start,stop,vodiy,avto,zapr.toFixed(2),sped]);
           prom=0;
           vodiy ='';
           avto ='';
@@ -7122,16 +7125,57 @@ function zapravki(data) {
           start = 0;
           stop = 0;
           zapr = 0;
+          sped=0;
         }
       }
     }
   }
  }
+   let dut=0;
  if(tb.length>0){
   tb.sort();
   for(let i = 0; i<tb.length; i++){
-  $("#unit_table").append("<tr><td>"+tb[i][0]+"</td><td>"+tb[i][2]+"</td><td>"+tb[i][3]+"</td><td>"+tb[i][4]+"</td><td>"+tb[i][5]+"</td><td>"+tb[i][6]+"</td></tr>");
+    $("#unit_table").append("<tr><td>"+tb[i][0]+"</td><td>"+tb[i][2]+"</td><td>"+tb[i][3]+"</td><td>"+tb[i][7]+"</td><td>"+tb[i][4]+"</td><td>"+tb[i][5]+"</td><td>"+tb[i][6]+"</td><td></td></tr>");
   }
+
+
+    if ($("#zapr_chek").is(":checked")){
+  let tbl=document.getElementById('unit_table');
+    for(let i = 1; i<tbl.rows.length; i++){
+         if(tbl.rows[i-1].cells[3].textContent==tbl.rows[i].cells[3].textContent && tbl.rows[i-1].cells[4].textContent==tbl.rows[i].cells[4].textContent && tbl.rows[i-1].cells[5].textContent==tbl.rows[i].cells[5].textContent){
+           let a = tbl.rows[i-1].cells[1].textContent;
+           let b = parseFloat(tbl.rows[i-1].cells[6].textContent);
+           tbl.rows[i].cells[1].textContent = a;
+           tbl.rows[i].cells[6].textContent = (parseFloat(tbl.rows[i].cells[6].textContent)+b).toFixed(1);
+           tbl.rows[i-1].remove();
+           i--;
+
+         }else{
+          for(let j = 0; j<Global_DATA.length; j++){ 
+            let namet = Global_DATA[j][0][1];
+            if(tbl.rows[i-1].cells[5].textContent!='' && namet.indexOf(tbl.rows[i-1].cells[5].textContent)>=0){
+              let start = Date.parse(tbl.rows[i-1].cells[1].textContent)-60000;
+              let end = Date.parse(tbl.rows[i-1].cells[2].textContent)+60000;
+              let l0=0;
+              let l1=0;
+              for (let jj = 1; jj<Global_DATA[j].length; jj++){
+                if(!Global_DATA[j][jj][2])continue;
+                if(start<=Global_DATA[j][jj][4]){
+                  if(l0==0)l0 = parseFloat(Global_DATA[j][jj][2]);
+                  l1 = parseFloat(Global_DATA[j][jj][2]);
+                  if(end<=Global_DATA[j][jj][4])break;
+                }
+              } 
+              tbl.rows[i-1].cells[7].textContent = (l1-l0).toFixed(1);
+              break;
+            }   
+          }
+         }
+    }
+    }
+  
+
+ 
 }
 }
 
