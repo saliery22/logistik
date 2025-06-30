@@ -7106,14 +7106,15 @@ function zapravki(data) {
         if(avto=='' && data[i][ii][4]!='-----')avto=data[i][ii][4];
         if(start==0)start=data[i][ii-1][1];
         if(p==0 && data[i][ii-1][0])p=data[i][ii-1][0];
-
+        stop=0;
+        prom=0;
         let l = data[i][ii][drt]-a;
         if(l<0)l = kk-a+parseFloat(data[i][ii][drt]);
         zapr+=l;
         sped+=parseInt(data[i][ii][2]);
         a=parseFloat(data[i][ii][drt]);
       }else{
-        stop = data[i][ii-1][1];
+        if(stop==0)stop = data[i][ii-1][1];
         prom+= (Date.parse(data[i][ii][1]) - Date.parse(data[i][ii-1][1]))/1000;
         if(prom>3){
           if(sped>0){sped='в русі';}else{sped='стоїть';}
@@ -7129,6 +7130,8 @@ function zapravki(data) {
         }
       }
     }
+   if(sped>0){sped='в русі';}else{sped='стоїть';}
+   if(zapr>0.1) tb.push([name,p,start,stop,vodiy,avto,zapr.toFixed(2),sped]);
   }
  }
    let dut=0;
@@ -7178,6 +7181,7 @@ function zapravki(data) {
  
 }
 }
+
 
 //===========================ЖУРНАЛ=======================================================================================
 //===========================ЖУРНАЛ=======================================================================================
