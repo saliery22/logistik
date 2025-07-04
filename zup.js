@@ -1101,7 +1101,7 @@ $("#men8").on("click", function (){
       Cikle2();
     });
     $("#tr_zup").click(function() { 
-      maska_zup='John,JD,CL,NH,CASE';
+      maska_zup='John,JD,CL,NH,CASE,Claas';
       min_zup=$('#min_zup6').val();
       if ($("#alone_zup6").is(":checked")) {alone=true;}else{alone=false}
       Cikle2();
