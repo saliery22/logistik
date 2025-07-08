@@ -7015,6 +7015,7 @@ function zapravki(data) {
     let name = data[i][0][1];
     let kk=10.24;
     let a =-555;
+    let b =-555;
     let vodiy ='';
     let avto ='';
     let zapr =0;
@@ -7101,7 +7102,21 @@ function zapravki(data) {
     for(let ii = 1; ii<data[i].length; ii++){
       if(data[i][ii][drt]=='-----')continue;
       if(a==-555)a = parseFloat(data[i][ii][drt]);
+      if(b==-555)b = data[i][ii][3];
       if(data[i][ii][drt]!=a){
+        if(b!=data[i][ii][3]){
+          if(stop==0)stop = data[i][ii-1][1];
+          if(sped>0){sped='в русі';}else{sped='стоїть';}
+          if(zapr>0.1) tb.push([name,p,start,stop,vodiy,avto,zapr.toFixed(2),sped]);
+          prom=0;
+          vodiy ='';
+          avto ='';
+          zapr = 0;
+          start = 0;
+          stop = 0;
+          zapr = 0;
+          sped=0;
+        }
         if(vodiy=='' && data[i][ii][3]!='-----')vodiy=data[i][ii][3];
         if(avto=='' && data[i][ii][4]!='-----')avto=data[i][ii][4];
         if(start==0)start=data[i][ii-1][1];
@@ -7113,6 +7128,7 @@ function zapravki(data) {
         zapr+=l;
         sped+=parseInt(data[i][ii][2]);
         a=parseFloat(data[i][ii][drt]);
+        b = data[i][ii][3];
       }else{
         if(stop==0)stop = data[i][ii-1][1];
         prom+= (Date.parse(data[i][ii][1]) - Date.parse(data[i][ii-1][1]))/1000;
