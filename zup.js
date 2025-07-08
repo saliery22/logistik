@@ -11072,7 +11072,7 @@ function calculate_mn(data,ind){
       let n=td[2];
       let v=td[4];
       let p=td[5];
-      let r=td[6];
+      let r=td[7];
   
        $('#marsh_avto').append("<tr><td><button id = '"+n.split(' ')[0]+"'onclick='find_avto(this.id)'>"+(i+1)+"</button></td><td>"+g+"</td><td contenteditable='true'>"+n+"</td><td contenteditable='true'>"+v+"</td><td contenteditable='true'>"+p+"</td><td contenteditable='true'>"+r+"</td><td></td><td></td><td></td><td></td></tr>");
      }
