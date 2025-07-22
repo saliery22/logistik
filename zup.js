@@ -2076,7 +2076,7 @@ function showReportResult5(result,id){ // show result after report execute
          html += "<td nowrap>" + mar_zupinki[icl5][0] + "</td>";
          html += "<td nowrap>" + mar_zupinki[icl5][1] + "</td>";
          html += "<td nowrap>" + mar_zupinki[icl5][4].split(' ')[0] + "</td>";
-         html += "<td nowrap>" + getTableValue(rows[j].c[1]) + "</td>";
+         html += "<td nowrap>" + parseInt(getTableValue(rows[j].c[1])) + "</td>";
          html += "<td nowrap>" + getTableValue(rows[j].c[0]) + "</td>";
          html += "<td nowrap>" + getTableValue(rows[j].c[2]) + "</td>";
          html += "<td nowrap>" + getTableValue(rows[j].c[3]) + "</td>";
