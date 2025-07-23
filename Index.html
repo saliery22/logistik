@@ -467,8 +467,9 @@ button, input, span, select,textarea {margin: 2px 2px 0px 0px;   font-family: "A
         <option value="z16">історія обробки полів</option>
         <option value="z17">перевезення вантажів</option>
         <option value="z18">пробіг індивідуальний</option>
-        <option value="z19">витрата пального робота</option>
+        <!-- <option value="z19">витрата пального робота</option> -->
         <option value="z20">заправки</option>
+        <option value="z21">ваги</option>
       </select>  
       <br>
       <hr>
@@ -675,7 +676,7 @@ button, input, span, select,textarea {margin: 2px 2px 0px 0px;   font-family: "A
         <br>
         <button id='dut_ruh_zvit' style='width:98%;'> звіт </button> 
     </div>
-   <div id="zz20" class='zvit'>
+    <div id="zz20" class='zvit'>
     завантажувати дані не потрібно, звіт фіксує заправки по роботі лічильника, мінімальна заправка 0.1л, мінімальний час між заправками 3с
     <br>
     для групування заправок встановіт відповідну галочку (якщо завантажити дані відобразиться рівень заправки в баці техніки)
@@ -684,6 +685,13 @@ button, input, span, select,textarea {margin: 2px 2px 0px 0px;   font-family: "A
     <input id="zapr_time2" type="datetime-local"/>
     <button id='zapr_zvit'> звіт </button> 
      групувати заправки <input id='zapr_chek' type="checkbox"> 
+    </div>
+    <div id="zz21" class='zvit'>
+    завантажувати дані не потрібно
+    <br>
+    <input id="vagy_time1" type="datetime-local"/>
+    <input id="vagy_time2" type="datetime-local"/>
+    <button id='vagy_zvit'> звіт </button> 
     </div>
 
  <table id="unit_table"class='table'></table>
