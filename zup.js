@@ -7267,12 +7267,8 @@ function vagy(data){
               if(dd>data && vod ==v3[ii][3] && avto ==v3[ii][4] && v3[ii][8]=='17.00' && parseFloat(v3[ii][5])>0){
                 vag2=parseFloat(v3[ii][5]);
                  vv1 = vag2;
-                 vv2 = vag2;
-                 vv3 = vag2;
                  if(v3.length>ii+2 && vod ==v3[ii+1][3] && avto ==v3[ii+1][4] && v3[ii+1][8]=='17.00' && parseFloat(v3[ii+1][5])>0)vv1=parseFloat(v3[ii+1][5]);
-                 if(v3.length>ii+3 && vod ==v3[ii+2][3] && avto ==v3[ii+1][4] && v3[ii+2][8]=='17.00' && parseFloat(v3[ii+2][5])>0)vv2=parseFloat(v3[ii+2][5]);
-                 if(v3.length>ii+4 && vod ==v3[ii+3][3] && avto ==v3[ii+1][4] && v3[ii+3][8]=='17.00' && parseFloat(v3[ii+3][5])>0)vv3=parseFloat(v3[ii+3][5]);
-                 vag2 = Math.min(vag2, vv1, vv2, vv3);
+                 vag2 = Math.min(vag2, vv1);
                 tm = sec_to_time((dd-data)/1000);
                 vg="Ваги №3";
                 break;
@@ -7285,12 +7281,8 @@ function vagy(data){
               if(dd>data && vod ==v4[iii][3] && avto ==v4[iii][4] && v4[iii][8]=='17.00' && parseFloat(v4[iii][5])>0){
                 vag2=parseFloat(v4[iii][5]);
                  vv1 = vag2;
-                 vv2 = vag2;
-                 vv3 = vag2;
                  if(v4.length>iii+2 && vod ==v4[iii+1][3] && avto ==v4[iii+1][4] && v4[iii+1][8]=='17.00' && parseFloat(v4[iii+1][5])>0)vv1=parseFloat(v4[iii+1][5]);
-                 if(v4.length>iii+3 && vod ==v4[iii+2][3] && avto ==v4[iii+1][4] && v4[iii+2][8]=='17.00' && parseFloat(v4[iii+2][5])>0)vv2=parseFloat(v4[iii+2][5]);
-                 if(v4.length>iii+4 && vod ==v4[iii+3][3] && avto ==v4[iii+1][4] && v4[iii+3][8]=='17.00' && parseFloat(v4[iii+3][5])>0)vv3=parseFloat(v4[iii+3][5]);
-                 vag2 = Math.min(vag2, vv1, vv2, vv3);
+                 vag2 = Math.min(vag2, vv1);
                 tm = sec_to_time((dd-data)/1000);
                 vg="Ваги №4";
                 break;
@@ -7332,12 +7324,8 @@ function vagy(data){
               if(dd>data && vod ==v3[ii][3] && avto ==v3[ii][4] && v3[ii][8]=='17.00' && parseFloat(v3[ii][5])>0){
                 vag2=parseFloat(v3[ii][5]);
                 vv1 = vag2;
-                vv2 = vag2;
-                vv3 = vag2;
                 if(v3.length>ii+2 && vod ==v3[ii+1][3] && avto ==v3[ii+1][4] && v3[ii+1][8]=='17.00' && parseFloat(v3[ii+1][5])>0)vv1=parseFloat(v3[ii+1][5]);
-                if(v3.length>ii+3 && vod ==v3[ii+2][3] && avto ==v3[ii+1][4] && v3[ii+2][8]=='17.00' && parseFloat(v3[ii+2][5])>0)vv2=parseFloat(v3[ii+2][5]);
-                if(v3.length>ii+4 && vod ==v3[ii+3][3] && avto ==v3[ii+1][4] && v3[ii+3][8]=='17.00' && parseFloat(v3[ii+3][5])>0)vv3=parseFloat(v3[ii+3][5]);
-                vag2 = Math.min(vag2, vv1, vv2, vv3);
+                vag2 = Math.min(vag2, vv1);
                 tm = sec_to_time((dd-data)/1000);
                 vg="Ваги №3";
                 break;
@@ -7350,12 +7338,8 @@ function vagy(data){
               if(dd>data && vod ==v4[iii][3] && avto ==v4[iii][4] && v4[iii][8]=='17.00' && parseFloat(v4[iii][5])>0){
                 vag2=parseFloat(v4[iii][5]);
                  vv1 = vag2;
-                 vv2 = vag2;
-                 vv3 = vag2;
                  if(v4.length>iii+2 && vod ==v4[iii+1][3] && avto ==v4[iii+1][4] && v4[iii+1][8]=='17.00' && parseFloat(v4[iii+1][5])>0)vv1=parseFloat(v4[iii+1][5]);
-                 if(v4.length>iii+3 && vod ==v4[iii+2][3] && avto ==v4[iii+1][4] && v4[iii+2][8]=='17.00' && parseFloat(v4[iii+2][5])>0)vv2=parseFloat(v4[iii+2][5]);
-                 if(v4.length>iii+4 && vod ==v4[iii+3][3] && avto ==v4[iii+1][4] && v4[iii+3][8]=='17.00' && parseFloat(v4[iii+3][5])>0)vv3=parseFloat(v4[iii+3][5]);
-                 vag2 = Math.min(vag2, vv1, vv2, vv3);
+                 vag2 = Math.min(vag2, vv1);
                 tm = sec_to_time((dd-data)/1000);
                 vg="Ваги №4";
                 break;
