@@ -1,6 +1,5 @@
 
 
-
 // global variables
 var map, marker,unitslist = [],unitslistID = [],allunits = [],rest_units = [],marshruts = [],zup = [], unitMarkers = [], markerByUnit = {},tile_layer, layers = {},marshrutMarkers = [],unitsID = {},Vibranaya_zona,temp_layer=[],trailers={},drivers={};
 var areUnitsLoaded = false;
@@ -1144,16 +1143,19 @@ function initMap() {
 
 
   var basemaps = {
-    OSM:L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {}),
-
-    'Google Hybrid':L.tileLayer('http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}',{ subdomains:['mt0','mt1','mt2','mt3'],layers: 'OSM-Overlay-WMS,TOPO-WMS'})
+    'Google_Streets':L.tileLayer('http://{s}.google.com/vt?lyrs=m&x={x}&y={y}&z={z}',{subdomains:['mt0','mt1','mt2','mt3']}),
+    'Google_Hybrid':L.tileLayer('http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}',{subdomains:['mt0','mt1','mt2','mt3'],layers: 'OSM-Overlay-WMS,TOPO-WMS'}),
+    'Google_Terrain': L.tileLayer('http://{s}.google.com/vt?lyrs=p&x={x}&y={y}&z={z}',{subdomains:['mt0','mt1','mt2','mt3']}),
+    'OSM':L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {}),
+    'Night': L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.{ext}', {attribution: '&copy; <a href="https://www.stadiamaps.com/" target="_blank">Stadia Maps</a> &copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+	ext: 'png'})
 
 };
 
 
 layerControl=L.control.layers(basemaps).addTo(map);
 
-basemaps.OSM.addTo(map);
+basemaps.Google_Streets.addTo(map);
   
     markerstart = L.marker([0,0],{icon: L.icon({iconUrl: '555.png',iconSize:[30, 45],iconAnchor:[15, 45]})}).addTo(map);
     markerend = L.marker([0,0],{icon: L.icon({iconUrl: '444.png',iconSize:[30, 45],iconAnchor:[15, 45]})}).addTo(map);
@@ -1397,7 +1399,7 @@ function show_track (time1,time2) {
 				   // map.fitBounds(bounds); // get center and zoom
 				    // create tile-layer and specify the tile template
 					if (!tile_layer)
-						tile_layer = L.tileLayer(sess.getBaseUrl() + "/adfurl" + renderer.getVersion() + "/avl_render/{x}_{y}_{z}/"+ sess.getId() +".png", {zoomReverse: true, zoomOffset: -1,zIndex: 3}).addTo(map);
+						tile_layer = L.tileLayer(sess.getBaseUrl() + "/adfurl" + renderer.getVersion() + "/avl_render/{x}_{y}_{z}/"+ sess.getId() +".png", {zoomReverse: true, zoomOffset: -1,zIndex: 6}).addTo(map);
 					else 
 						tile_layer.setUrl(sess.getBaseUrl() + "/adfurl" + renderer.getVersion() + "/avl_render/{x}_{y}_{z}/"+ sess.getId() +".png");
 				    // push this layer in global container
@@ -5684,6 +5686,7 @@ function avto_OBD(data){
     let zapr0=-10;
     let zapr1=-10;
     let zapr=0;
+    let zapr00 = 0;
     for (let ii = 1; ii<data[i].length-1; ii++){
       if(!data[i][ii][1])continue;
       if(!data[i][ii+1][1])continue;
@@ -5707,8 +5710,9 @@ function avto_OBD(data){
           zapr0=zapr1;
         }
       }
+      if(parseFloat(data[i][ii][6]))zapr00=parseFloat(data[i][ii][6]);
       if(ii==data[i].length-2 && zapr0>=0 && parseInt(data[i][ii][2])==0){
-        zapr1= parseFloat(data[i][ii][6]);
+        zapr1= zapr00;
         if(zapr1-zapr0>5)zapr+=zapr1-zapr0;
       }
 
@@ -7198,7 +7202,182 @@ function zapravki(data) {
 }
 }
 
+$('#vagy_zvit').click(function() {
+    let to = Date.parse($('#vagy_time2').val())/1000; // end of day in seconds
+    let fr = Date.parse($('#vagy_time1').val())/1000; // get begin time - beginning of day
+    if(!fr){fr=0; to=0;}
+    let n="Ваги №1,Ваги №2,Ваги №3,Ваги №4";
+   SendDataReportInCallback(fr,to,n,7,[],0,vagy);
+});
+function vagy(data){
+ let tbl =[];
+  let v1 = [];
+  let v2 = [];
+  let v3 = [];
+  let v4 = [];
 
+  if(data[0]){
+    if(data[0][0][1]=="Ваги №1") v1=data[0];
+    if(data[0][0][1]=="Ваги №2") v2=data[0];
+    if(data[0][0][1]=="Ваги №3") v3=data[0];
+    if(data[0][0][1]=="Ваги №4") v4=data[0];
+  }
+  if(data[1]){
+    if(data[1][0][1]=="Ваги №1") v1=data[1];
+    if(data[1][0][1]=="Ваги №2") v2=data[1];
+    if(data[1][0][1]=="Ваги №3") v3=data[1];
+    if(data[1][0][1]=="Ваги №4") v4=data[1];
+  }
+  if(data[2]){
+    if(data[2][0][1]=="Ваги №1") v1=data[2];
+    if(data[2][0][1]=="Ваги №2") v2=data[2];
+    if(data[2][0][1]=="Ваги №3") v3=data[2];
+    if(data[2][0][1]=="Ваги №4") v4=data[2];
+  }
+  if(data[3]){
+    if(data[3][0][1]=="Ваги №1") v1=data[3];
+    if(data[3][0][1]=="Ваги №2") v2=data[3];
+    if(data[3][0][1]=="Ваги №3") v3=data[3];
+    if(data[3][0][1]=="Ваги №4") v4=data[3];
+  }
+ 
+  if(v1){
+    let vod0 =0;
+    let avto0 =0;
+    for(let i = 1; i<v1.length; i++){
+      let vod = v1[i][3];
+      let avto = v1[i][4];
+      let vag = parseFloat(v1[i][5]);
+      let vag2=0;
+      let vg="-----";
+      let tm =0;
+      let data =Date.parse(v1[i][1]); 
+      if(vod && avto && vag && v1[i][8]=='17.00'){
+        if(vod0!=vod && avto0!=avto){
+          let vv1 = vag;
+          let vv2 = vag;
+          let vv3 = vag;
+          if(v1.length>i+2 && vod ==v1[i+1][3] && avto ==v1[i+1][4] && v1[i+1][8]=='17.00' && parseFloat(v1[i+1][5])>0)vv1=parseFloat(v1[i+1][5]);
+          if(v1.length>i+3 && vod ==v1[i+2][3] && avto ==v1[i+1][4] && v1[i+2][8]=='17.00' && parseFloat(v1[i+2][5])>0)vv2=parseFloat(v1[i+2][5]);
+          if(v1.length>i+4 && vod ==v1[i+3][3] && avto ==v1[i+1][4] && v1[i+3][8]=='17.00' && parseFloat(v1[i+3][5])>0)vv3=parseFloat(v1[i+3][5]);
+          vag = Math.min(vag, vv1, vv2, vv3);
+          if(v3){
+            for(let ii = 1; ii<v3.length; ii++){
+              let dd = Date.parse(v3[ii][1]);
+              if(dd>data && vod ==v3[ii][3] && avto ==v3[ii][4] && v3[ii][8]=='17.00' && parseFloat(v3[ii][5])>0){
+                vag2=parseFloat(v3[ii][5]);
+                 vv1 = vag2;
+                 vv2 = vag2;
+                 vv3 = vag2;
+                 if(v3.length>ii+2 && vod ==v3[ii+1][3] && avto ==v3[ii+1][4] && v3[ii+1][8]=='17.00' && parseFloat(v3[ii+1][5])>0)vv1=parseFloat(v3[ii+1][5]);
+                 if(v3.length>ii+3 && vod ==v3[ii+2][3] && avto ==v3[ii+1][4] && v3[ii+2][8]=='17.00' && parseFloat(v3[ii+2][5])>0)vv2=parseFloat(v3[ii+2][5]);
+                 if(v3.length>ii+4 && vod ==v3[ii+3][3] && avto ==v3[ii+1][4] && v3[ii+3][8]=='17.00' && parseFloat(v3[ii+3][5])>0)vv3=parseFloat(v3[ii+3][5]);
+                 vag2 = Math.min(vag2, vv1, vv2, vv3);
+                tm = sec_to_time((dd-data)/1000);
+                vg="Ваги №3";
+                break;
+              } 
+            }
+          }
+          if(vag2 ==0 && v4){
+            for(let iii = 1; iii<v4.length; iii++){
+              let dd = Date.parse(v4[iii][1]);
+              if(dd>data && vod ==v4[iii][3] && avto ==v4[iii][4] && v4[iii][8]=='17.00' && parseFloat(v4[iii][5])>0){
+                vag2=parseFloat(v4[iii][5]);
+                 vv1 = vag2;
+                 vv2 = vag2;
+                 vv3 = vag2;
+                 if(v4.length>iii+2 && vod ==v4[iii+1][3] && avto ==v4[iii+1][4] && v4[iii+1][8]=='17.00' && parseFloat(v4[iii+1][5])>0)vv1=parseFloat(v4[iii+1][5]);
+                 if(v4.length>iii+3 && vod ==v4[iii+2][3] && avto ==v4[iii+1][4] && v4[iii+2][8]=='17.00' && parseFloat(v4[iii+2][5])>0)vv2=parseFloat(v4[iii+2][5]);
+                 if(v4.length>iii+4 && vod ==v4[iii+3][3] && avto ==v4[iii+1][4] && v4[iii+3][8]=='17.00' && parseFloat(v4[iii+3][5])>0)vv3=parseFloat(v4[iii+3][5]);
+                 vag2 = Math.min(vag2, vv1, vv2, vv3);
+                tm = sec_to_time((dd-data)/1000);
+                vg="Ваги №4";
+                break;
+              } 
+            }
+          }
+         
+        let vag3 =vag-vag2;
+         tbl.push([v1[i][1],"Ваги №1",vg,tm,vod,avto,vag,vag2,vag3]);
+         vod0=vod;
+         avto0=avto;
+        }
+      }
+    }
+  }
+  if(v2){
+    let vod0 =0;
+    let avto0 =0;
+     for(let i = 1; i<v2.length; i++){
+      let vod = v2[i][3];
+      let avto = v2[i][4];
+      let vag = parseFloat(v2[i][5]);
+      let vag2=0;
+      let vg="-----";
+      let tm =0;
+      let data =Date.parse(v2[i][1]); 
+      if(vod && avto && vag && v2[i][8]=='17.00'){
+        if(vod0!=vod && avto0!=avto){
+          let vv1 = vag;
+          let vv2 = vag;
+          let vv3 = vag;
+          if(v2.length>i+2 && vod ==v2[i+1][3] && avto ==v2[i+1][4] && v2[i+1][8]=='17.00' && parseFloat(v2[i+1][5])>0)vv1=parseFloat(v2[i+1][5]);
+          if(v2.length>i+3 && vod ==v2[i+2][3] && avto ==v2[i+1][4] && v2[i+2][8]=='17.00' && parseFloat(v2[i+2][5])>0)vv2=parseFloat(v2[i+2][5]);
+          if(v2.length>i+4 && vod ==v2[i+3][3] && avto ==v2[i+1][4] && v2[i+3][8]=='17.00' && parseFloat(v2[i+3][5])>0)vv3=parseFloat(v2[i+3][5]);
+          vag = Math.min(vag, vv1, vv2, vv3);
+          if(v3){
+            for(let ii = 1; ii<v3.length; ii++){
+              let dd = Date.parse(v3[ii][1]);
+              if(dd>data && vod ==v3[ii][3] && avto ==v3[ii][4] && v3[ii][8]=='17.00' && parseFloat(v3[ii][5])>0){
+                vag2=parseFloat(v3[ii][5]);
+                vv1 = vag2;
+                vv2 = vag2;
+                vv3 = vag2;
+                if(v3.length>ii+2 && vod ==v3[ii+1][3] && avto ==v3[ii+1][4] && v3[ii+1][8]=='17.00' && parseFloat(v3[ii+1][5])>0)vv1=parseFloat(v3[ii+1][5]);
+                if(v3.length>ii+3 && vod ==v3[ii+2][3] && avto ==v3[ii+1][4] && v3[ii+2][8]=='17.00' && parseFloat(v3[ii+2][5])>0)vv2=parseFloat(v3[ii+2][5]);
+                if(v3.length>ii+4 && vod ==v3[ii+3][3] && avto ==v3[ii+1][4] && v3[ii+3][8]=='17.00' && parseFloat(v3[ii+3][5])>0)vv3=parseFloat(v3[ii+3][5]);
+                vag2 = Math.min(vag2, vv1, vv2, vv3);
+                tm = sec_to_time((dd-data)/1000);
+                vg="Ваги №3";
+                break;
+              } 
+            }
+          }
+          if(vag2 ==0 && v4){
+            for(let iii = 1; iii<v4.length; iii++){
+              let dd = Date.parse(v4[iii][1]);
+              if(dd>data && vod ==v4[iii][3] && avto ==v4[iii][4] && v4[iii][8]=='17.00' && parseFloat(v4[iii][5])>0){
+                vag2=parseFloat(v4[iii][5]);
+                 vv1 = vag2;
+                 vv2 = vag2;
+                 vv3 = vag2;
+                 if(v4.length>iii+2 && vod ==v4[iii+1][3] && avto ==v4[iii+1][4] && v4[iii+1][8]=='17.00' && parseFloat(v4[iii+1][5])>0)vv1=parseFloat(v4[iii+1][5]);
+                 if(v4.length>iii+3 && vod ==v4[iii+2][3] && avto ==v4[iii+1][4] && v4[iii+2][8]=='17.00' && parseFloat(v4[iii+2][5])>0)vv2=parseFloat(v4[iii+2][5]);
+                 if(v4.length>iii+4 && vod ==v4[iii+3][3] && avto ==v4[iii+1][4] && v4[iii+3][8]=='17.00' && parseFloat(v4[iii+3][5])>0)vv3=parseFloat(v4[iii+3][5]);
+                 vag2 = Math.min(vag2, vv1, vv2, vv3);
+                tm = sec_to_time((dd-data)/1000);
+                vg="Ваги №4";
+                break;
+              } 
+            }
+          }
+         let vag3 =vag-vag2;
+         console.log(tm)
+         tbl.push([v2[i][1],"Ваги №2",vg,tm,vod,avto,vag,vag2,vag3]);
+         vod0=vod;
+         avto0=avto;
+        }
+      }
+    }
+  }
+    tbl = tbl.sort((a, b) => new Date(a[0]) - new Date(b[0]));
+  $("#unit_table").append("<tr><td>Дата</td><td>заїзд</td><td>виїзд</td><td>тривалість</td><td>водій</td><td>авто</td><td>брутто</td><td>тара</td><td>нетто</td></tr>");
+for(let i = 0; i<tbl.length; i++){
+ $("#unit_table").append("<tr><td>"+tbl[i][0]+"</td><td>"+tbl[i][1]+"</td><td>"+tbl[i][2]+"</td><td>"+tbl[i][3]+"</td><td>"+tbl[i][4]+"</td><td>"+tbl[i][5]+"</td><td>"+tbl[i][6]+"</td><td>"+tbl[i][7]+"</td><td>"+tbl[i][8]+"</td></tr>");
+}
+  
+}
 //===========================ЖУРНАЛ=======================================================================================
 //===========================ЖУРНАЛ=======================================================================================
 //===========================ЖУРНАЛ=======================================================================================
@@ -11233,17 +11412,27 @@ function Rote_gruzoperevozki(p1,p2,color,ind){
             table.rows[ind+1].cells[3].innerText = t;
             if(parseInt(table.rows[ind+1].cells[5].innerText)>0){
               let mash = 0;
-              let zmina = 12*60;
-              let zagr = 15;
+              let zmina = 9*60;
+              let zagr = 20;
               let gektary = parseInt(table.rows[ind+1].cells[5].innerText)*30;
               let hodky = zmina/(t*2+zagr*2);
+              
   
-                 if(table.rows[ind+1].cells[4].children[0].value=='кукурудза')mash = (gektary*9/(hodky*24)).toFixed();
-                 if(table.rows[ind+1].cells[4].children[0].value=='соняшник')mash = (gektary*3/(hodky*18)).toFixed();
-                 if(table.rows[ind+1].cells[4].children[0].value=='соя')mash = (gektary*2.8/(hodky*30)).toFixed();
-                 if(table.rows[ind+1].cells[4].children[0].value=='ріпак')mash = (gektary*2.7/(hodky*30)).toFixed();
-                 if(table.rows[ind+1].cells[4].children[0].value=='пшениця')mash = (gektary*4.5/(hodky*36)).toFixed(); 
-                 table.rows[ind+1].cells[6].innerText = mash+" маш "+(hodky).toFixed()+" ходки "+(t*2+zagr*2)+" хв/ходка";       
+                 if(table.rows[ind+1].cells[4].children[0].value=='кукурудза')mash = gektary*9/(hodky*24);
+                 if(table.rows[ind+1].cells[4].children[0].value=='соняшник')mash = gektary*3/(hodky*18);
+                 if(table.rows[ind+1].cells[4].children[0].value=='соя')mash = gektary*2.8/(hodky*30);
+                 if(table.rows[ind+1].cells[4].children[0].value=='ріпак')mash = gektary*2.7/(hodky*30);
+                 if(table.rows[ind+1].cells[4].children[0].value=='пшениця')mash = gektary*4.5/(hodky*36); 
+
+                  let vsego = mash*hodky;
+                  let nam = (vsego/12).toFixed(1);
+                  mash = Math.ceil(mash);
+                 if(mash<(parseInt(table.rows[ind+1].cells[5].innerText)/2)){
+                  mash=Math.ceil(parseInt(table.rows[ind+1].cells[5].innerText)/2);
+                  hodky=vsego/mash;
+                 }
+
+                 table.rows[ind+1].cells[6].innerText = mash+" маш "+ (hodky).toFixed(0)+" ход "+(t*2+zagr*2)+" хв/ход  "+(nam)+" маш/год";       
             }
           }
         });
