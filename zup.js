@@ -10849,6 +10849,7 @@ marshrut_problem_his.push([e.cells[1].innerText,e.cells[2].innerText,e.cells[3].
         for(var ii=0; ii < res.length-1; ii++){
          if(res[ii][6]=='завантаження'){zav.push(res[ii]);}
          if(res[ii][6]=='розвантаження'){rozv.push(res[ii]);}
+         if(res[ii][6]=='виїзд на наряд'){rozv.push(res[ii]);}
          if(res[ii][6]=='їде на розвантаження'){na_rozv.push(res[ii]);}
          if(res[ii][6]=='їде на завантаження'){na_zav.push(res[ii]);}
          if(res[ii][6]=='наряд завершено'){endnar.push(res[ii]);}
@@ -10863,7 +10864,7 @@ marshrut_problem_his.push([e.cells[1].innerText,e.cells[2].innerText,e.cells[3].
         tbl.style = "min-width: 100%; font-size:14px;border: 3px solid black; border-collapse: collapse; font-family: 'Arial';";
         div.appendChild(tbl);
         let tb = $(newWindow.document).find("#"+id_tb+"");
-        tb.append("<tr><td></td><td></td><td><b>"+name_m+"</td><td></td><td></td><td><b>пробіг</td><td><b>ходки</td><td><b>місце</td><td><b>час</td></tr>");
+        tb.append("<tr><td></td><td></td><td><b>"+name_m+"</td><td>"+comb+" комб</td><td></td><td><b>пробіг</td><td><b>ходки</td><td><b>місце</td><td><b>час</td></tr>");
         let st = "style = 'font-size:14px;border: 1px solid black; border-collapse: collapse;'";
         if(comb && comb>0){
          tb.append("<tr style ='background:rgb(219, 255, 198);'><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td><b>завантажується "+zav.length +"</td><td></td></tr>");
@@ -11245,6 +11246,7 @@ function calculate_mn(data,ind){
             let last_m = marshrut.split('+');
             if(last_m[last_m.length-1]!=name_marsh){ position='наряд завершено';}
           }
+          if(marsh.length==1){if(marsh[0]=='V')position='виїзд на наряд';}
           result.push([avto,nomer,vodiy,prich,km.toFixed(),hodki,position,time]); 
           km=0;
          }
@@ -11446,4 +11448,5 @@ function Rote_gruzoperevozki(p1,p2,color,ind){
           }
         });
 }
+
 
