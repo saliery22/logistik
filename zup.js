@@ -1,5 +1,6 @@
 
 
+
 // global variables
 var map, marker,unitslist = [],unitslistID = [],allunits = [],rest_units = [],marshruts = [],zup = [], unitMarkers = [], markerByUnit = {},tile_layer, layers = {},marshrutMarkers = [],unitsID = {},Vibranaya_zona,temp_layer=[],trailers={},drivers={};
 var areUnitsLoaded = false;
@@ -1147,9 +1148,7 @@ function initMap() {
     'Google_Hybrid':L.tileLayer('http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}',{subdomains:['mt0','mt1','mt2','mt3'],layers: 'OSM-Overlay-WMS,TOPO-WMS'}),
     'Google_Terrain': L.tileLayer('http://{s}.google.com/vt?lyrs=p&x={x}&y={y}&z={z}',{subdomains:['mt0','mt1','mt2','mt3']}),
     'OSM':L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {}),
-    'Night': L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.{ext}', {attribution: '&copy; <a href="https://www.stadiamaps.com/" target="_blank">Stadia Maps</a> &copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-	ext: 'png'})
-
+    'Night': L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.{ext}', {attribution: '&copy; <a href="https://www.stadiamaps.com/" target="_blank">Stadia Maps</a> &copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',	ext: 'png'})
 };
 
 
@@ -1301,6 +1300,7 @@ let areaSelection = new leafletAreaSelection.DrawAreaSelection({
 L.control.ruler(options).addTo(map);
 
 }
+
 
 //let ps = prompt('');
 //if(ps==55555){
@@ -10826,7 +10826,8 @@ marshrut_problem_his.push([e.cells[1].innerText,e.cells[2].innerText,e.cells[3].
   let problem =[];
   for(var i=1; i < tb_m.rows.length; i++){
     if(tb_m.rows[i].cells[8].children[0].checked){
-      let name_m = tb_m.rows[i].cells[1].innerText;
+      let name_m = tb_m.rows[i].cells[1].textContent;
+      let comb = parseInt(tb_m.rows[i].cells[5].textContent);
       let spisok = [];
       
         for(var ii=1; ii < tb_a.rows.length; ii++){
@@ -10844,24 +10845,27 @@ marshrut_problem_his.push([e.cells[1].innerText,e.cells[2].innerText,e.cells[3].
           let rozv =[];
           let na_zav=[];
           let na_rozv = [];
+          let endnar = [];
         for(var ii=0; ii < res.length-1; ii++){
          if(res[ii][6]=='завантаження'){zav.push(res[ii]);}
          if(res[ii][6]=='розвантаження'){rozv.push(res[ii]);}
          if(res[ii][6]=='їде на розвантаження'){na_rozv.push(res[ii]);}
          if(res[ii][6]=='їде на завантаження'){na_zav.push(res[ii]);}
+         if(res[ii][6]=='наряд завершено'){endnar.push(res[ii]);}
         }
-      
+  
+        var id_tb = name_m.replace(/[^а-яА-Я0-9]/g, '');
         var div = document.createElement("div");
         div.style = 'margin-bottom: 10px;margin-right: 10px;min-width: 900px;';
         newdiv.appendChild(div);
         tbl = document.createElement('table');
-        tbl.setAttribute("id", name_m);
+        tbl.setAttribute("id", id_tb);
         tbl.style = "min-width: 100%; font-size:14px;border: 3px solid black; border-collapse: collapse; font-family: 'Arial';";
         div.appendChild(tbl);
-        let tb = $(newWindow.document).find("#"+name_m+"");
-
+        let tb = $(newWindow.document).find("#"+id_tb+"");
         tb.append("<tr><td></td><td></td><td><b>"+name_m+"</td><td></td><td></td><td><b>пробіг</td><td><b>ходки</td><td><b>місце</td><td><b>час</td></tr>");
-         let st = "style = 'font-size:14px;border: 1px solid black; border-collapse: collapse;'";
+        let st = "style = 'font-size:14px;border: 1px solid black; border-collapse: collapse;'";
+        if(comb && comb>0){
          tb.append("<tr style ='background:rgb(219, 255, 198);'><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td><b>завантажується "+zav.length +"</td><td></td></tr>");
         zav.sort((a, b) => a[7] - b[7]);
         for(var ii=0; ii < zav.length; ii++){
@@ -10886,6 +10890,22 @@ marshrut_problem_his.push([e.cells[1].innerText,e.cells[2].innerText,e.cells[3].
           tb.append("<tr style ='background:rgb(179, 204, 250);'><td><button id = '"+rozv[ii][1]+"'onclick='window.opener.find_avto(this.id)'>"+(ii+1)+"</button></td><td "+st+">"+rozv[ii][0]+"</td><td "+st+">"+rozv[ii][1]+"</td><td "+st+">"+rozv[ii][2]+"</td><td "+st+">"+rozv[ii][3]+"</td><td "+st+">"+rozv[ii][4]+"</td><td "+st+">"+rozv[ii][5]+"</td><td "+st+">"+rozv[ii][6]+"</td><td "+st+">"+sec_to_time(rozv[ii][7])+"</td></tr>");
         mt_add_info(rozv[ii][1],rozv[ii][4],rozv[ii][5],rozv[ii][6],sec_to_time(rozv[ii][7]));
         }
+        if(endnar.length>0){
+        tb.append("<tr style ='background:rgba(209, 209, 209, 1);'><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td><b>на іншому маршруті</td><td></td></tr>");
+        endnar.sort((a, b) => a[7] - b[7]);
+        for(var ii=0; ii < endnar.length; ii++){
+          tb.append("<tr style ='background:rgba(209, 209, 209, 1);'><td><button id = '"+endnar[ii][1]+"'onclick='window.opener.find_avto(this.id)'>"+(ii+1)+"</button></td><td "+st+">"+endnar[ii][0]+"</td><td "+st+">"+endnar[ii][1]+"</td><td "+st+">"+endnar[ii][2]+"</td><td "+st+">"+endnar[ii][3]+"</td><td "+st+"></td><td "+st+">"+endnar[ii][5]+"</td><td "+st+">на іншому маршруті</td><td "+st+"></td></tr>");  
+        }
+        }
+        
+        }else{
+         tb.append("<tr style ='background:rgba(209, 209, 209, 1);'><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td><b>МАРШРУТ ЗАВЕРШЕНО</td><td></td></tr>");
+        endnar.sort((a, b) => a[7] - b[7]);
+        for(var ii=0; ii < endnar.length; ii++){
+          tb.append("<tr style ='background:rgba(209, 209, 209, 1);'><td><button id = '"+endnar[ii][1]+"'onclick='window.opener.find_avto(this.id)'>"+(ii+1)+"</button></td><td "+st+">"+endnar[ii][0]+"</td><td "+st+">"+endnar[ii][1]+"</td><td "+st+">"+endnar[ii][2]+"</td><td "+st+">"+endnar[ii][3]+"</td><td "+st+"></td><td "+st+">"+endnar[ii][5]+"</td><td "+st+">"+endnar[ii][6]+"</td><td "+st+"></td></tr>");  
+        }
+        }
+         
 
         function mt_add_info(name,a,b,c,d){
             for(var i=1; i < tb_a.rows.length; i++){
@@ -10990,6 +11010,8 @@ function calculate_mn(data,ind){
   marshrut_gruzoperevozky[ind][0]._latlngs[0].forEach(function(item){ buferpoly1.push({x:item.lat, y:item.lng}); });
   let buferpoly2 =[];
   marshrut_gruzoperevozky[ind][1]._latlngs[0].forEach(function(item){ buferpoly2.push({x:item.lat, y:item.lng}); });
+  let komb = parseInt(marshrut_gruzoperevozky[ind][5]);
+  let name_marsh = marshrut_gruzoperevozky[ind][3];
   //wialon.util.Geometry.pointInShape(buferpoly1, 0, y, x)
   let porushennya_marshrut=[];
   for(var i=0; i < data.length; i++){
@@ -11003,7 +11025,7 @@ function calculate_mn(data,ind){
 
       let multy =false;
       if(marshrut.split('+').length>1)multy=true;
-   
+    
     
       let stop=0;
       let stop_y =0;
@@ -11191,15 +11213,13 @@ function calculate_mn(data,ind){
           }
           let direktion = 'S';
           let hodki = 0;
-          if(marsh.length>0){
-            hodki = (marsh.length/2+0.5).toFixed();
-            if(marsh[marsh.length-1]=='Z'){
-              direktion='Z';
-              hodki-=1;
-            }
-            if(marsh[0]=='V') hodki-=1;
-            if(marsh[0]=='Z') hodki-=1;
-            if(marsh[marsh.length-1]=='V')direktion='V';
+          if(marsh.length>1){
+            hodki = (marsh.length/2).toFixed(0);
+            if(marsh[0]=='V'){hodki-=1;}else{if(marsh[marsh.length-1]=='Z') hodki-=1;} 
+          }
+           if(marsh.length>0){ 
+            if(marsh[marsh.length-1]=='V')direktion='V'; 
+            if(marsh[marsh.length-1]=='Z')direktion='Z';
           }
           let position='невідомо';
           let time = 0;
@@ -11220,6 +11240,11 @@ function calculate_mn(data,ind){
           }
           if(position=='невідомо')porushennya_marshrut.push([nametr,marshrut,0,'не на маршруті',0,0,0]);
           if(vodiy_tr!='' && vodiy_tr!=vodiy)porushennya_marshrut.push([nametr,marshrut,0,'інша картка водія',0,0,0]);
+          if(!komb && komb==0){position='наряд завершено';}
+          if(multy){
+            let last_m = marshrut.split('+');
+            if(last_m[last_m.length-1]!=name_marsh){ position='наряд завершено';}
+          }
           result.push([avto,nomer,vodiy,prich,km.toFixed(),hodki,position,time]); 
           km=0;
          }
