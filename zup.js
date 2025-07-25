@@ -11418,7 +11418,7 @@ function Rote_gruzoperevozki(p1,p2,color,ind){
             let l = L.polyline([line], {weight:wg,opacity:0.4,color: color}).addTo(map);
             marshrut_zony_temp.push(l);
             let d= (data.distance.value/1000).toFixed();
-            let t= (data.duration.value*1.7/60).toFixed();
+            let t= (data.duration.value*1.6/60).toFixed();
             table.rows[ind+1].cells[2].innerText = d;
             table.rows[ind+1].cells[3].innerText = t;
             if(parseInt(table.rows[ind+1].cells[5].innerText)>0){
