@@ -7252,22 +7252,22 @@ function vagy(data){
       let vg="-----";
       let tm =0;
       let data =Date.parse(v1[i][1]); 
-      if(vod && avto && vag && v1[i][8]=='17.00'){
+      if(vod && avto && vag && v1[i][9]=='17.00'){
         if(vod0!=vod && avto0!=avto){
           let vv1 = vag;
           let vv2 = vag;
           let vv3 = vag;
-          if(v1.length>i+2 && vod ==v1[i+1][3] && avto ==v1[i+1][4] && v1[i+1][8]=='17.00' && parseFloat(v1[i+1][5])>0)vv1=parseFloat(v1[i+1][5]);
-          if(v1.length>i+3 && vod ==v1[i+2][3] && avto ==v1[i+1][4] && v1[i+2][8]=='17.00' && parseFloat(v1[i+2][5])>0)vv2=parseFloat(v1[i+2][5]);
-          if(v1.length>i+4 && vod ==v1[i+3][3] && avto ==v1[i+1][4] && v1[i+3][8]=='17.00' && parseFloat(v1[i+3][5])>0)vv3=parseFloat(v1[i+3][5]);
+          if(v1.length>i+2 && vod ==v1[i+1][3] && avto ==v1[i+1][4] && v1[i+1][9]=='17.00' && parseFloat(v1[i+1][5])>0)vv1=parseFloat(v1[i+1][5]);
+          if(v1.length>i+3 && vod ==v1[i+2][3] && avto ==v1[i+1][4] && v1[i+2][9]=='17.00' && parseFloat(v1[i+2][5])>0)vv2=parseFloat(v1[i+2][5]);
+          if(v1.length>i+4 && vod ==v1[i+3][3] && avto ==v1[i+1][4] && v1[i+3][9]=='17.00' && parseFloat(v1[i+3][5])>0)vv3=parseFloat(v1[i+3][5]);
           vag = Math.min(vag, vv1, vv2, vv3);
           if(v3){
             for(let ii = 1; ii<v3.length; ii++){
               let dd = Date.parse(v3[ii][1]);
-              if(dd>data && vod ==v3[ii][3] && avto ==v3[ii][4] && v3[ii][8]=='17.00' && parseFloat(v3[ii][5])>0){
+              if(dd>data && vod ==v3[ii][3] && avto ==v3[ii][4] && v3[ii][9]=='17.00' && parseFloat(v3[ii][5])>0){
                 vag2=parseFloat(v3[ii][5]);
                  vv1 = vag2;
-                 if(v3.length>ii+2 && vod ==v3[ii+1][3] && avto ==v3[ii+1][4] && v3[ii+1][8]=='17.00' && parseFloat(v3[ii+1][5])>0)vv1=parseFloat(v3[ii+1][5]);
+                 if(v3.length>ii+2 && vod ==v3[ii+1][3] && avto ==v3[ii+1][4] && v3[ii+1][9]=='17.00' && parseFloat(v3[ii+1][5])>0)vv1=parseFloat(v3[ii+1][5]);
                  vag2 = Math.min(vag2, vv1);
                 tm = sec_to_time((dd-data)/1000);
                 vg="Ваги №3";
@@ -7278,10 +7278,10 @@ function vagy(data){
           if(vag2 ==0 && v4){
             for(let iii = 1; iii<v4.length; iii++){
               let dd = Date.parse(v4[iii][1]);
-              if(dd>data && vod ==v4[iii][3] && avto ==v4[iii][4] && v4[iii][8]=='17.00' && parseFloat(v4[iii][5])>0){
+              if(dd>data && vod ==v4[iii][3] && avto ==v4[iii][4] && v4[iii][9]=='17.00' && parseFloat(v4[iii][5])>0){
                 vag2=parseFloat(v4[iii][5]);
                  vv1 = vag2;
-                 if(v4.length>iii+2 && vod ==v4[iii+1][3] && avto ==v4[iii+1][4] && v4[iii+1][8]=='17.00' && parseFloat(v4[iii+1][5])>0)vv1=parseFloat(v4[iii+1][5]);
+                 if(v4.length>iii+2 && vod ==v4[iii+1][3] && avto ==v4[iii+1][4] && v4[iii+1][9]=='17.00' && parseFloat(v4[iii+1][5])>0)vv1=parseFloat(v4[iii+1][5]);
                  vag2 = Math.min(vag2, vv1);
                 tm = sec_to_time((dd-data)/1000);
                 vg="Ваги №4";
@@ -7309,22 +7309,22 @@ function vagy(data){
       let vg="-----";
       let tm =0;
       let data =Date.parse(v2[i][1]); 
-      if(vod && avto && vag && v2[i][8]=='17.00'){
+      if(vod && avto && vag && v2[i][9]=='17.00'){
         if(vod0!=vod && avto0!=avto){
           let vv1 = vag;
           let vv2 = vag;
           let vv3 = vag;
-          if(v2.length>i+2 && vod ==v2[i+1][3] && avto ==v2[i+1][4] && v2[i+1][8]=='17.00' && parseFloat(v2[i+1][5])>0)vv1=parseFloat(v2[i+1][5]);
-          if(v2.length>i+3 && vod ==v2[i+2][3] && avto ==v2[i+1][4] && v2[i+2][8]=='17.00' && parseFloat(v2[i+2][5])>0)vv2=parseFloat(v2[i+2][5]);
-          if(v2.length>i+4 && vod ==v2[i+3][3] && avto ==v2[i+1][4] && v2[i+3][8]=='17.00' && parseFloat(v2[i+3][5])>0)vv3=parseFloat(v2[i+3][5]);
+          if(v2.length>i+2 && vod ==v2[i+1][3] && avto ==v2[i+1][4] && v2[i+1][9]=='17.00' && parseFloat(v2[i+1][5])>0)vv1=parseFloat(v2[i+1][5]);
+          if(v2.length>i+3 && vod ==v2[i+2][3] && avto ==v2[i+1][4] && v2[i+2][9]=='17.00' && parseFloat(v2[i+2][5])>0)vv2=parseFloat(v2[i+2][5]);
+          if(v2.length>i+4 && vod ==v2[i+3][3] && avto ==v2[i+1][4] && v2[i+3][9]=='17.00' && parseFloat(v2[i+3][5])>0)vv3=parseFloat(v2[i+3][5]);
           vag = Math.min(vag, vv1, vv2, vv3);
           if(v3){
             for(let ii = 1; ii<v3.length; ii++){
               let dd = Date.parse(v3[ii][1]);
-              if(dd>data && vod ==v3[ii][3] && avto ==v3[ii][4] && v3[ii][8]=='17.00' && parseFloat(v3[ii][5])>0){
+              if(dd>data && vod ==v3[ii][3] && avto ==v3[ii][4] && v3[ii][9]=='17.00' && parseFloat(v3[ii][5])>0){
                 vag2=parseFloat(v3[ii][5]);
                 vv1 = vag2;
-                if(v3.length>ii+2 && vod ==v3[ii+1][3] && avto ==v3[ii+1][4] && v3[ii+1][8]=='17.00' && parseFloat(v3[ii+1][5])>0)vv1=parseFloat(v3[ii+1][5]);
+                if(v3.length>ii+2 && vod ==v3[ii+1][3] && avto ==v3[ii+1][4] && v3[ii+1][9]=='17.00' && parseFloat(v3[ii+1][5])>0)vv1=parseFloat(v3[ii+1][5]);
                 vag2 = Math.min(vag2, vv1);
                 tm = sec_to_time((dd-data)/1000);
                 vg="Ваги №3";
@@ -7335,10 +7335,10 @@ function vagy(data){
           if(vag2 ==0 && v4){
             for(let iii = 1; iii<v4.length; iii++){
               let dd = Date.parse(v4[iii][1]);
-              if(dd>data && vod ==v4[iii][3] && avto ==v4[iii][4] && v4[iii][8]=='17.00' && parseFloat(v4[iii][5])>0){
+              if(dd>data && vod ==v4[iii][3] && avto ==v4[iii][4] && v4[iii][9]=='17.00' && parseFloat(v4[iii][5])>0){
                 vag2=parseFloat(v4[iii][5]);
                  vv1 = vag2;
-                 if(v4.length>iii+2 && vod ==v4[iii+1][3] && avto ==v4[iii+1][4] && v4[iii+1][8]=='17.00' && parseFloat(v4[iii+1][5])>0)vv1=parseFloat(v4[iii+1][5]);
+                 if(v4.length>iii+2 && vod ==v4[iii+1][3] && avto ==v4[iii+1][4] && v4[iii+1][9]=='17.00' && parseFloat(v4[iii+1][5])>0)vv1=parseFloat(v4[iii+1][5]);
                  vag2 = Math.min(vag2, vv1);
                 tm = sec_to_time((dd-data)/1000);
                 vg="Ваги №4";
@@ -7347,7 +7347,6 @@ function vagy(data){
             }
           }
          let vag3 =vag-vag2;
-         console.log(tm)
          tbl.push([v2[i][1],"Ваги №2",vg,tm,vod,avto,vag,vag2,vag3]);
          vod0=vod;
          avto0=avto;
@@ -11448,5 +11447,3 @@ function Rote_gruzoperevozki(p1,p2,color,ind){
           }
         });
 }
-
-
