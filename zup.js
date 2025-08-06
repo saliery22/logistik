@@ -11482,7 +11482,7 @@ function Rote_gruzoperevozki(p1,p2,color,ind){
                  if(table.rows[ind+1].cells[4].children[0].value=='соняшник')mash = gektary*3/(hodky*18);
                  if(table.rows[ind+1].cells[4].children[0].value=='соя')mash = gektary*2.8/(hodky*30);
                  if(table.rows[ind+1].cells[4].children[0].value=='ріпак')mash = gektary*2.7/(hodky*30);
-                 if(table.rows[ind+1].cells[4].children[0].value=='пшениця')mash = gektary*4.5/(hodky*36); 
+                 if(table.rows[ind+1].cells[4].children[0].value=='пшениця')mash = gektary*5.5/(hodky*36); 
 
                   let vsego = mash*hodky;
                   let nam = (vsego/12).toFixed(1);
@@ -11497,4 +11497,5 @@ function Rote_gruzoperevozki(p1,p2,color,ind){
           }
         });
 }
+
 
