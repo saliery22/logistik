@@ -5686,6 +5686,7 @@ function avto_OBD(data){
     let zapr1=-10;
     let zapr=0;
     let zapr00 = 0;
+    let stoy = 0;
     for (let ii = 1; ii<data[i].length-1; ii++){
       if(!data[i][ii][1])continue;
       if(!data[i][ii+1][1])continue;
@@ -5701,13 +5702,16 @@ function avto_OBD(data){
       if(parseInt(data[i][ii][2])>0){
         if(data[i][ii][6] && data[i][ii][6]!='-----'){
           zapr1= parseFloat(data[i][ii][6]);
-          if(zapr0==-10){zapr0 = parseFloat(data[i][ii][6]);}
+          if( stoy==1  && zapr0>0 &&zapr1-zapr0>5)zapr+=zapr1-zapr0;
+          zapr0=parseFloat(data[i][ii][6]);
+          stoy=0;
           }
+          
       }else{
-        if(zapr0>=0 && zapr1>=0){
-          if(zapr1-zapr0>5)zapr+=zapr1-zapr0;
-          zapr0=zapr1;
+        if(data[i][ii][6] && data[i][ii][6]!='-----'){
+          if(zapr0==-10)zapr0=parseFloat(data[i][ii][6]);
         }
+        stoy=1;
       }
       if(parseFloat(data[i][ii][6]))zapr00=parseFloat(data[i][ii][6]);
       if(ii==data[i].length-2 && zapr0>=0 && parseInt(data[i][ii][2])==0){
@@ -11492,6 +11496,7 @@ function Rote_gruzoperevozki(p1,p2,color,ind){
           }
         });
 }
+
 
 
 
