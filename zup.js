@@ -7272,7 +7272,7 @@ function vagy(data){
           if(v3){
             for(let ii = 1; ii<v3.length; ii++){
               let dd = Date.parse(v3[ii][1]);
-              if(dd>data && vod ==v3[ii][7] && avto ==v3[ii][8] && v3[ii][9]=='17.00' && parseFloat(v3[ii][5])>0){
+              if(dd>data && dd<(data+6000000) && vod ==v3[ii][7] && avto ==v3[ii][8] && v3[ii][9]=='17.00' && parseFloat(v3[ii][5])>0){
                 vag2=parseFloat(v3[ii][5]);
                  //if(v3.length>ii+2 && vod ==v3[ii+1][3] && avto ==v3[ii+1][4] && v3[ii+1][9]=='17.00' && parseFloat(v3[ii+1][5])==vag2){}else{continue;}
                for(let y = 1; y<10; y++){if(v3.length>ii+y && vod ==v3[ii+y][7] && avto ==v3[ii+y][8] && v3[ii+y][9]=='17.00' && parseFloat(v3[ii+y][5])>vag2)vag2=parseFloat(v3[ii+y][5]);}
@@ -7287,7 +7287,7 @@ function vagy(data){
           if(vag2 ==0 && v4){
             for(let iii = 1; iii<v4.length; iii++){
               let dd = Date.parse(v4[iii][1]);
-              if(dd>data && vod ==v4[iii][7] && avto ==v4[iii][8] && v4[iii][9]=='17.00' && parseFloat(v4[iii][5])>0){
+              if(dd>data && dd<(data+6000000) && vod ==v4[iii][7] && avto ==v4[iii][8] && v4[iii][9]=='17.00' && parseFloat(v4[iii][5])>0){
                 vag2=parseFloat(v4[iii][5]);
                  //if(v4.length>iii+2 && vod ==v4[iii+1][3] && avto ==v4[iii+1][4] && v4[iii+1][9]=='17.00' && parseFloat(v4[iii+1][5])==vag2){}else{continue;}
                for(let y = 1; y<10; y++){if(v4.length>iii+y && vod ==v4[iii+y][7] && avto ==v4[iii+y][8] && v4[iii+y][9]=='17.00' && parseFloat(v4[iii+y][5])>vag2)vag2=parseFloat(v4[iii+y][5]);}
@@ -7336,7 +7336,7 @@ function vagy(data){
           if(v3){
             for(let ii = 1; ii<v3.length; ii++){
               let dd = Date.parse(v3[ii][1]);
-              if(dd>data && vod ==v3[ii][7] && avto ==v3[ii][8] && v3[ii][9]=='17.00' && parseFloat(v3[ii][5])>0){
+              if(dd>data && dd<(data+6000000) && vod ==v3[ii][7] && avto ==v3[ii][8] && v3[ii][9]=='17.00' && parseFloat(v3[ii][5])>0){
                 vag2=parseFloat(v3[ii][5]);
                 //if(v3.length>ii+2 && vod ==v3[ii+1][3] && avto ==v3[ii+1][4] && v3[ii+1][9]=='17.00' && parseFloat(v3[ii+1][5])==vag2){}else{continue;}
                  for(let y = 1; y<10; y++){if(v3.length>ii+y && vod ==v3[ii+y][7] && avto ==v3[ii+y][8] && v3[ii+y][9]=='17.00' && parseFloat(v3[ii+y][5])>vag2)vag2=parseFloat(v3[ii+y][5]);}
@@ -7351,7 +7351,7 @@ function vagy(data){
           if(vag2 ==0 && v4){
             for(let iii = 1; iii<v4.length; iii++){
               let dd = Date.parse(v4[iii][1]);
-              if(dd>data && vod ==v4[iii][7] && avto ==v4[iii][8] && v4[iii][9]=='17.00' && parseFloat(v4[iii][5])>0){
+              if(dd>data && dd<(data+6000000) && vod ==v4[iii][7] && avto ==v4[iii][8] && v4[iii][9]=='17.00' && parseFloat(v4[iii][5])>0){
                 vag2=parseFloat(v4[iii][5]);
                  //if(v4.length>iii+2 && vod ==v4[iii+1][3] && avto ==v4[iii+1][4] && v4[iii+1][9]=='17.00' && parseFloat(v4[iii+1][5])==vag2){}else{continue;}
                   for(let y = 1; y<10; y++){if(v4.length>iii+y && vod ==v4[iii+y][7] && avto ==v4[iii+y][8] && v4[iii+y][9]=='17.00' && parseFloat(v4[iii+y][5])>vag2)vag2=parseFloat(v4[iii+y][5]);}
@@ -11514,6 +11514,7 @@ function Rote_gruzoperevozki(p1,p2,color,ind){
           }
         });
 }
+
 
 
 
