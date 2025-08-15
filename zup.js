@@ -7253,14 +7253,16 @@ function vagy(data){
       let vodn = v1[i][3];
       let avton = v1[i][4];
       let vag = parseFloat(v1[i][5]);
-      if(!vag)vag=0;
+      if(!vag)vag=9999999;
+      vag=9999999;
       let vag2=0;
+      let t1=999999999999999999;
       let vg="-----";
       let tm =0;
       let data =Date.parse(v1[i][1]); 
       if(vod!=0 && avto!=0 && v1[i][9]=='17.00'){
         if(vod0!=vod && avto0!=avto){
-          for(let y = 1; y<10; y++){if(v1.length>i+y && vod ==v1[i+y][7] && avto ==v1[i+y][8] && v1[i+y][9]=='17.00' && parseFloat(v1[i+y][5])>vag)vag=parseFloat(v1[i+y][5]);}
+          for(let y = 1; y<10; y++){if(v1.length>i+y && vod ==v1[i+y][7] && avto ==v1[i+y][8] && v1[i+y][9]=='17.00' && parseFloat(v1[i+y][5])<vag)vag=parseFloat(v1[i+y][5]);}
           //let vv1 = vag;
           //let vv2 = vag;
           //let vv3 = vag;
@@ -7273,33 +7275,37 @@ function vagy(data){
             for(let ii = 1; ii<v3.length; ii++){
               let dd = Date.parse(v3[ii][1]);
               if(dd>data && dd<(data+6000000) && vod ==v3[ii][7] && avto ==v3[ii][8] && v3[ii][9]=='17.00' && parseFloat(v3[ii][5])>0){
-                vag2=parseFloat(v3[ii][5]);
+                vag2=9999999;
                  //if(v3.length>ii+2 && vod ==v3[ii+1][3] && avto ==v3[ii+1][4] && v3[ii+1][9]=='17.00' && parseFloat(v3[ii+1][5])==vag2){}else{continue;}
-               for(let y = 1; y<10; y++){if(v3.length>ii+y && vod ==v3[ii+y][7] && avto ==v3[ii+y][8] && v3[ii+y][9]=='17.00' && parseFloat(v3[ii+y][5])>vag2)vag2=parseFloat(v3[ii+y][5]);}
+               for(let y = 1; y<10; y++){if(v3.length>ii+y && vod ==v3[ii+y][7] && avto ==v3[ii+y][8] && v3[ii+y][9]=='17.00' && parseFloat(v3[ii+y][5])<vag2)vag2=parseFloat(v3[ii+y][5]);}
                 tm = sec_to_time((dd-data)/1000);
                 vg="Ваги №3";
                 if(vodn=="-----")vodn = v3[ii][3];
                 if(avton=="-----")avton = v3[ii][4];
+                t1 = dd;
+                if(vag2==9999999) vag2=parseFloat(v3[ii][5]);
                 break;
               } 
             }
           }
-          if(vag2 ==0 && v4){
+          if(v4){
             for(let iii = 1; iii<v4.length; iii++){
               let dd = Date.parse(v4[iii][1]);
-              if(dd>data && dd<(data+6000000) && vod ==v4[iii][7] && avto ==v4[iii][8] && v4[iii][9]=='17.00' && parseFloat(v4[iii][5])>0){
-                vag2=parseFloat(v4[iii][5]);
+              if(dd>data && dd<(data+6000000) && dd<t1 && vod ==v4[iii][7] && avto ==v4[iii][8] && v4[iii][9]=='17.00' && parseFloat(v4[iii][5])>0){
+
+                vag2=9999999;
                  //if(v4.length>iii+2 && vod ==v4[iii+1][3] && avto ==v4[iii+1][4] && v4[iii+1][9]=='17.00' && parseFloat(v4[iii+1][5])==vag2){}else{continue;}
-               for(let y = 1; y<10; y++){if(v4.length>iii+y && vod ==v4[iii+y][7] && avto ==v4[iii+y][8] && v4[iii+y][9]=='17.00' && parseFloat(v4[iii+y][5])>vag2)vag2=parseFloat(v4[iii+y][5]);}
+               for(let y = 1; y<10; y++){if(v4.length>iii+y && vod ==v4[iii+y][7] && avto ==v4[iii+y][8] && v4[iii+y][9]=='17.00' && parseFloat(v4[iii+y][5])<vag2)vag2=parseFloat(v4[iii+y][5]);}
                 tm = sec_to_time((dd-data)/1000);
                 vg="Ваги №4";
                 if(vodn=="-----")vodn = v4[iii][3];
                 if(avton=="-----")avton = v4[iii][4];
+                if(vag2==9999999) vag2=parseFloat(v4[iii][5]);
                 break;
               } 
             }
           }
-         
+          if(vag==9999999)vag=parseFloat(v1[i][5]);
         let vag3 =vag-vag2;
          tbl.push([v1[i][1],"Ваги №1",vg,tm,vodn,avton,vag,vag2,vag3]);
          vod0=vod;
@@ -7317,14 +7323,16 @@ function vagy(data){
       let vodn = v2[i][3];
       let avton = v2[i][4];
       let vag = parseFloat(v2[i][5]);
-      if(!vag)vag=0;
+      if(!vag)vag=9999999;
+      vag = 9999999;
       let vag2=0;
+      let t1=999999999999999999999;
       let vg="-----";
       let tm =0;
       let data =Date.parse(v2[i][1]); 
       if(vod!=0 && avto!=0 && v2[i][9]=='17.00'){
         if(vod0!=vod && avto0!=avto){
-           for(let y = 1; y<10; y++){if(v2.length>i+y && vod ==v2[i+y][7] && avto ==v2[i+y][8] && v2[i+y][9]=='17.00' && parseFloat(v2[i+y][5])>vag)vag=parseFloat(v2[i+y][5]);}
+           for(let y = 1; y<10; y++){if(v2.length>i+y && vod ==v2[i+y][7] && avto ==v2[i+y][8] && v2[i+y][9]=='17.00' && parseFloat(v2[i+y][5])<vag)vag=parseFloat(v2[i+y][5]);}
           //let vv1 = vag;
           //let vv2 = vag;
           //let vv3 = vag;
@@ -7337,13 +7345,15 @@ function vagy(data){
             for(let ii = 1; ii<v3.length; ii++){
               let dd = Date.parse(v3[ii][1]);
               if(dd>data && dd<(data+6000000) && vod ==v3[ii][7] && avto ==v3[ii][8] && v3[ii][9]=='17.00' && parseFloat(v3[ii][5])>0){
-                vag2=parseFloat(v3[ii][5]);
+               vag2=9999999;
                 //if(v3.length>ii+2 && vod ==v3[ii+1][3] && avto ==v3[ii+1][4] && v3[ii+1][9]=='17.00' && parseFloat(v3[ii+1][5])==vag2){}else{continue;}
-                 for(let y = 1; y<10; y++){if(v3.length>ii+y && vod ==v3[ii+y][7] && avto ==v3[ii+y][8] && v3[ii+y][9]=='17.00' && parseFloat(v3[ii+y][5])>vag2)vag2=parseFloat(v3[ii+y][5]);}
+                 for(let y = 1; y<10; y++){if(v3.length>ii+y && vod ==v3[ii+y][7] && avto ==v3[ii+y][8] && v3[ii+y][9]=='17.00' && parseFloat(v3[ii+y][5])<vag2)vag2=parseFloat(v3[ii+y][5]);}
                 tm = sec_to_time((dd-data)/1000);
                 vg="Ваги №3";
                  if(vodn=="-----")vodn = v3[ii][3];
                 if(avton=="-----")avton = v3[ii][4];
+                t1 = dd;
+                if(vag2==9999999) vag2=parseFloat(v3[ii][5]);
                 break;
               } 
             }
@@ -7351,18 +7361,20 @@ function vagy(data){
           if(vag2 ==0 && v4){
             for(let iii = 1; iii<v4.length; iii++){
               let dd = Date.parse(v4[iii][1]);
-              if(dd>data && dd<(data+6000000) && vod ==v4[iii][7] && avto ==v4[iii][8] && v4[iii][9]=='17.00' && parseFloat(v4[iii][5])>0){
-                vag2=parseFloat(v4[iii][5]);
+              if(dd>data && dd<(data+6000000) && dd<t1 && vod ==v4[iii][7] && avto ==v4[iii][8] && v4[iii][9]=='17.00' && parseFloat(v4[iii][5])>0){
+               vag2=9999999;
                  //if(v4.length>iii+2 && vod ==v4[iii+1][3] && avto ==v4[iii+1][4] && v4[iii+1][9]=='17.00' && parseFloat(v4[iii+1][5])==vag2){}else{continue;}
-                  for(let y = 1; y<10; y++){if(v4.length>iii+y && vod ==v4[iii+y][7] && avto ==v4[iii+y][8] && v4[iii+y][9]=='17.00' && parseFloat(v4[iii+y][5])>vag2)vag2=parseFloat(v4[iii+y][5]);}
+                  for(let y = 1; y<10; y++){if(v4.length>iii+y && vod ==v4[iii+y][7] && avto ==v4[iii+y][8] && v4[iii+y][9]=='17.00' && parseFloat(v4[iii+y][5])<vag2)vag2=parseFloat(v4[iii+y][5]);}
                 tm = sec_to_time((dd-data)/1000);
                 vg="Ваги №4";
                 if(vodn=="-----")vodn = v4[iii][3];
                 if(avton=="-----")avton = v4[iii][4];
+                if(vag2==9999999) vag2=parseFloat(v4[iii][5]);
                 break;
               } 
             }
           }
+          if(vag==9999999)vag=parseFloat(v2[i][5]);
          let vag3 =vag-vag2;
          tbl.push([v2[i][1],"Ваги №2",vg,tm,vodn,avton,vag,vag2,vag3]);
          vod0=vod;
@@ -11514,6 +11526,7 @@ function Rote_gruzoperevozki(p1,p2,color,ind){
           }
         });
 }
+
 
 
 
