@@ -34,6 +34,19 @@
     crossorigin="anonymous"
      ></script>
 
+     
+     <script src="https://cdn.jsdelivr.net/npm/treeselectjs@0.13.1/dist/treeselectjs.umd.js"></script>
+     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/treeselectjs@0.13.1/dist/treeselectjs.css" />
+
+     
+     <link rel="stylesheet" href="leaflet.contextmenu.css"/>
+     <script src="leaflet.contextmenu.js"></script>
+
+     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.css">
+     <script src="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.js"></script>
+
+      <script src="leaflet.rotatedMarker.js"></script>
+
 
      <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 
@@ -41,208 +54,394 @@
 
 </head>
 <body>
-<style>
+    <style>
 
 
-#shapka{ width: 100%;border-bottom: 2px solid #b1b1b1;display: flex;  justify-content: space-between;}
-#niz{ border-top: 2px solid #b1b1b1;}
-#map { width: 100%; height:80vh; float: left;  font-family: "Arial"; font-size: 12px; margin: auto; border-bottom: 2px solid #b1b1b1;}
-#marrr { width: 50%-6px; height:80vh; margin-left: 50%; overflow-y: auto; overflow-x: auto;  border-left: 2px solid #b1b1b1;padding-left: 4px;}
-#option { width: 50%-6px; height:80vh; margin-left: 50%; overflow-y: auto; overflow-x: auto; border-left: 2px solid #b1b1b1;padding-left: 4px;display: flex;  flex-direction: column; }
-#unit_info { width: 50%-6px; height:80vh; margin-left: 50%; overflow-y: auto; overflow-x: auto;border-left: 2px solid #b1b1b1;padding-left: 4px;}
-#zupinki { width: 20%-6px; height:80vh; margin-left: 80%; overflow-y: auto; overflow-x: auto;border-left: 2px solid #b1b1b1;padding-left: 4px;}
-#logistika { width: 50%-6px; height:80vh; margin-left: 50%; overflow-y: auto; overflow-x: auto;border-left: 2px solid #b1b1b1;padding-left: 4px;}
-#monitoring { width: 35%-6px; height:80vh; margin-left: 65%; overflow-y: scroll; overflow-x: scroll;border-left: 2px solid #b1b1b1;padding-left: 4px;}
-#geomodul { width: 50%-6px; height:80vh; margin-left: 50%; overflow-y: auto; overflow-x: auto;border-left: 2px solid #b1b1b1;padding-left: 4px;}
-
-
-.my-labels {
-  background-color: transparent;
-  border: transparent;
-  box-shadow: none;
-  font-weight: bold;
-  font-size: 11px;
-  color:#000000;
-  width: 50px;
-  text-align: center;
-  text-shadow: #ffffff 1px 0 0px, #ffffff 0 1px 0px, #ffffff -1px 0 0px, #ffffff 0 -1px 0px;
-  }
-
-.div-icon{
-    display:inline-block;
-    white-space: nowrap;
-}
-.leaflet-tooltip-red {
-    position: absolute;
-    padding: 4px;
-    background-color: rgba(228, 12, 12, 0.9);
-    border: 0px solid #000;
-    color: #000;
-    white-space: nowrap;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-    pointer-events: none;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.4);
-}
-.leaflet-tooltip-green {
-    position: absolute;
-    padding: 4px;
-    background-color: rgba(70, 247, 0, 0.9);
-    border: 0px solid #000;
-    color: #000;
-    white-space: nowrap;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-    pointer-events: none;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.4);
-}
-.leaflet-tooltip-grey {
-    position: absolute;
-    padding: 4px;
-    background-color: rgba(148, 150, 149, 0.9);
-    border: 0px solid #000;
-    color: #000;
-    white-space: nowrap;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-    pointer-events: none;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.4);
-}
-.leaflet-tooltip-yellow {
-    position: absolute;
-    padding: 4px;
-    background-color: rgba(255, 230, 4, 0.9);
-    border: 0px solid #000;
-    color: #000;
-    white-space: nowrap;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-    pointer-events: none;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.4);
-}
-.leaflet-tooltip-blue {
-    position: absolute;
-    padding: 4px;
-    background-color: rgba(2, 81, 252, 0.9);
-    border: 0px solid #000;
-    color: #000;
-    white-space: nowrap;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-    pointer-events: none;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.4);
-}
-.leaflet-popup-content-wrapper{
-    background-color: rgba(255, 255, 255, 0.7);
-}
-.leaflet-popup-tip{
-    background-color: rgba(255, 255, 255, 0.7);
-}
-
-
-#grafik { width: 100%; border: 1px solid #c6c6c6;}
-#chart1 { width: 100%; height:200px;}
-#chart2 { width: 100%; height:80px;}
-#inftb td{ border: 1px solid rgb(78, 78, 78);  padding: 2px 10px;}
-#unit_table td{ border: 1px solid rgb(78, 78, 78);  padding: 2px 5px;}
-#monitoring_table td{ border: 2px solid rgb(78, 78, 78);  padding: 2px 4px; white-space: nowrap;}
-
-#obrobkatehnika td{ border: 1px solid black; padding: 1px 5px;}
-
-
-#reestr_polya{ max-height:30vh; overflow-y: auto;}
-.table {min-width: 98%;}
-.table thead th {font-weight: bold;	text-align: left;border: none;padding: 2px 5px;	background: #e7e7e7;border: 1px solid #292929;border-right: 1px solid #292929;}
-.table tbody td {text-align: left;border: 1px solid #292929;padding: 2px 5px;vertical-align: top;}
-
-.table2 {min-width: 98%;}
-.table2 thead th {font-weight: bold;	text-align: left;border: none;padding: 2px 5px;	background: #e7e7e7;border: 1px solid #292929;border-right: 1px solid #292929;}
-.table2 tbody td {text-align: left;border: 1px solid #292929;padding: 2px 5px;vertical-align: top; max-width: 150px; white-space: nowrap; overflow: hidden;text-overflow: ellipsis;}
-
-
-#log { float: left; width: 30%; border: 1px solid #c6c6c6; max-height:30px; overflow-y: auto; margin: 0px 0px 10px 0px;}
-#mars_table{max-height:60vh; overflow-y: auto;}
-#control_table{max-height:60vh; overflow-y: auto;}
-#mars_table_div{max-width:99%;  overflow-x: auto; white-space: nowrap;}
-#mars_zvit_table_div{max-width:99%; overflow-x: auto;white-space: nowrap;}
-#marshrut { min-width: 100%; border: 1px solid #c6c6c6; margin: 10px 0px 10px 0px;}
-#marsh_tb { min-width: 100%; border: 1px solid #c6c6c6; margin: 10px 0px 10px 0px;}
-#zvittt{ border: 1px solid #c6c6c6; margin: 10px 0px 10px 0px;}
-#zvitttt{ border: 1px solid #c6c6c6; margin: 10px 0px 10px 0px;}
-body{ font-family: "Arial"; font-size: 12px; background: #f8f7f7;}
-
-#jurnal{ width: 100%;}
-#jurnal_upd{ width: 100%;overflow-y: auto;height: 25vh;}
-#jurnal_name_table{ min-width: 98%;}
-#jurnal_name_table tbody td {text-align: left;border-bottom: 1px solid #292929;padding: 2px 5px;vertical-align: top;}
-#jurnal_online{width: 100%; overflow-y: auto;}
-
-
-
-#inftb{ margin: 5px 0px 5px 0px;}
-
-#zvit td{ border: 1px solid black;  padding: 3px 10px;}
-#zvit th{ border: 1px solid black;  padding: 3px 10px;}
-
-.wrap{ max-height:150px; overflow-y: auto; }
-
-thead {  border: 0px; height:30px; }
-table {width: auto; margin: 10px 5px 10px 5px; border: 1px solid #dddddd; border-collapse: collapse; text-align: center;}
-
-
-
-
-.slidecontainer {
-    width: 100%; /* Width of the outside container */
-    margin: 10px 0px 10px 0px;
-}
-
-/* The slider itself */
-.slider {
-    -webkit-appearance: none;  /* Override default CSS styles */
-    appearance: none;
-    width: 100%; /* Full-width */
-    height: 10px; /* Specified height */
-    background: #d3d3d3; /* Grey background */
-    outline: none; /* Remove outline */
-    opacity: 0.8; /* Set transparency (for mouse-over effects on hover) */
-    -webkit-transition: .2s; /* 0.2 seconds transition on hover */
-    transition: opacity .2s;
-}
-
-/* Mouse-over effects */
-.slider:hover {
-    opacity: 1; /* Fully shown on mouse-over */
-}
-
-/* The slider handle (use -webkit- (Chrome, Opera, Safari, Edge) and -moz- (Firefox) to override default look) */
-.slider::-webkit-slider-thumb {
-    
-    width: 15px; /* Set a specific slider handle width */
-    height: 25px; /* Slider handle height */
- 
-    cursor: pointer; /* Cursor on hover */
-    border-radius: 0px
-}
-
-.slider::-moz-range-thumb {
-    width: 15px; /* Set a specific slider handle width */
-    height: 25px; /* Slider handle height */
-    background: #4CAF50; /* Green background */
-    cursor: pointer; /* Cursor on hover */
-    border-radius: 0px
-}
-button {
+        #shapka{ width: 100%; height:30px;border-bottom: 2px solid #d7dde4;display: flex;  justify-content: space-between; background: #ffffff;}
+        #nizz{ width: 100%; height:30px; border-bottom: 2px solid #d7dde4;display: flex;  justify-content: flex-start;}
+        #niz{ border-top: 2px solid #d7dde4;}
+        #map { width: 100%; height:calc(100vh - 124px); float: left;  font-family: Arial, Tahoma, sans-serif; color: #000000; font-size: 12px; margin: auto; border-bottom: 2px solid #d7dde4;}
+        #marrr { width: 50%-6px; height:calc(100vh - 124px); margin-left: 50%; overflow-y: auto; overflow-x: auto;  border-left: 2px solid #d7dde4;padding-left: 4px;}
+        #option { width: 50%-6px; height:calc(100vh - 124px); margin-left: 50%; overflow-y: auto; overflow-x: auto; border-left: 2px solid #d7dde4;padding-left: 4px;display: flex;  flex-direction: column; }
+        #unit_info { width: 50%-6px; height:calc(100vh - 124px); margin-left: 50%; overflow-y: auto; overflow-x: auto;border-left: 2px solid #d7dde4;padding-left: 4px;}
+        #zupinki { width: 20%-6px; height:calc(100vh - 124px); margin-left: 80%; overflow-y: auto; overflow-x: auto;border-left: 2px solid #d7dde4;padding-left: 4px;}
+        #logistika { width: 50%-6px; height:calc(100vh - 124px); margin-left: 50%; overflow-y: auto; overflow-x: auto;border-left: 2px solid #d7dde4;padding-left: 4px;}
+        #monitoring { width: 35%-6px; height:calc(100vh - 124px); margin-left: 65%; overflow-y: scroll; overflow-x: scroll;border-left: 2px solid #b1b1b1;padding-left: 4px;}
+        #geomodul { width: 50%-6px; height:calc(100vh - 124px); margin-left: 50%; overflow-y: auto; overflow-x: auto;border-left: 2px solid #d7dde4;padding-left: 4px;}
+        
+        .my-labels {
+          background-color: transparent;
+          border: transparent;
+          box-shadow: none;
+          font-weight: bold;
+          font-size: 11px;
+          color: #464646; 
+          color:#000000;
+          width: 50px;
+          text-align: center;
+          text-shadow: #ffffff 1px 0 0px, #ffffff 0 1px 0px, #ffffff -1px 0 0px, #ffffff 0 -1px 0px;
+          }
+        
+        .div-icon{
+            display:inline-block;
+            white-space: nowrap;
+        }
+        .leaflet-tooltip-red {
+            position: absolute;
+            padding: 4px;
+            background-color: rgba(228, 12, 12, 0.9);
+            border: 0px solid #000;
+            color: #000;
+            white-space: nowrap;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            pointer-events: none;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+        }
+        .leaflet-tooltip-green {
+            position: absolute;
+            padding: 4px;
+            background-color: rgba(70, 247, 0, 0.9);
+            border: 0px solid #000;
+            color: #000;
+            white-space: nowrap;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            pointer-events: none;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+        }
+        .leaflet-tooltip-grey {
+            position: absolute;
+            padding: 4px;
+            background-color: rgba(148, 150, 149, 0.9);
+            border: 0px solid #000;
+            color: #000;
+            white-space: nowrap;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            pointer-events: none;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+        }
+        .leaflet-tooltip-yellow {
+            position: absolute;
+            padding: 4px;
+            background-color: rgba(255, 230, 4, 0.9);
+            border: 0px solid #000;
+            color: #000;
+            white-space: nowrap;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            pointer-events: none;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+        }
+        .leaflet-tooltip-blue {
+            position: absolute;
+            padding: 4px;
+            background-color: rgba(2, 81, 252, 0.9);
+            border: 0px solid #000;
+            color: #000;
+            white-space: nowrap;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            pointer-events: none;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+        }
+        .leaflet-popup-content-wrapper{
+            background-color: rgba(255, 255, 255, 0.7);
+        }
+        .leaflet-popup-tip{
+            background-color: rgba(255, 255, 255, 0.7);
+        }
+        
+        
+        #grafik { width:calc(100% - 2px); border: 1px solid #c6c6c6;}
+        #chart1 { width: 100%; height:200px;}
+        #chart2 { width: 100%; height:80px;}
+        #inftb td{ border: 1px solid rgb(78, 78, 78);  padding: 2px 10px;}
+        #unit_table td{ border: 1px solid rgb(78, 78, 78);  padding: 2px 5px;}
+        #monitoring_table td{ border: 2px solid rgb(78, 78, 78);  padding: 2px 4px; white-space: nowrap;}
+        
+        #obrobkatehnika td{ border: 1px solid black; padding: 1px 5px;}
+        
+        
+        #reestr_polya{ max-height:30vh; overflow-y: auto;}
+        .table {min-width: 98%;}
+        .table thead th {font-weight: bold;	color: #464646; text-align: left;border: none;padding: 2px 5px;	background: #e7e7e7;border: 1px solid #292929;border-right: 1px solid #292929;}
+        .table tbody td {text-align: left;border: 1px solid #292929;padding: 2px 5px;vertical-align: top;}
+        
+        .table2 {min-width: 98%;}
+        .table2 thead th {font-weight: bold;color: #464646; 	text-align: left;border: none;padding: 2px 5px;	background: #e7e7e7;border: 1px solid #292929;border-right: 1px solid #292929;}
+        .table2 tbody td {text-align: left;border: 1px solid #292929;padding: 2px 5px;vertical-align: top; max-width: 150px; white-space: nowrap; overflow: hidden;text-overflow: ellipsis;}
+        
+        
+        #log { width: 99%; border: 0px solid #c6c6c6; height:10px; overflow-y: hidden; margin: 0px 0px 0px 0px;font-family: Arial, Tahoma, sans-serif; color: #464646; font-size: 9px;}
+        #log2 { width: 99%; border: 0px solid #c6c6c6; height:10px; overflow-y: hidden;  overflow-x: hidden; margin: 0px 0px 0px 0px;font-family: Arial, Tahoma, sans-serif; color: #464646; font-size: 9px;}
+        #mars_table{max-height:60vh; overflow-y: auto;}
+        #control_table{max-height:60vh; overflow-y: auto;}
+        #mars_table_div{max-width:99%;  overflow-x: auto; white-space: nowrap;}
+        #mars_zvit_table_div{max-width:99%; overflow-x: auto;white-space: nowrap;}
+        #marshrut { min-width: 100%; border: 1px solid #c6c6c6; margin: 10px 0px 10px 0px;}
+        #marsh_tb { min-width: 100%; border: 1px solid #c6c6c6; margin: 10px 0px 10px 0px;}
+        #zvittt{ border: 1px solid #c6c6c6; margin: 10px 0px 10px 0px;}
+        #zvitttt{ border: 1px solid #c6c6c6; margin: 10px 0px 10px 0px;}
+        body{ font-family: Arial, Tahoma, sans-serif; font-size: 12px; color: #000000; background: #ffffff;margin: 0;}
+        
+        #jurnal{ width: 100%;}
+        #jurnal_upd{ width: 100%;overflow-y: auto;height: 25vh;}
+        #jurnal_name_table{ min-width: 98%;}
+        #jurnal_name_table tbody td {text-align: left;border-bottom: 1px solid #292929;padding: 2px 5px;vertical-align: top;}
+        #jurnal_online{width: 100%; overflow-y: auto;}
+        
+        
+        
+            .leaflet-sidebar-left {
+                left: 0px;
+            }
+                .leaflet-sidebar {
+                top: 0px;
+                bottom: 0px;
+                transition: width 500ms;
+        
+            }
+        
+            .treejs .treejs-nodes {
+            padding-left: 2px;
+        }
+        
+        .leaflet-sidebar-pane {
+        
+            padding: 10px 0px;
+        }
+        .leaflet-sidebar-header {
+            margin: -10px -20px 0px;
+            height: 40px;
+            padding: 0px 0px 0px 30px;
+            line-height: 40px;
+            font-size: 14.4pt;
+            color: #fff;
+            background-color: #0074d9;
+        }
+        
+        #inftb{ margin: 5px 0px 5px 0px;}
+        
+        #zvit td{ border: 1px solid black;  padding: 3px 10px;}
+        #zvit th{ border: 1px solid black;  padding: 3px 10px;}
+        
+        .wrap{ max-height:150px; overflow-y: auto; }
+        
+        thead {  border: 0px; height:30px; }
+        table {width: auto; margin: 10px 5px 10px 5px; border: 1px solid #dddddd; border-collapse: collapse; text-align: center;}
+        
+        
+        
+        
+        .slidecontainer {
+            width: 100%; /* Width of the outside container */
+            margin: 10px 0px 10px 0px;
+        }
+        
+        /* The slider itself */
+        .slider {
+            -webkit-appearance: none;  /* Override default CSS styles */
+            appearance: none;
+            width: calc(100% - 4px); /* Full-width */
+            height: 10px; /* Specified height */
+            background: #d3d3d3; /* Grey background */
+            outline: none; /* Remove outline */
+            opacity: 0.8; /* Set transparency (for mouse-over effects on hover) */
+            -webkit-transition: .2s; /* 0.2 seconds transition on hover */
+            transition: opacity .2s;
+        }
+        
+        /* Mouse-over effects */
+        .slider:hover {
+            opacity: 1; /* Fully shown on mouse-over */
+        }
+        
+        /* The slider handle (use -webkit- (Chrome, Opera, Safari, Edge) and -moz- (Firefox) to override default look) */
+        .slider::-webkit-slider-thumb {
+            
+            width: 15px; /* Set a specific slider handle width */
+            height: 25px; /* Slider handle height */
+         
+            cursor: pointer; /* Cursor on hover */
+            border-radius: 0px
+        }
+        
+        .slider::-moz-range-thumb {
+            width: 15px; /* Set a specific slider handle width */
+            height: 25px; /* Slider handle height */
+            background: #4CAF50; /* Green background */
+            cursor: pointer; /* Cursor on hover */
+            border-radius: 0px
+        }
+        .main_menu {   
+            border-top-width: 0px;
+            border-bottom-width: 0px;
+            border-color: #d7dde4;
+            border-style: solid;
+            border-right-width: 1px ;
+            border-left-width: 1px;
+            border-radius: 0px;
+            color: #000000; 
+            font-family: Arial, Tahoma, sans-serif; 
+            font-size: 12px;
+            box-shadow: none;
+            cursor: pointer;
+            background: #ffffff;
+        }
+        
+        
+        
+        .treeselect-input {
+              border-top-width: 0px;
+            border-bottom-width: 0px;
+                border-right-width: 1px;
+                border-left-width: 1px;
+            border-radius: 0px;
+        }
+        
+        .textforma {display: flex }
+        
+        .result-tooltip{
+            border: none;
+        }
+        
+        #v8{ background-color: #b2f5b4; cursor: pointer;}
+        #v18{ background-color: #cbf5b2; cursor: pointer;}
+        #fromtime1{ 
+            border-top-width: 0px;
+            border-bottom-width: 0px;
+            border-right-width: 5px;
+            border-left-width: 2px;
+            border-radius: 0px;
+            border-style: solid;
+            border-color: #d7dde4;
+            font-family: Arial, Tahoma, sans-serif; 
+            font-size: 12px;
+            color: #000000; 
+        
+        }
+        #fromtime2{
+            border-color: #d7dde4;
+            border-top-width: 0px;
+            border-bottom-width: 0px;
+            border-right-width: 2px;
+            border-left-width: 0px;
+            border-radius: 0px;
+             border-style: solid;
+            font-family: Arial, Tahoma, sans-serif; 
+            font-size: 12px;
+            color: #000000; 
+        }
+        
+        .leaflet-ruler {
+            height: 30px;
+            width: 30px;
+            border-radius: 3px;
+            box-shadow:none;
+        }
+        ._37qQG button {
+           box-shadow:none;
+            border-radius: 3px;
+            border: 2px solid rgba(0, 0, 0, 0.2);
+        }
+        
+        .leaflet-left .leaflet-control {
+            margin-left: 5px;
+        }
+        .leaflet-top .leaflet-control
+         {
+            margin-top: 2px;
+        }
+        
+        
+        
+        #geo_data{float: right;  }
+        #geo_serch{float: right;  }
+        #ff{ position: relative;left: 15%;}
+        #f{  position: relative;left: 15%;}
+        #shirzahvata{  width: 40px;}s
+        #uni_data{  width: 25px;}
+        
+        #min_zup{  width: 60px;}
+        #min_zup1{  width: 60px;}
+        #min_zup2{  width: 60px;}
+        #min_zup3{  width: 60px;}
+        #min_zup4{  width: 60px;}
+        #min_zup5{  width: 60px;}
+        #min_zup6{  width: 60px;}
+        #min_zup7{  width: 60px;}
+        #min_sliv{  width: 60px;}
+        #min_zup_mon{  width: 60px;}
+        
+        .autocomplete {
+          /*the container must be positioned relative:*/
+          position: relative;
+          display: inline-block;
+         min-width: 50px;
+        }
+        .inp {
+          border: none;
+          padding: 2px;
+          width: 100%;
+          outline: none;
+        }
+        .inp[type=text] {
+          width: 100%;
+        }
+        .inp[type=submit] {
+          background-color: DodgerBlue;
+          color: #fff;
+          cursor: pointer;
+        }
+        .autocomplete-items {
+          position: absolute;
+          min-width: 200px;
+          border: 1px solid #d4d4d4;
+          border-bottom: none;
+          border-top: none;
+          z-index: 99;
+          /*position the autocomplete items to be the same width as the container:*/
+          top: 20%;
+          left: 51%;
+          right: 0;
+        }
+        .autocomplete-items div {
+          cursor: pointer;
+          text-align: left;
+          background-color: rgb(232, 255, 230); 
+          border-bottom: 1px solid #d4d4d4; 
+        }
+        .autocomplete-items div:hover {
+          /*when hovering an item:*/
+          background-color: #e9e9e9; 
+        }
+        .autocomplete-active {
+          /*when navigating through the items using the arrow keys:*/
+          background-color: DodgerBlue !important; 
+          color: #ffffff; 
+        }
+        
+        .llllll {max-height:calc(100vh - 124px); width: 400px; transform: translate(-50%, 0); font-family: Arial, Tahoma, sans-serif;font-size: 12px;color: #000000; }
+        .lllll {max-height:calc(100vh - 124px); width: 400px; transform: translate(-50%, 0);font-family: Arial, Tahoma, sans-serif;font-size: 12px;color: #000000;}
+        .llll {max-height:calc(100vh - 124px); width: 400px;font-family: Arial, Tahoma, sans-serif;font-size: 12px;color: #000000;}
+        .treeselect-input{min-height: 100%;font-family: Arial, Tahoma, sans-serif;font-size: 12px;color: #000000;}
+          input,textarea{font-family: Arial, Tahoma, sans-serif;font-size: 12px;color: #000000;}
+        
+        .easy-button-button{ padding: 0px;}
+        
+        button {
     
     outline: none;
     border: 1px solid rgb(49, 47, 47);
@@ -256,106 +455,22 @@ button {
 button:hover {
     box-shadow: 0px 0px 4px 2px rgba(83, 83, 83, 0.479);
 }
-
-button, input, span, select,textarea {margin: 2px 2px 0px 0px;   font-family: "Arial"; font-size: 12px;}
-
-.textforma {display: flex}
-
-
-
-#v8{ background-color: #b2f5b4; cursor: pointer;}
-#v18{ background-color: #cbf5b2; cursor: pointer;}
-
-
-
-
-#sp_play{float: right;  }
-#fff{float: right;  }
-#gif{float: right;  }
-#geo_data{float: right;  }
-#geo_serch{float: right;  }
-#ff{ position: relative;left: 15%;}
-#f{  position: relative;left: 15%;}
-#shirzahvata{  width: 40px;}s
-#uni_data{  width: 25px;}
-
-#min_zup{  width: 60px;}
-#min_zup1{  width: 60px;}
-#min_zup2{  width: 60px;}
-#min_zup3{  width: 60px;}
-#min_zup4{  width: 60px;}
-#min_zup5{  width: 60px;}
-#min_zup6{  width: 60px;}
-#min_zup7{  width: 60px;}
-#min_sliv{  width: 60px;}
-#min_zup_mon{  width: 60px;}
-
-.autocomplete {
-  /*the container must be positioned relative:*/
-  position: relative;
-  display: inline-block;
- min-width: 50px;
-}
-.inp {
-  border: none;
-  padding: 2px;
-  width: 100%;
-  outline: none;
-}
-.inp[type=text] {
-  width: 100%;
-}
-.inp[type=submit] {
-  background-color: DodgerBlue;
-  color: #fff;
-  cursor: pointer;
-}
-.autocomplete-items {
-  position: absolute;
-  min-width: 200px;
-  border: 1px solid #d4d4d4;
-  border-bottom: none;
-  border-top: none;
-  z-index: 99;
-  /*position the autocomplete items to be the same width as the container:*/
-  top: 20%;
-  left: 51%;
-  right: 0;
-}
-.autocomplete-items div {
-  cursor: pointer;
-  text-align: left;
-  background-color: rgb(232, 255, 230); 
-  border-bottom: 1px solid #d4d4d4; 
-}
-.autocomplete-items div:hover {
-  /*when hovering an item:*/
-  background-color: #e9e9e9; 
-}
-.autocomplete-active {
-  /*when navigating through the items using the arrow keys:*/
-  background-color: DodgerBlue !important; 
-  color: #ffffff; 
-}
-
-
-.search-choice span{
-    font-family: "Arial"; font-size: 10px;
-}
-
-</style>
+        </style>
 
 
 <!-- load map -->
 
 
     <div id="shapka">
-        <div>
-    <select class='livesearch' id='lis0'style='width:200px;'> <option value='0'>—</option></select>
-    <select class='livesearch' id='lis1'style='min-width:300px;' multiple> <option value="v1" selected>Вся техніка</option><option value="v000">Обраний</option></select>
+        <div style ="display: flex;  ">
+    <!-- <select class='livesearch' id='lis0'style='width:200px;'> <option value='0'>—</option></select> -->
+    <!-- <select class='livesearch' id='lis1'style='min-width:300px;' multiple> <option value="v1" selected>Вся техніка</option><option value="v000">Обраний</option></select> -->
+
+    <div class='container2' style='width:200px; z-index: 99999;'></div>
+    <div class='container1' style='width:200px; z-index: 99999;'></div>
       
 
-    <button id='v9'style = "min-width: 110px;">Ті що рухаються</button> 
+    <button class='main_menu' id='v9'style = "min-width: 110px;">Ті що рухаються</button> 
 <!-- <button id='v2'>Камази</button> 
 <button id='v1'>Всі</button> 
 <button id='v3'>МАЗи</button> 
@@ -371,21 +486,21 @@ button, input, span, select,textarea {margin: 2px 2px 0px 0px;   font-family: "A
 
 
 </div>
-<div>
+<!-- <div>
     <button id='v18'style = "min-width: 150px;">Очистити маркери</button>
     <button id='v8'style = "min-width: 150px;">Очистити трек</button>
-</div>
-<div>
-    
-    
-<!--     <button id='v11'style = "min-width: 70px;">Графік &#128200</button> -->
-    <button id='men5'style = "min-width: 70px;">Зупинки &#9940</button>
-    <button id='men4'style = "min-width: 70px;">Звіти &#128204</button>
-    <button id='men8'style = "min-width: 70px;">Обробка полів &#128668</button> 
-    <button id='men1'style = "min-width: 70px;">Маршрути &#128259</button>  
-    <button id='men6'style = "min-width: 70px;">Логістика &#128661</button>
-    <button id='men3'style = "min-width: 70px;">Журнал &#128221</button>
-    <button id='men7'style = "min-width: 70px;">Моніторинг &#127760</button>
+</div> -->
+<div class='container3' style='width:400px; z-index: 99999;'></div>
+
+<div style ="display: flex;  ">
+    <button class='main_menu' id='v11'style = "min-width: 70px;">Графік &#128200</button>
+    <button class='main_menu' id='men5'style = "min-width: 70px;">Зупинки &#9940</button>
+    <button class='main_menu' id='men4'style = "min-width: 70px;">Звіти &#128204</button>
+    <button class='main_menu' id='men8'style = "min-width: 70px;">Обробка полів &#128668</button> 
+    <button class='main_menu' id='men1'style = "min-width: 70px;">Маршрути &#128259</button>  
+    <button class='main_menu' id='men6'style = "min-width: 70px;">Логістика &#128661</button>
+    <button class='main_menu' id='men3'style = "min-width: 70px;">Журнал &#128221</button>
+    <button class='main_menu' id='men7'style = "min-width: 70px;">Моніторинг &#127760</button>
     </div>
 </div>
 
@@ -454,9 +569,9 @@ button, input, span, select,textarea {margin: 2px 2px 0px 0px;   font-family: "A
         <option value="z2">вїзд-виїзд-стоянка в геозоні</option>
         <option value="z3">звіт по мотогодинах в геозоні</option>
         <option value="z4">звіт по мотогодинах</option>
-<!--         <option value="z5">перевірка навігації</option> -->
+        <option value="z5">перевірка навігації</option>
         <option value="z6">робота по регіонах</option>
-<!--         <option value="z8">зливи</option> -->
+        <option value="z8">зливи</option>
         <option value="z7">звіт маршрутів авто</option>
         <option value="z9">звіт по журналу</option>
         <option value="z11">зупинки в магазині</option>
@@ -624,7 +739,6 @@ button, input, span, select,textarea {margin: 2px 2px 0px 0px;   font-family: "A
             <td>Видалення</td>
             </thead>
         </table>
-            
             <table id='zvittt' ><thead><tr>
           <td>Номер ТЗ</td>
           <td>Місце завантаження</td>
@@ -897,20 +1011,32 @@ button, input, span, select,textarea {margin: 2px 2px 0px 0px;   font-family: "A
          </div> 
 
  <div id="niz">
+    <div id="nizz" style ="display: flex;  justify-content: space-between;">
+        <div style ="display: flex;">
     <input id="fromtime1" type="datetime-local"/>
     <input id="fromtime2" type="datetime-local"/>
-    <input id='uni_data' type="text" style='min-width:100px;' onkeydown="this.style.width = ((this.value.length + 1) * 8) + 'px';" placeholder='All'value=""> 
-    <select  id='lis10'style='min-width:50px;'> </select>
-    <button id='eeew'>Завантажити</button>
-    <button id='vchora'>Вчора</button>
-    <span id="ff">Час:</span>
+    <!-- <input id='uni_data' type="text" style='min-width:100px;' onkeydown="this.style.width = ((this.value.length + 1) * 8) + 'px';" placeholder='All'value="">  -->
+    <!-- <select  id='lis10'style='min-width:50px;'> </select> -->
+    <div class='container4' style='width:200px; z-index: 99999;'></div>
+    <button class='main_menu' id='eeew'>Завантажити</button>
+    <button class='main_menu' id='vchora'>Вчора</button>
+    </div>
+    <div style ="width: 200px; display: flex; align-items: center;">
     <span id="f"></span>
-
-    <span id="fff">Автоповтор</span> 
-    <input id='gif' type="checkbox">
-    <input type="range" id="sp_play" min="1000" max="20000" value="6000" step="1000" />
+    </div>
+    <!-- <span id="fff">Автоповтор</span>  -->
+    <!-- <input id='gif' type="checkbox"> -->
+    <!-- <input type="range" id="sp_play" min="1000" max="20000" value="6000" step="1000" /> -->
     
-
+    <div style ="display: flex;">        
+        
+        <button class='main_menu' id='bak' style = "width: 50px; ">A<<</button>
+        <button class='main_menu' id='play' style = "width: 50px;">></button>
+        <button class='main_menu' id='front' style = "width: 50px;">>>D</button>
+       <input type="range" id="sp_play" min="1000" max="40000" value="6000" step="1000"  style="width: 300px;"/>
+        
+      </div>
+    </div> 
 
  <div class="slidecontainer">
    <input type="range" min="1" max="2000" value="2000" class="slider" id="myRange">
@@ -919,9 +1045,9 @@ button, input, span, select,textarea {margin: 2px 2px 0px 0px;   font-family: "A
         
 
 
-
-<div id="log"></div>
-для плавного перемішення програвача використовуйте клавіші "A" "D"
+ <div></div>
+<div id="log" style ="text-align: center;"></div>
+<!-- для плавного перемішення програвача використовуйте клавіші "A" "D" -->
 <!-- <button id='v21'>Диски</button> 
 <button id='v22'>Культиватори</button> 
 <button id='v23'>Боронування</button>
@@ -934,8 +1060,8 @@ button, input, span, select,textarea {margin: 2px 2px 0px 0px;   font-family: "A
 <button id='v30'>Без агрегату</button>  -->
 
 
-<button id='geo_serch'>>></button>
-<input id='geo_data' type="text" onkeydown="this.style.width = ((this.value.length + 1) * 8) + 'px';" placeholder='Пошук міста'value="Пошук міста">
+<!-- <button id='geo_serch'>>></button> -->
+<!-- <input id='geo_data' type="text" onkeydown="this.style.width = ((this.value.length + 1) * 8) + 'px';" placeholder='Пошук міста'value="Пошук міста"> -->
 </div>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.5.1/chosen.jquery.min.js"></script>
   <script src="zup.js"></script> 
@@ -944,5 +1070,4 @@ button, input, span, select,textarea {margin: 2px 2px 0px 0px;   font-family: "A
 
 </body>
 </html>
-
 
