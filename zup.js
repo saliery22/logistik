@@ -12186,10 +12186,10 @@ function calculate_mn(data,ind){
                 if(vag_data[a][1]==nomer && tm<vag_data[a][0]){
                  position='РОЗВАНТАЖИВСЯ';
                  time=vigr_t - (vag_data[a][0]-tm)/1000;
-                 console.log(vigr_t)
-                 console.log((vag_data[a][0]-tm)/1000)
-                 console.log(roz_time)
-                 console.log(nomer)
+                 // console.log(vigr_t)
+                 // console.log((vag_data[a][0]-tm)/1000)
+                 // console.log(roz_time)
+                 // console.log(nomer)
 
                  break;
                }
@@ -12396,4 +12396,5 @@ function Rote_gruzoperevozki(p1,p2,color,ind){
           }
         });
 }
+
 
