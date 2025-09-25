@@ -958,6 +958,7 @@ const treeselect2 = new Treeselect({
         if (nn=='Сівалки'){agregat = 28; }
         if (nn=='Комбайни'){agregat = 29; }
         if (nn=='Без агрегату'){agregat = 30; }
+
         
         for(var i=0; i < allunits.length; i++){
           let idd =allunits[i].getId();
@@ -1838,7 +1839,6 @@ if ($('#zz17').is(':visible') ) {
 }).addTo(map);
 
  map.on('click', function(e) { 
- if($('#zz1').is(':visible') || $('#zz2').is(':visible') || $('#zz3').is(':visible')) { RemainsFuel(e); }
  
 if(rote_bt){
   var pos = e.latlng;
@@ -1923,7 +1923,13 @@ let areaSelection = new leafletAreaSelection.DrawAreaSelection({
       if($('#marrr').is(':visible') ) {
         marshruty_gruzovi(polygon,colorr);
       }else{
+        if($('#zz1').is(':visible') || $('#zz2').is(':visible') || $('#zz3').is(':visible')) { 
+          marshrut_treck.push(geojson);
+          geojson.addTo(map);
+          RemainsFuel(polygon,colorr);
+        }else{
         geojson.addTo(map);
+        }
       }
     }
     
@@ -3050,6 +3056,7 @@ function position(t)  {
              if(Global_DATA[ii][i][6]!=0)vod='<br />'+Global_DATA[ii][i][6];
             markerrr.bindPopup('<center><font size="1">'+Global_DATA[ii][0][1] +'<br />' +Global_DATA[ii][i][1]+ '<br />' +Global_DATA[ii][i][3]+ ' км/год <br />' +Global_DATA[ii][i][2]+'л'+ avto + vod);
             if(rux == 1){if (Global_DATA[ii][i][3]>0 ) {markerrr.setOpacity(1);}}
+            if(!Global_DATA[ii][i][5])break;
             if(agregat == 21){ if (Global_DATA[ii][i][5][0]=='Д' ) {if(rux == 0){markerrr.setOpacity(1);}}else{markerrr.setOpacity(0);}}
             if(agregat == 22){ if (Global_DATA[ii][i][5][0]=='К' ) {if(rux == 0){markerrr.setOpacity(1);}}else{markerrr.setOpacity(0);}}
             if(agregat == 23){ if (Global_DATA[ii][i][5][0]=='Б' ) {if(rux == 0){markerrr.setOpacity(1);}}else{markerrr.setOpacity(0);}}
@@ -5015,21 +5022,15 @@ let bufer=[];
 let garbage =[];
 let garbagepoly =[];
 let buferpoly=[];
-
-function RemainsFuel(e){
-//let cir = L.circle(e.latlng, {radius: 2000}).addTo(map);
- bufer.push(e.latlng);
- buferpoly.push({x:e.latlng.lat, y:e.latlng.lng}); 
- if(bufer.length>1){
- let line = L.polyline([bufer[bufer.length-2],bufer[bufer.length-1]], {opacity: 0.3, color: '#0000FF'}).addTo(map);
- garbage.push(line);
-
- if(wialon.util.Geometry.getDistance(bufer[0].lat, bufer[0].lng,bufer[bufer.length-1].lat, bufer[bufer.length-1].lng)<900){
- if(bufer.length>2){
-  let color='#'+(Math.random() * 0x1000000 | 0x1000000).toString(16).slice(1);
-  let polygon = L.polygon(bufer, {color: color}).addTo(map);
-  garbagepoly.push(polygon);
-
+function RemainsFuel(data,clr){
+let color = clr;
+if(data){
+for(let i = 0; i<data._latlngs[0].length; i++){
+ buferpoly.push({x:data._latlngs[0][i].lat, y:data._latlngs[0][i].lng})
+}
+}else{
+  return;
+}
 
   if ($('#zz1').is(':visible')) {
     $("#unit_table").append("<tr><td>&nbsp&nbsp&nbsp&nbsp&nbsp</td><td>-----------</td><td>--------</td><td>--------</td><td>--------</td><td>---------</td></tr>");
@@ -5044,26 +5045,27 @@ function RemainsFuel(e){
          let lat = markerr.getLatLng().lat;
          let lon = markerr.getLatLng().lng;
           if(wialon.util.Geometry.pointInShape(buferpoly, 0, lat, lon)){
-            let vodiy = markerr._popup._content.split('<br />')[5];
-            let agregat = markerr._popup._content.split('<br />')[4];
+            let vodiy = "-----" ;
+            let agregat = "-----" ;
+            let drp = "-----" ;
+      
+              for(let ii = 0; ii<Global_DATA.length; ii++){
+                let idd = Global_DATA[ii][0][0];
+                if(idd!=id)continue;
+                for(let iii = 1; iii<Global_DATA[ii].length; iii++){
+                   if(time>Global_DATA[ii][iii][4]){
+                    if(Global_DATA[ii][iii][2] && Global_DATA[ii][iii][2]!='-----')drp =Global_DATA[ii][iii][2];
+                    if(Global_DATA[ii][iii][6] && Global_DATA[ii][iii][6]!='-----')vodiy=Global_DATA[ii][iii][6];
+                    if(Global_DATA[ii][iii][5] && Global_DATA[ii][iii][5]!='-----')agregat=Global_DATA[ii][iii][5];
+                   }else break;
+                }
+              } 
             if(agregat)agregat=agregat.split(' ')[0];
             if(!agregat){
               agregat="-----";
               if(namet.indexOf('JCB')>0|| namet.indexOf('Manitou')>0 || namet.indexOf('Scorpion')>0)agregat="навантажник";
               if(namet.indexOf('CASE 4430')>0 || namet.indexOf('R4045')>0|| namet.indexOf('612R')>0)agregat="обприскувач";
             }
-            let drp = markerr._popup._content.split('<br />')[3]; 
-            if(!drp){
-              for(let ii = 0; ii<Global_DATA.length; ii++){
-                let idd = Global_DATA[ii][0][0];
-                if(idd!=id)continue;
-                for(let iii = 1; iii<Global_DATA[ii].length; iii++){
-                   if(time>Global_DATA[ii][iii][4]){
-                    drp =Global_DATA[ii][iii][2];
-                   }else break;
-                }
-              } 
-            }else drp=drp.split('.')[0];
            
 
             let mesto = "-----";
@@ -5082,7 +5084,7 @@ function RemainsFuel(e){
               }
             }
             
-            $("#unit_table").append("<tr class='fail_trak' id='"+unitslist[i].getId()+"," + lat+","+lon+ "'><td bgcolor ="+color+">&nbsp&nbsp&nbsp&nbsp&nbsp</td><td align='left'>"+namet+"</td><td>"+agregat+"</td><td>"+vodiy+"</td><td>"+drp+"</td><td>"+mesto+"</td></tr>");
+            $("#unit_table").append("<tr class='fail_trak' id='"+unitslist[i].getId()+"," + lat+","+lon+ "'><td style = 'background-color: "+color+";'>&nbsp&nbsp&nbsp&nbsp&nbsp</td><td align='left'>"+namet+"</td><td>"+agregat+"</td><td>"+vodiy+"</td><td>"+drp+"</td><td>"+mesto+"</td></tr>");
 
           }
         } 
@@ -5166,20 +5168,7 @@ function RemainsFuel(e){
 
  }
 
- clearGarbage(garbage);
- garbage=[];
- bufer=[];
- buferpoly=[];
 
- }else{ var tooltip = L.tooltip(bufer[0], {content: 'end'}).addTo(map);}
- }else{ 
-  var tooltip = L.tooltip(e.latlng, {content: 'start'}).addTo(map);
-  bufer=[];
-  buferpoly=[];
-  bufer.push(e.latlng);
-  buferpoly.push({x:e.latlng.lat, y:e.latlng.lng}); 
-}
-}
 
 //if(wialon.util.Geometry.pointInShape(geozonepoint, 0, lat, lon)){
 
@@ -5686,7 +5675,7 @@ for(let i = 0; i<geozonesgrup.length; i++){
   for(let i = 0; i<Global_DATA.length; i++){
     let nametr = Global_DATA[i][0][1];
     let id = Global_DATA[i][0][0];
-    if(nametr=='ДРП ККЗ'|| nametr=='ДРП Райгородок'|| nametr=='Бензин ККЗ Ультразвук'|| nametr=='РЕЗЕРВУАР ККЗ новий') continue;
+    if(nametr.indexOf('ДРП ККЗ')>=0 || nametr.indexOf('ДРП Райгородок')>=0 || nametr.indexOf('Бензин ККЗ Ультразвук')>=0 || nametr.indexOf('РЕЗЕРВУАР ККЗ новий')>=0 || nametr.indexOf('знято')>=0 ||  nametr.indexOf('Знято')>=0 ||  nametr.indexOf('еревантажувач')>=0) continue;
     let start=0;
     let finish=0;
     let interval0=0;
@@ -7217,6 +7206,80 @@ $('#planuvannya_bt4').click(function() {
   if(cpdata!='')navigator.clipboard.writeText(cpdata);
 });
 
+ $('#planuvannya_bt5').click(function() {
+
+ let tbl=document.getElementById('unit_table');
+ if(tbl.rows.length>1){
+let row = tbl.rows[tbl.rows.length-1];
+ 
+      let adr = row.cells[6].textContent;
+      let col = row.cells[3].style.backgroundColor;
+      let idd=row.id;
+      
+
+  navigator.clipboard.readText()
+  .then(text => {
+    let rowss = text.split('\r\n');
+    for(var i=0; i < rowss.length-1; i++){
+      let tdd = rowss[i].split('\t');
+      let n=tdd[0];
+       let ind =  row.rowIndex;
+       let kk = parseInt(row.cells[2].textContent)+1;
+       let newRow = row.parentNode.insertRow(ind+1);
+      newRow.id = idd;
+
+     let el = document.createElement('div');
+      el.setAttribute('class', 'autocomplete');
+      let el2 = document.createElement('div');
+      el2.setAttribute('class', 'inp');
+      el2.setAttribute('id', 'myInput'+tbl.rows.length+'');
+      el2.setAttribute('type', 'text');
+      el2.setAttribute('contenteditable', 'true');
+      el2.textContent = n;
+      autocomplete_all(el2, mehan);
+      el.appendChild(el2);
+      el2.addEventListener('click', function (evt) {
+        if(evt.target.textContent=='')return;
+        for(let i = point_planuvannya_list.length-1; i>=0; i--){
+          let namet = point_planuvannya_list[i].name;
+          let unit =false;
+          if(namet.indexOf(evt.target.textContent)>=0){unit = true;}
+          if(unit==false)continue;
+          let lat = point_planuvannya_list[i]._latlng.lat;
+          let lon = point_planuvannya_list[i]._latlng.lng;
+          map.setView([lat, lon], map.getZoom());
+          point_planuvannya_list[i].openPopup();
+        }
+    });
+      
+      newRow.innerHTML = "<td>-</td><td>+</td><td>"+kk+"</td><td style = 'background-color: "+col+";'></td><td contenteditable='true'>-----</td><td  contenteditable='true'>-----</td><td contenteditable='true'>"+adr+"</td><td></td><td contenteditable='true'>-----</td><td contenteditable='true'>-----</td></tr><td contenteditable='true'>-----</td>";
+      let td = tbl.rows[ind+1].cells[7];
+      td.appendChild(el);
+
+
+     }
+  })
+  .catch(err => {
+    console.log('Something went wrong', err);
+  });
+
+
+ }
+
+
+      
+
+ 
+
+   
+
+
+
+
+
+
+ });
+
 $("#unit_table").on("click", function (evt){
   let row = evt.target.parentNode;
   let tbl = row.parentNode;
@@ -8540,7 +8603,9 @@ $( "#vib_zvit" ).on( "change", function() {
   $('.zvit').hide();
   $("#unit_table").empty();
   $(id).show();
-  if(this.value=='z1'||this.value=='z2'|| this.value=='z3'|| this.value=='z17')$('.leaflet-container').css('cursor','crosshair');
+  if(this.value=='z17'){
+   $('.leaflet-container').css('cursor','crosshair');
+  }
   clearGEO(); 
   clearGarbage(garbage);
   garbage=[];
