@@ -11667,7 +11667,7 @@ $('#marsh_bt3').click(function() {
     
      let data_av = data[ data.length-1];
      $('#marsh_avto').empty();
-     $('#marsh_avto').append("<tr><td></td><td>ЧАС</td><td>ТЗ</td><td>ВОДІЙ</td><td></td><td>НАРЯД</td><td>проб</td><td>ходки</td><td>роб</td><td>час</td></tr>");
+     $('#marsh_avto').append("<tr><td></td><td>ЧАС</td><td>ТЗ</td><td>ВОДІЙ</td><td>РОБОТА</td><td>НАРЯД</td><td>проб</td><td>ходки</td><td>роб</td><td>час</td></tr>");
      for(var i=0; i < data_av.length; i++){
 
        let g=data_av[i][0];
@@ -12186,10 +12186,10 @@ function calculate_mn(data,ind){
                 if(vag_data[a][1]==nomer && tm<vag_data[a][0]){
                  position='РОЗВАНТАЖИВСЯ';
                  time=vigr_t - (vag_data[a][0]-tm)/1000;
-                 // console.log(vigr_t)
-                 // console.log((vag_data[a][0]-tm)/1000)
-                 // console.log(roz_time)
-                 // console.log(nomer)
+                //  console.log(vigr_t)
+                //  console.log((vag_data[a][0]-tm)/1000)
+                //  console.log(roz_time)
+                //  console.log(nomer)
 
                  break;
                }
@@ -12220,14 +12220,14 @@ function calculate_mn(data,ind){
   .then(text => {
     let rows = text.split('\r\n');
     $('#marsh_avto').empty();
-    $('#marsh_avto').append("<tr><td></td><td>ЧАС</td><td>ТЗ</td><td>ВОДІЙ</td><td></td><td>НАРЯД</td><td>проб</td><td>ходки</td><td>роб</td><td>час</td></tr>");
+    $('#marsh_avto').append("<tr><td></td><td>ЧАС</td><td>ТЗ</td><td>ВОДІЙ</td><td>РОБОТА</td><td>НАРЯД</td><td>проб</td><td>ходки</td><td>роб</td><td>час</td></tr>");
     for(var i=0; i < rows.length-1; i++){
       let td = rows[i].split('\t');
       let g=td[6];
       let n=td[2];
       let v=td[4];
-      let p=td[8];
-      let r=td[7];
+      let p=td[7];
+      let r=td[8];
   
        $('#marsh_avto').append("<tr><td><button id = '"+n.split(' ')[0]+"'onclick='find_avto(this.id)'>"+(i+1)+"</button></td><td>"+g+"</td><td contenteditable='true'>"+n+"</td><td contenteditable='true'>"+v+"</td><td contenteditable='true'>"+p+"</td><td contenteditable='true'>"+r+"</td><td></td><td></td><td></td><td></td></tr>");
      }
@@ -12396,5 +12396,4 @@ function Rote_gruzoperevozki(p1,p2,color,ind){
           }
         });
 }
-
 
