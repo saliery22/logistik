@@ -1117,6 +1117,7 @@ this.style.backgroundColor = 'initial';
     $('#map').css('width', '50%');
     this.style.background = '#3399FF';
     $('.leaflet-container').css('cursor','');
+    $('#marsh_bt4').click();
     marshruty_gruzovi();
   }else{
     $('#marrr').hide();
@@ -11884,7 +11885,7 @@ marshrut_problem_his.push([e.cells[1].innerText,e.cells[2].innerText,e.cells[3].
   for(var ii=0; ii < problem.length; ii++){
     let color = 'rgb(250, 190, 179)';
     for(var iii=0; iii < marshrut_problem_his.length; iii++){
-       if(marshrut_problem_his[iii][0].split(' ')[0]==problem[ii][0].split(' ')[0] && marshrut_problem_his[iii][1]==problem[ii][1] && marshrut_problem_his[iii][2]==problem[ii][3] && marshrut_problem_his[iii][3]==problem[ii][2]){
+       if(marshrut_problem_his[iii][0].split(' ')[0]==problem[ii][0].split(' ')[0] && marshrut_problem_his[iii][1]==problem[ii][1] && marshrut_problem_his[iii][2]==problem[ii][3] && marshrut_problem_his[iii][3].replace(/\s+/g, '')==problem[ii][2].replace(/\s+/g, '')){
         color = ''; 
         break;
        }
@@ -11914,7 +11915,11 @@ marshrut_problem_his.push([e.cells[1].innerText,e.cells[2].innerText,e.cells[3].
           let yy = parseFloat(Global_DATA[ii][iii+1][0].split(',')[0]);
           let xx = parseFloat(Global_DATA[ii][iii+1][0].split(',')[1]);
 
-          km+=(wialon.util.Geometry.getDistance(y,x,yy,xx))/1000;
+          let ddd = wialon.util.Geometry.getDistance(y,x,yy,xx);
+          if(ddd<50000){
+          km+=ddd/1000;
+          }
+          
 
         }
 
@@ -11923,7 +11928,7 @@ marshrut_problem_his.push([e.cells[1].innerText,e.cells[2].innerText,e.cells[3].
           
 
       }
-      if(km>2)result.push([nametr,marshrut,0,"пробіг "+km.toFixed()+" км без маршруту",0,0,0]);
+      if(km>2)result.push([nametr,marshrut,"-----","пробіг "+km.toFixed()+" км без маршруту",0,0,0]);
     }
     }
   }
@@ -11956,7 +11961,7 @@ function calculate_mn(data,ind){
       let stop=0;
       let stop_y =0;
       let stop_x =0;
-      let stop_t =0;
+      let stop_t ='-----';
 
       let zagr_t=0;
       let vigr_t=0;
@@ -12037,7 +12042,7 @@ function calculate_mn(data,ind){
             dor_t+=t;
             km+=(wialon.util.Geometry.getDistance(y,x,yy,xx))/1000;
             stop=0;
-            stop_t=0;
+            stop_t='-----';
             roz_time=0;
             }else{
               stop+=t;
@@ -12172,8 +12177,8 @@ function calculate_mn(data,ind){
               time = vigr_t;
             }
           }
-          if(position=='невідомо')porushennya_marshrut.push([nametr,marshrut,0,'не на маршруті',0,0,0]);
-          if(vodiy_tr!='' && vodiy_tr!=vodiy)porushennya_marshrut.push([nametr,marshrut,0,'інша картка водія',0,0,0]);
+          if(position=='невідомо')porushennya_marshrut.push([nametr,marshrut,"-----",'не на маршруті',0,0,0]);
+          if(vodiy_tr!='' && vodiy_tr!=vodiy)porushennya_marshrut.push([nametr,marshrut,"-----",'інша картка водія',0,0,0]);
           if(!komb && komb==0){position='наряд завершено';}
           if(multy){
             let last_m = marshrut.split('+');
