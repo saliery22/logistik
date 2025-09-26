@@ -8063,6 +8063,27 @@ $('#vagy_zvit').click(function() {
     let n="Ваги №1,Ваги №2,Ваги №3,Ваги №4";
    SendDataReportInCallback(fr,to,n,7,[],0,vagy);
 });
+
+function getMostFrequent(arr) {
+  let frequencyCounter = {}; // Создаем объект для подсчета частоты
+  // Проходим по массиву и подсчитываем частоту каждого элемента
+  arr.forEach(item => {
+    frequencyCounter[item] = (frequencyCounter[item] || 0) + 1;
+  });
+  // Находим элемент с наибольшей частотой
+  let mostFrequentItem = null;
+  let maxFrequency = 0;
+  for (const item in frequencyCounter) {
+    if (frequencyCounter[item] > maxFrequency) {
+      maxFrequency = frequencyCounter[item];
+      mostFrequentItem = item;
+    }
+  }
+  return mostFrequentItem;
+}
+
+
+
 function vagy(data){
  let tbl =[];
   let v1 = [];
@@ -8113,7 +8134,12 @@ function vagy(data){
       let data =Date.parse(v1[i][1]); 
       if(vod && avto){
         if(vod0!=vod && avto0!=avto){
-          for(let y = 1; y<10; y++){if(v1.length>i+y && vod ==v1[i+y][3] && avto ==v1[i+y][4] && parseFloat(v1[i+y][5])<vag)vag=parseFloat(v1[i+y][5]);}
+          let ar = [];
+          for(let y = 0; y<10; y++){
+            if(v1.length>i+y && vod ==v1[i+y][3] && avto ==v1[i+y][4] && parseFloat(v1[i+y][5])>0)
+            ar.push(parseFloat(v1[i+y][5]))
+          }
+           vag = getMostFrequent(ar);
           //let vv1 = vag;
           //let vv2 = vag;
           //let vv3 = vag;
@@ -8128,7 +8154,13 @@ function vagy(data){
               if(dd>data && dd<(data+60000000) && vod ==v3[ii][3] && avto ==v3[ii][4] && parseFloat(v3[ii][5])>0){
                 vag2=9999999;
                  //if(v3.length>ii+2 && vod ==v3[ii+1][3] && avto ==v3[ii+1][4] && v3[ii+1][9]=='17.00' && parseFloat(v3[ii+1][5])==vag2){}else{continue;}
-               for(let y = 1; y<10; y++){if(v3.length>ii+y && vod ==v3[ii+y][3] && avto ==v3[ii+y][4] && parseFloat(v3[ii+y][5])<vag2)vag2=parseFloat(v3[ii+y][5]);}
+              
+                let ar = [];
+                for(let y = 0; y<10; y++){
+                  if(v3.length>ii+y && vod ==v3[ii+y][3] && avto ==v3[ii+y][4] && parseFloat(v3[ii+y][5])>0)
+                  ar.push(parseFloat(v3[ii+y][5]))
+                }
+                vag2 = getMostFrequent(ar);
                 tm = sec_to_time((dd-data)/1000);
                 vg="Ваги №3";
                 if(vodn=="-----")vodn = v3[ii][3];
@@ -8146,7 +8178,13 @@ function vagy(data){
 
                 vag2=9999999;
                  //if(v4.length>iii+2 && vod ==v4[iii+1][3] && avto ==v4[iii+1][4] && v4[iii+1][9]=='17.00' && parseFloat(v4[iii+1][5])==vag2){}else{continue;}
-               for(let y = 1; y<10; y++){if(v4.length>iii+y && vod ==v4[iii+y][3] && avto ==v4[iii+y][4]  && parseFloat(v4[iii+y][5])<vag2)vag2=parseFloat(v4[iii+y][5]);}
+               //for(let y = 1; y<10; y++){if(v4.length>iii+y && vod ==v4[iii+y][3] && avto ==v4[iii+y][4]  && parseFloat(v4[iii+y][5])<vag2)vag2=parseFloat(v4[iii+y][5]);}
+               let ar = [];
+                for(let y = 0; y<10; y++){
+                  if(v4.length>iii+y && vod ==v4[iii+y][3] && avto ==v4[iii+y][4] && parseFloat(v4[iii+y][5])>0)
+                  ar.push(parseFloat(v4[iii+y][5]))
+                }
+                 vag2 = getMostFrequent(ar);
                 tm = sec_to_time((dd-data)/1000);
                 vg="Ваги №4";
                 if(vodn=="-----")vodn = v4[iii][3];
@@ -8157,6 +8195,7 @@ function vagy(data){
             }
           }
           if(vag==9999999)vag=parseFloat(v1[i][5]);
+          if(!vag)vag=0;
         let vag3 =vag-vag2;
          tbl.push([v1[i][1],"Ваги №1",vg,tm,vodn,avton,vag,vag2,vag3]);
          vod0=vod;
@@ -8183,7 +8222,13 @@ function vagy(data){
       let data =Date.parse(v2[i][1]); 
       if(vod && avto){
         if(vod0!=vod && avto0!=avto){
-           for(let y = 1; y<10; y++){if(v2.length>i+y && vod ==v2[i+y][3] && avto ==v2[i+y][4] && parseFloat(v2[i+y][5])<vag)vag=parseFloat(v2[i+y][5]);}
+          // for(let y = 1; y<10; y++){if(v2.length>i+y && vod ==v2[i+y][3] && avto ==v2[i+y][4] && parseFloat(v2[i+y][5])<vag)vag=parseFloat(v2[i+y][5]);}
+            let ar = [];
+          for(let y = 0; y<10; y++){
+            if(v2.length>i+y && vod ==v2[i+y][3] && avto ==v2[i+y][4] && parseFloat(v2[i+y][5])>0)
+            ar.push(parseFloat(v2[i+y][5]))
+          }
+           vag = getMostFrequent(ar);
           //let vv1 = vag;
           //let vv2 = vag;
           //let vv3 = vag;
@@ -8198,7 +8243,13 @@ function vagy(data){
               if(dd>data && dd<(data+60000000) && vod ==v3[ii][3] && avto ==v3[ii][4] && parseFloat(v3[ii][5])>0){
                vag2=9999999;
                 //if(v3.length>ii+2 && vod ==v3[ii+1][3] && avto ==v3[ii+1][4] && v3[ii+1][9]=='17.00' && parseFloat(v3[ii+1][5])==vag2){}else{continue;}
-                 for(let y = 1; y<10; y++){if(v3.length>ii+y && vod ==v3[ii+y][3] && avto ==v3[ii+y][4] && parseFloat(v3[ii+y][5])<vag2)vag2=parseFloat(v3[ii+y][5]);}
+                 //for(let y = 1; y<10; y++){if(v3.length>ii+y && vod ==v3[ii+y][3] && avto ==v3[ii+y][4] && parseFloat(v3[ii+y][5])<vag2)vag2=parseFloat(v3[ii+y][5]);}
+                 let ar = [];
+                for(let y = 0; y<10; y++){
+                  if(v3.length>ii+y && vod ==v3[ii+y][3] && avto ==v3[ii+y][4] && parseFloat(v3[ii+y][5])>0)
+                  ar.push(parseFloat(v3[ii+y][5]))
+                }
+                vag2 = getMostFrequent(ar);
                 tm = sec_to_time((dd-data)/1000);
                 vg="Ваги №3";
                  if(vodn=="-----")vodn = v3[ii][3];
@@ -8215,7 +8266,13 @@ function vagy(data){
               if(dd>data && dd<(data+60000000) && dd<t1 && vod ==v4[iii][3] && avto ==v4[iii][4] && parseFloat(v4[iii][5])>0){
                vag2=9999999;
                  //if(v4.length>iii+2 && vod ==v4[iii+1][3] && avto ==v4[iii+1][4] && v4[iii+1][9]=='17.00' && parseFloat(v4[iii+1][5])==vag2){}else{continue;}
-                  for(let y = 1; y<10; y++){if(v4.length>iii+y && vod ==v4[iii+y][3] && avto ==v4[iii+y][4] && parseFloat(v4[iii+y][5])<vag2)vag2=parseFloat(v4[iii+y][5]);}
+                  //for(let y = 1; y<10; y++){if(v4.length>iii+y && vod ==v4[iii+y][3] && avto ==v4[iii+y][4] && parseFloat(v4[iii+y][5])<vag2)vag2=parseFloat(v4[iii+y][5]);}
+                  let ar = [];
+                for(let y = 0; y<10; y++){
+                  if(v4.length>iii+y && vod ==v4[iii+y][3] && avto ==v4[iii+y][4] && parseFloat(v4[iii+y][5])>0)
+                  ar.push(parseFloat(v4[iii+y][5]))
+                }
+                vag2 = getMostFrequent(ar);
                 tm = sec_to_time((dd-data)/1000);
                 vg="Ваги №4";
                 if(vodn=="-----")vodn = v4[iii][3];
@@ -8226,6 +8283,7 @@ function vagy(data){
             }
           }
           if(vag==9999999)vag=parseFloat(v2[i][5]);
+          if(!vag)vag=0;
          let vag3 =vag-vag2;
          tbl.push([v2[i][1],"Ваги №2",vg,tm,vodn,avton,vag,vag2,vag3]);
          vod0=vod;
