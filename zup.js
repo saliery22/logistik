@@ -5024,6 +5024,7 @@ let garbage =[];
 let garbagepoly =[];
 let buferpoly=[];
 function RemainsFuel(data,clr){
+  buferpoly=[];
 let color = clr;
 if(data){
 for(let i = 0; i<data._latlngs[0].length; i++){
@@ -12052,7 +12053,7 @@ function calculate_mn(data,ind){
               stop+=t;
               stop_y  = parseFloat(Global_DATA[ii][iii][0].split(',')[0]);
               stop_x  = parseFloat(Global_DATA[ii][iii][0].split(',')[1]);
-              if(stop_t==0)stop_t=Global_DATA[ii][iii][1];
+              if(stop_t=='-----')stop_t=Global_DATA[ii][iii][1];
               if(roz_time==0)roz_time=Global_DATA[ii][iii][1];
             }
 
