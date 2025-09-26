@@ -12040,7 +12040,11 @@ function calculate_mn(data,ind){
               }
              
             dor_t+=t;
-            km+=(wialon.util.Geometry.getDistance(y,x,yy,xx))/1000;
+            let ddd = wialon.util.Geometry.getDistance(y,x,yy,xx);
+            if(ddd<50000){
+            km+=ddd/1000;
+            }
+          
             stop=0;
             stop_t='-----';
             roz_time=0;
