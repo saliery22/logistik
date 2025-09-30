@@ -11502,7 +11502,6 @@ async function logistik_zvit(data){
      }
  
    function svod22(data){ 
-
     let time = data[0][1][0].split(':').reverse().reduce((acc, n, i) => acc + n * (60 ** i), 0);
     let kmm = parseFloat(data[0][1][1]).toFixed();
 
@@ -12284,6 +12283,7 @@ function calculate_mn(data,ind){
  });
 
  $('#marsh_bt2').click(function() {
+  let dat = [];
   navigator.clipboard.readText()
   .then(text => {
     let rows = text.split('\r\n');
@@ -12291,13 +12291,39 @@ function calculate_mn(data,ind){
     $('#marsh_avto').append("<tr><td></td><td>ЧАС</td><td>ТЗ</td><td>ВОДІЙ</td><td>РОБОТА</td><td>НАРЯД</td><td>проб</td><td>ходки</td><td>роб</td><td>час</td></tr>");
     for(var i=0; i < rows.length-1; i++){
       let td = rows[i].split('\t');
-      let g=td[6];
-      let n=td[2];
-      let v=td[4];
-      let p=td[7];
-      let r=td[8];
-  
-       $('#marsh_avto').append("<tr><td><button id = '"+n.split(' ')[0]+"'onclick='find_avto(this.id)'>"+(i+1)+"</button></td><td>"+g+"</td><td contenteditable='true'>"+n+"</td><td contenteditable='true'>"+v+"</td><td contenteditable='true'>"+p+"</td><td contenteditable='true'>"+r+"</td><td></td><td></td><td></td><td></td></tr>");
+      let nn = 2;
+      if(td[7]=='урожай')nn=1;
+      if(td[7]=='ремонт')nn=3;
+      if(td[7]=='відсутній')nn=4;
+      if(td[7]=='резерв')nn=5;
+      if(td[7]=='')nn=6;
+   dat.push([td[6],td[2],td[4],td[7],td[8],nn]);
+     }
+     dat.sort(function(a, b) {
+      if (a[5] < b[5]){
+        return -1;
+     }else if (a[5] > b[5]) {
+        return  1;
+     }else{
+     if (a[3] > b[3]){
+        return -1;
+     }else if (a[3] < b[3]) {
+        return  1;
+     }else{
+        if (a[4] > b[4]) {
+           return -1;
+        }
+        else if (a[4] < b[4]) {
+           return 1;
+        }
+        else {
+           return 0;
+        }
+     }
+    }
+    });
+     for(var i=0; i < dat.length; i++){
+ $('#marsh_avto').append("<tr><td><button id = '"+dat[i][1].split(' ')[0]+"'onclick='find_avto(this.id)'>"+(i+1)+"</button></td><td>"+dat[i][0]+"</td><td contenteditable='true'>"+dat[i][1]+"</td><td contenteditable='true'>"+dat[i][2]+"</td><td contenteditable='true'>"+dat[i][3]+"</td><td contenteditable='true'>"+dat[i][4]+"</td><td></td><td></td><td></td><td></td></tr>");
      }
   })
   .catch(err => {
