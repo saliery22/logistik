@@ -75,12 +75,20 @@ unitslist.forEach(function(unit) {
             }
             if (sens[key].t=='driver') {
               vodiy = unit.calculateSensorValue(unit.getSensor(sens[key].id), unit.getLastMessage());
-              if(vodiy == -348201.3876){vodiy = "-----";}else{vodiy = driversID[vodiy];} 
+              if(vodiy == -348201.3876){vodiy = "-----";}else{
+                if(vodiy){
+                      if(driversID[vodiy]){vodiy = driversID[vodiy];}
+                    }
+              } 
             }
           
             if (sens[key].t=='trailer') {
               agregat = unit.calculateSensorValue(unit.getSensor(sens[key].id), unit.getLastMessage());
-              if(agregat == -348201.3876){agregat = "-----";} else {agregat = trailersID[agregat];} 
+              if(agregat == -348201.3876){agregat = "-----";} else {
+                if(agregat){
+                      if(trailersID[agregat]){agregat = trailersID[agregat];}
+                    }
+              } 
             }
           
           }
@@ -164,12 +172,20 @@ function online_ON() {
           
              if (sens[key].t=='driver') {
               vodiy = unit.calculateSensorValue(unit.getSensor(sens[key].id), unit.getLastMessage());
-              if(vodiy == -348201.3876){vodiy = "-----";}else{vodiy = driversID[vodiy];} 
+              if(vodiy == -348201.3876){vodiy = "-----";}else{
+                 if(vodiy){
+                      if(driversID[vodiy]){vodiy = driversID[vodiy];}
+                    }
+              } 
             }
           
             if (sens[key].t=='trailer') {
               agregat = unit.calculateSensorValue(unit.getSensor(sens[key].id), unit.getLastMessage());
-              if(agregat == -348201.3876){agregat = "-----";} else {agregat = trailersID[agregat];} 
+              if(agregat == -348201.3876){agregat = "-----";} else {
+                if(agregat){
+                      if(trailersID[agregat]){agregat = trailersID[agregat];}
+                    }
+              } 
             }
           
           }
@@ -1583,7 +1599,13 @@ $("#men8").on("click", function (){
        let n=unitsgrup.Заправки;
        if(!n)return;
        SendDataInCallback(0,0,n,[],0,TestNavigation);
-  });
+    });
+      $('#nav_zvit').click(function() { 
+       let n=unitsgrup.Заправки;
+       let t1=Date.parse($('#fromtime1').val())/1000-86400;
+       if(!n)return;
+       SendDataInCallback(t1,0,n,[],0,TestNavigationZvit);
+      });
 
     $('#monitoring_bt').click(Monitoring2);
     $('#marsh_bt').click(marshrut_avto);
@@ -2957,12 +2979,20 @@ function CollectGlobalData(t2,i,unit){ // execute selected report
                    }
                    if (Global_DATA[ii][0][4]!=-1) {
                    vodiy = unit.calculateSensorValue(unit.getSensor(Global_DATA[ii][0][4]), messages[i]);
-                   if(vodiy == -348201.3876){vodiy = "-----";}else {vodiy = driversID[vodiy];} 
+                   if(vodiy == -348201.3876){vodiy = "-----";}else{
+                    if(vodiy){
+                      if(driversID[vodiy]){vodiy = driversID[vodiy];}
+                    }
                    }
+                  }
                    if (Global_DATA[ii][0][5]!=-1) {
                    prichep = unit.calculateSensorValue(unit.getSensor(Global_DATA[ii][0][5]), messages[i]);
-                   if(prichep == -348201.3876){prichep = "-----";} else {prichep = trailersID[prichep];} 
+                   if(prichep == -348201.3876){prichep = "-----";} else {
+                     if(prichep){
+                      if(trailersID[prichep]){prichep = trailersID[prichep];}
+                    }
                    }
+                  }
           
               Global_DATA[ii].push([xy,date,fuel,messages[i].pos.s,messages[i].t*1000,prichep,vodiy,messages[i].pos.y,messages[i].pos.x]);
 
@@ -3822,11 +3852,19 @@ function CollectData(t1,t2,maska,olddata,i,unit,calbek){// execute selected repo
                    }
                    if (VodiyID!=-1) {
                    vodiy = unit.calculateSensorValue(unit.getSensor(VodiyID), messages[i]);
-                   if(vodiy == -348201.3876){vodiy = "-----";}else {vodiy = driversID[vodiy];} 
+                   if(vodiy == -348201.3876){vodiy = "-----";}else{
+                    if(vodiy){
+                      if(driversID[vodiy]){vodiy = driversID[vodiy];}
+                    }
+                   }
                    }
                    if (PrichepID!=-1) {
                    prichep = unit.calculateSensorValue(unit.getSensor(PrichepID), messages[i]);
-                   if(prichep == -348201.3876){prichep = "-----";} else {prichep = trailersID[prichep];} 
+                   if(prichep == -348201.3876){prichep = "-----";} else {
+                    if(prichep){
+                      if(trailersID[prichep]){prichep = trailersID[prichep];}
+                    }
+                  } 
                    }
                    if (ImpID!=-1) {
                    imp = unit.getValue(unit.getSensor(ImpID), messages[i]);
@@ -4791,6 +4829,51 @@ function TestAZS(data){
     }
 }
 
+function TestNavigationZvit(data){
+  if ($('#unit_info').is(':hidden')) {
+      $('#unit_info').show();
+      $('#map').css('width', '50%'); 
+      $('#men4').css({'background':'#b2f5b4'});
+    }
+    $("#unit_table").empty();
+    $('#marrr').hide();
+    $('#option').hide();
+    $('#zupinki').hide();
+    $('#logistika').hide();
+    $('#men3').css({'background':'#e9e9e9'});
+    $('#men1').css({'background':'#e9e9e9'});
+    
+  let no_aktiv = [];
+  let dt = unitsgrup.Заправки;
+  for(var ii=0; ii < unitslist.length; ii++){
+if(!unitslist[ii].getPosition())continue;
+ if(unitslist[ii].getName().indexOf('Резерв')>=0 ||unitslist[ii].getName().indexOf('резерв')>=0||unitslist[ii].getName().indexOf('Знято')>=0||unitslist[ii].getName().indexOf('знято')>=0)continue;
+    if (Date.parse($('#fromtime1').val())/1000-3600> unitslist[ii].getPosition().t){ 
+      no_aktiv.push(unitslist[ii]); 
+      $("#unit_table").append("<tr><td>"+new Date($('#fromtime2').val()).toLocaleDateString('ru-RU', { year: 'numeric', month: '2-digit', day: '2-digit',})+"</td><td align='left'>"+unitslist[ii].getName()+"</td><td>"+wialon.util.DateTime.formatTime(unitslist[ii].getPosition().t)+"</td><td>завис</td></tr>");
+    // }else{
+    // if (parseInt(unitslist[ii].getPosition().sc)<3){ 
+    //   no_aktiv.push(unitslist[ii]); 
+    //   $("#unit_table").append("<tr><td>"+new Date($('#fromtime2').val()).toLocaleDateString('ru-RU', { year: 'numeric', month: '2-digit', day: '2-digit',})+"</td><td align='left'>"+unitslist[ii].getName()+"</td><td>"+wialon.util.DateTime.formatTime(unitslist[ii].getPosition().t)+"</td><td>GPS</td></tr>");
+    // }
+    }
+    
+    }
+  for (let i = 0; i < data.length; i++) {
+    let zapcarta=0;
+    let namee = data[i][0][1];
+    for (let ii = 1; ii < data[i].length; ii++) {
+    if(dt.indexOf(namee)>=0){
+         if(data[i][ii][4]  && zapcarta != data[i][ii][4]){
+          zapcarta = data[i][ii][4];
+          no_aktiv.forEach((element) => {if(element.getName().indexOf(zapcarta)>=0){
+              $("#unit_table").append("<tr><td>"+new Date($('#fromtime2').val()).toLocaleDateString('ru-RU', { year: 'numeric', month: '2-digit', day: '2-digit',})+"</td><td align='left'>"+element.getName()+"</td><td>"+wialon.util.DateTime.formatTime(element.getPosition().t)+"</td><td>"+data[i][ii][1]+"  - заправлявся   "+namee+"</td></tr>"); 
+          }});
+         }
+        }
+      }
+    }
+}
 //===================================================================
 
 function Monitoring(){
