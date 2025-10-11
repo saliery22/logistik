@@ -5055,7 +5055,11 @@ let rows = document.querySelectorAll('#monitoring_table tr');
      if(stroka[v]=="роб <br>невідомо"){coll = "#f8b1c0";}
      strr+= "<td bgcolor = '"+coll+"'>"+stroka[v]+"</td>";
      }
-    $("#monitoring_table").append("<tr id="+id+"><td>"+nametr.split(' ')[0]+' '+nametr.split(' ')[1]+'<br>'+Global_DATA[i][Global_DATA[i].length-1][5]+"</td>"+strr+"</tr>");
+     let vod = "-----";
+     let agr = "-----";
+     if(Global_DATA[i][Global_DATA[i].length-1][6]) vod = Global_DATA[i][Global_DATA[i].length-1][6];
+     if(Global_DATA[i][Global_DATA[i].length-1][5])  agr = Global_DATA[i][Global_DATA[i].length-1][5].split(' ')[0];
+    $("#monitoring_table").append("<tr id="+id+"><td>"+nametr.split(' ')[0]+' ('+vod+')<br>'+agr+"</td>"+strr+"</tr>");
        }
    }
   }
@@ -5067,7 +5071,11 @@ let rows = document.querySelectorAll('#monitoring_table tr');
      if(stroka[v]=="роб <br>невідомо"){coll = "#f8b1c0";}
      strr+= "<td bgcolor = '"+coll+"'>"+stroka[v]+"</td>";
      }
-    $("#monitoring_table").append("<tr id="+id+"><td>"+nametr.split(' ')[0]+' '+nametr.split(' ')[1]+'<br>'+Global_DATA[i][Global_DATA[i].length-1][5]+"</td>"+strr+"</tr>");
+     let vod = "-----";
+     let agr = "-----";
+     if(Global_DATA[i][Global_DATA[i].length-1][6]) vod = Global_DATA[i][Global_DATA[i].length-1][6];
+     if(Global_DATA[i][Global_DATA[i].length-1][5])  agr = Global_DATA[i][Global_DATA[i].length-1][5].split(' ')[0];
+    $("#monitoring_table").append("<tr id="+id+"><td>"+nametr.split(' ')[0]+' ('+vod+')<br>'+agr+"</td>"+strr+"</tr>");
   }
  }
 }});
@@ -6491,7 +6499,11 @@ async function marshrut_avto(){
          if(stroka[v]=="роб <br>невідомо"){coll = "#f8b1c0";}
          strr+= "<td bgcolor = '"+coll+"'>"+stroka[v]+"</td>";
          }
-        $("#monitoring_table").append("<tr id="+id+"><td>"+nametr.split(' ')[0]+' '+nametr.split(' ')[1]+'<br>'+Global_DATA[i][Global_DATA[i].length-1][5]+"</td>"+strr+"</tr>");
+         let vod = "-----";
+         let agr = "-----";
+         if(Global_DATA[i][Global_DATA[i].length-1][6]) vod = Global_DATA[i][Global_DATA[i].length-1][6];
+         if(Global_DATA[i][Global_DATA[i].length-1][5])  agr = Global_DATA[i][Global_DATA[i].length-1][5].split(' ')[0];
+        $("#monitoring_table").append("<tr id="+id+"><td>"+nametr.split(' ')[0]+' ('+vod+')<br>'+agr+"</td>"+strr+"</tr>");
            }
        }
       }
@@ -6503,7 +6515,11 @@ async function marshrut_avto(){
          if(stroka[v]=="роб <br>невідомо"){coll = "#f8b1c0";}
          strr+= "<td bgcolor = '"+coll+"'>"+stroka[v]+"</td>";
          }
-        $("#monitoring_table").append("<tr id="+id+"><td>"+nametr.split(' ')[0]+' '+nametr.split(' ')[1]+'<br>'+Global_DATA[i][Global_DATA[i].length-1][5]+"</td>"+strr+"</tr>");
+         let vod = "-----";
+         let agr = "-----";
+         if(Global_DATA[i][Global_DATA[i].length-1][6]) vod = Global_DATA[i][Global_DATA[i].length-1][6];
+         if(Global_DATA[i][Global_DATA[i].length-1][5])  agr = Global_DATA[i][Global_DATA[i].length-1][5].split(' ')[0];
+        $("#monitoring_table").append("<tr id="+id+"><td>"+nametr.split(' ')[0]+' ('+vod+')<br>'+agr+"</td>"+strr+"</tr>");
       }
      }
   }
