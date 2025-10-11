@@ -77,7 +77,7 @@ unitslist.forEach(function(unit) {
               vodiy = unit.calculateSensorValue(unit.getSensor(sens[key].id), unit.getLastMessage());
               if(vodiy == -348201.3876){vodiy = "-----";}else{
                 if(vodiy){
-                      if(driversID[vodiy]){vodiy = driversID[vodiy];}
+                      if(driversID[vodiy]){vodiy = driversID[vodiy];}else{vodiy = "картка- "+vodiy;}
                     }
               } 
             }
@@ -86,7 +86,7 @@ unitslist.forEach(function(unit) {
               agregat = unit.calculateSensorValue(unit.getSensor(sens[key].id), unit.getLastMessage());
               if(agregat == -348201.3876){agregat = "-----";} else {
                 if(agregat){
-                      if(trailersID[agregat]){agregat = trailersID[agregat];}
+                      if(trailersID[agregat]){agregat = trailersID[agregat];}else{agregat = "картка- "+agregat;}
                     }
               } 
             }
@@ -174,7 +174,7 @@ function online_ON() {
               vodiy = unit.calculateSensorValue(unit.getSensor(sens[key].id), unit.getLastMessage());
               if(vodiy == -348201.3876){vodiy = "-----";}else{
                  if(vodiy){
-                      if(driversID[vodiy]){vodiy = driversID[vodiy];}
+                      if(driversID[vodiy]){vodiy = driversID[vodiy];}else{vodiy = "картка- "+vodiy;}
                     }
               } 
             }
@@ -183,7 +183,7 @@ function online_ON() {
               agregat = unit.calculateSensorValue(unit.getSensor(sens[key].id), unit.getLastMessage());
               if(agregat == -348201.3876){agregat = "-----";} else {
                 if(agregat){
-                      if(trailersID[agregat]){agregat = trailersID[agregat];}
+                      if(trailersID[agregat]){agregat = trailersID[agregat];}else{agregat = "картка- "+agregat;}
                     }
               } 
             }
@@ -2967,8 +2967,17 @@ function CollectGlobalData(t2,i,unit){ // execute selected report
           let messages = data.messages;
               if(messages.length > 0){
                  for(var i=0; i<messages.length; i++){ 
-                  if(messages[i].pos){
-                  let xy=messages[i].pos.y+','+messages[i].pos.x;
+                 
+                    let y =null;
+                    let x = null;
+                    let s = 0;
+                    let xy=null;
+                    if (messages[i].pos){
+                      y=messages[i].pos.y;
+                      x=messages[i].pos.x;
+                      s=messages[i].pos.s;
+                      xy=messages[i].pos.y+','+messages[i].pos.x;
+                    }
                   let date= new Date(messages[i].t*1000- tzoffset).toISOString().slice(0, -5).replace("T", "  ");
                   let fuel = 0;
                   let vodiy = 0;
@@ -2981,7 +2990,7 @@ function CollectGlobalData(t2,i,unit){ // execute selected report
                    vodiy = unit.calculateSensorValue(unit.getSensor(Global_DATA[ii][0][4]), messages[i]);
                    if(vodiy == -348201.3876){vodiy = "-----";}else{
                     if(vodiy){
-                      if(driversID[vodiy]){vodiy = driversID[vodiy];}
+                      if(driversID[vodiy]){vodiy = driversID[vodiy];}else{vodiy = "картка- "+vodiy;}
                     }
                    }
                   }
@@ -2989,15 +2998,15 @@ function CollectGlobalData(t2,i,unit){ // execute selected report
                    prichep = unit.calculateSensorValue(unit.getSensor(Global_DATA[ii][0][5]), messages[i]);
                    if(prichep == -348201.3876){prichep = "-----";} else {
                      if(prichep){
-                      if(trailersID[prichep]){prichep = trailersID[prichep];}
+                      if(trailersID[prichep]){prichep = trailersID[prichep];}else{prichep = "картка- "+prichep;}
                     }
                    }
                   }
           
-              Global_DATA[ii].push([xy,date,fuel,messages[i].pos.s,messages[i].t*1000,prichep,vodiy,messages[i].pos.y,messages[i].pos.x]);
+              Global_DATA[ii].push([xy,date,fuel,s,messages[i].t*1000,prichep,vodiy,y,x]);
 
               Global_DATA[ii][0][2]=messages[i].t+1;
-            }           
+                      
             }
             ii++; UpdateGlobalData(t2,ii);
               }else{
@@ -3077,10 +3086,11 @@ function position(t)  {
      }
      for(let i = ind; i<Global_DATA[ii].length; i++){
          if(interval<Global_DATA[ii][i][4]){
-           if(Global_DATA[ii][i][7]=="")continue;
+           if(Global_DATA[ii][i][7]){
             y = Global_DATA[ii][i][7];
             x = Global_DATA[ii][i][8];
             markerrr.setLatLng([y, x]); 
+           }
             let avto = '';
             let vod = '';
              if(Global_DATA[ii][i][5]!=0)avto='<br />'+Global_DATA[ii][i][5];
@@ -3854,7 +3864,7 @@ function CollectData(t1,t2,maska,olddata,i,unit,calbek){// execute selected repo
                    vodiy = unit.calculateSensorValue(unit.getSensor(VodiyID), messages[i]);
                    if(vodiy == -348201.3876){vodiy = "-----";}else{
                     if(vodiy){
-                      if(driversID[vodiy]){vodiy = driversID[vodiy];}
+                      if(driversID[vodiy]){vodiy = driversID[vodiy];}else{vodiy = "картка- "+vodiy;}
                     }
                    }
                    }
@@ -3862,7 +3872,7 @@ function CollectData(t1,t2,maska,olddata,i,unit,calbek){// execute selected repo
                    prichep = unit.calculateSensorValue(unit.getSensor(PrichepID), messages[i]);
                    if(prichep == -348201.3876){prichep = "-----";} else {
                     if(prichep){
-                      if(trailersID[prichep]){prichep = trailersID[prichep];}
+                      if(trailersID[prichep]){prichep = trailersID[prichep];}else{prichep = "картка- "+prichep;}
                     }
                   } 
                    }
@@ -5145,7 +5155,11 @@ for(let i = 0; i<data._latlngs[0].length; i++){
                    }else break;
                 }
               } 
-            if(agregat)agregat=agregat.split(' ')[0];
+            if(agregat){
+              if(typeof agregat === 'string'){
+               agregat=agregat.split(' ')[0];
+              }
+            }
             if(!agregat){
               agregat="-----";
               if(namet.indexOf('JCB')>0|| namet.indexOf('Manitou')>0 || namet.indexOf('Scorpion')>0)agregat="навантажник";
@@ -7955,7 +7969,8 @@ function zapravki(data) {
  for(let i = 0; i<data.length; i++){
   
     let name = data[i][0][1];
-    let kk=10.24;
+    let kk=1023;
+    let kkk=0.1;
     let a =-555;
     let b =-555;
     let vodiy ='';
@@ -7966,85 +7981,118 @@ function zapravki(data) {
     let stop = 0;
     let p =0;
     let sped =0;
+   
 
     switch (name) {
       case "АЗС Некрасове DIESEL":
-      kk=10.24;
+      kk=1024;
+      kkk = 0.1;
+
       break;
-      case "ВМ1250ЕМ Iveco Паливозаправник":
-      kk=1023*0.1;
+      case "ВМ1250ЕМ Дробниця В. Iveco Паливозаправник":
+      kk=1023;
+      kkk = 0.1;
       break;
-      case "ВМ1251ЕМ Iveco Паливозаправник":
-      kk=1023*0.1;
+      case "ВМ1251ЕМ Колотуша О. Iveco":
+      kk=1023;
+      kkk = 0.1;
       break;
-      case "ВМ1252ЕМ Iveco Паливозаправник":
-      kk=1023*0.1;
+      case "ВМ1252ЕМ Білоус Ю. Iveco Паливозаправник":
+      kk=1023;
+      kkk = 0.1;
+      break;
+      case "ВМ1253ЕМ Iveco Бензовоз":
+      kk=1023;
+      kkk = 0.1;
       break;
       case "ВМ1613СР Писаренко О.М. Камаз":
-      kk=1023*0.099;
+      kk=1023;
+      kkk = 0.099;
       break;
       case "ЗВМ1614СР Білоус Ю.М. Камаз":
-      kk=1023*0.1;
+      kk=1023;
+      kkk = 0.1;
       break;
       case "ВМ2893ЕН Штацький С.А. Камаз":
-      kk=1016*0.0358;
+      kk=1016;
+      kkk = 0.0358;
       break;
-      case "ВМ3861ВО Колотуша О.В. Камаз":
-      kk=1023*0.1;
+      case "ВМ3861ВО Василько Р. Камаз":
+      kk=1023;
+      kkk = 0.1;
       break;
-      case "ВМ3862ВО Дробниця В.В. Камаз":
-      kk=1023*0.1;
+      case "ВМ3862ВО Карпінський М.В. Камаз":
+      kk=1023;
+      kkk = 0.1;
       break;
       case "ВМ4156ВС Карпінський А.О. Камаз":
-      kk=1016*0.1;
+      kk=1016;
+      kkk = 0.1;
       break;
       case "Газова заправка ККЗ":
-      kk=1023*0.01;
+      kk=1023;
+      kkk = 0.01;
       break;
       case "Газова заправка Райгородок":
-      kk=1016*0.010498;
+      kk=1016;
+      kkk = 0.010498;
       break;
       case "Газова заправка Слоут":
-      kk=1023*0.01;
+      kk=1023;
+      kkk = 0.01;
       break;
       case "Заправка AdBlue":
-      kk=1016*0.0109289;
+      kk=1016;
+      kkk = 0.0109289;
       break;
       case "Заправка бензин ККЗ":
-      kk=1016*0.010112;
+      kk=1016;
+      kkk = 0.010112;
       break;
       case "Заправка ДП Буйвалове":
-      kk=1023*0.0296;
+      kk=1023;
+      kkk = 0.0296;
       break;
-      case "Заправка ККЗ ДП":
-      kk=1016*0.03;
+      case "Заправка Криски ДП":
+      kk=1016;
+      kkk = 0.03;
       break;
       case "Заправка ККЗ ДП1 більший Напор":
-      kk=1023*0.0316;
+      kk=1023;
+      kkk = 0.0316;
       break;
       case "Заправка ККЗ ДП2 менший Напор":
-      kk=1023*0.01;
+      kk=1023;
+      kkk = 0.01;
       break;
       case "Заправка Райгородок":
-      kk=1023*0.006292;
+      kk=1023;
+      kkk = 0.006292;
       break;
       case "Заправка Слоут ДП":
-      kk=1023*0.0101;
+      kk=1023;
+      kkk = 0.0101;
       break;
       case "Склад ДП Буйвалове":
-      kk=1016*0.0995;
+      kk=1016;
+      kkk = 0.0995;
       break;
 
     default:
-    kk=1023*0.1;
+    kk=1023;
+    kkk=0.1;
 }
 
-    let drt =6;
+
     for(let ii = 1; ii<data[i].length; ii++){
-      if(data[i][ii][drt]=='-----')continue;
-      if(a==-555)a = parseFloat(data[i][ii][drt]);
+      
+      if(!data[i][ii][6])continue;
+      let drt =parseFloat(data[i][ii][6]);
+
+      if(a==-555)a = drt;
       if(b==-555)b = data[i][ii][3];
-      if(data[i][ii][drt]!=a){
+
+      if(drt!=a){
         if(b!=data[i][ii][3]){
           if(stop==0)stop = data[i][ii-1][1];
           if(sped>0){sped='в русі';}else{sped='стоїть';}
@@ -8055,20 +8103,20 @@ function zapravki(data) {
           zapr = 0;
           start = 0;
           stop = 0;
-          zapr = 0;
           sped=0;
+          a=drt;
         }
-        if(vodiy=='' && data[i][ii][3]!='-----')vodiy=data[i][ii][3];
-        if(avto=='' && data[i][ii][4]!='-----')avto=data[i][ii][4];
+        if(vodiy=='' && data[i][ii][3])vodiy=data[i][ii][3];
+        if(avto=='' && data[i][ii][4])avto=data[i][ii][4];
         if(start==0)start=data[i][ii-1][1];
-        if(p==0 && data[i][ii-1][0])p=data[i][ii-1][0];
+        if(p==0)p=data[i][ii][0];
         stop=0;
         prom=0;
-        let l = data[i][ii][drt]-a;
-        if(l<0)l = kk-a+parseFloat(data[i][ii][drt]);
-        zapr+=l;
+        let l = drt-a;
+        if(l<0)l = kk-a+drt;
+        zapr+=l*kkk;
         sped+=parseInt(data[i][ii][2]);
-        a=parseFloat(data[i][ii][drt]);
+        a=drt;
         b = data[i][ii][3];
       }else{
         if(stop==0)stop = data[i][ii-1][1];
@@ -8082,8 +8130,8 @@ function zapravki(data) {
           zapr = 0;
           start = 0;
           stop = 0;
-          zapr = 0;
           sped=0;
+          a=drt;
         }
       }
     }
