@@ -2967,7 +2967,7 @@ function CollectGlobalData(t2,i,unit){ // execute selected report
           let messages = data.messages;
               if(messages.length > 0){
                  for(var i=0; i<messages.length; i++){ 
-                 
+                 //if (!messages[i].pos)continue;
                     let y =null;
                     let x = null;
                     let s = null;
@@ -4862,7 +4862,7 @@ function TestNavigationZvit(data){
   for(var ii=0; ii < unitslist.length; ii++){
 if(!unitslist[ii].getPosition())continue;
  if(unitslist[ii].getName().indexOf('Резерв')>=0 ||unitslist[ii].getName().indexOf('резерв')>=0||unitslist[ii].getName().indexOf('Знято')>=0||unitslist[ii].getName().indexOf('знято')>=0)continue;
-    if (Date.parse($('#fromtime1').val())/1000-3600> unitslist[ii].getPosition().t){ 
+    if (Date.parse($('#fromtime1').val())/1000-18000> unitslist[ii].getPosition().t){ 
       no_aktiv.push(unitslist[ii]); 
       $("#unit_table").append("<tr><td>"+new Date($('#fromtime2').val()).toLocaleDateString('ru-RU', { year: 'numeric', month: '2-digit', day: '2-digit',})+"</td><td align='left'>"+unitslist[ii].getName()+"</td><td>"+wialon.util.DateTime.formatTime(unitslist[ii].getPosition().t)+"</td><td>завис</td></tr>");
     // }else{
@@ -4878,10 +4878,14 @@ if(!unitslist[ii].getPosition())continue;
     let namee = data[i][0][1];
     for (let ii = 1; ii < data[i].length; ii++) {
     if(dt.indexOf(namee)>=0){
+      
          if(data[i][ii][4]  && zapcarta != data[i][ii][4]){
+          let time = data[i][ii][1];
           zapcarta = data[i][ii][4];
           no_aktiv.forEach((element) => {if(element.getName().indexOf(zapcarta)>=0){
-              $("#unit_table").append("<tr><td>"+new Date($('#fromtime2').val()).toLocaleDateString('ru-RU', { year: 'numeric', month: '2-digit', day: '2-digit',})+"</td><td align='left'>"+element.getName()+"</td><td>"+wialon.util.DateTime.formatTime(element.getPosition().t)+"</td><td>"+data[i][ii][1]+"  - заправлявся   "+namee+"</td></tr>"); 
+            if(element.getPosition().t<Date.parse(time)/1000){
+            $("#unit_table").append("<tr><td>"+new Date($('#fromtime2').val()).toLocaleDateString('ru-RU', { year: 'numeric', month: '2-digit', day: '2-digit',})+"</td><td align='left'>"+element.getName()+"</td><td>"+wialon.util.DateTime.formatTime(element.getPosition().t)+"</td><td>"+data[i][ii][1]+"  - заправлявся   "+namee+"</td></tr>"); 
+            }    
           }});
          }
         }
