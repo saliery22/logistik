@@ -5728,6 +5728,7 @@ function tehnika_poruch(name,y,x,time){
   for(let i = 0; i<Global_DATA.length; i++){
     if(name==Global_DATA[i][0][1]) continue;
     for (let ii = Global_DATA[i].length-1; ii>0; ii--){
+      if(!Global_DATA[i][ii][0])continue;
        if(time>Global_DATA[i][ii][4]){
         let yy = parseFloat(Global_DATA[i][ii][0].split(',')[0]);
         let xx = parseFloat(Global_DATA[i][ii][0].split(',')[1]);
@@ -5756,18 +5757,20 @@ for(let i = 0; i<geozonesgrup.length; i++){
       let nametr = Global_DATA[ii][0][1];
       if(Global_DATA[ii].length<100)  continue;
       str.forEach((element) => {if(nametr.indexOf(element)>=0){
-
+       if(Global_DATA[ii][Global_DATA[ii].length-1][0]){
         let lat = parseFloat(Global_DATA[ii][Global_DATA[ii].length-1][0].split(',')[0]);
         let lon = parseFloat(Global_DATA[ii][Global_DATA[ii].length-1][0].split(',')[1]);
         if(wialon.util.Geometry.pointInShape(buferpoly2, 0, lat, lon)){
          
           if(mesto==""){
             mesto=geozonesgrup[i]._tooltip._content;
-            $("#unit_table").append("<tr><td  bgcolor='#A9BCF5'><b>"+mesto+"</b></td></tr>");
+          $("#unit_table").append("<tr><td  bgcolor='#A9BCF5'><b>"+mesto+"</b></td></tr>");
           }
           $("#unit_table").append("<tr class='fail_trak' id='"+Global_DATA[ii][0][0]+"," + lat+","+lon+ "'><td align='left'>"+nametr+"</td><td>"+Global_DATA[ii][Global_DATA[ii].length-1][5]+"</td><td>"+Global_DATA[ii][Global_DATA[ii].length-1][2]+"</td><td>"+Global_DATA[ii][Global_DATA[ii].length-1][6]+"</td></tr>");
          
         }
+       }
+        
       }});
     } 
 
