@@ -696,7 +696,7 @@ if(typeof e.detail == 'string' && e.detail.split('_')[0]=='pole'){
 
 const treeselect = new Treeselect({
   parentHtmlContainer: document.querySelector('.container2'),
-
+  value: [],
   options: [{ "value": -1, "name": 'ВСІ ГЕОЗОН', children: serch_list_zones },{ "value": -10, "name": '***', children: sr_list_zn_00 }],
   
   //staticList: true,
@@ -2930,6 +2930,7 @@ function CollectGlobalData(t2,i,unit){ // execute selected report
   let VodiyID = -1;
   let PrichepID = -1;
   let sens =  unit.getSensors(); 
+
    for (key in sens) {
           if (sens[key].t=='fuel level') { FuelID=  sens[key].id; }
            if (sens[key].t=='driver') { VodiyID=  sens[key].id; }
@@ -2951,18 +2952,27 @@ function CollectGlobalData(t2,i,unit){ // execute selected report
    if(ok==0){ii++; UpdateGlobalData(t2,ii);return;}
    }
 
+     if (!unitslist[ii].getPosition() || !unitslist[ii].getPosition().t || Date.parse($('#fromtime1').val())/1000 > unitslist[ii].getPosition().t){
+    console.log(unit.getName() + " - відсутня навігація  "); 
+    ii++; UpdateGlobalData(t2,ii);return;
+   }
+
   //if($("#gif").is(":checked")) {for (let iii=0; iii<list_zavatajennya.length; iii++){if(list_zavatajennya[iii]==id_unit){break;}if(list_zavatajennya[iii].length-1==iii){ii++; UpdateGlobalData(t2,idrep,ii);return;}}}
 	if(!id_unit){ msg("Select unit"); return;} // exit if no unit selected
 
   var to = t2; 
 	var from = t1; 
-
+ 
+ //if (ii % 15 === 0) { console.log("sasdasdasda");await sleep(10000);}
 	var sess = wialon.core.Session.getInstance(); // get instance of current Session
-
 	var ml = sess.getMessagesLoader(); 
 	ml.loadInterval(id_unit, from, to, 0, 0, 0xffffffff, 
 	    function(code, data){
-		    if(code){ msg(wialon.core.Errors.getErrorText(code));  ii++; UpdateGlobalData(t2,ii);return; } 
+		    if(code){
+           console.log( new Date().toLocaleTimeString() +"     "+unit.getName() + "    "+wialon.core.Errors.getErrorText(code)+ "    "+code); 
+           UpdateGlobalData(t2,ii);
+           return;
+           } 
     		else {
           let messages = data.messages;
               if(messages.length > 0){
@@ -3942,7 +3952,7 @@ function CollectDataReport(t1,t2,maska,idrep,olddata,i,unit,calbek){ // execute 
   
 	 res.execReport(template, id_unit, 0, interval, // execute selected report
 		function(code, data) { // execReport template
-			if(code){ msg(wialon.core.Errors.getErrorText(code));ii++; SendDataReportInCallback(t1,t2,maska,idrep,olddata,ii,calbek);return; } // exit if error code
+			if(code){ console.log(wialon.core.Errors.getErrorText(code)); SendDataReportInCallback(t1,t2,maska,idrep,olddata,ii,calbek);return; } // exit if error code
 			if(!data.getTables().length){ii++; SendDataReportInCallback(t1,t2,maska,idrep,olddata,ii,calbek); return; }
 			else{
         let tables = data.getTables();
@@ -5795,7 +5805,7 @@ for(let i = 0; i<geozonesgrup.length; i++){
   for(let i = 0; i<Global_DATA.length; i++){
     let nametr = Global_DATA[i][0][1];
     let id = Global_DATA[i][0][0];
-    if(nametr.indexOf('ДРП ККЗ')>=0 || nametr.indexOf('ДРП Райгородок')>=0 || nametr.indexOf('Бензин ККЗ Ультразвук')>=0 || nametr.indexOf('РЕЗЕРВУАР ККЗ новий')>=0 || nametr.indexOf('знято')>=0 ||  nametr.indexOf('Знято')>=0 ||  nametr.indexOf('еревантажувач')>=0) continue;
+    if(nametr.indexOf('ДРП Криски')>=0 || nametr.indexOf('ДРП ККЗ')>=0 || nametr.indexOf('ДРП Райгородок')>=0 || nametr.indexOf('Бензин ККЗ Ультразвук')>=0 || nametr.indexOf('РЕЗЕРВУАР ККЗ новий')>=0 || nametr.indexOf('знято')>=0 ||  nametr.indexOf('Знято')>=0 ||  nametr.indexOf('еревантажувач')>=0) continue;
     let start=0;
     let finish=0;
     let interval0=0;
@@ -8023,7 +8033,7 @@ function zapravki(data) {
       kkk = 0.1;
       break;
       case "ВМ1251ЕМ Колотуша О. Iveco":
-      kk=1023;
+      kk=1016;
       kkk = 0.1;
       break;
       case "ВМ1252ЕМ Білоус Ю. Iveco Паливозаправник":
