@@ -35,6 +35,7 @@ var isUIActive = true;
 var tzoffset = (new Date()).getTimezoneOffset() * 60000; //offset in milliseconds
 
 
+
 var from111 = new Date().toJSON().slice(0,11) + '00:00';
 var from222 = (new Date(Date.now() - tzoffset)).toISOString().slice(0, -8);
 
@@ -375,7 +376,7 @@ function init() { // Execute after login succeed
   var res_flags = wialon.item.Item.dataFlag.base | wialon.item.Resource.dataFlag.reports | wialon.item.Resource.dataFlag.zones | wialon.item.Resource.dataFlag.zoneGroups | wialon.item.Resource.dataFlag.trailers | wialon.item.Resource.dataFlag.drivers;
  
 	var remote= wialon.core.Remote.getInstance();
-  remote.remoteCall('render/set_locale',{"tzOffset":10800,"language":'ru',"formatDate":'%Y-%m-%E %H:%M:%S'});
+  remote.remoteCall('render/set_locale',{"tzOffset":tz,"language":lng,"formatDate":'%Y-%m-%E %H:%M:%S'});
   wialon.util.Gis.geocodingParams.flags =1490747392;//{flags: "1255211008", city_radius: "10", dist_from_unit: "5", txt_dist: "km from"};
 	session.loadLibrary("resourceZones"); // load Geofences Library 
   session.loadLibrary("resourceReports"); // load Reports Library
@@ -2819,7 +2820,7 @@ function executeReport5(){ // execute selected report
 	res.execReport(template, id_unit, 0, interval, // execute selected report
 		function(code, data) { // execReport template
 			$("#exec_btn").prop("disabled", false); // enable button
-			if(code){ msg(wialon.core.Errors.getErrorText(code)); Cikle5();return; } // exit if error code
+			if(code){ console.log(wialon.core.Errors.getErrorText(code)); Cikle5();return; } // exit if error code
 			if(!data.getTables().length){ // exit if no tables obtained
 			 Cikle5();return; }
 			else showReportResult5(data,id_unit); // show report result
