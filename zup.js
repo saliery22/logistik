@@ -33,10 +33,7 @@ var isUIActive = true;
 
 
 var tzoffset = (new Date()).getTimezoneOffset() * 60000; //offset in milliseconds
-var tzoffset0 = (new Date('20-Oct-2022 04:04:37')).getTimezoneOffset() * 60000; //offset in milliseconds
 
-console.log(tzoffset);
-console.log(tzoffset0);
 
 var from111 = new Date().toJSON().slice(0,11) + '00:00';
 var from222 = (new Date(Date.now() - tzoffset)).toISOString().slice(0, -8);
@@ -3001,11 +2998,11 @@ function CollectGlobalData(t2,i,unit){ // execute selected report
                   let prichep = null;
                    if (Global_DATA[ii][0][3]!=-1) {
                    fuel = unit.calculateSensorValue(unit.getSensor(Global_DATA[ii][0][3]),messages[i]);
-                   if(fuel == -348201.3876){fuel = "-----";} else {fuel = fuel.toFixed();} 
+                   if(fuel == -348201.3876){fuel = null;} else {fuel = fuel.toFixed();} 
                    }
                    if (Global_DATA[ii][0][4]!=-1) {
                    vodiy = unit.calculateSensorValue(unit.getSensor(Global_DATA[ii][0][4]), messages[i]);
-                   if(vodiy == -348201.3876){vodiy = "-----";}else{
+                   if(vodiy == -348201.3876){vodiy = null;}else{
                     if(vodiy){
                       if(driversID[vodiy]){vodiy = driversID[vodiy];}else{vodiy = "картка-"+vodiy;}
                     }
@@ -3013,7 +3010,7 @@ function CollectGlobalData(t2,i,unit){ // execute selected report
                   }
                    if (Global_DATA[ii][0][5]!=-1) {
                    prichep = unit.calculateSensorValue(unit.getSensor(Global_DATA[ii][0][5]), messages[i]);
-                   if(prichep == -348201.3876){prichep = "-----";} else {
+                   if(prichep == -348201.3876){prichep = null;} else {
                      if(prichep){
                       if(trailersID[prichep]){prichep = trailersID[prichep];}else{prichep = "картка-"+prichep;}
                     }
@@ -3876,11 +3873,11 @@ function CollectData(t1,t2,maska,olddata,i,unit,calbek){// execute selected repo
                   let OBDrpm = null;  //OBD
                    if (FuelID!=-1) {
                    fuel = unit.calculateSensorValue(unit.getSensor(FuelID),messages[i]);
-                   if(fuel == -348201.3876){fuel = "-----";} else {fuel = fuel.toFixed(2);} 
+                   if(fuel == -348201.3876){fuel = null;} else {fuel = fuel.toFixed(2);} 
                    }
                    if (VodiyID!=-1) {
                    vodiy = unit.calculateSensorValue(unit.getSensor(VodiyID), messages[i]);
-                   if(vodiy == -348201.3876){vodiy = "-----";}else{
+                   if(vodiy == -348201.3876){vodiy = null;}else{
                     if(vodiy){
                       if(driversID[vodiy]){vodiy = driversID[vodiy];}else{vodiy = "картка-"+vodiy;}
                     }
@@ -3888,7 +3885,7 @@ function CollectData(t1,t2,maska,olddata,i,unit,calbek){// execute selected repo
                    }
                    if (PrichepID!=-1) {
                    prichep = unit.calculateSensorValue(unit.getSensor(PrichepID), messages[i]);
-                   if(prichep == -348201.3876){prichep = "-----";} else {
+                   if(prichep == -348201.3876){prichep = null;} else {
                     if(prichep){
                       if(trailersID[prichep]){prichep = trailersID[prichep];}else{prichep = "картка-"+prichep;}
                     }
@@ -3896,15 +3893,15 @@ function CollectData(t1,t2,maska,olddata,i,unit,calbek){// execute selected repo
                    }
                    if (ImpID!=-1) {
                    imp = unit.getValue(unit.getSensor(ImpID), messages[i]);
-                   if(imp == -348201.3876){imp = "-----";} else {imp = imp.toFixed(2);} 
+                   if(imp == -348201.3876){imp = null;} else {imp = imp.toFixed(2);} 
                    }
                    if (OBDkmID!=-1) {
                    OBDkm = unit.calculateSensorValue(unit.getSensor(OBDkmID), messages[i]);
-                   if(OBDkm == -348201.3876){OBDkm = "-----";} else {OBDkm = OBDkm.toFixed(1);} 
+                   if(OBDkm == -348201.3876){OBDkm = null;} else {OBDkm = OBDkm.toFixed(1);} 
                    }
                    if (OBDrpmID!=-1) {
                    OBDrpm = unit.calculateSensorValue(unit.getSensor(OBDrpmID), messages[i]);
-                   if(OBDrpm == -348201.3876){OBDrpm = "-----";} else {OBDrpm = OBDrpm.toFixed();} 
+                   if(OBDrpm == -348201.3876){OBDrpm = null;} else {OBDrpm = OBDrpm.toFixed();} 
                    }
               dataa.push([xy,date,sped,vodiy,prichep,fuel,imp,OBDkm,OBDrpm]);
             }
@@ -4107,7 +4104,13 @@ function Naryady(data=[],maska='JD'){
      if(splines.length==0) splines.push([data[i][0][0],data[i][0][1],kx]);
      if(data[i][ii][0]=="") continue;
 
-     if(data[i][ii][5]){agregat =data[i][ii][5];}else{agregat = '-----';}
+     if(data[i][ii][5]){
+      if(data[i][ii][5][6]=="-"){
+        if(agregat=='-----')agregat =data[i][ii][5];
+      }else{
+       agregat =data[i][ii][5];
+      }
+    }
      if(data[i][ii][6]){
       vodiy =data[i][ii][6];
       if(vodiy0==0)vodiy0=vodiy;
@@ -4197,6 +4200,7 @@ function Naryady(data=[],maska='JD'){
       splines=[];
     }
   }
+
 
 for (let i = 0; i < geo_splines.length; i++) {
   let km = 0;
