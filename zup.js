@@ -33,8 +33,10 @@ var isUIActive = true;
 
 
 var tzoffset = (new Date()).getTimezoneOffset() * 60000; //offset in milliseconds
+var tzoffset0 = (new Date('20-Oct-2022 04:04:37')).getTimezoneOffset() * 60000; //offset in milliseconds
 
-
+console.log(tzoffset);
+console.log(tzoffset0);
 
 var from111 = new Date().toJSON().slice(0,11) + '00:00';
 var from222 = (new Date(Date.now() - tzoffset)).toISOString().slice(0, -8);
@@ -366,17 +368,18 @@ function init() { // Execute after login succeed
   var session = wialon.core.Session.getInstance();
   let lng = session.__cX.$$user_customProps.language;
   let tz0 = session.__cX.$$user_customProps.tz;
+
    let tz = tz0 & 0xffff;
    if(tz0<0)tz = tz | 0xffff0000;
    console.log(tz)
    console.log(lng)
-
+   console.log(session.__cX.$$user_customProps)
   // specify what kind of data should be returned
   var flags = wialon.item.Item.dataFlag.base | wialon.item.Unit.dataFlag.lastPosition | wialon.item.Unit.dataFlag.sensors | wialon.item.Unit.dataFlag.lastMessage;
   var res_flags = wialon.item.Item.dataFlag.base | wialon.item.Resource.dataFlag.reports | wialon.item.Resource.dataFlag.zones | wialon.item.Resource.dataFlag.zoneGroups | wialon.item.Resource.dataFlag.trailers | wialon.item.Resource.dataFlag.drivers;
  
 	var remote= wialon.core.Remote.getInstance();
-  remote.remoteCall('render/set_locale',{"tzOffset":tz,"language":lng,"formatDate":'%Y-%m-%E %H:%M:%S'});
+  remote.remoteCall('render/set_locale',{"tzOffset":tz0,"language":lng,"formatDate":'%Y-%m-%E %H:%M:%S'});
   wialon.util.Gis.geocodingParams.flags =1490747392;//{flags: "1255211008", city_radius: "10", dist_from_unit: "5", txt_dist: "km from"};
 	session.loadLibrary("resourceZones"); // load Geofences Library 
   session.loadLibrary("resourceReports"); // load Reports Library
@@ -2888,9 +2891,11 @@ function track_marshruta(evt){
 
 //=================Data===================================================================================
 Global_DATA=[];
+var tzoffset0 = (new Date($('#fromtime2').val())).getTimezoneOffset() * 60000;
 function UpdateGlobalData(t2=0,i=0){
     upd=true;
     if(i==0){
+      tzoffset0 = (new Date($('#fromtime2').val())).getTimezoneOffset() * 60000;
      $('#eeew').prop("disabled", true);
      if($('#fromtime1').val()!=from111 || $('#fromtime2').val()!=from222){
        Global_DATA = [];
@@ -2976,6 +2981,7 @@ function CollectGlobalData(t2,i,unit){ // execute selected report
            } 
     		else {
           let messages = data.messages;
+           //console.log( new Date().toLocaleTimeString() +"     "+unit.getName() +"     "+ messages.length); 
               if(messages.length > 0){
                  for(var i=0; i<messages.length; i++){ 
                  //if (!messages[i].pos)continue;
@@ -2989,7 +2995,7 @@ function CollectGlobalData(t2,i,unit){ // execute selected report
                       s=messages[i].pos.s;
                       xy=messages[i].pos.y+','+messages[i].pos.x;
                     }
-                  let date= new Date(messages[i].t*1000- tzoffset).toISOString().slice(0, -5).replace("T", "  ");
+                  let date= new Date(messages[i].t*1000- tzoffset0).toISOString().slice(0, -5).replace("T", "  ");
                   let fuel = null;
                   let vodiy = null;
                   let prichep = null;
@@ -3828,6 +3834,7 @@ function CollectData(t1,t2,maska,olddata,i,unit,calbek){// execute selected repo
   let id_unit = unit.getId(), ii=i;
   if (t1==0) t1=Date.parse($('#fromtime1').val())/1000;
   if (t2==0) t2=Date.parse($('#fromtime2').val())/1000;
+  var tzoffset1 = (new Date(t2*1000)).getTimezoneOffset() * 60000;
 	var sess = wialon.core.Session.getInstance(); // get instance of current Session
 	var ml = sess.getMessagesLoader(); 
 	ml.loadInterval(id_unit, t1, t2, 0, 0, 0xffffffff, 
@@ -3860,7 +3867,7 @@ function CollectData(t1,t2,maska,olddata,i,unit,calbek){// execute selected repo
                     xy =messages[i].pos.y+','+messages[i].pos.x;
                     sped =messages[i].pos.s;
                   }
-                  let date= new Date(messages[i].t*1000- tzoffset).toISOString().slice(0, -5).replace("T", "  ");
+                  let date= new Date(messages[i].t*1000- tzoffset1).toISOString().slice(0, -5).replace("T", "  ");
                   let fuel = null;
                   let vodiy = null;
                   let prichep = null;
@@ -7766,11 +7773,13 @@ $('#geomodul_bt').click(function() {
 
 $('#prob_bt1').click(function() {
   let d = Date.parse(output.innerHTML);
-  $('#prob_from').val(new Date(d- tzoffset).toISOString().slice(0, -8));
+  let tzoffset1 = (new Date(output.innerHTML)).getTimezoneOffset() * 60000;
+  $('#prob_from').val(new Date(d- tzoffset1).toISOString().slice(0, -8));
 });
 $('#prob_bt2').click(function() {
   let d = Date.parse(output.innerHTML);
-  $('#prob_to').val(new Date(d- tzoffset).toISOString().slice(0, -8));
+  let tzoffset1 = (new Date(output.innerHTML)).getTimezoneOffset() * 60000;
+  $('#prob_to').val(new Date(d- tzoffset1).toISOString().slice(0, -8));
 });
 $('#prob_bt3').click(function() {
   let unitId = treeselect3.value;
@@ -9571,8 +9580,9 @@ if(id_rote>100){id_rote=0;}
           let stoyanka='';
           if (row2.cells[ii+1].textContent && $('#log_control_tb').is(':visible')) {
             stoyanka = parseInt(row2.cells[ii+1].textContent.split(',')[1]);
+            let tzoffset1 = (new Date(row2.cells[ii+2].textContent)).getTimezoneOffset() * 60000;
             let dt_stoy = Date.parse(row2.cells[ii+2].textContent);
-               dt_stoy = new Date(dt_stoy-tzoffset-(stoyanka*1000)).toISOString().slice(0, -5).replace("T", " ");
+               dt_stoy = new Date(dt_stoy-tzoffset1-(stoyanka*1000)).toISOString().slice(0, -5).replace("T", " ");
             let m = Math.trunc(stoyanka / 60) + '';
             let h = Math.trunc(m / 60) + '';
             m=(m % 60) + '';
@@ -10901,7 +10911,8 @@ $("#cont_b2").on("click", function (){
 });
 
 $("#cont_b3").on("click", function (){
-  let t=Date.parse($('#cont_time').text())+tzoffset;
+let tzoffset1 = (new Date($('#cont_time').text())).getTimezoneOffset() * 60000;
+  let t=Date.parse($('#cont_time').text())+tzoffset1;
   let t2=t+86400000;
 
   let n=$('#cont_unit').text();
@@ -11625,7 +11636,8 @@ async function logistik_zvit(data){
      
       let endms = parseInt(tb.rows[2].cells[tb.rows[2].cells.length-2].textContent.split(',')[1]);
       end_marshrut = Date.parse(tb.rows[2].cells[tb.rows[2].cells.length-1].textContent);
-      end_marshrut0 = new Date(end_marshrut-tzoffset-(endms*1000)).toISOString().slice(0, -5).replace("T", " ");
+      let tzoffset1 = (new Date(tb.rows[2].cells[tb.rows[2].cells.length-1].textContent)).getTimezoneOffset() * 60000;
+      end_marshrut0 = new Date(end_marshrut-tzoffset1-(endms*1000)).toISOString().slice(0, -5).replace("T", " ");
       end_marshrut = end_marshrut/1000 -endms;
 
      //err_stops =0;
