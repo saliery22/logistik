@@ -4678,6 +4678,7 @@ $("#reestr_save_BT").on("click", function (evt){
   let save_data='';
   let save_data_jurnal='';
   let table_polya=document.getElementById('robota_polya_tb');
+  let dta_m ='';
   if(table_polya.rows.length>1){
     for(let i = 1; i<table_polya.rows.length; i++){
       if(table_polya.rows[i].cells[2].innerText!='----'){
@@ -4701,6 +4702,7 @@ $("#reestr_save_BT").on("click", function (evt){
 
         save_data += '||'+a2 + '|' +a3 + '|' +a4 + '|' + a5 + '|' + a6 + '|' + a7 +'|'+ a8 +'|' + a9 + '|' + a10 + '|' + a11 +'|'+a12 +'|'+a13+'\n'+'||'+a14 +'\n';
 
+        dta_m = a2;
 
          let tx=table_polya.rows[i].cells[6].innerText+table_polya.rows[i].cells[8].innerText+table_polya.rows[i].cells[2].innerText;
          if(jurnal_polya_temp.indexOf(tx)>=0)continue;
@@ -4713,13 +4715,18 @@ $("#reestr_save_BT").on("click", function (evt){
           save_data_jurnal+='||'+date+'|'+name+'|'+text+'|'+autor+'|'+time+'\n';
       }
     }
-  }
-  write_jurnal(ftp_id,'geomodul.txt',save_data,function () {
-  write_jurnal(ftp_id,'jurnal.txt',save_data_jurnal,function () { });
-    audio.play();
-  });
+       let dt = new Date(new Date(dta_m).getTime());
+       let my = 'geohis/'+(dt.getMonth()+1)+'.'+dt.getFullYear()+'.txt';
+
+       write_jurnal(ftp_id,my,save_data,function () {
+       write_jurnal(ftp_id,'jurnal.txt',save_data_jurnal,function () { });
+         audio.play(); 
+        });
+
+
 
   if(cpdata!='')navigator.clipboard.writeText(cpdata);
+  }
 
 
 });
@@ -7720,12 +7727,26 @@ $('#geomodul_bt').click(function() {
    let vibor = $("#geomodul_lis").chosen().val();
    let vibor2 = $("#geomodul_field_lis").chosen().val();
    let poly_color = Math.floor(Math.random() * 360);
- $('#geomodul_bt').prop("disabled", true);
+ //$('#geomodul_bt').prop("disabled", true);
    $("#unit_table").empty();
  clearGarbage(garbagepoly);
  garbagepoly=[];
-  load_jurnal(ftp_id,'geomodul.txt',function (data) { 
-    
+
+
+  // Создаем копии дат, чтобы не изменять исходные
+  let currentDate = new Date(new Date($('#geomodul_time1').val()).getTime());
+  let finalDate = new Date(new Date($('#geomodul_time2').val()).getTime());
+
+  // Устанавливаем день на 1, чтобы корректно сравнивать месяцы
+  currentDate.setDate(1);
+
+  while (currentDate <= finalDate) {
+    // getMonth() возвращает 0 для января, 1 для февраля и т.д. 
+ 
+let str = 'geohis/'+(currentDate.getMonth()+1)+'.'+currentDate.getFullYear()+'.txt';
+
+  load_jurnal(ftp_id,str,function (data) { 
+  
     for(let i = 1; i<data.length; i+=2){
       let m=data[i].split('|');
       let t=Date.parse(m[0]);
@@ -7765,6 +7786,15 @@ $('#geomodul_bt').click(function() {
     }
     $('#geomodul_bt').prop("disabled", false);
   });
+
+    
+    // Переходим на следующий месяц
+    currentDate.setMonth(currentDate.getMonth() + 1);
+  }
+
+ 
+
+
 });
 
 
@@ -8780,6 +8810,7 @@ if(evt.target.cellIndex==6){
 $("#jurnal_zvit_buton").on("click", function (){
   $("#unit_table").empty();
   let str =$('#jurnal_units').val().split(',');
+  if(str[0]==""){str=[];}
   let fr =Date.parse($('#jurnal_time1').val());
   let to =Date.parse($('#jurnal_time2').val());
   update_jurnal(ftp_id,'jurnal.txt',function (data) { 
@@ -8791,9 +8822,8 @@ $("#jurnal_zvit_buton").on("click", function (){
         let d=new Date(parseInt(m[0])).toLocaleString("uk-UA", {year:'numeric',month:'numeric',day:'numeric'});
         let t=new Date(parseInt(m[4])).toLocaleString("uk-UA", {year:'numeric',month:'numeric',day:'numeric',hour:'numeric', minute: 'numeric', second: 'numeric'});
         let nametr = m[1];
-        if(m[0]>fr && m[0]<to){
-        if(str.lenght>0){
-
+        if(m[4]>=fr && m[4]<=to){
+        if(str.length>0){
           for(let v = 0; v<str.length; v++){ 
             if(nametr.indexOf(str[v])<0)continue;
             $("#unit_table").append("<tr id="+m[1]+"><td>"+i+"</td><td>"+d+"</td><td>"+nametr+"</td><td>"+m[2]+"</td><td>"+m[3]+"</td><td>"+t+"</td></tr>");
@@ -8817,8 +8847,8 @@ $("#jurnal_zvit_buton").on("click", function (){
           let d=new Date(parseInt(m[0])).toLocaleString("uk-UA", {year:'numeric',month:'numeric',day:'numeric'});
           let t=new Date(parseInt(m[4])).toLocaleString("uk-UA", {year:'numeric',month:'numeric',day:'numeric',hour:'numeric', minute: 'numeric', second: 'numeric'});
           let nametr = m[1];
-          if(m[0]>fr && m[0]<to){
-        if(str.lenght>0){
+          if(m[4]>=fr && m[4]<=to){
+        if(str.length>0){
           for(let v = 0; v<str.length; v++){ 
             if(nametr.indexOf(str[v])<0)continue;
             $("#unit_table").append("<tr id="+m[1]+"><td>"+i+"</td><td>"+d+"</td><td>"+nametr+"</td><td>"+m[2]+"</td><td>"+m[3]+"</td><td>"+t+"</td></tr>");
