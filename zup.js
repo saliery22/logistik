@@ -2928,16 +2928,20 @@ function UpdateGlobalData(t2=0,i=0){
 let list_zavatajennya=[];
 function CollectGlobalData(t2,i,unit){ // execute selected report
   let id_unit = unit.getId(), ii=i;
+  
   if(Global_DATA[ii]==undefined){
   let FuelID = -1;
   let VodiyID = -1;
   let PrichepID = -1;
   let sens =  unit.getSensors(); 
 
+
+
    for (key in sens) {
-          if (sens[key].t=='fuel level') { FuelID=  sens[key].id; }
-           if (sens[key].t=='driver') { VodiyID=  sens[key].id; }
-            if (sens[key].t=='trailer')  { PrichepID=  sens[key].id; }
+          if (FuelID == -1 && sens[key].t=='fuel level') { FuelID = sens[key].id; }
+           if (VodiyID == -1 && sens[key].t=='driver') { VodiyID = sens[key].id; }
+            if (PrichepID == -1 && sens[key].t=='trailer')  { PrichepID = sens[key].id; }
+            //console.log(id_unit+"///"+unit.getName()+"///"+sens[key].n+"///"+sens[key].t);
         }
 
     Global_DATA.push([[id_unit,unit.getName(),Date.parse($('#fromtime1').val())/1000,FuelID,VodiyID,PrichepID]])
@@ -3847,12 +3851,12 @@ function CollectData(t1,t2,maska,olddata,i,unit,calbek){// execute selected repo
           let OBDrpmID = -1;  //OBD
           let sens =  unit.getSensors(); 
           for (key in sens) {
-          if (sens[key].t=='fuel level') { FuelID=  sens[key].id; }
-          if (sens[key].t=='driver') { VodiyID=  sens[key].id; }
-          if (sens[key].t=='trailer')  { PrichepID=  sens[key].id; }
-            if ( sens[key].t=='impulse fuel consumption')  { ImpID=  sens[key].id; }
-              if ( sens[key].p=='io_389')  { OBDkmID=  sens[key].id; }   //OBD
-              if ( sens[key].p=='io_36')  { OBDrpmID=  sens[key].id; }   //OBD
+          if (FuelID == -1 && sens[key].t=='fuel level') { FuelID=  sens[key].id; }
+          if (VodiyID == -1 &&sens[key].t=='driver') { VodiyID=  sens[key].id; }
+          if (PrichepID == -1 &&sens[key].t=='trailer')  { PrichepID=  sens[key].id; }
+            if (ImpID == -1 && sens[key].t=='impulse fuel consumption')  { ImpID=  sens[key].id; }
+              if (OBDkmID == -1 && sens[key].p=='io_389')  { OBDkmID=  sens[key].id; }   //OBD
+              if (OBDrpmID == -1 && sens[key].p=='io_36')  { OBDrpmID=  sens[key].id; }   //OBD
           }
            dataa.push([unit.getId(),unit.getName()]);
           let messages = data.messages;
@@ -4072,6 +4076,8 @@ function Naryady_start(){
 
  //markerByUnit[id].openPopup();   
  }
+
+
  let geo_layer =[];
  let geo_splines = [];
 function Naryady(data=[],maska='JD'){
@@ -4167,11 +4173,12 @@ function Naryady(data=[],maska='JD'){
     }else{
       splines[0][2]=kx;
       if(agregat != '-----'){splines[0][3]=parseFloat(agregat.split(' ').pop());}else{ splines[0][3]=10;}
-      if(!splines[0][3]){ splines[0][3]=10;}
+      if(!splines[0][3]){ splines[0][3]=10;}      
       splines[0][4]=data_start;
       splines[0][5]=data_end;
       splines[0][6]=vodiy0;
       splines[0][7]=agregat;
+       if(unitsgrup.Комбайни && unitsgrup.Комбайни.indexOf(data[i][0][1])>=0){splines[0][7]="жатка";splines[0][3]=12;}
       kx++;
       spline.push([lon,lat]); 
       if(spline.length>0)splines.push(spline);
@@ -4194,6 +4201,7 @@ function Naryady(data=[],maska='JD'){
       splines[0][5]=data_end;
       splines[0][6]=vodiy;
       splines[0][7]=agregat;
+       if(unitsgrup.Комбайни && unitsgrup.Комбайни.indexOf(data[i][0][1])>=0){splines[0][7]="жатка";splines[0][3]=12;}
       kx++;
       splines.push(spline);
       if(splines.length>0)geo_splines.push(splines);
@@ -4679,6 +4687,7 @@ $("#reestr_save_BT").on("click", function (evt){
   let save_data_jurnal='';
   let table_polya=document.getElementById('robota_polya_tb');
   let dta_m ='';
+  let ga =0;
   if(table_polya.rows.length>1){
     for(let i = 1; i<table_polya.rows.length; i++){
       if(table_polya.rows[i].cells[2].innerText!='----'){
@@ -4705,7 +4714,11 @@ $("#reestr_save_BT").on("click", function (evt){
         dta_m = a2;
 
          let tx=table_polya.rows[i].cells[6].innerText+table_polya.rows[i].cells[8].innerText+table_polya.rows[i].cells[2].innerText;
-         if(jurnal_polya_temp.indexOf(tx)>=0)continue;
+         ga = parseFloat(table_polya.rows[i].cells[11].innerText);
+         if(jurnal_polya_temp.indexOf(tx)>=0){
+         ga += parseFloat(table_polya.rows[i].cells[11].innerText);
+          continue;
+         }
           let date=Date.parse(table_polya.rows[i].cells[2].innerText);
           let time=Date.now();
           let name=table_polya.rows[i].cells[6].innerText;
@@ -6789,6 +6802,28 @@ $('#vodiyi_kkz').click(function() {
         }
       }
       $("#unit_table").append("<tr><td>"+(i+1)+"</td><td>"+name+"</td><td>"+corektno+"</td><td>"+aa+"</td></tr>");
+    }
+    });
+     $('#grups_kkz').click(function() {
+    $("#unit_table").empty();
+    $("#unit_table").append("<tr><td>№</td><td>ГРУПА</td><td>ТЗ</td></tr>");
+         for (key in unitsgrup) {
+          let sp = unitsgrup[key].split(',');
+          for (let i = 0; i < sp.length; i++) {
+              $("#unit_table").append("<tr><td>"+(i+1)+"</td><td>"+key+"</td><td>"+sp[i]+"</td></tr>");
+          }
+         }
+    });
+    $('#sensors_kkz').click(function() {
+    $("#unit_table").empty();
+    $("#unit_table").append("<tr><td>№</td><td>ID</td><td>назва</td><td>назва датчику</td><td>тип датчику</td></tr>");
+    for (let i = 0; i < unitslist.length; i++) {
+      let name = unitslist[i].getName();
+       let id = unitslist[i].getId();
+      let sens =  unitslist[i].getSensors(); 
+      for (key in sens) {
+             $("#unit_table").append("<tr><td>"+(i+1)+"</td><td>"+id+"</td><td>"+name+"</td><td>"+sens[key].n+"</td><td>"+sens[key].t+"</td></tr>");
+        }
     }
     });
   $('#track_lis_bt2').click(function() {
