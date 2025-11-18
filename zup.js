@@ -3049,6 +3049,23 @@ var slider = document.getElementById("myRange");
 var slider_sp = document.getElementById("sp_play");
 var output = document.getElementById("f");
 
+var scrool_area = document.getElementById("scrool_area");
+scrool_area.addEventListener("wheel", function(e){
+  if (e.deltaY < 0){
+     let t=Date.parse($('#f').text())+8000;
+    if(t>Date.parse($('#fromtime2').val()))t=Date.parse($('#fromtime2').val());
+    slider.value=(t-Date.parse($('#fromtime1').val()))/(Date.parse($('#fromtime2').val())-Date.parse($('#fromtime1').val()))*2000;
+    position(t);
+  }else{
+    let t=Date.parse($('#f').text())-8000;
+    if(t<Date.parse($('#fromtime1').val()))t=Date.parse($('#fromtime1').val());
+    slider.value=(t-Date.parse($('#fromtime1').val()))/(Date.parse($('#fromtime2').val())-Date.parse($('#fromtime1').val()))*2000;
+    position(t);
+  }
+  e.preventDefault();
+  e.stopPropagation();
+})
+
 output.innerHTML = from222; // Display the default slider value
 
 // Update the current slider value (each time you drag the slider handle)
@@ -3332,8 +3349,16 @@ if(data_zup[i][3].split(':').reverse().reduce((acc, n, iy) => acc + n * (60 ** i
                    });
               }
      if(gren==0){
+          //  mark =L.marker([y, x],{
+          //   draggable: true,
+          //   icon: L.divIcon({
+          //     iconSize: "auto",
+          //     className: 'div-icon',
+          //     html: "<div style='border: 2px solid rgba(255, 0, 0, 1); border-top-left-radius: 0px;  border-top-right-radius: 5px;  border-bottom-right-radius: 5px;  border-bottom-left-radius: 5px;background: rgba(252, 186, 186, 1); text-align: center;font-size: 10px;'>"+data_zup[i][1]+"<br />"+data_zup[i][3]+"</div> ",
+          //   })
+          // }).addTo(map);
+
                 mark = L.marker([y, x], {
-                                  
                                   draggable: true,
                                   icon: L.icon({
                                   iconUrl: '111.png',
@@ -8108,7 +8133,7 @@ function zapravki(data) {
 
       break;
       case "ВМ1250ЕМ Дробниця В. Iveco Паливозаправник":
-      kk=1023;
+      kk=0;
       kkk = 0.1;
       break;
       case "ВМ1251ЕМ Колотуша О. Iveco":
@@ -8133,7 +8158,7 @@ function zapravki(data) {
       break;
       case "ВМ2893ЕН Штацький С.А. Камаз":
       kk=1016;
-      kkk = 0.0358;
+      kkk = 0.036363;
       break;
       case "ВМ3861ВО Василько Р. Камаз":
       kk=1023;
@@ -8148,8 +8173,8 @@ function zapravki(data) {
       kkk = 0.1;
       break;
       case "Газова заправка ККЗ":
-      kk=1023;
-      kkk = 0.01;
+      kk=0;
+      kkk = 0.01001;
       break;
       case "Газова заправка Райгородок":
       kk=1016;
@@ -8157,6 +8182,10 @@ function zapravki(data) {
       break;
       case "Газова заправка Слоут":
       kk=1023;
+      kkk = 0.01;
+      break;
+      case "Газова Заправка Слоут НОВА":
+      kk=0;
       kkk = 0.01;
       break;
       case "Заправка AdBlue":
