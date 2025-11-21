@@ -35,7 +35,7 @@ var isUIActive = true;
 var tzoffset = (new Date()).getTimezoneOffset() * 60000; //offset in milliseconds
 
 
-var from111 = new Date().toJSON().slice(0,11) + '00:00';
+var from111 = new Date().toJSON().slice(0,11) + '05:00';
 var from222 = (new Date(Date.now() - tzoffset)).toISOString().slice(0, -8);
 
 
@@ -281,6 +281,30 @@ function mark2(e) {
   clearGarbage(marshrutMarkers);
   marshrutMarkers=[];
 }
+function mark3(e) {
+   treeselect3.value=unitsID[e.relatedTarget._tooltip._content];
+  treeselect3.mount();
+  if($('#unit_info').is(':hidden')) $('#men4').click();
+  $('.leaflet-container').css('cursor','');
+  $('.zvit').hide();
+  $("#unit_table").empty();
+  $('#zz4').show();
+  clearGEO(); 
+  clearGarbage(garbage);
+  garbage=[];
+  clearGarbage(garbagepoly);
+  garbagepoly=[];
+  clearGarbage(marshrutMarkers);
+  marshrutMarkers=[];
+
+$("#1_mot").prop('checked', true);
+$("#2_mot").prop('checked', true);
+$("#3_mot").prop('checked', true);
+$("#4_mot").prop('checked', true);
+$("#5_mot").prop('checked', true);
+let html = Motogod(e.relatedTarget._tooltip._content);
+$("#unit_table").append(html);
+}
 // Unit markers constructor
 function getUnitMarker(unit) {
   // check for already created marker
@@ -311,8 +335,12 @@ function getUnitMarker(unit) {
         callback: mark2,
         index: 1
     },{
+        text: 'мотогодини',
+        callback: mark3,
+        index: 1
+    },{
         separator: true,
-        index: 2
+        index: 3
     }]
   });
   marker.bindPopup('<center><font size="1">' + unit.getName()+'<br />' +wialon.util.DateTime.formatTime(unitPos.t));
@@ -5410,22 +5438,22 @@ str.forEach((element) => {if(nametr.indexOf(element)>=0){
  litry=0;
  prostoy=0;
  zupp=0;
- for (let ii = 1; ii<Global_DATA[i].length-7; ii++){
+ for (let ii = 1; ii<Global_DATA[i].length-11; ii++){
 
 
 
  if(!Global_DATA[i][ii][4])continue;
- if(!Global_DATA[i][ii+6][4])continue;
+ if(!Global_DATA[i][ii+10][4])continue;
 
  
  
-  if(Global_DATA[i][ii][3]==0 && Global_DATA[i][ii+6][3]==0){
-    zupp0+=(Global_DATA[i][ii+6][4]-Global_DATA[i][ii][4])/1000;
- let ras =(Global_DATA[i][ii][2]-Global_DATA[i][ii+6][2])/((Global_DATA[i][ii+6][4]-Global_DATA[i][ii][4])/3600000);
+  if(Global_DATA[i][ii][3]==0 && Global_DATA[i][ii+10][3]==0){
+    zupp0+=(Global_DATA[i][ii+10][4]-Global_DATA[i][ii][4])/1000;
+ let ras =(Global_DATA[i][ii][2]-Global_DATA[i][ii+10][2])/((Global_DATA[i][ii+10][4]-Global_DATA[i][ii][4])/3600000);
   if(ras<15 && ras>1){
-  litry0+=Global_DATA[i][ii][2]-Global_DATA[i][ii+6][2];
-  prostoy0+=(Global_DATA[i][ii+6][4]-Global_DATA[i][ii][4])/1000;
-  ii+=6;
+  litry0+=Global_DATA[i][ii][2]-Global_DATA[i][ii+10][2];
+  prostoy0+=(Global_DATA[i][ii+10][4]-Global_DATA[i][ii][4])/1000;
+  ii+=10;
   
   }else{
     if(prostoy0>600){litry+=litry0;prostoy+=prostoy0;}
@@ -5521,6 +5549,7 @@ for (let ii = 2; ii<Global_DATA[i].length-1; ii+=1){
             for (let n = i0-200; n<ii+200; n++){
               if(n>2 && n<Global_DATA[i].length-1){
                 if(n<i0 || n>ii){
+                if(!Global_DATA[i][n][0])continue;  
                 let y = parseFloat(Global_DATA[i][n][0].split(',')[0]);
                 let x = parseFloat(Global_DATA[i][n][0].split(',')[1]);
                 if(wialon.util.Geometry.getDistance(y200,x200,y,x)<150){point++;}
@@ -5535,7 +5564,7 @@ for (let ii = 2; ii<Global_DATA[i].length-1; ii+=1){
               if(ii-i0>10)pereyesd();
             }   
           }else{
-            if(ii-i0>20)pereyesd();
+            if(ii-i0>20){pereyesd();}else{robota();}
           } 
         }
         ssy=sy;
@@ -5561,12 +5590,15 @@ for (let ii = 2; ii<Global_DATA[i].length-1; ii+=1){
         let l1=0;
         let n0=0;
         for (let j = per; j<i0; j++){
+           if(!Global_DATA[i][j][0])continue;  
+           if(!Global_DATA[i][j+1][0])continue;  
           let jy0 = parseFloat(Global_DATA[i][j][0].split(',')[0]);
           let jx0 = parseFloat(Global_DATA[i][j][0].split(',')[1]);
           let jy1 = parseFloat(Global_DATA[i][j+1][0].split(',')[0]);
           let jx1 = parseFloat(Global_DATA[i][j+1][0].split(',')[1]);
           let ttt=(Global_DATA[i][j+1][4]-Global_DATA[i][j][4])/1000;
           let km=wialon.util.Geometry.getDistance(jy0,jx0,jy1,jx1);
+          if(km>60000)km=0;
           let litry=parseFloat(Global_DATA[i][j][2]);
           if(Global_DATA[i][j][3]==0){ 
             n0++;
@@ -5588,7 +5620,10 @@ for (let ii = 2; ii<Global_DATA[i].length-1; ii+=1){
             n0=0;
             if(litry>0)pereysd_data0.push([litry-zapravka,Global_DATA[i][j][1]]);
           }
-          //if(jy0 && jx0 && jy1 && jx1 )L.polyline([[jy0, jx0],[jy1, jx1]], {color: '#55ff33'}).addTo(map);
+          if($("#4_mot").is(":checked") && jy0 && jx0 && jy1 && jx1 ){
+            let pl = L.polyline([[jy0, jx0],[jy1, jx1]], {color: '#55ff33'}).addTo(map);
+            garbage.push(pl);
+          }
          } 
          let kz=0;
          let zapr=0;
@@ -5639,12 +5674,15 @@ for (let ii = 2; ii<Global_DATA[i].length-1; ii+=1){
         let l1=0;
         let n0=0;
         for (let j = rob; j<i0; j++){
+           if(!Global_DATA[i][j][0])continue;  
+           if(!Global_DATA[i][j+1][0])continue; 
           let jy0 = parseFloat(Global_DATA[i][j][0].split(',')[0]);
           let jx0 = parseFloat(Global_DATA[i][j][0].split(',')[1]);
           let jy1 = parseFloat(Global_DATA[i][j+1][0].split(',')[0]);
           let jx1 = parseFloat(Global_DATA[i][j+1][0].split(',')[1]);
           let ttt=(Global_DATA[i][j+1][4]-Global_DATA[i][j][4])/1000;
           let km=wialon.util.Geometry.getDistance(jy0,jx0,jy1,jx1);
+          if(km>60000)km=0;
           let litry=parseFloat(Global_DATA[i][j][2]);
           if(Global_DATA[i][j][3]==0){ 
             n0++;
@@ -5666,7 +5704,10 @@ for (let ii = 2; ii<Global_DATA[i].length-1; ii+=1){
             n0=0;
             if(litry>0)pole_data0.push([litry-zapravka,Global_DATA[i][j][1]]);
           }
-          //if(jy0 && jx0 && jy1 && jx1)L.polyline([[jy0, jx0],[jy1, jx1]], {color: 'red'}).addTo(map);
+           if($("#4_mot").is(":checked") && jy0 && jx0 && jy1 && jx1 ){
+            let pl = L.polyline([[jy0, jx0],[jy1, jx1]], {color: 'red'}).addTo(map);
+            garbage.push(pl);
+          }
          } 
 
          let kz=0;
@@ -6707,7 +6748,7 @@ function avto_OBD(data){
       let xx = parseFloat(data[i][ii+1][0].split(',')[1]);
       
       let d = wialon.util.Geometry.getDistance(y,x,yy,xx);
-      if(d<60000)km+=wialon.util.Geometry.getDistance(y,x,yy,xx);
+      if(d<60000)km+=d;
       
       let sped = parseInt(data[i][ii][2]);
       if(sped>sped_max)sped_max=sped;
@@ -7900,15 +7941,16 @@ if($("#unit_table tr").length==0){
     let id = Global_DATA[i][0][0];
        if(id!=unitId)continue;
        unitName = Global_DATA[i][0][1];
-
-      for (let ii = 1; ii<Global_DATA[i].length-1; ii+=1){ 
+      for (let ii = 2; ii<Global_DATA[i].length-1; ii+=1){ 
         if(!Global_DATA[i][ii][0])continue;
-        if(Global_DATA[i][ii][4]<from || Global_DATA[i][ii][4]>to)continue;
+        if(!Global_DATA[i][ii][4])continue;
+        if(!Global_DATA[i][ii-1][4])continue;
+        if(Global_DATA[i][ii][4]<=from || Global_DATA[i][ii][4]>=to)continue;
+         yy = parseFloat(Global_DATA[i][ii][0].split(',')[0]);
+         xx = parseFloat(Global_DATA[i][ii][0].split(',')[1]);
         if(parseInt(Global_DATA[i][ii][3])>0 || parseInt(Global_DATA[i][ii+1][3])>0){
          if(yy0==0){yy0 = parseFloat(Global_DATA[i][ii][0].split(',')[0]);xx0 = parseFloat(Global_DATA[i][ii][0].split(',')[1]);continue;}
          if(xx0==0){xx0 = parseFloat(Global_DATA[i][ii][0].split(',')[1]);yy0 = parseFloat(Global_DATA[i][ii][0].split(',')[0]);continue;}
-          yy = parseFloat(Global_DATA[i][ii][0].split(',')[0]);
-          xx = parseFloat(Global_DATA[i][ii][0].split(',')[1]);
          t_km+=(Global_DATA[i][ii][4]-Global_DATA[i][ii-1][4])/1000;
          dis = wialon.util.Geometry.getDistance(yy,xx,yy0,xx0);
          if(dis<500000){
