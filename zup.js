@@ -8659,6 +8659,7 @@ for (let i = 2; i<data[0].length; i++){
              let xx = parseFloat(data[0][i][0].split(',')[1]);
              let time = (Date.parse(data[0][i][1]) -Date.parse(data[0][i-1][1]))/1000;
              let dis = wialon.util.Geometry.getDistance(y, x, yy, xx);
+  if(dis>10000)continue;
   let l = L.polyline([[y,x],[yy,xx]], {color: 'rgb(0, 37, 247)',weight:4,opacity:0.8}).addTo(map);
     garbage.push(l);
   switch(true){
