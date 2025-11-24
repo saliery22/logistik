@@ -35,7 +35,7 @@ var isUIActive = true;
 var tzoffset = (new Date()).getTimezoneOffset() * 60000; //offset in milliseconds
 
 
-var from111 = new Date().toJSON().slice(0,11) + '05:00';
+var from111 = new Date().toJSON().slice(0,11) + '00:00';
 var from222 = (new Date(Date.now() - tzoffset)).toISOString().slice(0, -8);
 
 
@@ -305,6 +305,22 @@ $("#5_mot").prop('checked', true);
 let html = Motogod(e.relatedTarget._tooltip._content);
 $("#unit_table").append(html);
 }
+function mark4(e) {
+   treeselect3.value=unitsID[e.relatedTarget._tooltip._content];
+  treeselect3.mount();
+  if($('#unit_info').is(':hidden')) $('#men4').click();
+  $('.leaflet-container').css('cursor','');
+  $('.zvit').hide();
+  $("#unit_table").empty();
+  clearGEO(); 
+  clearGarbage(garbage);
+  garbage=[];
+  clearGarbage(garbagepoly);
+  garbagepoly=[];
+  clearGarbage(marshrutMarkers);
+  marshrutMarkers=[];
+SendDataInCallback(0,0,e.relatedTarget._tooltip._content,[],0,Speed_data);
+}
 // Unit markers constructor
 function getUnitMarker(unit) {
   // check for already created marker
@@ -339,8 +355,12 @@ function getUnitMarker(unit) {
         callback: mark3,
         index: 1
     },{
+        text: 'швидкість',
+        callback: mark4,
+        index: 1
+    },{
         separator: true,
-        index: 3
+        index: 4
     }]
   });
   marker.bindPopup('<center><font size="1">' + unit.getName()+'<br />' +wialon.util.DateTime.formatTime(unitPos.t));
@@ -8618,6 +8638,65 @@ for(let i = 0; i<tbl.length; i++){
  $("#unit_table").append("<tr><td>"+tbl[i][0]+"</td><td>"+tbl[i][1]+"</td><td>"+tbl[i][2]+"</td><td>"+tbl[i][3]+"</td><td>"+tbl[i][4]+"</td><td>"+tbl[i][5]+"</td><td>"+tbl[i][6]+"</td><td>"+tbl[i][7]+"</td><td>"+tbl[i][8]+"</td></tr>");
 }
   
+}
+
+function Speed_data(data){
+
+   let t1=0;
+  let t2=0;
+  let t3=0;
+  let t4=0;
+  let d1=0;
+  let d2=0;
+  let d3=0;
+  let d4=0;
+for (let i = 2; i<data[0].length; i++){
+  let sp = data[0][i][2];
+  if(!data[0][i][0] || !data[0][i-1][0] || sp<1)continue;
+             let y = parseFloat(data[0][i-1][0].split(',')[0]);
+             let x = parseFloat(data[0][i-1][0].split(',')[1]);
+             let yy = parseFloat(data[0][i][0].split(',')[0]);
+             let xx = parseFloat(data[0][i][0].split(',')[1]);
+             let time = (Date.parse(data[0][i][1]) -Date.parse(data[0][i-1][1]))/1000;
+             let dis = wialon.util.Geometry.getDistance(y, x, yy, xx);
+  let l = L.polyline([[y,x],[yy,xx]], {color: 'rgb(0, 37, 247)',weight:4,opacity:0.8}).addTo(map);
+    garbage.push(l);
+  switch(true){
+    case sp>110:
+      l.setStyle({color: 'rgb(247, 0, 0)'});
+      l.bindTooltip(''+data[0][i][1]+'</br>'+data[0][i][2]+' км/год',{opacity:0.8, sticky:true});
+      t4+=time;
+      d4+=dis;
+      break;
+    case sp>80:
+      l.setStyle({color: 'rgb(251, 255, 0)'});
+      l.bindTooltip(''+data[0][i][1]+'</br>'+data[0][i][2]+' км/год',{opacity:0.8, sticky:true});
+      l.bringToBack();
+      t3+=time;
+      d3+=dis;
+      break;
+    case sp>40:
+      l.setStyle({color: 'rgb(8, 247, 0)'});
+      l.bindTooltip(''+data[0][i][1]+'</br>'+data[0][i][2]+' км/год',{opacity:0.8, sticky:true});
+      l.bringToBack();
+      t2+=time;
+      d2+=dis;
+      break;
+    default:
+      l.bindTooltip(''+data[0][i][1]+'</br>'+data[0][i][2]+' км/год',{opacity:0.8, sticky:true});
+      l.bringToBack();
+      t1+=time;
+      d1+=dis;
+   }
+}
+let all_t = t1+t2+t3+t4;
+let all_d = d1+d2+d3+d4;
+let html = "<tr><td>"+data[0][0][1]+"</td><td></td><td>відстань</td><td>час</td></tr>";
+ html += "<tr><td>менше 40</td><td style ='background-color: rgb(0, 37, 247)'></td><td>"+(d1/1000).toFixed(2)+"      ("+(d1/all_d*100).toFixed()+"%)</td><td>"+sec_to_time(t1)+"      ("+(t1/all_t*100).toFixed()+"%)</td></tr>";
+ html += "<tr><td>більше 40 менше 80</td><td style ='background-color: rgb(8, 247, 0)'></td><td>"+(d2/1000).toFixed(2)+"      ("+(d2/all_d*100).toFixed()+"%)</td><td>"+sec_to_time(t2)+"      ("+(t2/all_t*100).toFixed()+"%)</td></tr>";
+ html += "<tr><td>більше 80 менше 110</td><td style ='background-color: rgb(251, 255, 0)'></td><td>"+(d3/1000).toFixed(2)+"      ("+(d3/all_d*100).toFixed()+"%)</td><td>"+sec_to_time(t3)+"      ("+(t3/all_t*100).toFixed()+"%)</td></tr>";
+ html += "<tr><td>більше 110</td><td style ='background-color: rgb(247, 0, 0)'></td><td>"+(d4/1000).toFixed(2)+"      ("+(d4/all_d*100).toFixed()+"%)</td><td>"+sec_to_time(t4)+"      ("+(t4/all_t*100).toFixed()+"%)</td></tr>";
+$("#unit_table").append(html);
 }
 //===========================ЖУРНАЛ=======================================================================================
 //===========================ЖУРНАЛ=======================================================================================
