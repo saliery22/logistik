@@ -35,7 +35,7 @@ var isUIActive = true;
 var tzoffset = (new Date()).getTimezoneOffset() * 60000; //offset in milliseconds
 
 
-var from111 = new Date().toJSON().slice(0,11) + '00:00';
+var from111 = new Date().toJSON().slice(0,11) + '05:00';
 var from222 = (new Date(Date.now() - tzoffset)).toISOString().slice(0, -8);
 
 
@@ -273,6 +273,7 @@ function mark2(e) {
   $('.zvit').hide();
   $("#unit_table").empty();
   $('#zz18').show();
+  $('#vib_zvit').val('z18');
   clearGEO(); 
   clearGarbage(garbage);
   garbage=[];
@@ -289,6 +290,7 @@ function mark3(e) {
   $('.zvit').hide();
   $("#unit_table").empty();
   $('#zz4').show();
+  $('#vib_zvit').val('z4');
   clearGEO(); 
   clearGarbage(garbage);
   garbage=[];
@@ -321,6 +323,87 @@ function mark4(e) {
   marshrutMarkers=[];
 SendDataInCallback(0,0,e.relatedTarget._tooltip._content,[],0,Speed_data);
 }
+function mark5(e) {
+  if($('#unit_info').is(':hidden')) $('#men4').click();
+  $('.leaflet-container').css('cursor','');
+  $('.zvit').hide();
+  $("#unit_table").empty();
+  $('#zz16').show();
+   $('#vib_zvit').val('z16');
+  clearGEO(); 
+  clearGarbage(garbage);
+  garbage=[];
+  clearGarbage(garbagepoly);
+  garbagepoly=[];
+  clearGarbage(marshrutMarkers);
+  marshrutMarkers=[];
+  var now = new Date();
+  var formattedDate = now.toISOString().slice(0, 10);
+  var yesterday = new Date(now);
+  yesterday.setDate(now.getDate() - 50);
+  var formattedDate2 = yesterday.toISOString().slice(0, 10);
+  $('#geomodul_time2').val(formattedDate);
+  $('#geomodul_time1').val(formattedDate2);
+  $("#geomodul_field_lis").chosen().val(context_menu_zone.sourceTarget.zone.n).trigger('chosen:updated');
+  $('#geomodul_bt').click();
+}
+function mark6(e) {
+                let m =L.marker(e.latlng,{
+                  clickable: true,
+                  draggable: true,
+                  icon: L.divIcon({
+                    iconSize: "auto",
+                    iconAnchor: [25, 8],
+                    className: 'my-labels',
+                    html: "<div><nobr>"+context_menu_zone.sourceTarget.zone.n+"</div>",
+                  })
+                }).addTo(map);
+                zup_mark_data.push(m);
+}
+
+function mark7(e) {
+  if($('#unit_info').is(':hidden')) $('#men4').click();
+  $('.leaflet-container').css('cursor','');
+  $('.zvit').hide();
+  $("#unit_table").empty();
+              var color1 = context_menu_zone.sourceTarget.options.fillColor
+              var namee = context_menu_zone.sourceTarget.zone.n;
+              var kol=0;
+              var plo=0;
+              var kol2=0;
+              var plo2=0;
+          
+               for (let i = 0; i < geozones.length; i++) {
+                  var zonee = geozones[i];
+                  var color2 = zonee.options.fillColor;
+                  if(color1==color2){
+                  plo+=zonee.zone.ar;
+                  kol++;
+                  if(namee.split('-')[0]==zonee.zone.n.split('-')[0]){plo2+=zonee.zone.ar; kol2++;}
+                }
+
+                }
+          
+              
+       
+         
+          $("#unit_table").append("<tr><td>назва</td><td>"+namee+"</td></tr>");
+          $("#unit_table").append("<tr><td>колір</td><td BGCOLOR = "+ color1 +" >&nbsp&nbsp&nbsp&nbsp&nbsp</td></tr>");
+          $("#unit_table").append("<tr><td>площа</td><td>"+(context_menu_zone.sourceTarget.zone.ar/10000).toFixed(2)+"га</td></tr>");
+          $("#unit_table").append("<tr><td>група</td><td>"+namee.split('-')[0]+"</td></tr>");
+          $("#unit_table").append("<tr><td>однакових у групі  "+namee.split('-')[0]+"</td><td>"+kol2+"шт        "+(plo2/10000).toFixed(2)+"га</td></tr>");
+          $("#unit_table").append("<tr><td>однакових всього</td><td>"+kol+"шт       "+(plo/10000).toFixed(2)+"га </td></tr>");
+          $("#unit_table").append("<tr><td></td><td></td></tr>");
+          $("#unit_table").append("<tr><td></td><td></td></tr>");
+          $("#unit_table").append("<tr><td></td><td></td></tr>");
+          $("#unit_table").append("<tr><td></td><td></td></tr>");
+     
+
+          jurnal(1,context_menu_zone.sourceTarget.zone);
+         
+         
+}
+
 // Unit markers constructor
 function getUnitMarker(unit) {
   // check for already created marker
@@ -487,6 +570,7 @@ let serch_list =[];
 let serch_list_avto=[];
 let serch_list_zones =[];
 let treeselect3;
+let context_menu_zone;
 function initUIData() {
   var session = wialon.core.Session.getInstance();
   var resource = wialon.core.Session.getInstance().getItem(601000284); //601000284   "11_ККЗ"  601000448  "KKZ_Gluhiv"
@@ -522,7 +606,23 @@ function initUIData() {
 
            }
            IDzonacord[zone.id]=cord;
-           var geozona =  L.polygon([cord], {color: '#FF00FF', stroke: true,weight: 1, opacity: 0.2, fillOpacity: 0.5, fillColor: color});
+           var geozona =  L.polygon([cord], {color: '#FF00FF', stroke: true,weight: 1, opacity: 0.2, fillOpacity: 0.5, fillColor: color,  contextmenu: true,
+    contextmenuItems: [{
+        text: 'історія обробки',
+        callback: mark5,
+        index: 0
+    },{
+        text: 'додати маркер',
+        callback: mark6,
+        index: 0
+    },{
+        text: 'інфо',
+        callback: mark7,
+        index: 0
+    },{
+        separator: true,
+        index: 3
+    }]});
           // geozona.bindPopup(zone.n);
            geozona.bindTooltip(zone.n +'<br />'+(zone.ar/10000).toFixed(1)+'га <br />'+zonegr,{opacity:0.8,sticky:true});
            geozona.zone = zone;
@@ -532,7 +632,9 @@ function initUIData() {
            geozonesID[zone.id] = geozona;
            $('#geomodul_field_lis').append($('<option>').text(zone.n).val(zone.n));
            $('#lis0').append($('<option>').text(zone.n).val("поле_"+zone.n));
-           
+           geozona.on('contextmenu', function(e) {
+           context_menu_zone = e;
+           });
            geozona.on('click', function(e) {
           
            
@@ -553,37 +655,6 @@ function initUIData() {
               let polilane = L.polyline(ramka, {color: 'blue'}).addTo(map);
               geo_layer.push(polilane);
 
-              $('#inftb').empty();
-              var color1 = e.target.options.fillColor
-              var namee = this.zone.n;
-              var kol=0;
-              var plo=0;
-              var kol2=0;
-              var plo2=0;
-              resource.getZonesData(null,0x19, function(code, geofences) {
-              for (let i = 0; i < geofences.length; i++) {
-                 var zonee = geofences[i];
-                 var color2 = "#" + wialon.util.String.sprintf("%08x", zonee.c).substr(2);
-                 if(color1==color2){
-                  plo+=zonee.ar;
-                  kol++;
-                  if(namee.split('-')[0]==zonee.n.split('-')[0]){plo2+=zonee.ar; kol2++;}
-                }
-                 if(zonee.id==Vibranaya_zona.id){
-                   let rovs = zonee.d.split("||");
-                   let last = rovs.length-20;
-                   if(last<1)last=1;
-                   for (let ii = last; ii < rovs.length; ii++) {
-                   let cels = rovs[ii].split("|");
-                   
-                   }
-                 }
-                
-              }
-              //$('#infoGEO').append("Назва    "+e.target._popup._content+"<br> Засіяно в регіоні  "+namee+" - "+kol2+"шт   "+(plo2/10000).toFixed(2)+"га <br> Всього  "+kol+"шт  "+(plo/10000).toFixed(2)+"га");
-             
-           $("#inftb").append("<tr><td BGCOLOR = "+ color1 +" >&nbsp&nbsp&nbsp&nbsp&nbsp</td><td>"+namee.split('-')[0]+"</td><td>"+kol2+"шт</td><td>"+(plo2/10000).toFixed(2)+"га</td><td>всього</td><td>"+kol+"шт</td><td>"+(plo/10000).toFixed(2)+"га</td></tr>");
-          });
 
              jurnal(1,Vibranaya_zona);
             }
@@ -620,18 +691,6 @@ function initUIData() {
                //console.log(turf.area( turf.polygon([geozonepointTurf]))*1.0038);
                // console.log(turf.area( turf.polygon([geozonepointTurf])));
                // console.log(e.target.zone.ar);
-               }else{
-                let m =L.marker(e.latlng,{
-                  clickable: true,
-                  draggable: true,
-                  icon: L.divIcon({
-                    iconSize: "auto",
-                    iconAnchor: [25, 8],
-                    className: 'my-labels',
-                    html: "<div><nobr>"+e.target.zone.n+"</div>",
-                  })
-                }).addTo(map);
-                zup_mark_data.push(m);
                }
 
 
@@ -7589,9 +7648,9 @@ $("#unit_table").on("click", function (evt){
       if(!garbagepoly[v].nam)continue;
       if(garbagepoly[v].nam==ind){
         garbagepoly[v].bringToFront();
-        garbagepoly[v].setStyle({color: 'red'});
+        garbagepoly[v].setStyle({color: 'yellow',fillOpacity: 0.7});
       }else{
-        garbagepoly[v].setStyle({color: 'blue'});
+        garbagepoly[v].setStyle({color: 'blue',fillOpacity: 0.4});
       }
     }
     
@@ -7886,13 +7945,13 @@ let str = 'geohis/'+(currentDate.getMonth()+1)+'.'+currentDate.getFullYear()+'.t
           let poly = JSON.parse(data[i+1]);
           if(poly.type == 'Polygon'){
             let coords = L.GeoJSON.coordsToLatLngs(poly.coordinates,1);
-            let G=L.polygon(coords, {color: 'blue', stroke: false,  fillOpacity: 0.5}).bindTooltip(n ,{opacity:0.8,sticky:true}).addTo(map);
+            let G=L.polygon(coords, {color: 'blue', stroke: false,  fillOpacity: 0.6}).bindTooltip(n ,{opacity:0.8,sticky:true}).addTo(map);
             G.nam =m[0]+m[1]+m[4]+m[6];
             garbagepoly.push(G);
           }else{
                 for(let iii = 0; iii<poly.coordinates.length; iii++){
                   let coords = L.GeoJSON.coordsToLatLngs(poly.coordinates[iii],1);
-                  let G=L.polygon(coords, {color: 'blue', stroke: false,  fillOpacity: 0.5}).bindTooltip(n ,{opacity:0.8,sticky:true}).addTo(map);
+                  let G=L.polygon(coords, {color: 'blue', stroke: false,  fillOpacity: 0.6}).bindTooltip(n ,{opacity:0.8,sticky:true}).addTo(map);
                   G.nam =m[0]+m[1]+m[4]+m[6];
                   garbagepoly.push(G);
                 }
@@ -8777,7 +8836,7 @@ function jurnal(obj,unit){
   if(obj==1){
     $('#jurnal').show();
     $('#jurnal_upd').show();
-    $('#inftb').show();
+    $('#inftb').hide();
     $("#jurnal_name").text(""+unit.n+"");
   }
   jurnal_update();
@@ -8785,7 +8844,6 @@ function jurnal(obj,unit){
 function jurnal_update(){
   let tt = new Date(Date.parse($('#f').text())).toJSON().slice(0,10);
   $('#jurnal_time').val(tt);
-
   update_jurnal(ftp_id,'jurnal.txt',function (data) { 
     let nam_js = $("#jurnal_name").text();
     if (data==jurnal_size){
@@ -8804,6 +8862,7 @@ function jurnal_update(){
             let d=new Date(parseInt(unit_jr_data[i][0])).toLocaleString("uk-UA", {year:'numeric',month:'numeric',day:'numeric'});
             let t=new Date(parseInt(unit_jr_data[i][4])).toLocaleString("uk-UA", {year:'numeric',month:'numeric',day:'numeric',hour:'numeric', minute: 'numeric', second: 'numeric'});
             $("#jurnal_name_table").append("<tr><td>"+d+"</td><td>"+unit_jr_data[i][2]+"</td><td>"+unit_jr_data[i][3]+"</td><td>"+t+"</td></tr>");
+            $("#unit_table").append("<tr><td>"+d+"</td><td>"+unit_jr_data[i][2]+"</td></tr>");
           }
       });
     }else{
@@ -8826,6 +8885,7 @@ function jurnal_update(){
             let d=new Date(parseInt(unit_jr_data[i][0])).toLocaleString("uk-UA", {year:'numeric',month:'numeric',day:'numeric'});
             let t=new Date(parseInt(unit_jr_data[i][4])).toLocaleString("uk-UA", {year:'numeric',month:'numeric',day:'numeric',hour:'numeric', minute: 'numeric', second: 'numeric'});
             $("#jurnal_name_table").append("<tr><td>"+d+"</td><td>"+unit_jr_data[i][2]+"</td><td>"+unit_jr_data[i][3]+"</td><td>"+t+"</td></tr>");
+            $("#unit_table").append("<tr><td>"+d+"</td><td>"+unit_jr_data[i][2]+"</td></tr>");
           }
         });
         jurnal_online();
