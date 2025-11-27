@@ -5832,9 +5832,12 @@ zupp+=zupp0;
 
 stoyanka_pole=stoyanka-stoyanka_stan;
 
+i0=Global_DATA[i].length-1;
+if(rob>0){per=rob; robota();}else{
+if(per>0){rob=per; pereyesd();}
+}
 
-if(rob>0){pereyesd();}
-if(per>0){robota();}
+
 
  rob_km=pereysd_km+pole_km;
  rob_lit=pereysd_lit+pole_lit;;
@@ -5880,11 +5883,9 @@ if ($("#3_mot").is(":checked"))html+="<td>"+h.padStart(2, 0) + ":" + m.padStart(
  let lkm = (litry/prostoy*3600).toFixed(1);
  if ($("#4_mot").is(":checked"))html+="<td>"+ litry.toFixed(1) +"</td><td>"+ lkm +"</td></tr>";
 
- if(stoyanka>0){
+
   html0+=html;
-}else{
-  html0+=html;
-}
+
 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 }});
