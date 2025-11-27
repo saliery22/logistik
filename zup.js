@@ -5832,12 +5832,14 @@ zupp+=zupp0;
 
 stoyanka_pole=stoyanka-stoyanka_stan;
 
-i0=Global_DATA[i].length-1;
-if(rob>0){per=rob; robota();}else{
-if(per>0){rob=per; pereyesd();}
+if(rob>0){pereyesd();}
+if(per>0){robota();}
+let end = Global_DATA[i].length-i0;
+if(end > 50){
+  per=i0;
+  i0=Global_DATA[i].length-1;
+  robota();
 }
-
-
 
  rob_km=pereysd_km+pole_km;
  rob_lit=pereysd_lit+pole_lit;;
