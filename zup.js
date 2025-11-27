@@ -4820,6 +4820,7 @@ $("#reestr_save_BT").on("click", function (evt){
   let table_polya=document.getElementById('robota_polya_tb');
   let dta_m ='';
   let ga =0;
+  let naryad='';
   if(table_polya.rows.length>1){
     for(let i = 1; i<table_polya.rows.length; i++){
       if(table_polya.rows[i].cells[2].innerText!='----'){
@@ -4846,20 +4847,37 @@ $("#reestr_save_BT").on("click", function (evt){
         dta_m = a2;
 
          let tx=table_polya.rows[i].cells[6].innerText+table_polya.rows[i].cells[8].innerText+table_polya.rows[i].cells[2].innerText;
-         ga = parseFloat(table_polya.rows[i].cells[11].innerText);
+         
          if(jurnal_polya_temp.indexOf(tx)>=0){
-         ga += parseFloat(table_polya.rows[i].cells[11].innerText);
-          continue;
-         }
+          ga += parseFloat(table_polya.rows[i].cells[11].innerText);
           let date=Date.parse(table_polya.rows[i].cells[2].innerText);
           let time=Date.now();
           let name=table_polya.rows[i].cells[6].innerText;
-          let text=table_polya.rows[i].cells[8].innerText;
+          let text=table_polya.rows[i].cells[8].innerText + "      "+ga+"га";
           let autor='Диспетчер';
           jurnal_polya_temp+=tx;
-          save_data_jurnal+='||'+date+'|'+name+'|'+text+'|'+autor+'|'+time+'\n';
+          naryad='||'+date+'|'+name+'|'+text+'|'+autor+'|'+time+'\n';
+
+          
+        
+        
+         }else{
+          if(naryad!='')save_data_jurnal+=naryad;
+          ga = parseFloat(table_polya.rows[i].cells[11].innerText);
+          let date=Date.parse(table_polya.rows[i].cells[2].innerText);
+          let time=Date.now();
+          let name=table_polya.rows[i].cells[6].innerText;
+           let text=table_polya.rows[i].cells[8].innerText + "      "+ga+"га";
+          let autor='Диспетчер';
+          jurnal_polya_temp+=tx;
+          naryad+='||'+date+'|'+name+'|'+text+'|'+autor+'|'+time+'\n';
+         }
+        
+          
       }
     }
+       if(naryad!='')save_data_jurnal+=naryad;
+
        let dt = new Date(new Date(dta_m).getTime());
        let my = 'geohis/'+(dt.getMonth()+1)+'.'+dt.getFullYear()+'.txt';
 
@@ -4868,7 +4886,7 @@ $("#reestr_save_BT").on("click", function (evt){
          audio.play(); 
         });
 
-
+    
 
   if(cpdata!='')navigator.clipboard.writeText(cpdata);
   }
@@ -5831,7 +5849,7 @@ if(prostoy0>600){litry+=litry0;prostoy+=prostoy0;}
 zupp+=zupp0;
 
 stoyanka_pole=stoyanka-stoyanka_stan;
-
+ 
 if(rob>0){pereyesd();}
 if(per>0){robota();}
 let end = Global_DATA[i].length-i0;
