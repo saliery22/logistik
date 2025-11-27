@@ -35,7 +35,7 @@ var isUIActive = true;
 var tzoffset = (new Date()).getTimezoneOffset() * 60000; //offset in milliseconds
 
 
-var from111 = new Date().toJSON().slice(0,11) + '05:00';
+var from111 = new Date().toJSON().slice(0,11) + '00:00';
 var from222 = (new Date(Date.now() - tzoffset)).toISOString().slice(0, -8);
 
 
@@ -7907,7 +7907,8 @@ $('#geomodul_bt').click(function() {
    let vibor = $("#geomodul_lis").chosen().val();
    let vibor2 = $("#geomodul_field_lis").chosen().val();
    let poly_color = Math.floor(Math.random() * 360);
- //$('#geomodul_bt').prop("disabled", true);
+   $('#geomodul_bt').prop("disabled", true);
+   $('#geomodul_bt').html('зачекайте');
    $("#unit_table").empty();
  clearGarbage(garbagepoly);
  garbagepoly=[];
@@ -7965,6 +7966,7 @@ let str = 'geohis/'+(currentDate.getMonth()+1)+'.'+currentDate.getFullYear()+'.t
       }
     }
     $('#geomodul_bt').prop("disabled", false);
+    $('#geomodul_bt').html('завантажити');
   });
 
     
