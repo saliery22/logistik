@@ -35,7 +35,7 @@ var isUIActive = true;
 var tzoffset = (new Date()).getTimezoneOffset() * 60000; //offset in milliseconds
 
 
-var from111 = new Date().toJSON().slice(0,11) + '00:00';
+var from111 = new Date().toJSON().slice(0,11) + '05:00';
 var from222 = (new Date(Date.now() - tzoffset)).toISOString().slice(0, -8);
 
 
@@ -4858,7 +4858,7 @@ $("#reestr_save_BT").on("click", function (evt){
           let date=Date.parse(table_polya.rows[i].cells[2].innerText);
           let time=Date.now();
           let name=table_polya.rows[i].cells[6].innerText;
-          let text=table_polya.rows[i].cells[8].innerText + "      "+ga+"га";
+          let text=table_polya.rows[i].cells[8].innerText + "      "+ga.toFixed(2)+"га";
           let autor='Диспетчер';
           jurnal_polya_temp+=tx;
           naryad='||'+date+'|'+name+'|'+text+'|'+autor+'|'+time+'\n';
@@ -4872,7 +4872,7 @@ $("#reestr_save_BT").on("click", function (evt){
           let date=Date.parse(table_polya.rows[i].cells[2].innerText);
           let time=Date.now();
           let name=table_polya.rows[i].cells[6].innerText;
-           let text=table_polya.rows[i].cells[8].innerText + "      "+ga+"га";
+           let text=table_polya.rows[i].cells[8].innerText + "      "+ga.toFixed(2)+"га";
           let autor='Диспетчер';
           jurnal_polya_temp+=tx;
           naryad+='||'+date+'|'+name+'|'+text+'|'+autor+'|'+time+'\n';
