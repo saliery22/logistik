@@ -35,7 +35,7 @@ var isUIActive = true;
 var tzoffset = (new Date()).getTimezoneOffset() * 60000; //offset in milliseconds
 
 
-var from111 = new Date().toJSON().slice(0,11) + '00:00';
+var from111 = new Date().toJSON().slice(0,11) + '05:00';
 var from222 = (new Date(Date.now() - tzoffset)).toISOString().slice(0, -8);
 
 
@@ -3222,9 +3222,8 @@ function position(t)  {
 
      markerrr = markerByUnit[id];
      if (markerrr){
-      if(rux == 1){var opt = markerrr.options.opacity;if(opt>0.02)markerrr.setOpacity(opt*0.97);}
      for(let iii = Global_DATA[ii].length-1; iii>0; iii-=200){
-      if(interval>Global_DATA[ii][iii][4]) {ind=iii;break;}
+     if(interval>Global_DATA[ii][iii][4]) {ind=iii;break;}
      }
      for(let i = ind; i<Global_DATA[ii].length; i++){
          if(interval<Global_DATA[ii][i][4]){
@@ -3240,20 +3239,22 @@ function position(t)  {
              if(Global_DATA[ii][i][5]!=0)avto='<br />'+Global_DATA[ii][i][5];
              if(Global_DATA[ii][i][6]!=0)vod='<br />'+Global_DATA[ii][i][6];
             markerrr.bindPopup('<center><font size="1">'+Global_DATA[ii][0][1] +'<br />' +Global_DATA[ii][i][1]+ '<br />' +Global_DATA[ii][i][3]+ ' км/год <br />' +Global_DATA[ii][i][2]+'л'+ avto + vod);
-            if(rux == 1){if (Global_DATA[ii][i][3]>0 ) {markerrr.setOpacity(1);}}
-            if(agregat !=0){
-             if(!Global_DATA[ii][i][5])break;
+             if(rux == 1){if (Global_DATA[ii][i][3]>0 ) {markerrr.setOpacity(1);}else{var opt = markerrr.options.opacity;if(opt>0.02)markerrr.setOpacity(opt*0.97);}}
+             if(agregat !=0){
              markerrr.setOpacity(0);
-             if(agregat == 21){ if (Global_DATA[ii][i][5][0]=='Д' ) {if(rux == 0){markerrr.setOpacity(1);}}else{markerrr.setOpacity(0);}}
-             if(agregat == 22){ if (Global_DATA[ii][i][5][0]=='К' ) {if(rux == 0){markerrr.setOpacity(1);}}else{markerrr.setOpacity(0);}}
-             if(agregat == 23){ if (Global_DATA[ii][i][5][0]=='Б' ) {if(rux == 0){markerrr.setOpacity(1);}}else{markerrr.setOpacity(0);}}
-             if(agregat == 24){ if (Global_DATA[ii][i][5][0]=='Г' ) {if(rux == 0){markerrr.setOpacity(1);}}else{markerrr.setOpacity(0);}}
-             if(agregat == 25){ if (Global_DATA[ii][i][5][0]=='П' ) {if(rux == 0){markerrr.setOpacity(1);}}else{markerrr.setOpacity(0);}}
-             if(agregat == 26){ if (Global_DATA[ii][i][5][0]=='Р' ) {if(rux == 0){markerrr.setOpacity(1);}}else{markerrr.setOpacity(0);}}
+             if(agregat == 30){ if (!Global_DATA[ii][i][5]) {if(rux == 0){markerrr.setOpacity(1);}else{if (Global_DATA[ii][i][3]>0 ) {markerrr.setOpacity(1);}}break;}break;}
+             if(!Global_DATA[ii][i][5])break;
+             
+             if(agregat == 21 && Global_DATA[ii][i][5][0]=='Д'){if(rux == 0){markerrr.setOpacity(1);}else{if (Global_DATA[ii][i][3]>0 ) {markerrr.setOpacity(1);}}break;}
+             if(agregat == 22 && Global_DATA[ii][i][5][0]=='К'){if(rux == 0){markerrr.setOpacity(1);}else{if (Global_DATA[ii][i][3]>0 ) {markerrr.setOpacity(1);}}break;}
+             if(agregat == 23 && Global_DATA[ii][i][5][0]=='Б'){if(rux == 0){markerrr.setOpacity(1);}else{if (Global_DATA[ii][i][3]>0 ) {markerrr.setOpacity(1);}}break;}
+             if(agregat == 24 && Global_DATA[ii][i][5][0]=='Г'){if(rux == 0){markerrr.setOpacity(1);}else{if (Global_DATA[ii][i][3]>0 ) {markerrr.setOpacity(1);}}break;}
+             if(agregat == 25 && Global_DATA[ii][i][5][0]=='П'){if(rux == 0){markerrr.setOpacity(1);}else{if (Global_DATA[ii][i][3]>0 ) {markerrr.setOpacity(1);}}break;}
+             if(agregat == 26 && Global_DATA[ii][i][5][0]=='Р'){if(rux == 0){markerrr.setOpacity(1);}else{if (Global_DATA[ii][i][3]>0 ) {markerrr.setOpacity(1);}}break;}
              //if(rux == 27){ if (Global_DATA[ii][i][5][0]=='О' ) {markerrr.setOpacity(1);}else{markerrr.setOpacity(0);}}
-             if(agregat == 28){ if (Global_DATA[ii][i][5][0]=='С' ) {if(rux == 0){markerrr.setOpacity(1);}}else{markerrr.setOpacity(0);}}
-             if(agregat == 29){ if (Global_DATA[ii][i][5][0]=='Ж' ) {if(rux == 0){markerrr.setOpacity(1);}}else{markerrr.setOpacity(0);}}
-             if(agregat == 30){ if (Global_DATA[ii][i][5][0]==null ) {markerrr.setOpacity(0);}}
+             if(agregat == 28 && Global_DATA[ii][i][5][0]=='С'){if(rux == 0){markerrr.setOpacity(1);}else{if (Global_DATA[ii][i][3]>0 ) {markerrr.setOpacity(1);}}break;}
+             if(agregat == 29 && Global_DATA[ii][i][5][0]=='Ж'){if(rux == 0){markerrr.setOpacity(1);}else{if (Global_DATA[ii][i][3]>0 ) {markerrr.setOpacity(1);}}break;}
+             
             }
             break;
           }
@@ -3371,6 +3372,7 @@ function Zupinka(data){ // execute selected report
        stop+=time2-time1;
       }else{
        if(start!=0){
+        end=data[i][ii][1];
         stop=(Date.parse(end)/1000)-(Date.parse(start)/1000)
         data_zup.push([kord,start,end,sec_to_time(stop),name,id]);
        }
@@ -3397,6 +3399,7 @@ function zupinki(){
 // map.removeLayer(zup_mark_data[iii]);
  // if(iii == zup_mark_data.length-1){zup_mark_data=[];}
  //}
+
 
  for(var i=0; i < data_zup.length; i++){
  
@@ -3584,6 +3587,7 @@ for(var i=0; i < allunits.length; i++){
         for(let v = 0; v<filtr_data.length; v++){ 
          let mm = markerByUnit[filtr_data[v]];
          mm.setOpacity(1);
+         if(agregat !=0)mm.setOpacity(0);
         } 
       }else{
          for(let v = 0; v<allunits.length; v++){ 
@@ -12981,5 +12985,4 @@ function Rote_gruzoperevozki(p1,p2,color,ind){
           }
         });
 }
-
 
