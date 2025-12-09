@@ -259,10 +259,12 @@ function mark1(e) {
 if($('#zupinki').is(':hidden')) $('#men5').click();
   treeselect3.value=unitsID[e.relatedTarget._tooltip._content];
   treeselect3.mount();
- $('#unit_zup').val(e.relatedTarget._tooltip._content);
-      maska_zup=$('#unit_zup').val();
+      maska_zup="";
       min_zup=$('#min_zup').val();
       if ($("#alone_zup").is(":checked")) {alone=true;}else{alone=false}
+      treeselect5.value=-1;
+      treeselect5.mount();
+        maska_zup = e.relatedTarget._tooltip._content;
       Cikle2();
 }
 function mark2(e) {
@@ -1051,6 +1053,22 @@ const treeselect2 = new Treeselect({
   //isSingleSelect:true
 });
 
+treeselect5 = new Treeselect({
+  parentHtmlContainer: document.querySelector('.container5'),
+  value: [-1],
+  options: [{ "value": -1, "name": 'ВСІ АВТО', children: serch_list_avto }],
+  staticList: true,
+  //alwaysOpen: true,
+  saveScrollPosition:true,
+  openLevel: 1,
+  showTags: true,
+  tagsCountText: "вибрано",
+  placeholder: "ВИБІР АВТО",
+  //appendToBody: true,
+
+  //isSingleSelect:true
+});
+
 
 
  $('.container1').click(function(e) {
@@ -1723,51 +1741,105 @@ $("#men8").on("click", function (){
 
    
     $("#per_zup").click(function() { 
-      maska_zup=$('#unit_zup').val();
+      maska_zup='';
       min_zup=$('#min_zup').val();
       if ($("#alone_zup").is(":checked")) {alone=true;}else{alone=false}
+    for (let i = 0; i<treeselect5.value.length; i++){
+        let name = treeselect5.value[i].split('|||')[1];
+        maska_zup+=name+',';
+               }
+        maska_zup = maska_zup.slice(0, -1);
       Cikle2();
     });
     $("#gruz_zup").click(function() { 
-      maska_zup='Камаз,SCANIA,МАЗ';
+      maska_zup='';
       min_zup=$('#min_zup1').val();
       if ($("#alone_zup1").is(":checked")) {alone=true;}else{alone=false}
+      treeselect5.value=["Авто Камаз","Авто МАЗ","Авто SCANIA"];
+      treeselect5.mount();
+      for (let i = 0; i<treeselect5.value.length; i++){
+        let name = treeselect5.value[i].split('|||')[1];
+        maska_zup+=name+',';
+               }
+        maska_zup = maska_zup.slice(0, -1);
       Cikle2();
     });
     $("#benzovoz_zup").click(function() { 
-      maska_zup='ВМ1613СР,ВМ1614СР,ВМ2893ЕН,ВМ3861ВО,ВМ3862ВО,ВМ4156ВС';
+      maska_zup='';
       min_zup=$('#min_zup2').val();
       if ($("#alone_zup2").is(":checked")) {alone=true;}else{alone=false}
+      treeselect5.value=["Заправки"];
+      treeselect5.mount();
+      for (let i = 0; i<treeselect5.value.length; i++){
+        let name = treeselect5.value[i].split('|||')[1];
+        maska_zup+=name+',';
+               }
+        maska_zup = maska_zup.slice(0, -1);
       Cikle2();
     });
     $("#gaz_zup").click(function() { 
-      maska_zup='ГАЗ';
+      maska_zup='';
       min_zup=$('#min_zup3').val();
       if ($("#alone_zup3").is(":checked")) {alone=true;}else{alone=false}
+      treeselect5.value=["Газони"];
+      treeselect5.mount();
+      for (let i = 0; i<treeselect5.value.length; i++){
+        let name = treeselect5.value[i].split('|||')[1];
+        maska_zup+=name+',';
+               }
+        maska_zup = maska_zup.slice(0, -1);
       Cikle2();
     });
     $("#moloko_zup").click(function() { 
-      maska_zup='ВМ3204ЕВ,ВМ3372СТ,ВМ5913СІ';
+      maska_zup='';
       min_zup=$('#min_zup4').val();
       if ($("#alone_zup4").is(":checked")) {alone=true;}else{alone=false}
+      treeselect5.value=["Авто Молоковози"];
+      treeselect5.mount();
+      for (let i = 0; i<treeselect5.value.length; i++){
+        let name = treeselect5.value[i].split('|||')[1];
+        maska_zup+=name+',';
+               }
+        maska_zup = maska_zup.slice(0, -1);
       Cikle2();
     });
     $("#pogr_zup").click(function() { 
-      maska_zup='JCB,Manitou';
+      maska_zup='';
       min_zup=$('#min_zup5').val();
       if ($("#alone_zup5").is(":checked")) {alone=true;}else{alone=false}
+      treeselect5.value=["Навантажувачі"];
+      treeselect5.mount();
+      for (let i = 0; i<treeselect5.value.length; i++){
+        let name = treeselect5.value[i].split('|||')[1];
+        maska_zup+=name+',';
+               }
+        maska_zup = maska_zup.slice(0, -1);
       Cikle2();
     });
     $("#tr_zup").click(function() { 
-      maska_zup='John,JD,CL,NH,CASE,Claas';
+      maska_zup='';
       min_zup=$('#min_zup6').val();
       if ($("#alone_zup6").is(":checked")) {alone=true;}else{alone=false}
+      treeselect5.value=["John Deere","Комбайни","Криски","Обприскувачи","Трактори","Черешеньки"];
+      treeselect5.mount();
+      for (let i = 0; i<treeselect5.value.length; i++){
+        let name = treeselect5.value[i].split('|||')[1];
+        maska_zup+=name+',';
+               }
+        maska_zup = maska_zup.slice(0, -1);
       Cikle2();
     });
     $("#nm_zup").click(function() { 
-      maska_zup='Найм,ФОП,ТОВ,Фоп';
+      maska_zup='';
       min_zup=$('#min_zup7').val();
       if ($("#alone_zup7").is(":checked")) {alone=true;}else{alone=false}
+      treeselect5.value=["наймані комбайни","Наймані перевізники"];
+      treeselect5.mount();
+      for (let i = 0; i<treeselect5.value.length; i++){
+        let name = treeselect5.value[i].split('|||')[1];
+        maska_zup+=name+',';
+               }
+        maska_zup = maska_zup.slice(0, -1);
       Cikle2();
     });
 
