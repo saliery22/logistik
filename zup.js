@@ -35,7 +35,7 @@ var isUIActive = true;
 var tzoffset = (new Date()).getTimezoneOffset() * 60000; //offset in milliseconds
 
 
-var from111 = new Date().toJSON().slice(0,11) + '05:00';
+var from111 = new Date().toJSON().slice(0,11) + '00:00';
 var from222 = (new Date(Date.now() - tzoffset)).toISOString().slice(0, -8);
 
 
@@ -8559,11 +8559,21 @@ function zapravki(data) {
 }
 }
 
+let peregruzchik= true;
 $('#vagy_zvit').click(function() {
     let to = Date.parse($('#vagy_time2').val())/1000; // end of day in seconds
     let fr = Date.parse($('#vagy_time1').val())/1000; // get begin time - beginning of day
     if(!fr){fr=0; to=0;}
     let n="Ваги №1,Ваги №2,Ваги №3,Ваги №4";
+    peregruzchik=false;
+   SendDataReportInCallback(fr,to,n,7,[],0,vagy);
+});
+$('#ble_zvit').click(function() {
+    let to = Date.parse($('#vagy_time2').val())/1000; // end of day in seconds
+    let fr = Date.parse($('#vagy_time1').val())/1000; // get begin time - beginning of day
+    if(!fr){fr=0; to=0;}
+    let n="Ваги №1,Ваги №2,Ваги №3,Ваги №4";
+    peregruzchik=true;
    SendDataReportInCallback(fr,to,n,7,[],0,vagy);
 });
 
@@ -8586,9 +8596,10 @@ function getMostFrequent(arr) {
 }
 
 
-
+ let tbl_vag =[];
 function vagy(data){
- let tbl =[];
+  tbl_vag =[];
+  $("#unit_table").empty();
   let v1 = [];
   let v2 = [];
   let v3 = [];
@@ -8700,7 +8711,7 @@ function vagy(data){
           if(vag==9999999)vag=parseFloat(v1[i][5]);
           if(!vag)vag=0;
         let vag3 =vag-vag2;
-         tbl.push([v1[i][1],"Ваги №1",vg,tm,vodn,avton,vag,vag2,vag3]);
+         tbl_vag.push([v1[i][1],"Ваги №1",vg,tm,vodn,avton,vag,vag2,vag3]);
          vod0=vod;
          avto0=avto;
         }
@@ -8788,20 +8799,70 @@ function vagy(data){
           if(vag==9999999)vag=parseFloat(v2[i][5]);
           if(!vag)vag=0;
          let vag3 =vag-vag2;
-         tbl.push([v2[i][1],"Ваги №2",vg,tm,vodn,avton,vag,vag2,vag3]);
+         tbl_vag.push([v2[i][1],"Ваги №2",vg,tm,vodn,avton,vag,vag2,vag3]);
          vod0=vod;
          avto0=avto;
         }
       }
     }
   }
-    tbl = tbl.sort((a, b) => new Date(a[0]) - new Date(b[0]));
-  $("#unit_table").append("<tr><td>Дата</td><td>заїзд</td><td>виїзд</td><td>тривалість</td><td>водій</td><td>авто</td><td>брутто</td><td>тара</td><td>нетто</td></tr>");
-for(let i = 0; i<tbl.length; i++){
- $("#unit_table").append("<tr><td>"+tbl[i][0]+"</td><td>"+tbl[i][1]+"</td><td>"+tbl[i][2]+"</td><td>"+tbl[i][3]+"</td><td>"+tbl[i][4]+"</td><td>"+tbl[i][5]+"</td><td>"+tbl[i][6]+"</td><td>"+tbl[i][7]+"</td><td>"+tbl[i][8]+"</td></tr>");
-}
+    tbl_vag = tbl_vag.sort((a, b) => new Date(a[0]) - new Date(b[0]));
+    if(peregruzchik==false){
+        $("#unit_table").append("<tr><td>Дата</td><td>заїзд</td><td>виїзд</td><td>тривалість</td><td>водій</td><td>авто</td><td>брутто</td><td>тара</td><td>нетто</td></tr>");
+        for(let i = 0; i<tbl_vag.length; i++){
+        $("#unit_table").append("<tr><td>"+tbl_vag[i][0]+"</td><td>"+tbl_vag[i][1]+"</td><td>"+tbl_vag[i][2]+"</td><td>"+tbl_vag[i][3]+"</td><td>"+tbl_vag[i][4]+"</td><td>"+tbl_vag[i][5]+"</td><td>"+tbl_vag[i][6]+"</td><td>"+tbl_vag[i][7]+"</td><td>"+tbl_vag[i][8]+"</td></tr>");
+        }
+    }else{
+    let to = Date.parse($('#vagy_time2').val())/1000; // end of day in seconds
+    let fr = Date.parse($('#vagy_time1').val())/1000; // get begin time - beginning of day
+    if(!fr){fr=0; to=0;}
+      let n="Перевантажувач";
+   SendDataReportInCallback(fr,to,n,7,[],0,BLE);
+    }
+
   
 }
+
+
+function BLE(data){
+  let data_ble =[];
+  $("#unit_table").empty();
+for(let i = 0; i<data.length; i++){
+  let name = data[i][0][1];
+  let ble=0;
+  let dist= 999999;
+  for(let ii = 1; ii<data[i].length; ii++){
+    if(!data[i][ii][1])continue;
+    if(!data[i][ii][0])continue;
+    if( data[i][ii][4] && parseFloat(data[i][ii][12])<=5){
+     //if(data[i][ii][4]!=ble){
+      ble=data[i][ii][4];
+      let y = parseFloat(data[i][ii][0].split(',')[0]);
+      let x = parseFloat(data[i][ii][0].split(',')[1]);
+      let zn = point_in_region(y,x);
+       data_ble.push([data[i][ii][1],name,zn,ble.split('_')[0],data[i][ii][12]]);
+     //}
+    }   
+}
+}
+ data_ble = data_ble.sort(function(a, b) {
+      if (a[2] > b[2]) return -1; 
+      if (a[2] < b[2])  return  1;  
+      if (new Date(a[0]) < new Date(b[0]))  return -1; 
+      if (new Date(a[0]) > new Date(b[0]))   return  1;  
+      return 0;   
+    });
+
+for(let i = 0; i<data_ble.length; i++){
+        $("#unit_table").append("<tr><td>"+data_ble[i][0]+"</td><td>"+data_ble[i][1]+"</td><td>"+data_ble[i][2]+"</td><td>"+data_ble[i][3]+"</td><td>"+data_ble[i][4]+"</td></tr>");
+        }
+}
+
+
+
+
+
+
 
 function Speed_data(data){
 
@@ -12486,8 +12547,8 @@ marshrut_problem_his.push([e.cells[1].innerText,e.cells[2].innerText,e.cells[3].
 
    let no_work = [];
   for(var ii=1; ii < tb_a.rows.length; ii++){
-    let name = tb_a.rows[ii].cells[5].innerText.split('+');
-    if(name[name.length-1]=="вихідний" || name[name.length-1]=="захворів" || name[name.length-1]=="ремонт" || name[name.length-1]=="відсутній"|| name[name.length-1]=="резерв"|| name[name.length-1]==""){
+    let name = tb_a.rows[ii].cells[4].innerText;
+    if(name=="ремонт" || name=="відсутній" ||  name=="резерв" || name==""){
       no_work.push([tb_a.rows[ii].cells[1].innerText,tb_a.rows[ii].cells[2].innerText,tb_a.rows[ii].cells[3].innerText,tb_a.rows[ii].cells[4].innerText,tb_a.rows[ii].cells[5].innerText]);
     }
   }
