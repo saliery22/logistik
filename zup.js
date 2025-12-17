@@ -5009,7 +5009,7 @@ function TestNavigation(data){
     
   let no_aktiv = [];
   let mark;
-  let dt = unitsgrup.Заправки;
+  let dt = unitsgrup.Заправки;fail_trakkart
   for(var ii=0; ii < unitslist.length; ii++){
 if(!unitslist[ii].getPosition())continue;
     if (Date.parse($('#fromtime1').val())/1000 > unitslist[ii].getPosition().t){ no_aktiv.push(unitslist[ii]); }
@@ -8860,7 +8860,49 @@ for(let i = 0; i<data_ble.length; i++){
 
 
 
+$('#kartki_zvit').click(function() {
+ $("#unit_table").empty();
+            for(let i = 0; i<Global_DATA.length; i++){ 
+            let namet = Global_DATA[i][0][1];
+            let tr ="<tr class='fail_trak' id='"+Global_DATA[i][0][0]+"," + 0 +","+ 0 + "'><td style='white-space: nowrap;'>"+namet+"</td>";
+            let tr0="";
+            let vod = '';
+            let km=0;
+              for (let ii = 1; ii<Global_DATA[i].length-1; ii++){
+               if(Global_DATA[i][ii][3]>0){
+                if(!Global_DATA[i][ii][0])continue;
+                if(!Global_DATA[i][ii+1][0])continue;
+                let y = parseFloat(Global_DATA[i][ii][0].split(',')[0]);
+                let x = parseFloat(Global_DATA[i][ii][0].split(',')[1]);
+                let yy = parseFloat(Global_DATA[i][ii+1][0].split(',')[0]);
+                let xx = parseFloat(Global_DATA[i][ii+1][0].split(',')[1]);
+      
+                let d = wialon.util.Geometry.getDistance(y,x,yy,xx);
+                if(d<60000)km+=d;
 
+                 if(Global_DATA[i][ii][6] && Global_DATA[i][ii][6]!=vod){
+                   tr0+="<td style='white-space: nowrap;'>"+Global_DATA[i][ii][6]+"</td>";
+                   vod=Global_DATA[i][ii][6];
+                 }
+                }
+              } 
+              if(km>0){
+              if(km<3000){
+                 tr+="<td style='white-space: nowrap; color:rgba(255, 0, 0, 1);'>"+(km/1000).toFixed(1)+" км</td>"+tr0+'</tr>';
+                $("#unit_table").append(tr);      
+                }else{
+                  if(tr0=="<td style='white-space: nowrap;'>картка-4095</td>"){
+                      tr0="<td style='white-space: nowrap; color:rgba(255, 0, 0, 1);');>картка-4095</td>"
+                      tr+="<td style='white-space: nowrap; color:rgba(0, 121, 0, 1);'>"+(km/1000).toFixed(1)+" км</td>"+tr0+'</tr>';
+                    $("#unit_table").append(tr); 
+                  }else{
+                     tr+="<td style='white-space: nowrap; color:rgba(0, 121, 0, 1);'>"+(km/1000).toFixed(1)+" км</td>"+tr0+'</tr>';
+                    $("#unit_table").append(tr);  
+                  }
+                }
+              }
+              }
+});
 
 
 
