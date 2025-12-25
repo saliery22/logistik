@@ -3832,192 +3832,178 @@ for ( j = 1; j < tableRow.length; j++){
  
   
         function show_gr(a,b) {
+         
           s1=a;
           s2=b;
           var unid =  treeselect3.value;
               if ($('#grafik').is(':hidden')==false){
                 $('#v11').css({'background':'#3399FF'});
                 let data_graf = [];
+                let data_gr = [];
                 for(let i = 0; i<Global_DATA.length; i++){ 
                   let idd = Global_DATA[i][0][0];
                   if(idd==unid){
                     for (let ii = 1; ii<Global_DATA[i].length-1; ii+=1){
                       data_graf.push([Global_DATA[i][ii][0],Global_DATA[i][ii][1],Global_DATA[i][ii][2],Global_DATA[i][ii][3]]);
+                      data_gr=data_gr.concat({x: Global_DATA[i][ii][1].replace(/ +/g, ' '), y: parseFloat(Global_DATA[i][ii][2]), s: Global_DATA[i][ii][3]});
                     } 
                     break;
                   }   
                 }
-                drawChart(data_graf);
+               // drawChart(data_graf);
+                grafik (data_gr);
           }
         }
 
-
-
-  // Load the Visualization API and the corechart package.
-  google.charts.load('current', {packages:['corechart', 'table', 'gauge', 'controls']});
-
-  // Set a callback to run when the Google Visualization API is loaded.
-  //google.charts.setOnLoadCallback(drawChart);
-
-  // Callback that creates and populates a data table,
-  // instantiates the pie chart, passes in the data and
-  // draws it.
-  var t1 = 0;
-  var v1 = 0;
-  let s1,s2;
-  
-function drawChart(data_graf) {
-var dashboard = new google.visualization.Dashboard(
-    document.getElementById('grafik'));
-
-  let rangge=10800000;
-  if(s1!=undefined && s2!=undefined)rangge=1080000;
-
-var control = new google.visualization.ControlWrapper({
-  'controlType': 'ChartRangeFilter',
-  'containerId': 'chart2',
-  'options': {
-    // Filter by the date axis.
-    'filterColumnIndex': 0,
-    'ui': {
-      'chartType': 'LineChart',
-      'chartOptions': {
-        'chartArea': {'height': '100%','width': '95%'},
-        'hAxis': {
-        'baselineColor': 'none',
-         gridlines: {
-        count: -1,
-        units: {
-          hours: {format: ['HH:mm', 'ha']},
-        }
-      },
-     
-
-        
-        }
-      },
-      // Display a single series that shows the closing value of the stock.
-      // Thus, this view has two columns: the date (axis) and the stock value (line series).
-      'chartView': {
-        'columns': [0, 3]
-      },
-      // 1 day in milliseconds = 24 * 60 * 60 * 1000 = 86,400,000
-      'minRangeSize': 100000
+let s1,s2;       
+let graf_klik =null;
+let meChart = null;
+function grafik (data_gr){
+   let sliv_start =null;
+   let sliv_end =null;
+   let sliv_start_range =null;
+   let sliv_end_range =null;
+   if(s1){
+   sliv_start =Date.parse(s1);
+   sliv_end =Date.parse(s2);
+   sliv_start_range =sliv_start-600000;
+   sliv_end_range =sliv_end+600000;
+   }
+    
+const ctx = document.getElementById('myChart');
+const scales = {
+  x: {
+    position: 'bottom',
+    type: 'time',
+     min: sliv_start_range,
+     max: sliv_end_range,
+    ticks: {
+      autoSkip: true,
+      autoSkipPadding: 50,
+      maxRotation: 0
+    },
+    time: {
+      tooltipFormat: 'dd MM, HH:mm:ss',
+      displayFormats: {
+        day: "d.M HH:mm",
+        millisecond: "HH:mm:ss.SSS",
+        second: "HH:mm:ss",
+        minute: "HH:mm",
+        hour: "HH:mm",
+      }
     }
   },
-  // Initial range: 2012-02-09 to 2012-03-20.
-  'state': {'range': {'start': new Date(Date.parse(output.innerHTML)-rangge), 'end': new Date(Date.parse(output.innerHTML)+rangge)}}
-});
-var chart = new google.visualization.ChartWrapper({
-  'chartType': 'AreaChart',
-  'containerId': 'chart1',
-  'options': {
-  colors: ['red', 'red', 'green'],
-  'tooltip':{'textStyle':{'fontName': "Arial", 'fontSize': 13 }},
+  y: {
+    position: 'left',
+    ticks: {
+      callback: (val, index, ticks) => index === 0 || index === ticks.length - 1 ? null : val,
+    },
+    grid: {
+      borderColor: 'rgba( 0, 0, 0, 0.1)',
+      color: 'rgba( 0, 0, 0, 0.1)',
+    },
+  },
+};
 
-    // Use the same chart area width as the control for axis alignment.
-    'chartArea': {'height': '100%', 'width': '95%'},
-    'hAxis': {'slantedText': false, format: 'none'},
-   
-     
+if(meChart) { meChart.destroy();}
+meChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+    datasets: [{
+         label: 'пальне',
+         data: data_gr,
+         fill: true,
+         pointStyle: false,
+         //spanGaps: true,
+         borderWidth: 1,
+         segment: {
+        backgroundColor: ((ctx) => {
+          if(ctx.p0.raw.s>0 && ctx.p1.raw.s>0){ return 'rgba(0, 255, 64, 0.2)' }
+          if(ctx.p0.raw.s>0 || ctx.p1.raw.s>0){ return 'rgba(255, 238, 0, 0.2)'  }
+          return 'rgba(255, 0, 0, 0.2)'
+        }),
+        borderColor: ((ctx) => {
+          if(s1){
+          let time = ctx.p0.parsed.x;
+          if(time>=sliv_start &&  time<sliv_end){
+           return 'rgba(255, 0, 0, 1)'
+          }
+          }
+        }),
+         borderWidth:((ctx) => {
+          if(s1){
+          let time = ctx.p0.parsed.x;
+          if(time>=sliv_start &&  time<sliv_end){
+           return 5
+          }
+          }
+        }),
+      },
+    }],
 
-
-    pointSize: 1,
-    dataOpacity: 0.5,
-     series: {
-            0: { areaOpacity: 0.1, },
-            1: { areaOpacity: 0.1, },
-            2: { areaOpacity: 0.1, }
+},
+  options: {
+    interaction: {
+      intersect: false,
+      mode: 'nearest',
+      axis: 'x'
+    },
+    animations: false,
+    scales: scales,
+    plugins: {
+      legend: {
+        display: false // Легенда скрыта
+      },
+      zoom: {
+        zoom: {
+          wheel: {
+            enabled: true,
+          },
+          pinch: {
+            enabled: true
+          },
+          mode: 'xy',
+                onZoomComplete: function({chart}) {
+                // When zoom is complete, reset the y-axis min and max to null
+                // to allow Chart.js to re-autoscale based on visible data
+                chart.options.scales.y.min = null;
+                chart.options.scales.y.max = null;
+                chart.update(); // Update the chart to apply the new scale limits
+            }
         },
-
-  lineWidth: 2,
-
-    'legend': {'position': 'none'}
-  },
-  // Convert the first column from 'date' to 'string'.
-
-});
-
-
-
-
-
-var a=[];
-var data = new google.visualization.DataTable();
-    data.addColumn('datetime', 'date');
-     data.addColumn('number', 'speed');
-    data.addColumn('number', 'coordinate');
-    data.addColumn('number', 'stop');
-    data.addColumn({'type': 'string', 'role': 'style'}); 
-    data.addColumn({'type': 'string', 'role': 'tooltip'});
-   
-for (var i = 2; i < data_graf.length-1; i++) {
-a[1]=null;
-if (parseInt(data_graf[i][3])==0){ a[1]=parseFloat(data_graf[i][2]);}
-a[2]=null;
-a[3]=parseFloat(data_graf[i][2]);  
-a[5]='стоїть\n'+data_graf[i][0]+'\n'+data_graf[i][1]+'\n'+data_graf[i][2];
-if (data_graf[i-1][0]!=data_graf[i][0]){ 
- 
-a[5]='рухається\n'+data_graf[i][0]+'\n'+data_graf[i][1]+'\n'+data_graf[i][2]+'\n'+data_graf[i][3];
-}
-
-
-var date = new Date(data_graf[i][1]);
-a[0]=date;
-a[4]=null;
-
-
-if(s1!=undefined && s2!=undefined){
-  if (Date.parse(data_graf[i][1])>=Date.parse(s1) && Date.parse(data_graf[i][1])<=Date.parse(s2)){ 
-    a[4]='point { size: 4; shape-type: circle; fill-color: #FF0000; opacity: 1}';
+        pan: {
+          enabled: true,
+          mode: 'xy',
+          scaleMode: 'xy',
+              onPanComplete: function({chart}) {
+                // Do the same for panning
+                chart.options.scales.y.min = null;
+                chart.options.scales.y.max = null;
+                chart.update();
+            }
+          }
+      }
+    },
+      onClick(event, elements) {
+            if (elements.length > 0) {
+                // elements[0] is the first (and usually only) clicked element
+                const clickedElement = elements[0];
+              if(graf_klik){
+                 let time = (clickedElement.element.parsed.x - graf_klik.t)/1000;
+                 let lit = graf_klik.l-clickedElement.element.parsed.y;
+                 alert("Початкова дата        "+graf_klik.tr+"\nКінцева дата              "+clickedElement.element.raw.x+"\nПочатковий рівень        "+graf_klik.l+"\nКінцевий рівень             "+clickedElement.element.parsed.y+"\nТривалість        "+sec_to_time(time)+"\nВитрата             "+lit);
+                 graf_klik=null;
+              }else{
+                graf_klik={t:clickedElement.element.parsed.x, l:clickedElement.element.parsed.y, tr:clickedElement.element.raw.x};
+              }   
+            }
+      //meChart.zoom(0.1);
+      //meChart.zoomScale('x', {min: new Date("2025-12-22 13:00:30").valueOf(), max: new Date("2025-12-23 13:00:50").valueOf()}, 'default');
     }
+  }
+});
 }
 
-
-
-data.addRows([a]);
-}
-
-
-
-
-
-
-dashboard.bind(control, chart);
-dashboard.draw(data);
-
-google.visualization.events.addListener(chart, 'select', selectHandler);
-
-// The selection handler.
-// Loop through all items in the selection and concatenate
-// a single message from all of them.
-function selectHandler() {
-var selection = dashboard.getSelection();
-
-
-if (selection.length >0) {
-var item = selection[0];
-if(t1==0){
-t1=data.getFormattedValue(item.row, 0);
-v1=data.getFormattedValue(item.row, 3);
-
-}else{
-
-var time=new Date(Math.abs(new Date(t1)-new Date(data.getFormattedValue(item.row, 0)))).toISOString().substr(11, 8);
-var val=Math.abs((parseFloat(v1.replace(",", ""))-parseFloat(data.getFormattedValue(item.row, 3).replace(",", ""))).toFixed(1));
-var sred =(val*60*60/ Math.abs(new Date(t1)-new Date(data.getFormattedValue(item.row, 0)))*1000).toFixed(1);
-
-alert("РІЗНИЦЯ МІЖ ДВОМА ТОЧКАМИ НА ГРАФІКУ"+"\n"+"Час:                                "+time+"\n"+"Літрів:                            "+val+"л"+"\n"+"Середня витрата:        "+sred+"л/год");
-t1=0;
-v1=0;
-}
-
-}
-
-}
-
-}
 
 //=================zapros danyx===================================================================================
 function SendDataInCallback(t1=0,t2=0,maska='All',data=[],i=0,calbek){
@@ -8886,14 +8872,14 @@ $('#kartki_zvit').click(function() {
                  }
                 }
               } 
-              if(km>0){
+              if(km>99){
               if(km<3000){
-                 tr+="<td style='white-space: nowrap; color:rgba(255, 0, 0, 1);'>"+(km/1000).toFixed(1)+" км</td>"+tr0+'</tr>';
+                 tr+="<td style='white-space: nowrap; color:rgb(85 85 85);'>"+(km/1000).toFixed(1)+" км</td>"+tr0+'</tr>';
                 $("#unit_table").append(tr);      
                 }else{
                   if(tr0=="<td style='white-space: nowrap;'>картка-4095</td>"){
-                      tr0="<td style='white-space: nowrap; color:rgba(255, 0, 0, 1);');>картка-4095</td>"
-                      tr+="<td style='white-space: nowrap; color:rgba(0, 121, 0, 1);'>"+(km/1000).toFixed(1)+" км</td>"+tr0+'</tr>';
+                      tr0="<td style='white-space: nowrap; color:rgb(255, 0, 0);');>картка-4095</td>"
+                      tr+="<td style='white-space: nowrap; color:rgb(0, 121, 0);'>"+(km/1000).toFixed(1)+" км</td>"+tr0+'</tr>';
                     $("#unit_table").append(tr); 
                   }else{
                      tr+="<td style='white-space: nowrap; color:rgba(0, 121, 0, 1);'>"+(km/1000).toFixed(1)+" км</td>"+tr0+'</tr>';
