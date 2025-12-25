@@ -48,9 +48,16 @@
       <script src="leaflet.rotatedMarker.js"></script>
 
 
-     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+     <!-- <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script> -->
 
      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.5.1/chosen.min.css">
+
+   
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8/hammer.min.js"></script>
+    <script src="chartjs-plugin-zoom.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+
 
 </head>
 <body>
@@ -496,7 +503,7 @@ button:hover {
 <div class='container3' style='width:400px; z-index: 99999;'></div>
 
 <div style ="display: flex;  ">
-    <!-- <button class='main_menu' id='v11'style = "min-width: 70px;">Графік &#128200</button> -->
+    <button class='main_menu' id='v11'style = "min-width: 70px;">Графік &#128200</button>
     <button class='main_menu' id='men5'style = "min-width: 70px;">Зупинки &#9940</button>
     <button class='main_menu' id='men4'style = "min-width: 70px;">Звіти &#128204</button>
     <button class='main_menu' id='men8'style = "min-width: 70px;">Обробка полів &#128668</button> 
@@ -510,8 +517,9 @@ button:hover {
 
 
 <div id="grafik">
- <div id="chart1"></div>
- <div id="chart2"></div>       
+
+  <canvas id="myChart"  height="44"></canvas>
+   
 </div>
 <div id="map"></div>
 
