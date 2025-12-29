@@ -4037,7 +4037,7 @@ meChart = new Chart(ctx, {
     },
        onHover: function (e, item) {
         if (item.length) {
-              position(item[0].element.parsed.x);
+              position(item[0].element.$context.parsed.x);
         }
       }
   }
