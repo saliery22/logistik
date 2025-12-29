@@ -448,7 +448,7 @@ function getUnitMarker(unit) {
         index: 4
     }]
   });
-  marker.bindPopup('<center><font size="1">' + unit.getName()+'<br />' +wialon.util.DateTime.formatTime(unitPos.t),{ autoPan: true, autoPanPadding: [200, 200]});
+  marker.bindPopup('<center><font size="1">' + unit.getName()+'<br />' +wialon.util.DateTime.formatTime(unitPos.t),{ autoPan: true, autoPanPadding: [50, 50]});
   marker.bindTooltip(unit.getName(),{opacity:0.8});
   marker.on('click', function(e) {
   
