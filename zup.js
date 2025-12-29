@@ -3838,27 +3838,27 @@ for ( j = 1; j < tableRow.length; j++){
           var unid =  treeselect3.value;
               if ($('#grafik').is(':hidden')==false){
                 $('#v11').css({'background':'#3399FF'});
-                let data_graf = [];
                 let data_gr = [];
-                for(let i = 0; i<Global_DATA.length; i++){ 
+                let data_gr2 = [];
+                       for(let i = 0; i<Global_DATA.length; i++){ 
                   let idd = Global_DATA[i][0][0];
                   if(idd==unid){
                     for (let ii = 1; ii<Global_DATA[i].length-1; ii+=1){
-                      data_graf.push([Global_DATA[i][ii][0],Global_DATA[i][ii][1],Global_DATA[i][ii][2],Global_DATA[i][ii][3]]);
                       data_gr=data_gr.concat({x: Global_DATA[i][ii][1].replace(/ +/g, ' '), y: parseFloat(Global_DATA[i][ii][2]), s: Global_DATA[i][ii][3]});
+                      data_gr2=data_gr2.concat({x: Global_DATA[i][ii][1].replace(/ +/g, ' '), y: parseInt(Global_DATA[i][ii][3]), s: Global_DATA[i][ii][3]});
                     } 
                     break;
                   }   
                 }
                // drawChart(data_graf);
-                grafik (data_gr);
+                grafik (data_gr,data_gr2);
           }
         }
 
 let s1,s2;       
 let graf_klik =null;
 let meChart = null;
-function grafik (data_gr){
+function grafik (data_gr,data_gr2){
    let sliv_start =null;
    let sliv_end =null;
    let sliv_start_range =null;
@@ -3904,6 +3904,17 @@ const scales = {
       color: 'rgba( 0, 0, 0, 0.1)',
     },
   },
+    y1: {
+        offset: true,
+        display: true,
+        position: 'right',
+         min: 0,
+         max: 180,
+        // grid line settings
+        grid: {
+          drawOnChartArea: false, // only want the grid lines for one axis to show up
+        },
+      },
 };
 
 if(meChart) { meChart.destroy();}
@@ -3913,10 +3924,13 @@ meChart = new Chart(ctx, {
     datasets: [{
          label: 'пальне',
          data: data_gr,
-         fill: true,
+         fill: 'start',
+         borderColor: 'rgba(51, 153, 255, 1)',
+         backgroundColor: 'rgba(51, 153, 255,1)',
          pointStyle: false,
          //spanGaps: true,
          borderWidth: 1,
+          yAxisID: 'y',
          segment: {
         backgroundColor: ((ctx) => {
           if(ctx.p0.raw.s>0 && ctx.p1.raw.s>0){ return 'rgba(0, 255, 64, 0.2)' }
@@ -3940,6 +3954,18 @@ meChart = new Chart(ctx, {
           }
         }),
       },
+    },
+  {
+         label: 'швидкість',
+         data: data_gr2,
+         fill: false,
+         borderDash:[2,2],
+         backgroundColor: 'rgba(255, 0, 242, 1)',
+         borderColor: 'rgba(255, 0, 242, 1)',
+         pointStyle: false,
+         //spanGaps: true,
+         borderWidth: 1,
+          yAxisID: 'y1',
     }],
 
 },
@@ -3947,13 +3973,15 @@ meChart = new Chart(ctx, {
 
     interaction: {
       intersect: false,
-      mode: 'nearest',
+      mode: 'index',
       axis: 'x'
     },
     animations: false,
     scales: scales,
     plugins: {
-
+ tooltip: {
+            position: 'nearest', // or 'nearest'
+        },
       legend: {
         display: false // Легенда скрыта
       },
@@ -3971,6 +3999,8 @@ meChart = new Chart(ctx, {
                 // to allow Chart.js to re-autoscale based on visible data
                 chart.options.scales.y.min = null;
                 chart.options.scales.y.max = null;
+                chart.options.scales.y1.min = 0;
+                chart.options.scales.y1.max = 180;
                 chart.update(); // Update the chart to apply the new scale limits
             }
         },
@@ -3982,6 +4012,8 @@ meChart = new Chart(ctx, {
                 // Do the same for panning
                 chart.options.scales.y.min = null;
                 chart.options.scales.y.max = null;
+                chart.options.scales.y1.min = 0;
+                chart.options.scales.y1.max = 180;
                 chart.update();
             }
           }
@@ -13154,3 +13186,4 @@ function Rote_gruzoperevozki(p1,p2,color,ind){
           }
         });
 }
+
