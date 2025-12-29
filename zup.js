@@ -448,7 +448,7 @@ function getUnitMarker(unit) {
         index: 4
     }]
   });
-  marker.bindPopup('<center><font size="1">' + unit.getName()+'<br />' +wialon.util.DateTime.formatTime(unitPos.t));
+  marker.bindPopup('<center><font size="1">' + unit.getName()+'<br />' +wialon.util.DateTime.formatTime(unitPos.t),{ autoPan: true, autoPanPadding: [200, 200]});
   marker.bindTooltip(unit.getName(),{opacity:0.8});
   marker.on('click', function(e) {
   
@@ -3894,7 +3894,7 @@ const scales = {
     }
   },
   y: {
-	  offset: true,
+    offset: true,
     position: 'left',
     ticks: {
       callback: (val, index, ticks) => index === 0 || index === ticks.length - 1 ? null : val,
@@ -3944,6 +3944,7 @@ meChart = new Chart(ctx, {
 
 },
   options: {
+
     interaction: {
       intersect: false,
       mode: 'nearest',
@@ -3952,6 +3953,7 @@ meChart = new Chart(ctx, {
     animations: false,
     scales: scales,
     plugins: {
+
       legend: {
         display: false // Легенда скрыта
       },
@@ -4000,7 +4002,12 @@ meChart = new Chart(ctx, {
             }
       //meChart.zoom(0.1);
       //meChart.zoomScale('x', {min: new Date("2025-12-22 13:00:30").valueOf(), max: new Date("2025-12-23 13:00:50").valueOf()}, 'default');
-    }
+    },
+       onHover: function (e, item) {
+        if (item.length) {
+              position(item[0].element.parsed.x);
+        }
+      }
   }
 });
 }
@@ -13147,5 +13154,3 @@ function Rote_gruzoperevozki(p1,p2,color,ind){
           }
         });
 }
-
-
