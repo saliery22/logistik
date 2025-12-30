@@ -3840,19 +3840,31 @@ for ( j = 1; j < tableRow.length; j++){
                 $('#v11').css({'background':'#3399FF'});
                 let data_gr = [];
                 let data_gr2 = [];
-                       for(let i = 0; i<Global_DATA.length; i++){ 
+                if(unid){
+                  for(let i = 0; i<Global_DATA.length; i++){ 
                   let idd = Global_DATA[i][0][0];
                   if(idd==unid){
                     for (let ii = 1; ii<Global_DATA[i].length-1; ii+=1){
                       data_gr=data_gr.concat({x: Global_DATA[i][ii][1].replace(/ +/g, ' '), y: parseFloat(Global_DATA[i][ii][2]), s: Global_DATA[i][ii][3]});
-                      data_gr2=data_gr2.concat({x: Global_DATA[i][ii][1].replace(/ +/g, ' '), y: parseInt(Global_DATA[i][ii][3]), s: Global_DATA[i][ii][3]});
+                      data_gr2=data_gr2.concat({x: Global_DATA[i][ii][1].replace(/ +/g, ' '), y: parseInt(Global_DATA[i][ii][3])});
                     } 
                     break;
                   }   
                 }
+                }else{
+                     let d1 = Date.parse($('#fromtime1').val());
+                     let d2 = Date.parse($('#fromtime2').val());
+                     for (let i = d1; i<d2; i+=3000){
+                      data_gr2=data_gr2.concat({x: i, y: 60});
+                 }
+                }
+                
                // drawChart(data_graf);
                 grafik (data_gr,data_gr2);
           }
+
+       
+
         }
 
 let s1,s2;       
@@ -3924,7 +3936,7 @@ meChart = new Chart(ctx, {
     datasets: [{
          label: 'пальне',
          data: data_gr,
-         fill: 'start',
+         fill: false,
          borderColor: 'rgba(51, 153, 255, 1)',
          backgroundColor: 'rgba(51, 153, 255,1)',
          pointStyle: false,
@@ -3932,11 +3944,6 @@ meChart = new Chart(ctx, {
          borderWidth: 1,
           yAxisID: 'y',
          segment: {
-        backgroundColor: ((ctx) => {
-          if(ctx.p0.raw.s>0 && ctx.p1.raw.s>0){ return 'rgba(0, 255, 64, 0.2)' }
-          if(ctx.p0.raw.s>0 || ctx.p1.raw.s>0){ return 'rgba(255, 238, 0, 0.2)'  }
-          return 'rgba(255, 0, 0, 0.2)'
-        }),
         borderColor: ((ctx) => {
           if(s1){
           let time = ctx.p0.parsed.x;
@@ -3958,7 +3965,8 @@ meChart = new Chart(ctx, {
   {
          label: 'швидкість',
          data: data_gr2,
-         fill: false,
+         fill: 'end',
+         tension: 0.5,
          borderDash:[2,2],
          backgroundColor: 'rgba(255, 0, 242, 1)',
          borderColor: 'rgba(255, 0, 242, 1)',
@@ -3966,6 +3974,13 @@ meChart = new Chart(ctx, {
          //spanGaps: true,
          borderWidth: 1,
           yAxisID: 'y1',
+           segment: {
+        backgroundColor: ((ctx) => {
+          if(ctx.p0.raw.y>0 && ctx.p1.raw.y>0){ return 'rgba(97, 255, 136, 0.2)' }
+          if(ctx.p0.raw.y>0 || ctx.p1.raw.s>0){ return 'rgba(255, 238, 0, 0.2)'  }
+          return 'rgba(255, 69, 69, 0.2)'
+        }),
+      },
     }],
 
 },
