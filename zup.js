@@ -934,7 +934,39 @@ if (Date.parse($('#fromtime1').val())/1000 > unit.getPosition().t){rest_units.pu
 }
   });
 
- 
+
+
+ $("#auto_list").on("click", function (evt){
+  let row = evt.target.closest('tr');
+  let tbl = row.parentNode;
+   [...document.querySelectorAll("#auto_list tr")].forEach(e => e.style.backgroundColor = '');
+   row.style.backgroundColor = 'pink';
+
+  if(row.cells[0].textContent!="-->"){
+    let index = row.sectionRowIndex; 
+    let ln = parseInt(row.cells[1].textContent);
+      for(let i = index+1; i<=index+ln; i++){
+        if(tbl.rows[i].style.display == 'none'){
+          tbl.rows[i].style.display = 'table-row';
+        }else{
+          tbl.rows[i].style.display = 'none';
+        }
+
+      }  
+  }else{
+    
+     let idd= parseInt(row.cells[3].textContent);
+     treeselect3.value=idd;
+     treeselect3.mount();
+    if(evt.target.closest('td').textContent=="-->"){
+    onUnitSelected();  
+    }else{
+    markerByUnit[idd].openPopup();
+     show_gr();
+    }  
+  }
+ });
+
 
   session.searchItems({itemsType: "avl_unit_group", propName: "", propValueMask: "", sortType: "sys_name"},true, 1, 0, 0, function(code, data) {
     if (code) {
@@ -948,10 +980,12 @@ if (Date.parse($('#fromtime1').val())/1000 > unit.getPosition().t){rest_units.pu
       let gr= '';
       let grup_id = data.items[i].$$user_units;
       if(!grup_id)continue;
+       $("#auto_list").append("<tr style= 'cursor: pointer;'><td></td><td>"+grup_id.length+"</td><td nowrap align='left'><b>"+name+"</b></td></tr>");
       for(let ii = 0; ii<grup_id.length; ii++){
         if (!markerByUnit[grup_id[ii]]) continue;
         gr+=markerByUnit[grup_id[ii]]._tooltip._content+',';
         data_gr_child.push({"value": name+"|||"+markerByUnit[grup_id[ii]]._tooltip._content+"|||"+grup_id[ii],"name": markerByUnit[grup_id[ii]]._tooltip._content});
+        $("#auto_list").append("<tr style='display: none; cursor: pointer;'><td>--></td><td><img src="+markerByUnit[grup_id[ii]].options.icon.options.iconUrl+"></td><td nowrap align='left'>"+markerByUnit[grup_id[ii]]._tooltip._content+"</td><td>"+grup_id[ii]+"</td></tr>");
       }
       gr = gr.slice(0, -1);
       unitsgrup[name] = gr;
@@ -985,6 +1019,7 @@ serch_list_avto.push({ "value": name, "name": name+" ("+grup_id.length+")", "chi
          
       }
     }
+
     let agregats = [];
     agregats.push({ "value": "Диски|||Диски|||v21", "name": "Диски"});
     agregats.push({ "value": "Культиватори|||Культиватори|||v22", "name": "Культиватори"});
@@ -1293,6 +1328,7 @@ this.style.backgroundColor = 'initial';
   $('#logistika').hide();
   $('#monitoring').hide();
   $('#geomodul').hide();
+
   clearGEO();
   $('#men3').css({'background':'#ffffffff' , 'color':'#000000ff'});
   $('#men4').css({'background':'#ffffffff' , 'color':'#000000ff'});
@@ -1625,6 +1661,9 @@ $("#men8").on("click", function (){
  $('#monitoring').hide();
  $('#geomodul').hide();
  $('.zvit').hide();
+ $('#main1').hide();
+
+  map.invalidateSize();
 
 // Unit choosed from <select>
   function onUnitSelected() {  
@@ -2234,6 +2273,36 @@ L.easyButton('<img src="route.png" title="очистити мапу від тр�
                 $('#niz').show();
                 $('#map').css('height', 'calc(100vh - 124px)');
                 btn.state('zoom-to-forest');
+            }
+    }]
+}).addTo(map);
+
+L.easyButton('<img src="fuel.png" title="залишки пального">', function(){
+  st_zap();
+ }).addTo(map);
+
+  L.easyButton({
+    states: [{
+            stateName: 'spisok_on',        // name the state
+            icon:      '<img src="spisok_on.png">',               // and define its properties
+            title:     'показати список авто',      // like its title
+            onClick: function(btn, map) {       // and its callback
+                $('#main1').show();
+                if ($('#grafik').is(':visible')) {
+                 $("#v11").click();
+                }
+                btn.state('spisok_off');    // change state on click!
+            }
+        }, {
+            stateName: 'spisok_off',
+            icon:      '<img src="spisok_off.png">',
+            title:     'скрити список авто',
+            onClick: function(btn, map) {
+                $('#main1').hide();
+                if ($('#grafik').is(':visible')) {
+                  $("#v11").click();
+                }
+                btn.state('spisok_on');
             }
     }]
 }).addTo(map);
@@ -3881,7 +3950,7 @@ function grafik (data_gr,data_gr2){
    sliv_start_range =sliv_start-600000;
    sliv_end_range =sliv_end+600000;
    }
-    
+   
 const ctx = document.getElementById('myChart');
 const scales = {
   x: {
@@ -3985,7 +4054,8 @@ meChart = new Chart(ctx, {
 
 },
   options: {
-
+      responsive: true,
+      maintainAspectRatio: false,
     interaction: {
       intersect: false,
       mode: 'index',
@@ -4058,6 +4128,102 @@ meChart = new Chart(ctx, {
   }
 });
 }
+
+
+
+function st_zap() {
+   let sess = wialon.core.Session.getInstance(); 
+   let dataX=[];
+   let dataY=[];
+   for (let i = 0; i<unitslist.length; i++){
+    let nam = unitslist[i].getName();
+  if(nam.indexOf('Бензин ККЗ Ультразвук')>=0 || nam.indexOf('ДРП')>=0 || nam.indexOf('РЕЗЕРВУАР')>=0){
+    let unit = sess.getItem( unitslist[i].getId()); 
+          let sens = unit.getSensors(); // get unit's sensors
+          for (key in sens) {
+            if (sens[key].t=='fuel level') {
+              let result = unit.calculateSensorValue(unit.getSensor(sens[key].id), unit.getLastMessage());
+              if(result == -348201.3876){result = null;} else {result = result.toFixed();} 
+              dataX.push(nam);
+              dataY.push(result);
+            }
+          }
+	 
+    }
+   }
+grafik_drav(dataX,dataY);
+}
+
+function grafik_drav(dataX,dataY){
+if ($('#grafik').is(':hidden')) {
+      $('#grafik').show();
+      $('#map').css('height', 'calc(100vh - 404px)');
+      $('#marrr').css('height', 'calc(100vh - 404px)');
+      $('#option').css('height', 'calc(100vh - 404px)');
+      $('#unit_info').css('height', 'calc(100vh - 404px)');
+      $('#zupinki').css('height', 'calc(100vh - 404px)');
+      $('#logistika').css('height', 'calc(100vh - 404px)');
+      $('#monitoring').css('height', 'calc(100vh - 404px)');
+      $('#v11').css({'background':'#3399FF'});
+    } 
+
+const ctx = document.getElementById('myChart');
+if(meChart) { meChart.destroy();}
+meChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels:dataX,
+    datasets: [{
+         data: dataY,
+
+    }],
+},
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+     scales: {
+    x: {
+      ticks: {
+        autoSkip: true,
+        maxTicksLimit: 10 // Максимальное число меток
+      }
+    }
+  },
+    plugins: {
+      legend: {
+        display: false // Легенда скрыта
+      },
+      zoom: {
+        zoom: {
+          wheel: {
+            enabled: true,
+          },
+          pinch: {
+            enabled: true
+          },
+          mode: 'xy',
+            onZoomComplete: function({chart}) {
+
+                chart.options.scales.y.min = null;
+                chart.options.scales.y.max = null;
+                chart.update(); 
+            }
+        },
+        pan: {
+          enabled: true,
+          mode: 'xy',
+            onZoomComplete: function({chart}) {
+                chart.options.scales.y.min = null;
+                chart.options.scales.y.max = null;
+                chart.update();
+            }
+          }
+      }
+    },
+  }
+});
+}
+
 
 
 //=================zapros danyx===================================================================================
@@ -5050,7 +5216,7 @@ function TestNavigation(data){
     
   let no_aktiv = [];
   let mark;
-  let dt = unitsgrup.Заправки;fail_trakkart
+  let dt = unitsgrup.Заправки;
   for(var ii=0; ii < unitslist.length; ii++){
 if(!unitslist[ii].getPosition())continue;
     if (Date.parse($('#fromtime1').val())/1000 > unitslist[ii].getPosition().t){ no_aktiv.push(unitslist[ii]); }
