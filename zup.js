@@ -413,6 +413,7 @@ function getUnitMarker(unit) {
   if (marker) return marker;
     
   var unitPos = unit.getPosition();
+  var lastM = unit.getLastMessage();
   var imsaze = 18;
   if (!unitPos) return null;
     
@@ -448,7 +449,7 @@ function getUnitMarker(unit) {
         index: 4
     }]
   });
-  marker.bindPopup('<center><font size="1">' + unit.getName()+'<br />' +wialon.util.DateTime.formatTime(unitPos.t),{ autoPan: true, autoPanPadding: [50, 50]});
+  marker.bindPopup('<center><font size="1">' + unit.getName()+'<br />' +wialon.util.DateTime.formatTime(lastM.t),{ autoPan: true, autoPanPadding: [50, 50]});
   marker.bindTooltip(unit.getName(),{opacity:0.8});
   marker.on('click', function(e) {
   
@@ -3207,8 +3208,11 @@ function CollectGlobalData(t2,i,unit){ // execute selected report
    if(ok==0){ii++; UpdateGlobalData(t2,ii);return;}
    }
 
-     if (!unitslist[ii].getPosition() || !unitslist[ii].getPosition().t || Date.parse($('#fromtime1').val())/1000 > unitslist[ii].getPosition().t){
+     if (!unitslist[ii].getLastMessage() || !unitslist[ii].getLastMessage().t || Date.parse($('#fromtime1').val())/1000 > unitslist[ii].getLastMessage().t){
+
     console.log(unit.getName() + " - відсутня навігація  "); 
+    console.log(unitslist[ii].getPosition()); 
+    console.log(unitslist[ii].getLastMessage()); 
     ii++; UpdateGlobalData(t2,ii);return;
    }
 
