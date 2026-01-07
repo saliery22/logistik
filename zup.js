@@ -35,7 +35,7 @@ var isUIActive = true;
 var tzoffset = (new Date()).getTimezoneOffset() * 60000; //offset in milliseconds
 
 
-var from111 = new Date().toJSON().slice(0,11) + '00:00';
+var from111 = new Date().toJSON().slice(0,11) + '05:00';
 var from222 = (new Date(Date.now() - tzoffset)).toISOString().slice(0, -8);
 
 
@@ -4152,10 +4152,10 @@ function st_zap() {
 	 
     }
    }
-grafik_drav(dataX,dataY);
+grafik_drav(dataX,dataY,[10000,10000,10000,10000]);
 }
 
-function grafik_drav(dataX,dataY){
+function grafik_drav(dataX,dataY,dataY2){
 if ($('#grafik').is(':hidden')) {
       $('#grafik').show();
       $('#map').css('height', 'calc(100vh - 404px)');
@@ -4174,19 +4174,30 @@ meChart = new Chart(ctx, {
     type: 'bar',
     data: {
       labels:dataX,
-    datasets: [{
+    datasets: [
+         {
          data: dataY,
-
-    }],
+         backgroundColor: 'rgba(51, 153, 255, 0.5)',
+         },
+         {
+         data: dataY2,
+         backgroundColor: 'rgba(116, 116, 116, 0.3)',
+         }
+  ],
 },
   options: {
+    interaction: {
+      intersect: true,
+      mode: 'index',
+      axis: 'x'
+    },
     responsive: true,
     maintainAspectRatio: false,
      scales: {
     x: {
+       stacked: true,
       ticks: {
         autoSkip: true,
-        maxTicksLimit: 10 // Максимальное число меток
       }
     }
   },
@@ -13368,5 +13379,4 @@ function Rote_gruzoperevozki(p1,p2,color,ind){
           }
         });
 }
-
 
