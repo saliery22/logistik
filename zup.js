@@ -940,10 +940,18 @@ if (Date.parse($('#fromtime1').val())/1000 > unit.getPosition().t){rest_units.pu
  $("#auto_list").on("click", function (evt){
   let row = evt.target.closest('tr');
   let tbl = row.parentNode;
-   [...document.querySelectorAll("#auto_list tr")].forEach(e => e.style.backgroundColor = '');
+   [...document.querySelectorAll("#auto_list tr")].forEach(e =>{if(e.cells[0].innerHTML=="▲"){return e.style.backgroundColor = 'rgba(0, 131, 253, 0.3)'} e.style.backgroundColor = ''});
    row.style.backgroundColor = 'pink';
 
   if(row.cells[0].textContent!="-->"){
+    console.log(row.cells[0].innerHTML)
+    if(row.cells[0].innerHTML=="▼"){
+      row.cells[0].innerHTML="&#9650";
+       row.style.backgroundColor = 'rgba(0, 131, 253, 0.3)';
+    }else{
+      row.cells[0].innerHTML="&#9660";
+       row.style.backgroundColor = '';
+    }
     let index = row.sectionRowIndex; 
     let ln = parseInt(row.cells[1].textContent);
       for(let i = index+1; i<=index+ln; i++){
@@ -981,7 +989,7 @@ if (Date.parse($('#fromtime1').val())/1000 > unit.getPosition().t){rest_units.pu
       let gr= '';
       let grup_id = data.items[i].$$user_units;
       if(!grup_id)continue;
-       $("#auto_list").append("<tr style= 'cursor: pointer;'><td></td><td>"+grup_id.length+"</td><td nowrap align='left'><b>"+name+"</b></td></tr>");
+       $("#auto_list").append("<tr style= 'cursor: pointer;'><td>&#9660</td><td>"+grup_id.length+"</td><td nowrap align='left'><b>"+name+"</b></td></tr>");
       for(let ii = 0; ii<grup_id.length; ii++){
         if (!markerByUnit[grup_id[ii]]) continue;
         gr+=markerByUnit[grup_id[ii]]._tooltip._content+',';
@@ -13379,5 +13387,4 @@ function Rote_gruzoperevozki(p1,p2,color,ind){
           }
         });
 }
-
 
