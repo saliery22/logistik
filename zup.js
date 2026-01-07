@@ -944,7 +944,6 @@ if (Date.parse($('#fromtime1').val())/1000 > unit.getPosition().t){rest_units.pu
    row.style.backgroundColor = 'pink';
 
   if(row.cells[0].textContent!="-->"){
-    console.log(row.cells[0].innerHTML)
     if(row.cells[0].innerHTML=="▼"){
       row.cells[0].innerHTML="&#9650";
        row.style.backgroundColor = 'rgba(0, 131, 253, 0.3)';
@@ -4131,7 +4130,9 @@ meChart = new Chart(ctx, {
     },
        onHover: function (e, item) {
         if (item.length) {
-              position(item[0].element.$context.parsed.x);
+              let t = item[0].element.$context.parsed.x
+              slider.value=(t-Date.parse($('#fromtime1').val()))/(Date.parse($('#fromtime2').val())-Date.parse($('#fromtime1').val()))*2000;
+              position(t);
         }
       }
   }
@@ -4160,7 +4161,7 @@ function st_zap() {
 	 
     }
    }
-grafik_drav(dataX,dataY,[10000,10000,10000,10000]);
+grafik_drav(dataX,dataY,[5000,8500,10000,25000]);
 }
 
 function grafik_drav(dataX,dataY,dataY2){
