@@ -3922,7 +3922,7 @@ for ( j = 1; j < tableRow.length; j++){
                   let idd = Global_DATA[i][0][0];
                   if(idd==unid){
                     for (let ii = 1; ii<Global_DATA[i].length-1; ii+=1){
-                      data_gr=data_gr.concat({x: Global_DATA[i][ii][1].replace(/ +/g, ' '), y: parseFloat(Global_DATA[i][ii][2]), s: Global_DATA[i][ii][3]});
+                      data_gr=data_gr.concat({x: Global_DATA[i][ii][1].replace(/ +/g, ' '), y: parseFloat(Global_DATA[i][ii][2])});
                       data_gr2=data_gr2.concat({x: Global_DATA[i][ii][1].replace(/ +/g, ' '), y: parseInt(Global_DATA[i][ii][3])});
                     } 
                     break;
@@ -4053,8 +4053,9 @@ meChart = new Chart(ctx, {
           yAxisID: 'y1',
            segment: {
         backgroundColor: ((ctx) => {
-          if(ctx.p0.raw.y>0 && ctx.p1.raw.y>0){ return 'rgba(97, 255, 136, 0.2)' }
-          if(ctx.p0.raw.y>0 || ctx.p1.raw.s>0){ return 'rgba(255, 238, 0, 0.2)'  }
+          //if(ctx.p0.raw.y>0 && ctx.p1.raw.y>0){ return 'rgba(97, 255, 136, 0.2)' }
+          //if(ctx.p0.raw.y>0 || ctx.p1.raw.y>0){ return 'rgba(255, 238, 0, 0.2)'  }
+          if(ctx.p0.raw.y>0 || ctx.p1.raw.y>0){ return 'rgba(97, 255, 136, 0.2)'  }
           return 'rgba(255, 69, 69, 0.2)'
         }),
       },
