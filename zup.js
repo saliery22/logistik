@@ -4120,7 +4120,8 @@ meChart = new Chart(ctx, {
               if(graf_klik){
                  let time = (clickedElement.element.parsed.x - graf_klik.t)/1000;
                  let lit = graf_klik.l-clickedElement.element.parsed.y;
-                 alert("Початкова дата        "+graf_klik.tr+"\nКінцева дата              "+clickedElement.element.raw.x+"\nПочатковий рівень        "+graf_klik.l+"\nКінцевий рівень             "+clickedElement.element.parsed.y+"\nТривалість        "+sec_to_time(time)+"\nВитрата             "+lit);
+                 let ras = lit/(time/3600);
+                 alert("Початкова дата              "+graf_klik.tr+"\nКінцева дата                   "+clickedElement.element.raw.x+"\nПочатковий рівень        "+graf_klik.l+"\nКінцевий рівень             "+clickedElement.element.parsed.y+"\nТривалість                      "+sec_to_time(time)+"\nВитрата                           "+lit+"\nСередня витрата           "+ras.toFixed(1)+" л/год");
                  graf_klik=null;
               }else{
                 graf_klik={t:clickedElement.element.parsed.x, l:clickedElement.element.parsed.y, tr:clickedElement.element.raw.x};
@@ -4162,7 +4163,7 @@ function st_zap() {
 	 
     }
    }
-grafik_drav(dataX,dataY,[5000,8500,10000,25000]);
+grafik_drav(dataX,dataY,[5400,8000,8000,25000]);
 }
 
 function grafik_drav(dataX,dataY,dataY2){
@@ -6329,7 +6330,7 @@ for(let i = 0; i<geozonesgrup.length; i++){
  
     
     for (let ii = 1; ii<Global_DATA[i].length-1; ii++){
-
+     
       if(!Global_DATA[i][ii][2])continue;
       if(!Global_DATA[i][ii+1][2])continue;
       if(!Global_DATA[i][ii][4])continue;
@@ -6339,7 +6340,6 @@ for(let i = 0; i<geozonesgrup.length; i++){
         if(Global_DATA[i][ii][2] !='-----')p1=Global_DATA[i][ii][2];
         if(Global_DATA[i][ii+1][2] !='-----')p2=Global_DATA[i][ii+1][2];
 
- 
         let rashod=(p1-p2)/((Global_DATA[i][ii+1][4]-Global_DATA[i][ii][4])/3600000);
         if(rashod<100 && rashod>-25 && litry==0){
           zup1+=(Global_DATA[i][ii+1][4]-Global_DATA[i][ii][4])/1000; 
