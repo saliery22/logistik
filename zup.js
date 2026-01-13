@@ -7239,26 +7239,33 @@ $('#polya_kkz').click(function() {
   });
 $('#trailers_kkz').click(function() {
   $("#unit_table").empty();
-  $("#unit_table").append("<tr><td>№</td><td>назва</td><td>код</td><td>поточна техніка</td><td>остання техніка</td></tr>");
+  $("#unit_table").append("<tr><td>№</td><td>назва</td><td>код</td><td>поточна техніка</td><td>остання техніка</td><td>коментар</td><td>створено</td><td>змінено</td></tr>");
   for (key in trailers) {
     let trl = trailers[key];
     let now="----";
     let then="----";
+    let com = JSON.stringify(trl.jp);
+    let ct =wialon.util.DateTime.formatTime(trl.ct);
+    let mt =wialon.util.DateTime.formatTime(trl.mt);
     if(unitslistID[parseInt(trl.bu)]) now = unitslistID[parseInt(trl.bu)].getName();
     if(unitslistID[parseInt(trl.pu)]) then = unitslistID[parseInt(trl.pu)].getName();
-    $("#unit_table").append("<tr><td>"+key+"</td><td>"+trl.n+"</td><td>"+trl.c+"</td><td>"+now+"</td><td>"+then+"</td></tr>");
+    $("#unit_table").append("<tr><td>"+key+"</td><td>"+trl.n+"</td><td>"+trl.c+"</td><td>"+now+"</td><td>"+then+"</td><td>"+com+"</td><td>"+ct+"</td><td>"+mt+"</td></tr>");
   }
   });
 $('#vodiyi_kkz').click(function() {
   $("#unit_table").empty();
-  $("#unit_table").append("<tr><td>№</td><td>назва</td><td>код</td><td>телефон</td><td>поточна техніка</td><td>остання техніка</td></tr>");
+  $("#unit_table").append("<tr><td>№</td><td>назва</td><td>код</td><td>телефон</td><td>поточна техніка</td><td>остання техніка</td><td>коментар</td><td>створено</td><td>змінено</td></tr>");
   for (key in drivers) {
+    console.log(drivers[key]);
     let drv = drivers[key];
     let now="----";
     let then="----";
+    let com = JSON.stringify(drv.jp);
+    let ct =wialon.util.DateTime.formatTime(drv.ct);
+    let mt =wialon.util.DateTime.formatTime(drv.mt);
     if(unitslistID[parseInt(drv.bu)]) now = unitslistID[parseInt(drv.bu)].getName();
     if(unitslistID[parseInt(drv.pu)]) then = unitslistID[parseInt(drv.pu)].getName();
-    $("#unit_table").append("<tr><td>"+key+"</td><td>"+drv.n+"</td><td>"+drv.c+"</td><td>"+drv.p+"</td><td>"+now+"</td><td>"+then+"</td></tr>");
+    $("#unit_table").append("<tr><td>"+key+"</td><td>"+drv.n+"</td><td>"+drv.c+"</td><td>"+drv.p+"</td><td>"+now+"</td><td>"+then+"</td><td>"+com+"</td><td>"+ct+"</td><td>"+mt+"</td></tr>");
   }
   });
   $('#transport_kkz').click(function() {
@@ -13389,4 +13396,5 @@ function Rote_gruzoperevozki(p1,p2,color,ind){
           }
         });
 }
+
 
