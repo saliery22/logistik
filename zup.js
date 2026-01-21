@@ -2315,6 +2315,38 @@ L.easyButton('<img src="fuel.png" title="залишки пального">', fun
     }]
 }).addTo(map);
 
+L.easyButton('<img src="kmm.png" title="пробіг">', function(){
+  if($('#unit_info').is(':hidden')) $('#men4').click();
+  $('.leaflet-container').css('cursor','');
+  $('.zvit').hide();
+  $("#unit_table").empty();
+  $('#zz18').show();
+  $('#vib_zvit').val('z18');
+  clearGEO(); 
+  clearGarbage(garbage);
+  garbage=[];
+  clearGarbage(garbagepoly);
+  garbagepoly=[];
+  clearGarbage(marshrutMarkers);
+  marshrutMarkers=[];
+ }).addTo(map);
+
+ L.easyButton('<img src="gaa.png" title="обробка">', function(){
+  if($('#unit_info').is(':hidden')) $('#men4').click();
+  $('.leaflet-container').css('cursor','');
+  $('.zvit').hide();
+  $("#unit_table").empty();
+  $('#zz19').show();
+  $('#vib_zvit').val('z19');
+  clearGEO(); 
+  clearGarbage(garbage);
+  garbage=[];
+  clearGarbage(garbagepoly);
+  garbagepoly=[];
+  clearGarbage(marshrutMarkers);
+  marshrutMarkers=[];
+ }).addTo(map);
+
 }
 
 //let ps = prompt('');
@@ -4745,7 +4777,6 @@ function ObrabotkaPolya(zakr){
   let hue = Math.floor(Math.random() * 360);
   let UnionPolis=[];
   
-
  for (let i = 0; i < geo_splines.length; i++) {
   let polis=[];
   let polis_more=[];
@@ -5255,7 +5286,7 @@ if(!unitslist[ii].getPosition())continue;
       
     
     }
-   
+   console.log(no_aktiv)
   
   for (let i = 0; i < data.length; i++) {
     let pos=0;
@@ -8318,6 +8349,7 @@ let str = 'geohis/'+(currentDate.getMonth()+1)+'.'+currentDate.getFullYear()+'.t
 });
 
 
+
 //==========================================================================================================================================================================
 //==========================================================================================================================================================================
 //==========================================================================================================================================================================
@@ -8431,6 +8463,283 @@ $('#prob_bt4').click(function() {
   $('#prob_from').val(null);
   $('#prob_to').val(null)
 });
+
+
+
+//==========================================================================================================================================================================
+//==========================================================================================================================================================================
+//==========================================================================================================================================================================
+//==========================================================================================================================================================================
+//==========================================================================================================================================================================
+
+const napr = document.getElementById('ga_alfa');
+const strelka = document.getElementById('strelka');
+napr.addEventListener('input', function() {
+    let value = napr.value;
+    strelka.style.transform = `rotate(${value}deg)`;
+    // Здесь можно выполнить другие действия, например, изменить цвет фона
+    // document.body.style.backgroundColor = `hsl(${value}, 70%, 50%)`;
+});
+
+ $('#agregat_lis').on('change', function() {
+    $('#ga_sh').val($('#agregat_lis').val())
+        });
+$('#ga_bt1').click(function() {
+  let d = Date.parse(output.innerHTML);
+  let tzoffset1 = (new Date(output.innerHTML)).getTimezoneOffset() * 60000;
+  $('#ga_from').val(new Date(d- tzoffset1).toISOString().slice(0, -5));
+});
+$('#ga_bt2').click(function() {
+  let d = Date.parse(output.innerHTML);
+  let tzoffset1 = (new Date(output.innerHTML)).getTimezoneOffset() * 60000;
+  $('#ga_to').val(new Date(d- tzoffset1).toISOString().slice(0, -5));
+});
+$('#ga_bt3').click(function() {
+  
+
+  let alfa1=parseInt(napr.value);
+  let alfa2=alfa1+180;
+  let from =Date.parse($('#ga_from').val());
+  let to =Date.parse($('#ga_to').val());
+  let zax=$('#ga_sh').val();
+  let unitId = treeselect3.value;
+  let stop=0;
+  let stop_date='';
+  let unitName = '';
+  let km=0;
+  let t_km = 0;
+  let t_s =0;
+  let dis =0;
+   let yy = 0;
+   let xx = 0;
+   let yy0 = 0;
+   let xx0 = 0;
+   let spline=[];
+   let splines=[];
+
+  for(let i = 0; i<Global_DATA.length; i++){ 
+    let id = Global_DATA[i][0][0];
+       if(id!=unitId)continue;
+       unitName = Global_DATA[i][0][1];
+      for (let ii = 2; ii<Global_DATA[i].length-1; ii+=1){ 
+        if(!Global_DATA[i][ii][0])continue;
+        if(!Global_DATA[i][ii][4])continue;
+        if(!Global_DATA[i][ii-1][4])continue;
+        if(Global_DATA[i][ii][4]<=from || Global_DATA[i][ii][4]>=to)continue;
+         yy = parseFloat(Global_DATA[i][ii][0].split(',')[0]);
+         xx = parseFloat(Global_DATA[i][ii][0].split(',')[1]);
+        if(parseInt(Global_DATA[i][ii][3])>0 || parseInt(Global_DATA[i][ii+1][3])>0){
+         if(yy0==0){yy0 = parseFloat(Global_DATA[i][ii][0].split(',')[0]);xx0 = parseFloat(Global_DATA[i][ii][0].split(',')[1]);continue;}
+         if(xx0==0){xx0 = parseFloat(Global_DATA[i][ii][0].split(',')[1]);yy0 = parseFloat(Global_DATA[i][ii][0].split(',')[0]);continue;}
+         t_km+=(Global_DATA[i][ii][4]-Global_DATA[i][ii-1][4])/1000;
+         dis = wialon.util.Geometry.getDistance(yy,xx,yy0,xx0);
+
+         if(dis<500000){
+          km+=dis;
+          let l = L.polyline([[yy,xx],[yy0,xx0]], {color: "rgb(0, 4, 255)",weight:3,opacity:1}).addTo(map);
+          temp_layer.push(l);
+          if ($("#ga_rz").is(":checked")){
+            let p0 = turf.point([xx0,yy0]);
+            let p2 = turf.point([xx,yy]);
+            let ang =(turf.bearing(p0, p2) + 360) % 360;
+
+            if(Math.abs(ang-alfa1)<20 || Math.abs(ang-alfa2)<20){
+              let l = L.polyline([[yy,xx],[yy0,xx0]], {color: "rgb(0, 4, 255)",weight:3,opacity:1}).addTo(map);
+              temp_layer.push(l);
+               if(spline.length==0)spline.push([xx0,yy0]);
+               spline.push([xx,yy]); 
+            }else{
+              let l = L.polyline([[yy,xx],[yy0,xx0]], {color: "rgb(255, 196, 0)",weight:3,opacity:1}).addTo(map);
+              temp_layer.push(l);
+               if(spline.length>1)splines.push(spline)
+               spline=[];
+            }
+          }else{
+           let l = L.polyline([[yy,xx],[yy0,xx0]], {color: "rgb(0, 4, 255)",weight:3,opacity:1}).addTo(map);
+           temp_layer.push(l);
+           if(spline.length==0)spline.push([xx0,yy0]);
+           spline.push([xx,yy]); 
+          }
+         }else{
+          let l = L.polyline([[yy,xx],[yy0,xx0]], {color: "rgb(234, 0, 255)",weight:3,opacity:1}).addTo(map);
+          temp_layer.push(l);
+          if(spline.length>1)splines.push(spline)
+          spline=[];
+         }
+    
+         if(stop>0){
+         if(dis<500){  
+             if(stop>300){
+          mark = L.marker([yy, xx], {zIndexOffset:-1000, draggable: true,icon: L.icon({iconUrl: '111.png', iconSize:   [24, 24], iconAnchor: [12, 24] })}).addTo(map);
+          mark.bindPopup(unitName+'<br />'+stop_date+'<br />'+sec_to_time(stop));
+          zup_mark_data.push(mark);
+          }
+          t_s+=stop;
+          }
+         stop=0;
+         stop_date='';
+         }
+         
+      }else{
+        stop+=(Global_DATA[i][ii][4]-Global_DATA[i][ii-1][4])/1000;
+        if(stop_date=='')stop_date = Global_DATA[i][ii][1];
+          if(spline.length>1)splines.push(spline)
+          spline=[];
+      }
+      yy0=yy;
+      xx0=xx;
+    }
+  }
+   
+     if(spline.length>1)splines.push(spline)
+       spline=[];
+
+
+let result = track_to_polygon(splines, zax);
+
+if($("#unit_table tr").length==0){
+  $("#unit_table").append("<tr><td>дата</td><td>ТЗ</td><td>початок</td><td>кінець</td><td>захват м</td><td>оброблено га</td><td>пересічення га</td><td>чистий обробіток га</td><td>пробіг км</td><td>час</td><td>час в русі</td><td>простій</td></tr>");
+}
+
+
+
+  $("#unit_table").append("<tr><td>"+$('#ga_from').val().replace("T", " ").split(' ')[0]+"</td><td>"+unitName+"</td><td>"+$('#ga_from').val().replace("T", " ").split(' ')[1]+"</td><td>"+$('#ga_to').val().replace("T", " ").split(' ')[1]+"</td><td>"+zax+"</td><td>"+(result.g).replace(/\./g, ",")+"</td><td>"+(result.p).replace(/\./g, ",")+"</td><td>"+(result.c).replace(/\./g, ",")+"</td><td>"+(km/1000).toFixed(1).replace(/\./g, ",")+"</td><td>"+sec_to_time(t_km+t_s)+"</td><td>"+sec_to_time(t_km)+"</td><td>"+sec_to_time(t_s)+"</td></tr>");
+
+  $('#prob_from').val(null);
+  $('#prob_to').val(null);
+
+});
+
+
+function track_to_polygon(data, zahvat){
+  let res = {g:0, p:0,c:0};
+   if(data.length==0) return res;
+  let spline,p0,p1,p2,p3,p4,ang,ang1,ang2;
+  let hue = Math.floor(Math.random() * 360);
+  let UnionPolis=[];
+  
+  let polis=[];
+  let polis_more=[];
+  let zaxvat =   zahvat;
+   for (let ii = 0; ii < data.length; ii++) {
+     spline = data[ii];
+     p0 = turf.point(spline[0]);
+     p2 = turf.point(spline[1]);
+     ang =turf.bearing(p0, p2);
+     ang1=ang-90;
+     if(ang1<-180)ang1=360+ang1;
+     ang2 = ang+90;
+     if(ang2>180)ang2=ang2-360;
+     p1 = turf.destination(p0, zaxvat*0.5,ang2, {units: 'meters'});
+     p2 = turf.destination(p0, zaxvat*0.5,ang1, {units: 'meters'});
+     
+        for (let iii = 1; iii < spline.length; iii++) {
+          //if(turf.distance(p0, turf.point(spline[ii]), {units: 'meters'})<zaxvat)continue;
+          p0 = turf.point(spline[iii]);
+            if(iii==spline.length-1){
+                p3 = turf.destination(p0, zaxvat*0.5,ang1, {units: 'meters'});
+                p4 = turf.destination(p0, zaxvat*0.5,ang2, {units: 'meters'});
+            }else{ 
+              let point1 = turf.point(spline[iii-1]);
+              let point2 = p0;
+              let point3 = turf.point(spline[iii+1]);
+              ang =turf.bearing(point1, point3);
+              ang1=ang-90;
+              if(ang1<-180)ang1=360+ang1;
+              ang2 = ang+90;
+              if(ang2>180)ang2=ang2-360;
+              p3 = turf.destination(p0, zaxvat*0.5,ang1, {units: 'meters'});
+              p4 = turf.destination(p0, zaxvat*0.5,ang2, {units: 'meters'});
+            }
+
+          let p2p3=turf.distance(p2, p3, {units: 'meters'});
+          let p1p4=turf.distance(p1, p4, {units: 'meters'});
+
+          if(p2p3<1 || p1p4<1)continue;
+          let linestring1 = turf.lineString([ turf.getCoord(p2), turf.getCoord(p3)]);
+          let linestring2 = turf.lineString([ turf.getCoord(p1), turf.getCoord(p4)]);
+          
+          let poliXY = [[turf.getCoord(p1), turf.getCoord(p2), turf.getCoord(p3), turf.getCoord(p4),turf.getCoord(p1)]];
+          if(turf.booleanIntersects(linestring1, linestring2)){poliXY = [[turf.getCoord(p1), turf.getCoord(p2), turf.getCoord(p4), turf.getCoord(p3),turf.getCoord(p1)]];}
+
+          let polygon = turf.polygon(poliXY);
+          let options = {precision: 6, coordinates: 2};
+          let polygon2 = turf.truncate(polygon, options);
+ 
+          //let result = turf.unkinkPolygon(polygon);
+          //let polylinee = L.geoJSON(polygon).addTo(map);
+          //geo_layer.push(polylinee); 
+          p1=p4;
+          p2=p3;
+          
+          polis.push(polygon2);
+          polis_more.push(polygon);
+      }
+
+  } 
+  try {
+    myroutine(); 
+  } catch {
+    for (let i = 0; i < polis.length; i++) {
+      polis[i] = turf.truncate(polis_more[i],{precision: 7, coordinates: 2});
+    }
+    try {
+      myroutine(); 
+    } catch {
+      for (let i = 0; i < polis.length; i++) {
+        polis[i] = turf.truncate(polis_more[i],{precision: 8, coordinates: 2});
+      }
+      myroutine();
+    }
+  }
+function myroutine(){
+      let area = GetPoligonsArea(polis);
+      let areaU =area;
+      let areaI =0;
+      let union =polis[0];
+      if(polis.length>1){
+        union =turf.union(turf.featureCollection(polis));
+        areaU = (turf.area(union)*kof/10000).toFixed(2);
+      }
+
+      areaI = (areaU -turf.area(union)*kof/10000).toFixed(2);
+
+       hue += 60+Math.floor(Math.random() * 30);
+      let saturation = 100;
+      let lightness = 45;
+      let color=  `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+      let polylinee = L.geoJSON(union,{ style: function (feature) { return {color: color, fillOpacity: 0.5, weight: 1};}}).addTo(map);
+        temp_layer.push(polylinee); 
+ 
+        if(union){
+          if(union.geometry.type=="Polygon"){
+            UnionPolis.push(union);
+          }else{
+            for ( j = 0; j < union.geometry.coordinates.length; j++){
+              let unpol=turf.polygon(union.geometry.coordinates[j]);
+              let unpol_tr = turf.truncate(unpol,{precision: 8, coordinates: 2});
+              UnionPolis.push(unpol_tr);  
+            }
+          }
+        }
+         res = {g:(area-areaI).toFixed(2), p:((area-areaI)-(areaU-areaI)).toFixed(2),c:(areaU-areaI).toFixed(2)};
+         
+    }
+
+
+         return res;
+}
+
+
+
+$('#ga_bt4').click(function() {
+  $("#unit_table").empty();
+  $('#ga_from').val(null);
+  $('#ga_to').val(null)
+});
+//========================================================================================================================
+//=======================================================================================================================
+
 //========================================================================================================================
 //========================================================================================================================
 $('#dut_ruh_zvit').click(function() {
@@ -13396,5 +13705,4 @@ function Rote_gruzoperevozki(p1,p2,color,ind){
           }
         });
 }
-
 
