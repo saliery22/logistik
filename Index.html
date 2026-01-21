@@ -61,7 +61,7 @@
     <!-- <script src="chartjs-plugin-crosshair.min.js"></script> -->
     <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
 
-
+    
 </head>
 <body>
     <style>
@@ -194,8 +194,8 @@
         .table2 thead th {font-weight: bold;color: #464646; 	text-align: left;border: none;padding: 2px 5px;	background: #e7e7e7;border: 1px solid #292929;border-right: 1px solid #292929;}
         .table2 tbody td {text-align: left;border: 1px solid #292929;padding: 2px 5px;vertical-align: top; max-width: 150px; white-space: nowrap; overflow: hidden;text-overflow: ellipsis;}
         
-        .table3 {min-width: 98%;  border: none;}
-        .table3 tbody td {border: none;padding: 2px 5px;  white-space: nowrap; overflow: hidden;}
+        .table3 { border: none;}
+        .table3 tbody td {border: none; padding: 2px 5px;  white-space: nowrap; overflow: hidden;}
         
         #log { width: 99%; border: 0px solid #c6c6c6; height:10px; overflow-y: hidden; margin: 0px 0px 0px 0px;font-family: Arial, Tahoma, sans-serif; color: #464646; font-size: 9px;}
         #log2 { width: 99%; border: 0px solid #c6c6c6; height:10px; overflow-y: hidden;  overflow-x: hidden; margin: 0px 0px 0px 0px;font-family: Arial, Tahoma, sans-serif; color: #464646; font-size: 9px;}
@@ -600,7 +600,8 @@ button:hover {
         <option value="z16">історія обробки полів</option>
         <option value="z17">перевезення вантажів</option>
         <option value="z18">пробіг індивідуальний</option>
-        <!-- <option value="z19">витрата пального робота</option> -->
+        <option value="z19">обробка індивідуальна</option>
+        <!-- <option value="z99">витрата пального робота</option> -->
         <option value="z20">заправки</option>
         <option value="z21">ваги</option>
         <option value="z22">звіт по картках</option>
@@ -803,11 +804,41 @@ button:hover {
 
         <button id='prob_bt2'>  час по </button> 
         <input id="prob_to" type="datetime-local"/>  
-       
+
         <button id='prob_bt3'>  звіт </button> 
         <button id='prob_bt4'>  очистити </button>
     </div> 
     <div id="zz19" class='zvit'>
+        завантажте данні, оберіть транспорт на мапі чи в списку, оберіть "час з" на шкалі часу (перемістіть повзунок на потрібний час і натисніть кнопку час з), оберіть "час по" на шкалі часу, встановіть налаштування, виконайте "звіт"
+        <br>
+        <button id='ga_bt1'>  час з </button>   
+        <input id="ga_from" type="datetime-local" step="1"/>
+
+        <button id='ga_bt2'>  час по </button> 
+        <input id="ga_to" type="datetime-local" step="1"/> 
+         <select id='agregat_lis'>
+            <option value=10>ширина захвату</option>
+            <option value=6.7>Дискування</option>
+            <option value=8.8>Глибоке рихлення</option>
+            <option value=12.4>Культивація</option>
+            <option value=36>Обприскування культур</option>
+            <option value=36>Внесення добрив</option>
+            <option value=16.8>Висів зернових</option>
+            <option value=12>Збір врожаю</option>
+            <option value=3.5>Оранка</option>
+        </select>
+        <input type="number" id="ga_sh" size="3" name="num" step="0.1" value="10" min="0" style='width:80px;'>
+        <br>
+        <div style='display: flex;  align-items: center;'>
+        <img id='strelka' src="alfa.png"> 
+        <input type="checkbox" id="ga_rz" /> напрямок обробки
+        <input type="range" id="ga_alfa" min="0" max="179" value="0" step="1"  style="width: 300px;"/>
+        </div>
+        
+        <button id='ga_bt3' style='width:70%;'>  звіт </button> 
+        <button id='ga_bt4' style='width:29%;'>  очистити </button>
+    </div> 
+    <div id="zz99" class='zvit'>
         завантажте данні, оберіть групу транспорту,натисніть кнопку "звіт"
          <br>
          для звіту по індивідуальному транспорту - видаліть всі групи та оберіть транспорт на мапі чи в списку зліва вгорі
@@ -1112,7 +1143,4 @@ button:hover {
 
 </body>
 </html>
-
-
-
 
