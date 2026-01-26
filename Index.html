@@ -703,7 +703,7 @@ button:hover {
         <button id='transport_kkz'style = "width: 13%;">транспорт</button>   
         <button id='grups_kkz'style = "width: 13%;">групи авто</button>  
         <button id='sensors_kkz'style = "width: 13%;">датчики</button>  
-         <button id='kopy_kkz'style = "width: 13%; background: rgb(51, 153, 255);">копіювати</button>
+         <button class='copy_table' style = "width: 13%; background: rgb(51, 153, 255);">копіювати</button>
     </div> 
 
     <div id="zz14" class='zvit'> 
@@ -801,6 +801,7 @@ button:hover {
     <div id="zz18" class='zvit'>
         завантажте данні, оберіть транспорт на мапі чи в списку, оберіть "час з" на шкалі часу (перемістіть повзунок на потрібний час і натисніть кнопку час з), оберіть "час по" на шкалі часу, виконайте "звіт"
         <br>
+        <div style='display: flex;  align-items: center; gap: 5px;'>
         <button id='prob_bt1'>  час з </button>   
         <input id="prob_from" type="datetime-local"/>
 
@@ -809,6 +810,12 @@ button:hover {
 
         <button id='prob_bt3'>  звіт </button> 
         <button id='prob_bt4'>  очистити </button>
+        <button class='copy_table'>  копіювати </button>
+            <p> &nbsp;&nbsp; коір &nbsp;&nbsp;</p>
+        <input type="color" id="z18_color" value="#0037ff">
+            <p> &nbsp;&nbsp; товщина &nbsp;&nbsp;</p>
+        <input type="number" id="z18_shirina" size="2"  step="1" value="3" min="1" style='width:50px;'>
+        </div>
     </div> 
     <div id="zz19" class='zvit'>
         завантажте данні, оберіть транспорт на мапі чи в списку, оберіть "час з" на шкалі часу (перемістіть повзунок на потрібний час і натисніть кнопку час з), оберіть "час по" на шкалі часу, встановіть налаштування, виконайте "звіт"
@@ -883,7 +890,7 @@ button:hover {
  <div id="zupinki">
     <br> 
     <br> 
-        <div class='container5' style='width:99%; height: 80px; z-index: 99999;'></div>
+        <div class='container5' style='width:99%;  z-index: 99999;'></div>
     <br> 
     <input id='min_zup' type='number' placeholder='30' value="30"> мінімальний час зупинки(секунд)
     <br> 
@@ -1156,5 +1163,4 @@ button:hover {
 
 </body>
 </html>
-
 
