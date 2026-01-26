@@ -4657,6 +4657,11 @@ function Naryady(data=[],maska='JD',ver){
              p_end=[lon,lat]; 
            }
         //}
+        }else{
+           if(ver==3){
+             newspline=true;
+             p_end=[lon,lat]; 
+            }
         }
        }else{
          if(wialon.util.Geometry.pointInShape(geozonepoint, 0, lat, lon)){
@@ -4669,6 +4674,8 @@ function Naryady(data=[],maska='JD',ver){
            
          }
        }
+       
+    
 
        if(newspline==true){
 
@@ -7350,14 +7357,14 @@ function sec_to_time(sek){
 }
 
 
-$('#kopy_kkz').click(function() {
+$('.copy_table').click(function() {
   let cpdata='';
   let table_polya=document.getElementById('unit_table');
   if(table_polya.rows.length>1){
     for(let i = 1; i<table_polya.rows.length; i++){
-        for(let ii = 0; ii<table_polya.rows[ii].cells.length; ii++){
+        for(let ii = 0; ii<table_polya.rows[i].cells.length; ii++){
            cpdata += table_polya.rows[i].cells[ii].innerText;
-           if(ii==table_polya.rows[ii].cells.length-1){
+           if(ii==table_polya.rows[i].cells.length-1){
             cpdata +='\n';
            }else{
             cpdata +='\t';
@@ -7371,7 +7378,6 @@ $('#kopy_kkz').click(function() {
 $('#polya_kkz').click(function() {
   $("#unit_table").empty();
   $("#unit_table").append("<tr><td>№</td><td>НАЗВА</td><td>ПЛОЩА</td><td>ГРУПА</td><td>СТВОРЕНО</td><td>ЗМІНЕНО</td><td>КОМЕНТАР</td><td>КОЛІР</td></tr>");
-  console.log(geozones)
   for (let i = 0; i<geozones.length; i++){
     let ct =wialon.util.DateTime.formatTime(geozones[i].zone.ct);
     let mt =wialon.util.DateTime.formatTime(geozones[i].zone.mt);
@@ -8489,8 +8495,10 @@ $('#prob_bt3').click(function() {
   let line = [];
   let from =Date.parse($('#prob_from').val());
   let to =Date.parse($('#prob_to').val());
+  let weight = $('#z18_shirina').val();
+  let color = $('#z18_color').val();
 if($("#unit_table tr").length==0){
-  $("#unit_table").append("<tr><td>дата</td><td>ТЗ</td><td>початок</td><td>кінець</td><td>пробіг км</td><td>час</td><td>час в русі</td><td>простій</td></tr>");
+  $("#unit_table").append("<tr><td>дата</td><td>ТЗ</td><td>початок</td><td>кінець</td><td>пробіг км</td><td>час</td><td>час в русі</td><td>простій</td><td>коментар</td></tr>");
 }
 
    let yy = 0;
@@ -8516,10 +8524,10 @@ if($("#unit_table tr").length==0){
          dis = wialon.util.Geometry.getDistance(yy,xx,yy0,xx0);
          if(dis<500000){
           km+=dis;
-          let l = L.polyline([[yy,xx],[yy0,xx0]], {color: "rgb(0, 4, 255)",weight:3,opacity:1}).addTo(map);
+          let l = L.polyline([[yy,xx],[yy0,xx0]], {color: color,weight:weight,opacity:1}).addTo(map);
           temp_layer.push(l);
          }else{
-          let l = L.polyline([[yy,xx],[yy0,xx0]], {color: "rgb(234, 0, 255)",weight:3,opacity:1}).addTo(map);
+          let l = L.polyline([[yy,xx],[yy0,xx0]], {color: color,weight:weight,opacity:1}).addTo(map);
           temp_layer.push(l);
          }
     
@@ -8559,7 +8567,7 @@ if($("#unit_table tr").length==0){
 
 
 
-  $("#unit_table").append("<tr><td>"+$('#prob_from').val().replace("T", " ").split(' ')[0]+"</td><td>"+unitName+"</td><td>"+$('#prob_from').val().replace("T", " ").split(' ')[1]+"</td><td>"+$('#prob_to').val().replace("T", " ").split(' ')[1]+"</td><td>"+(km/1000).toFixed(1).replace(/\./g, ",")+"</td><td>"+sec_to_time(t_km+t_s)+"</td><td>"+sec_to_time(t_km)+"</td><td>"+sec_to_time(t_s)+"</td></tr>");
+  $("#unit_table").append("<tr><td style='background-color: "+color+"'>"+$('#prob_from').val().replace("T", " ").split(' ')[0]+"</td><td>"+unitName+"</td><td>"+$('#prob_from').val().replace("T", " ").split(' ')[1]+"</td><td>"+$('#prob_to').val().replace("T", " ").split(' ')[1]+"</td><td>"+(km/1000).toFixed(1).replace(/\./g, ",")+"</td><td>"+sec_to_time(t_km+t_s)+"</td><td>"+sec_to_time(t_km)+"</td><td>"+sec_to_time(t_s)+"</td><td contenteditable='true'></td></tr>");
 
     let cpdata= $('#prob_from').val().replace("T", " ").split(' ')[0] + '\t'+ unitName + '\t' + $('#prob_from').val().replace("T", " ").split(' ')[1] + '\t' + $('#prob_to').val().replace("T", " ").split(' ')[1] + '\t' + (km/1000).toFixed(1).replace(/\./g, ",") + '\t' + sec_to_time(t_km+t_s) + ' \t' + sec_to_time(t_km) + '\t' + sec_to_time(t_s) +'\n';
     navigator.clipboard.writeText(cpdata);
