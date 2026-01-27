@@ -13277,7 +13277,8 @@ marshrut_problem_his.push([e.cells[1].innerText,e.cells[2].innerText,e.cells[3].
   for(var ii=0; ii < problem.length; ii++){
     let color = 'rgb(250, 190, 179)';
     for(var iii=0; iii < marshrut_problem_his.length; iii++){
-       if(marshrut_problem_his[iii][0].split(' ')[0]==problem[ii][0].split(' ')[0] && marshrut_problem_his[iii][1]==problem[ii][1] && marshrut_problem_his[iii][2]==problem[ii][3] && marshrut_problem_his[iii][3].replace(/\s+/g, '')==problem[ii][2].replace(/\s+/g, '')){
+      problem[ii][2].replace(/\s+/g, '')
+       if(marshrut_problem_his[iii][0].split(' ')[0]==problem[ii][0].split(' ')[0] && marshrut_problem_his[iii][1]==problem[ii][1] && marshrut_problem_his[iii][2]==problem[ii][3] && marshrut_problem_his[iii][3].replace(/\s+/g, '')==problem[ii][2].toString().replace(/\s+/g, '')){
         color = ''; 
         break;
        }
