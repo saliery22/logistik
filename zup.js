@@ -13262,7 +13262,8 @@ marshrut_problem_his.push([e.cells[1].innerText,e.cells[2].innerText,e.cells[3].
     problem.push(ress[ii]);
   }
 
-
+ problem = problem.sort((a, b) => new Date(a[2]) - new Date(b[2]));
+  console.log(problem)
   var div = document.createElement("div");
   div.style = 'margin-bottom: 10px;margin-right: 10px;min-width: 900px;';
   newdiv.appendChild(div);
@@ -13319,7 +13320,7 @@ marshrut_problem_his.push([e.cells[1].innerText,e.cells[2].innerText,e.cells[3].
           
 
       }
-      if(km>2)result.push([nametr,marshrut,"-----","пробіг "+km.toFixed()+" км без маршруту",0,0,0]);
+      if(km>2)result.push([nametr,marshrut,0,"пробіг "+km.toFixed()+" км без маршруту",0,0,0]);
     }
     }
   }
@@ -13408,10 +13409,19 @@ function calculate_mn(data,ind){
                        marshrut_gruzoperevozky[j][1]._latlngs[0].forEach(function(item){ buferpoly22.push({x:item.lat, y:item.lng}); });
                          if(wialon.util.Geometry.pointInShape(buferpoly11, 0,  stop_y, stop_x)){
                            porushennya='зупинка в іншій зоні завантаження';
+                            if(marsh.length==0 || marsh[marsh.length-1]!='Z')  marsh.push('Z');
+                            zagr_t+=stop;
+                            vigr_t=0;
+                            dor_t=0;
+                            roz_time=0;
                            break;
                          }else{
                            if(wialon.util.Geometry.pointInShape(buferpoly22, 0,  stop_y, stop_x)){
                              porushennya='зупинка в іншій зоні розвантаження';
+                             if(marsh.length==0 || marsh[marsh.length-1]!='V') marsh.push('V');
+                             zagr_t=0;
+                             vigr_t+=stop;
+                             dor_t=0;
                              break;
                            }
                          }
@@ -13572,14 +13582,17 @@ function calculate_mn(data,ind){
               time = vigr_t;
             }
           }
-          if(position=='невідомо')porushennya_marshrut.push([nametr,marshrut,"-----",'не на маршруті',0,0,0]);
-          if(vodiy_tr!='' && vodiy_tr!=vodiy)porushennya_marshrut.push([nametr,marshrut,"-----",'інша картка водія',0,0,0]);
+          if(position=='невідомо')porushennya_marshrut.push([nametr,marshrut,0,'не на маршруті',0,0,0]);
+          if(vodiy_tr!=vodiy && vodiy_tr!="картка-4095" && vodiy_tr!=null)porushennya_marshrut.push([nametr,marshrut,0,'інша картка водія',0,0,0]);
           if(!komb && komb==0){position='наряд завершено';}
           if(multy){
             let last_m = marshrut.split('+');
             if(last_m[last_m.length-1]!=name_marsh){ position='наряд завершено';}
           }
-          if(marsh.length==1){if(marsh[0]=='V')position='ВИЇЗД НА НАРЯД';}
+          if(marsh.length==1){
+            if(marsh[0]=='V')position='ВИЇЗД НА НАРЯД';
+            if(marsh[0]=='Z')position='завантаження';
+          }
            if(marsh[marsh.length-1]=='V' && roz_time!=0){
                let tm = Date.parse(roz_time);
                 for(var a=0; a < vag_data.length; a++){
