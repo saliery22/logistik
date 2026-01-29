@@ -801,7 +801,6 @@ button:hover {
     <div id="zz18" class='zvit'>
         завантажте данні, оберіть транспорт на мапі чи в списку, оберіть "час з" на шкалі часу (перемістіть повзунок на потрібний час і натисніть кнопку час з), оберіть "час по" на шкалі часу, виконайте "звіт"
         <br>
-        <div style='display: flex;  align-items: center; gap: 5px;'>
         <button id='prob_bt1'>  час з </button>   
         <input id="prob_from" type="datetime-local"/>
 
@@ -811,15 +810,16 @@ button:hover {
         <button id='prob_bt3'>  звіт </button> 
         <button id='prob_bt4'>  очистити </button>
         <button class='copy_table'>  копіювати </button>
-            <p> &nbsp;&nbsp; коір &nbsp;&nbsp;</p>
-        <input type="color" id="z18_color" value="#0037ff">
-            <p> &nbsp;&nbsp; товщина &nbsp;&nbsp;</p>
+             &nbsp;&nbsp; коір &nbsp;&nbsp;
+        <input type="color" id="z18_color" value="#0037ff" style='height:20px; padding: 0;'>
+           &nbsp;&nbsp; товщина &nbsp;&nbsp;
         <input type="number" id="z18_shirina" size="2"  step="1" value="3" min="1" style='width:50px;'>
-        </div>
+   
     </div> 
     <div id="zz19" class='zvit'>
         завантажте данні, оберіть транспорт на мапі чи в списку, оберіть "час з" на шкалі часу (перемістіть повзунок на потрібний час і натисніть кнопку час з), оберіть "час по" на шкалі часу, встановіть налаштування, виконайте "звіт"
         <br>
+  
         <button id='ga_bt1'>  час з </button>   
         <input id="ga_from" type="datetime-local" step="1"/>
 
@@ -837,6 +837,7 @@ button:hover {
             <option value=3.5>Оранка</option>
         </select>
         <input type="number" id="ga_sh" size="3" name="num" step="0.1" value="10" min="0" style='width:80px;'>
+        <input type="color" id="z19_color" value="#0037ff" style='height:20px; padding: 0;'>
         <br>
         <div style='display: flex;  align-items: center;'>
         <img id='strelka' src="alfa.png"> 
@@ -846,6 +847,7 @@ button:hover {
         
         <button id='ga_bt3' style='width:70%;'>  звіт </button> 
         <button id='ga_bt4' style='width:29%;'>  очистити </button>
+         
     </div> 
     <div id="zz99" class='zvit'>
         завантажте данні, оберіть групу транспорту,натисніть кнопку "звіт"
