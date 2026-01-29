@@ -2369,7 +2369,22 @@ L.easyButton('<img src="kmm.png" title="пробіг">', function(){
   clearGarbage(marshrutMarkers);
   marshrutMarkers=[];
   }else{
-     if($('#zz18').is(':visible')) $('#men4').click();
+     if($('#zz18').is(':visible')) {
+      $('#men4').click();
+     }else{
+      $('.leaflet-container').css('cursor','');
+      $('.zvit').hide();
+      $("#unit_table").empty();
+      $('#zz18').show();
+      $('#vib_zvit').val('z18');
+      clearGEO(); 
+      clearGarbage(garbage);
+      garbage=[];
+      clearGarbage(garbagepoly);
+      garbagepoly=[];
+      clearGarbage(marshrutMarkers);
+      marshrutMarkers=[];
+    }
   } 
  }).addTo(map);
 
@@ -2389,7 +2404,22 @@ L.easyButton('<img src="kmm.png" title="пробіг">', function(){
   clearGarbage(marshrutMarkers);
   marshrutMarkers=[];
   }else{
-     if($('#zz19').is(':visible')) $('#men4').click();
+     if($('#zz19').is(':visible')) {
+      $('#men4').click();
+    }else{
+      $('.leaflet-container').css('cursor','');
+      $('.zvit').hide();
+      $("#unit_table").empty();
+      $('#zz19').show();
+      $('#vib_zvit').val('z19');
+      clearGEO(); 
+      clearGarbage(garbage);
+      garbage=[];
+      clearGarbage(garbagepoly);
+      garbagepoly=[];
+      clearGarbage(marshrutMarkers);
+      marshrutMarkers=[];
+    }
   } 
  }).addTo(map);
 
