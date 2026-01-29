@@ -991,6 +991,7 @@ if (Date.parse($('#fromtime1').val())/1000 > unit.getPosition().t){rest_units.pu
        let data_gr_child =[];
       let name = data.items[i].$$user_name;
       let gr= '';
+      let auto_list = [];
       let grup_id = data.items[i].$$user_units;
       if(!grup_id)continue;
        $("#auto_list").append("<tr style= 'cursor: pointer;'><td>&#9660</td><td>"+grup_id.length+"</td><td nowrap align='left'><b>"+name+"</b></td></tr>");
@@ -998,8 +999,12 @@ if (Date.parse($('#fromtime1').val())/1000 > unit.getPosition().t){rest_units.pu
         if (!markerByUnit[grup_id[ii]]) continue;
         gr+=markerByUnit[grup_id[ii]]._tooltip._content+',';
         data_gr_child.push({"value": name+"|||"+markerByUnit[grup_id[ii]]._tooltip._content+"|||"+grup_id[ii],"name": markerByUnit[grup_id[ii]]._tooltip._content});
-        $("#auto_list").append("<tr style='display: none; cursor: pointer;'><td>--></td><td><img src="+markerByUnit[grup_id[ii]].options.icon.options.iconUrl+"></td><td nowrap align='left'>"+markerByUnit[grup_id[ii]]._tooltip._content+"</td><td>"+grup_id[ii]+"</td></tr>");
+        auto_list.push([markerByUnit[grup_id[ii]].options.icon.options.iconUrl,markerByUnit[grup_id[ii]]._tooltip._content,grup_id[ii]]);
       }
+        auto_list = auto_list.sort((a, b) => a[1].localeCompare(b[1]));
+       for(let v = 0; v<auto_list.length; v++){
+          $("#auto_list").append("<tr style='display: none; cursor: pointer;'><td>--></td><td><img src="+auto_list[v][0]+"></td><td nowrap align='left'>"+auto_list[v][1]+"</td><td>"+auto_list[v][2]+"</td></tr>");
+       }
       gr = gr.slice(0, -1);
       unitsgrup[name] = gr;
       if (grup_id.length>0) {
@@ -2347,7 +2352,8 @@ L.easyButton('<img src="fuel.png" title="залишки пального">', fun
 }).addTo(map);
 
 L.easyButton('<img src="kmm.png" title="пробіг">', function(){
-  if($('#unit_info').is(':hidden')) $('#men4').click();
+  if($('#unit_info').is(':hidden')){
+  $('#men4').click();
   $('.leaflet-container').css('cursor','');
   $('.zvit').hide();
   $("#unit_table").empty();
@@ -2360,10 +2366,14 @@ L.easyButton('<img src="kmm.png" title="пробіг">', function(){
   garbagepoly=[];
   clearGarbage(marshrutMarkers);
   marshrutMarkers=[];
+  }else{
+     if($('#zz18').is(':visible')) $('#men4').click();
+  } 
  }).addTo(map);
 
  L.easyButton('<img src="gaa.png" title="обробка">', function(){
-  if($('#unit_info').is(':hidden')) $('#men4').click();
+  if($('#unit_info').is(':hidden')){
+  $('#men4').click();
   $('.leaflet-container').css('cursor','');
   $('.zvit').hide();
   $("#unit_table").empty();
@@ -2376,6 +2386,9 @@ L.easyButton('<img src="kmm.png" title="пробіг">', function(){
   garbagepoly=[];
   clearGarbage(marshrutMarkers);
   marshrutMarkers=[];
+  }else{
+     if($('#zz19').is(':visible')) $('#men4').click();
+  } 
  }).addTo(map);
 
 }
