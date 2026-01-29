@@ -3258,6 +3258,7 @@ function CollectGlobalData(t2,i,unit){ // execute selected report
 
    for (key in sens) {
           if (FuelID == -1 && sens[key].t=='fuel level') { FuelID = sens[key].id; }
+           //if (FuelID == -1 && sens[key].n=='Порціонна вага') { FuelID = sens[key].id; }
            if (VodiyID == -1 && sens[key].t=='driver') { VodiyID = sens[key].id; }
             if (PrichepID == -1 && sens[key].t=='trailer')  { PrichepID = sens[key].id; }
             //console.log(id_unit+"///"+unit.getName()+"///"+sens[key].n+"///"+sens[key].t);
@@ -8634,6 +8635,7 @@ $('#ga_bt3').click(function() {
    let xx0 = 0;
    let spline=[];
    let splines=[];
+   let color = $('#z19_color').val();
 
   for(let i = 0; i<Global_DATA.length; i++){ 
     let id = Global_DATA[i][0][0];
@@ -8662,7 +8664,7 @@ $('#ga_bt3').click(function() {
             let ang =(turf.bearing(p0, p2) + 360) % 360;
 
             if(Math.abs(ang-alfa1)<20 || Math.abs(ang-alfa2)<20){
-              let l = L.polyline([[yy,xx],[yy0,xx0]], {color: "rgb(0, 4, 255)",weight:3,opacity:1}).addTo(map);
+              let l = L.polyline([[yy,xx],[yy0,xx0]], {color: color,weight:3,opacity:1}).addTo(map);
               temp_layer.push(l);
                if(spline.length==0)spline.push([xx0,yy0]);
                spline.push([xx,yy]); 
@@ -8673,13 +8675,13 @@ $('#ga_bt3').click(function() {
                spline=[];
             }
           }else{
-           let l = L.polyline([[yy,xx],[yy0,xx0]], {color: "rgb(0, 4, 255)",weight:3,opacity:1}).addTo(map);
+           let l = L.polyline([[yy,xx],[yy0,xx0]], {color: color,weight:3,opacity:1}).addTo(map);
            temp_layer.push(l);
            if(spline.length==0)spline.push([xx0,yy0]);
            spline.push([xx,yy]); 
           }
          }else{
-          let l = L.polyline([[yy,xx],[yy0,xx0]], {color: "rgb(234, 0, 255)",weight:3,opacity:1}).addTo(map);
+          let l = L.polyline([[yy,xx],[yy0,xx0]], {color: "rgb(131, 131, 131)",weight:3,opacity:1}).addTo(map);
           temp_layer.push(l);
           if(spline.length>1)splines.push(spline)
           spline=[];
@@ -8721,7 +8723,7 @@ if($("#unit_table tr").length==0){
 
 
 
-  $("#unit_table").append("<tr><td>"+$('#ga_from').val().replace("T", " ").split(' ')[0]+"</td><td>"+unitName+"</td><td>"+$('#ga_from').val().replace("T", " ").split(' ')[1]+"</td><td>"+$('#ga_to').val().replace("T", " ").split(' ')[1]+"</td><td>"+zax+"</td><td>"+(result.g).replace(/\./g, ",")+"</td><td>"+(result.p).replace(/\./g, ",")+"</td><td>"+(result.c).replace(/\./g, ",")+"</td><td>"+(km/1000).toFixed(1).replace(/\./g, ",")+"</td><td>"+sec_to_time(t_km+t_s)+"</td><td>"+sec_to_time(t_km)+"</td><td>"+sec_to_time(t_s)+"</td></tr>");
+  $("#unit_table").append("<tr><td style='background-color: "+color+"'>"+$('#ga_from').val().replace("T", " ").split(' ')[0]+"</td><td>"+unitName+"</td><td>"+$('#ga_from').val().replace("T", " ").split(' ')[1]+"</td><td>"+$('#ga_to').val().replace("T", " ").split(' ')[1]+"</td><td>"+zax+"</td><td>"+(result.g).replace(/\./g, ",")+"</td><td>"+(result.p).replace(/\./g, ",")+"</td><td>"+(result.c).replace(/\./g, ",")+"</td><td>"+(km/1000).toFixed(1).replace(/\./g, ",")+"</td><td>"+sec_to_time(t_km+t_s)+"</td><td>"+sec_to_time(t_km)+"</td><td>"+sec_to_time(t_s)+"</td></tr>");
 
   $('#prob_from').val(null);
   $('#prob_to').val(null);
@@ -8733,9 +8735,8 @@ function track_to_polygon(data, zahvat){
   let res = {g:0, p:0,c:0};
    if(data.length==0) return res;
   let spline,p0,p1,p2,p3,p4,ang,ang1,ang2;
-  let hue = Math.floor(Math.random() * 360);
   let UnionPolis=[];
-  
+  let color = $('#z19_color').val();
   let polis=[];
   let polis_more=[];
   let zaxvat =   zahvat;
@@ -8822,10 +8823,6 @@ function myroutine(){
 
       areaI = (areaU -turf.area(union)*kof/10000).toFixed(2);
 
-       hue += 60+Math.floor(Math.random() * 30);
-      let saturation = 100;
-      let lightness = 45;
-      let color=  `hsl(${hue}, ${saturation}%, ${lightness}%)`;
       let polylinee = L.geoJSON(union,{ style: function (feature) { return {color: color, fillOpacity: 0.5, weight: 1};}}).addTo(map);
         temp_layer.push(polylinee); 
  
@@ -13835,6 +13832,4 @@ function Rote_gruzoperevozki(p1,p2,color,ind){
           }
         });
 }
-
-
 
