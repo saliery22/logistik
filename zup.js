@@ -2167,7 +2167,9 @@ let areaSelection = new leafletAreaSelection.DrawAreaSelection({
   onButtonActivate : (polygon) => {
     $('#draw-panel-help').text('Визначте багатокутник, клацнувши на карті - щоб визначити вершини, або клацніть і перетягніть, щоб отримати прямокутну форму.') ;
   },
-  
+  onButtonDeactivate : (polygon) => {
+    map.dragging.enable();
+  }, 
   onPolygonReady: (polygon) => {
     let area = (turf.area(polygon.toGeoJSON())*kof/10000).toFixed(2);
     polygon.bindTooltip(''+area+'га',{opacity:0.8});
